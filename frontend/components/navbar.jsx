@@ -29,8 +29,8 @@ const Navbar = () => {
           Payment
         </NavLink>
 
-        <NavLink to="/mapsearch">
-          Map Search
+        <NavLink to="/buyer">
+          Buyer
         </NavLink>
 
         <NavLink to="/complaints">
