@@ -13,7 +13,7 @@ const DEMO = {
   collection_date: "Jun 22, 2026", payment_status: "pending",
 };
 
-export default function PaymentPage() {
+export default function Payment() {
   const location   = useLocation();
   const navigate   = useNavigate();
   const order      = location.state?.order ?? DEMO;
@@ -56,7 +56,7 @@ export default function PaymentPage() {
   if (done) {
     return (
       <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
-        <Navbar />
+        
         <main style={s.page}>
           <div className="card" style={{ maxWidth: 460, width: "100%", textAlign: "center", padding: "32px 28px" }}>
             <div style={{ fontSize: 52, marginBottom: 12 }}>✅</div>
@@ -84,14 +84,14 @@ export default function PaymentPage() {
             </div>
           </div>
         </main>
-        <Footer />
+        
       </div>
     );
   }
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
-      <Navbar />
+      
       <main style={s.page}>
         <div style={{ width:"100%", maxWidth:500 }}>
           <button onClick={() => navigate(-1)} style={s.back}>← Back</button>
@@ -215,7 +215,7 @@ export default function PaymentPage() {
           </form>
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

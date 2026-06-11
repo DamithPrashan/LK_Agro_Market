@@ -83,7 +83,7 @@ export default function RegistrationPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
+      
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
@@ -170,7 +170,7 @@ export default function RegistrationPage() {
           </p>
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

@@ -9,7 +9,7 @@ const DISTRICTS = [
   "Nuwara Eliya","Polonnaruwa","Ratnapura","Trincomalee",
 ];
 
-export default function ProfilePage() {
+export default function Profile() {
   const { user, login }       = useAuth();
   const [name, setName]       = useState(user?.name     ?? "");
   const [contact, setContact] = useState(user?.contact  ?? "");
@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
-      <Navbar />
+      
       <main style={s.page}>
         <h1 style={s.heading}>My Profile</h1>
 
@@ -129,7 +129,7 @@ export default function ProfilePage() {
           </div>
         )}
       </main>
-      <Footer />
+      
     </div>
   );
 }

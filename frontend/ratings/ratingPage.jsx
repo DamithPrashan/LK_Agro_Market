@@ -42,10 +42,13 @@ export default function RatingsPage() {
   const [loadingData, setLoadingData]  = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setLoadingData(false);
+      return;
+    }
     Promise.all([
-      fetch(`/backend/Apis/get_ratings.php?user_id=${user.id}`, { credentials:"include" }).then(r=>r.json()),
-      fetch("/backend/Apis/get_completed_unrated.php",          { credentials:"include" }).then(r=>r.json()),
+      fetch(`/lk-agro/backend/ratings/get_rating.php?user_id=${user.id}`, { credentials:"include" }).then(r=>r.json()),
+      fetch("/lk-agro/backend/orders/get_completed_unrated.php",          { credentials:"include" }).then(r=>r.json()),
     ]).then(([rd, od]) => {
       if (rd.success) { setSummary(rd.summary); setReviews(rd.reviews); }
       else            { setSummary(DEMO_SUMMARY); setReviews(DEMO_REVIEWS); }
@@ -62,7 +65,7 @@ export default function RatingsPage() {
     if (!selectedOrder) { setSubmitMsg({ text:"Please select an order.", ok:false }); return; }
     setSubmitting(true); setSubmitMsg({ text:"", ok:false });
     try {
-      const res  = await fetch("/backend/Apis/submit_rating.php", {
+      const res  = await fetch("/lk-agro/backend/ratings/submit_rating.php", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({ order_id:selectedOrder, rating:stars, comment }),
@@ -89,7 +92,7 @@ export default function RatingsPage() {
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
-      <Navbar />
+      
       <main className="rp-page">
         <h1 className="rp-heading">Ratings &amp; Reviews</h1>
 
@@ -163,7 +166,7 @@ export default function RatingsPage() {
           <ReviewList reviews={reviews} />
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
+      
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
@@ -102,7 +102,7 @@ export default function LoginPage() {
           </p>
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

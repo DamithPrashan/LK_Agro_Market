@@ -40,13 +40,18 @@ a { color: var(--g-600); text-decoration: none; }
 .btn-sm       { padding: 5px 12px; font-size: 12px; min-height: 32px; }
 .btn-full     { width: 100%; justify-content: center; }
 
-/* Badges */
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600; }
-.badge-green { background: var(--g-50);  color: var(--g-800); }
-.badge-amber { background: var(--a-50);  color: var(--a-800); }
-.badge-red   { background: var(--r-50);  color: var(--r-800); }
-.badge-blue  { background: var(--b-50);  color: var(--b-800); }
-.badge-gray  { background: var(--s-100); color: var(--t-2); }
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 ;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
 
 /* Form fields */
 .field { margin-bottom: 14px; }
