@@ -49,7 +49,8 @@ const crops = [
     price: 110,
     harvest: "60 kg • Harvest Jul 15",
     color: "#d7f1f7"
-  }
+  },
+  
 ];
 
 export default function BuyerDashboard() {
