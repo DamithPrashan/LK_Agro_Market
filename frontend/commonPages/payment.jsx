@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/navbar";
@@ -220,6 +221,7 @@ export default function Payment() {
   );
 }
 
+<<<<<<< Updated upstream
 const s = {
   page:       { flex:1, background:"var(--page)", display:"flex", justifyContent:"center", padding:"28px 16px" },
   back:       { background:"none", border:"none", color:"var(--g-600)", cursor:"pointer", fontSize:13, marginBottom:14, padding:0 },
