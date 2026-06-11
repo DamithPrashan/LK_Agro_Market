@@ -1,5 +1,5 @@
 import React from "react";
-import "../../buyer/csss/dashBoard.css"; 
+import "../../buyer/csss/buyerDashboard.css"; 
 
 const crops = [
   {
