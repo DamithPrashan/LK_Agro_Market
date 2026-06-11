@@ -217,6 +217,33 @@ export default function Payment() {
         </div>
       </main>
       
+=======
+import React from "react";
+import "../style.css";
+
+function Payment() {
+  return (
+    <div className="payment-page container">
+      <h1>Payment</h1>
+      <p>
+        Complete your transaction securely through LK Agro Market. Choose from
+        online payment methods or pay on collection when you receive your order.
+      </p>
+
+      <section className="payment-details">
+        <h2>Payment Options</h2>
+        <ul>
+          <li>Bank transfer</li>
+          <li>Lanka QR</li>
+          <li>Pay on collection</li>
+        </ul>
+      </section>
+
+      <section className="payment-actions">
+        <button className="btn-primary">Pay Now</button>
+        <button className="btn-outline">Save for Later</button>
+      </section>
+>>>>>>> Stashed changes
     </div>
   );
 }
@@ -236,3 +263,6 @@ const s = {
   sumBox:     { background:"var(--s-50)", borderRadius:"var(--r-md)", padding:"12px 14px", textAlign:"left" },
   sumRow:     { display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid var(--s-200)" },
 };
+=======
+export default Payment;
+>>>>>>> Stashed changes
