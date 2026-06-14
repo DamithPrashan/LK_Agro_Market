@@ -1,0 +1,210 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f5;
+}
+
+.add-listing-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.listing-card {
+    width: 100%;
+    max-width: 700px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+.listing-card h2 {
+    text-align: center;
+    color: #2e7d32;
+    margin-bottom: 25px;
+}
+
+.stepper {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-bottom: 10px;
+}
+
+.step {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #dcdcdc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.active-step {
+    background: #2e7d32;
+    color: white;
+}
+
+.step-labels {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-section h3 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.form-section input,
+.form-section select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+    outline: none;
+    border-color: #2e7d32;
+}
+
+.upload-section {
+    margin-top: 10px;
+}
+
+.upload-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.photo-boxes {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.photo-box {
+    width: 80px;
+    height: 80px;
+    border: 2px dashed #bbbbbb;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #777;
+    cursor: pointer;
+}
+
+.suggestion-box {
+    background: #e8f5e9;
+    border: 1px solid #81c784;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.suggestion-box p {
+    margin-bottom: 5px;
+}
+
+.suggestion-box h4 {
+    color: #2e7d32;
+}
+
+.review-box {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.review-box p {
+    margin-bottom: 10px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.next-btn,
+.submit-btn,
+.back-btn {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.next-btn {
+    background: #2e7d32;
+    color: white;
+}
+
+.submit-btn {
+    background: #1b5e20;
+    color: white;
+}
+
+.back-btn {
+    background: #757575;
+    color: white;
+}
+
+.next-btn:hover {
+    background: #1b5e20;
+}
+
+.submit-btn:hover {
+    background: #0f4d13;
+}
+
+.back-btn:hover {
+    background: #5f5f5f;
+}
+
+@media (max-width: 768px) {
+    .listing-card {
+        padding: 20px;
+    }
+
+    .stepper {
+        gap: 25px;
+    }
+
+    .step-labels {
+        font-size: 12px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .photo-boxes {
+        justify-content: center;
+    }
+}

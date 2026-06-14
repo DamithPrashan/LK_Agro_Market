@@ -16,7 +16,8 @@ import Footer from "../frontend/components/footer.jsx";
 import Login from "./pages/Login";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
-import FrontendApp from "../frontend/farmer/react/dashBoard.jsx";
+import AddListing from "../frontend/farmer/react/addList.jsx";
+
 
 
 // Other team members will add their routes here
@@ -32,7 +33,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/farmer" element={<FrontendApp />} />
+        <Route path="/farmer" element={<Farmer />} />
         <Route path="/browse" element={<Browse />} />
         <Route path="/preorder" element={<PreOrder />} />
         <Route path="/payment" element={<Payment />} />
@@ -44,6 +45,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/ratings" element={<Ratings />} />
+        <Route path="/farmer/add-listing" element={<AddListing />} />
 
       </Routes>
 
