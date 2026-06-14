@@ -1,84 +1,89 @@
 import React from "react";
 import "../csss/dashBoard.css";
 import { useNavigate } from "react-router-dom";
-// import tomatoImg from "../assets/tomato.jpg";
-// import carrotImg from "../assets/carrot.jpg";
-// import cabbageImg from "../assets/cabbage.jpg"; 
 
-function App() {
+function DashBoard() {
     const navigate = useNavigate();
+
     return (
         <div className="dashboard">
 
-            {/* Navbar */}
+            <div className="content">
 
+                {/* Header */}
+                <div className="page-header">
+                    <h1>Hello, Randeniya 👋</h1>
+                    <p>Here's what's happening with your farm today.</p>
+                </div>
 
-            <div className="main-content">
+                {/* Stats */}
+                <div className="stats-grid">
 
-                {/* Content */}
-                <section className="content">
-
-                    <div className="page-header">
-                        <h1>Farmer Dashboard</h1>
-                        <p>Welcome back, Randeniya - Badulla District</p>
+                    <div className="stat-card green">
+                        <h4>Active Listings</h4>
+                        <h2>12</h2>
+                        <p>View all listings</p>
                     </div>
 
-                    {/* Stats */}
-                    <div className="stats-grid">
+                    <div className="stat-card blue">
+                        <h4>Pending Orders</h4>
+                        <h2>5</h2>
+                        <p>View all orders</p>
+                    </div>
 
-                        <div className="card">
-                            <h2>4</h2>
-                            <p>Active Listings</p>
+                    <div className="stat-card yellow">
+                        <h4>Revenue (This Month)</h4>
+                        <h2>Rs. 25,000</h2>
+                        <p>View details</p>
+                    </div>
+
+                    <div className="stat-card red">
+                        <h4>Complaints</h4>
+                        <h2>1</h2>
+                        <p>View complaints</p>
+                    </div>
+
+                </div>
+
+                {/* Forecast */}
+                <div className="section">
+                    <h3>DEMAND FORECAST (Next 30 Days)</h3>
+
+                    <div className="forecast-grid">
+
+                        <div className="forecast-card">
+                            <div className="crop-icon">🍅</div>
+                            <h4>Tomato</h4>
+                            <p className="high">Demand : High</p>
+                            <small>250 kg Reserved</small>
                         </div>
 
-                        <div className="card">
-                            <h2>7</h2>
-                            <p>Pending Orders</p>
+                        <div className="forecast-card">
+                            <div className="crop-icon">🥕</div>
+                            <h4>Carrot</h4>
+                            <p className="medium">Demand : Medium</p>
+                            <small>120 kg Reserved</small>
                         </div>
 
-                        <div className="card">
-                            <h2>Rs 42,500</h2>
-                            <p>This Month</p>
-                        </div>
-
-                        <div className="card">
-                            <h2>4.8 ★</h2>
-                            <p>My Rating</p>
+                        <div className="forecast-card">
+                            <div className="crop-icon">🫘</div>
+                            <h4>Beans</h4>
+                            <p className="low">Demand : Low</p>
+                            <small>80 kg Reserved</small>
                         </div>
 
                     </div>
+                </div>
 
-                    {/* Forecast */}
-                    <div className="section">
-                        <div className="section-header">
-                            <h3>CROP DEMAND FORECASTING MODULE</h3>
-                        </div>
-
-                        <div className="forecast-grid">
-
-                            <div className="forecast-card">
-                                <h4>🍅 Tomato</h4>
-                                <p>340 kg Forecast</p>
-                            </div>
-
-                            <div className="forecast-card">
-                                <h4>🥕 Carrot</h4>
-                                <p>210 kg Forecast</p>
-                            </div>
-
-                            <div className="forecast-card purple">
-                                <h4>🥬 Cabbage</h4>
-                                <p>High Demand</p>
-                            </div>
-
-                        </div>
-                    </div>
+                {/* Listings + Orders */}
+                <div className="bottom-grid">
 
                     {/* Listings */}
                     <div className="section">
 
                         <div className="section-header">
                             <h3>MY LISTINGS</h3>
+
                             <button
                                 className="add-btn"
                                 onClick={() => navigate("/farmer/add-listing")}
@@ -91,52 +96,102 @@ function App() {
                             <thead>
                                 <tr>
                                     <th>Crop</th>
+                                    <th>Category</th>
                                     <th>Quantity</th>
-                                    <th>Price</th>
+                                    <th>Price / Kg</th>
                                     <th>Harvest Date</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 
                             <tbody>
+
                                 <tr>
-                                    <td>🍅 Tomato</td>
-                                    <td>250 kg</td>
-                                    <td>Rs 85/kg</td>
-                                    <td>20 Jun</td>
-                                    <td><span className="status active-status">Active</span></td>
+                                    <td>Tomato</td>
+                                    <td>Vegetable</td>
+                                    <td>200 kg</td>
+                                    <td>Rs.250</td>
+                                    <td>2026-08-01</td>
+
+                                    <td>
+                                        <span className="status active-status">
+                                            Active
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button className="edit-btn">Edit</button>
+                                        <button className="delete-btn">Delete</button>
+                                    </td>
                                 </tr>
 
                                 <tr>
-                                    <td>🥕 Carrot</td>
-                                    <td>180 kg</td>
-                                    <td>Rs 65/kg</td>
-                                    <td>28 Jun</td>
-                                    <td><span className="status active-status">Active</span></td>
+                                    <td>Beans</td>
+                                    <td>Vegetable</td>
+                                    <td>150 kg</td>
+                                    <td>Rs.300</td>
+                                    <td>2026-07-25</td>
+
+                                    <td>
+                                        <span className="status active-status">
+                                            Active
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button className="edit-btn">Edit</button>
+                                        <button className="delete-btn">Delete</button>
+                                    </td>
                                 </tr>
 
                                 <tr>
-                                    <td>🥬 Leeks</td>
-                                    <td>120 kg</td>
-                                    <td>Rs 90/kg</td>
-                                    <td>05 Jul</td>
-                                    <td><span className="status pending-status">Pending</span></td>
+                                    <td>Carrot</td>
+                                    <td>Vegetable</td>
+                                    <td>100 kg</td>
+                                    <td>Rs.180</td>
+                                    <td>2026-07-30</td>
+
+                                    <td>
+                                        <span className="status sold-status">
+                                            Sold Out
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button className="edit-btn">Edit</button>
+                                        <button className="delete-btn">Delete</button>
+                                    </td>
                                 </tr>
+
                             </tbody>
                         </table>
 
                     </div>
 
                     {/* Orders */}
-                    <div className="section">
+                    <div className="section orders-section">
 
-                        <div className="section-header">
-                            <h3>INCOMING PRE-ORDER REQUESTS</h3>
+                        <h3>INCOMING ORDERS</h3>
+
+                        <div className="order-card">
+                            <p><b>Buyer :</b> ABC Hotel</p>
+                            <p><b>Crop :</b> Tomato</p>
+                            <p><b>Quantity :</b> 50 kg</p>
+                            <p><b>Collection :</b> 2026-08-10</p>
+
+                            <div className="buttons">
+                                <button className="accept">Accept</button>
+                                <button className="partial">Partial</button>
+                                <button className="decline">Decline</button>
+                            </div>
                         </div>
 
                         <div className="order-card">
-                            <h4>Order #2041 - Hotel Ella Inn</h4>
-                            <p>Tomato - 60kg - Rs 5,100</p>
+                            <p><b>Buyer :</b> XYZ Restaurant</p>
+                            <p><b>Crop :</b> Carrot</p>
+                            <p><b>Quantity :</b> 30 kg</p>
+                            <p><b>Collection :</b> 2026-07-28</p>
 
                             <div className="buttons">
                                 <button className="accept">Accept</button>
@@ -147,10 +202,12 @@ function App() {
 
                     </div>
 
-                </section>
+                </div>
+
             </div>
+
         </div>
     );
 }
 
-export default App;
+export default DashBoard;
