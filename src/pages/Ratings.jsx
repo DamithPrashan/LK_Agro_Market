@@ -1,5 +1,9 @@
-const Ratings = () => {
-  return <h1>Ratings</h1>;
-};
+import RatingsPage from "../../frontend/ratings/ratingPage";
 
-export default Ratings;
+export default function Ratings() {
+    return (
+        <div>
+            <RatingsPage />
+        </div>
+    );
+}

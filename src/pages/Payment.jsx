@@ -1,3 +1,9 @@
-import Payment from "../../frontend/commonPages/react/payment.jsx";
+import Payment from "../../frontend/commonPages/Payment";
 
-export default Payment;
+export default function PaymentPage() {
+    return (
+        <div>
+            <Payment />
+        </div>
+    );
+}

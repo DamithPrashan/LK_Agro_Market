@@ -29,8 +29,8 @@ const Navbar = () => {
           Payment
         </NavLink>
 
-        <NavLink to="/mapsearch">
-          Map Search
+        <NavLink to="/buyer">
+          Buyer
         </NavLink>
 
         <NavLink to="/complaints">
@@ -47,6 +47,12 @@ const Navbar = () => {
 
         <NavLink to="/register">
           Register
+        </NavLink>
+        <NavLink to="/login">
+            Login
+        </NavLink>
+        <NavLink to="/profile">
+            Profile
         </NavLink>
         <div className="multiLang">
           <button className="lang-btn">EN</button>

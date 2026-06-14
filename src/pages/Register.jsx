@@ -1,5 +1,5 @@
-const Register = () => {
-  return <h1>Register</h1>;
-};
+import RegistrationPage from "../../frontend/commonPages/registrationPage";
 
-export default Register;
+export default function Register() {
+  return <RegistrationPage />;
+}
