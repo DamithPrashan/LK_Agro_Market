@@ -1,10 +1,12 @@
 import React from "react";
 import "../csss/dashBoard.css";
+import { useNavigate } from "react-router-dom";
 // import tomatoImg from "../assets/tomato.jpg";
 // import carrotImg from "../assets/carrot.jpg";
 // import cabbageImg from "../assets/cabbage.jpg"; 
 
 function App() {
+    const navigate = useNavigate();
     return (
         <div className="dashboard">
 
@@ -77,7 +79,12 @@ function App() {
 
                         <div className="section-header">
                             <h3>MY LISTINGS</h3>
-                            <button className="add-btn">Add Listing</button>
+                            <button
+                                className="add-btn"
+                                onClick={() => navigate("/farmer/add-listing")}
+                            >
+                                Add Listing
+                            </button>
                         </div>
 
                         <table>
