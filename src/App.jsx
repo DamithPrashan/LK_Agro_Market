@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Navbar from "./components/Navbar/Navbar";
+
 
 import Home from "./pages/Home";
 import Farmer from "./pages/Farmer";
@@ -17,7 +17,7 @@ import Login from "./pages/Login";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
-
+import EditList from "./pages/EditList.jsx";
 
 
 // Other team members will add their routes here
@@ -46,6 +46,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/ratings" element={<Ratings />} />
         <Route path="/farmer/add-listing" element={<AddListing />} />
+        <Route path="/farmer/edit-listing" element={<EditList />} />
 
       </Routes>
 

@@ -1,0 +1,149 @@
+.edit-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+}
+
+/* STEP BAR */
+
+.edit-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 35px;
+    position: relative;
+}
+
+.edit-steps::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    width: 320px;
+    height: 2px;
+    background: #dcdcdc;
+    z-index: 0;
+}
+
+.edit-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 160px;
+    z-index: 2;
+}
+
+.edit-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e5e5e5;
+    color: #666;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+
+.edit-step.active .edit-circle {
+    background: #0a7a2a;
+    color: white;
+}
+
+.edit-step span {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #777;
+}
+
+.edit-step.active span {
+    color: #0a7a2a;
+}
+
+/* CARD */
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    background: white;
+}
+
+.card h2 {
+    display: none;
+}
+
+/* FORM */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.grid div {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid label {
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.grid input,
+.grid select {
+    width: 100%;
+    height: 42px;
+    padding: 0 10px;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.cancel-btn {
+    padding: 10px 22px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.next-btn,
+.update-btn {
+    padding: 10px 22px;
+    border: none;
+    background: #0a7a2a;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.review p {
+    margin: 12px 0;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-step {
+        width: 100px;
+    }
+
+    .edit-steps::before {
+        width: 220px;
+    }
+}

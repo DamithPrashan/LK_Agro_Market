@@ -159,8 +159,22 @@ function DashBoard() {
                                     </td>
 
                                     <td>
-                                        <button className="edit-btn">Edit</button>
-                                        <button className="delete-btn">Delete</button>
+                                        <button
+                                            className="edit-btn"
+                                            onClick={() =>
+                                                navigate("/farmer/edit-listing", {
+                                                    state: {
+                                                        cropName: "Tomato",
+                                                        category: "Vegetable",
+                                                        quantity: 200,
+                                                        harvestDate: "2026-08-01",
+                                                        price: 250,
+                                                    },
+                                                })
+                                            }
+                                        >
+                                            Edit
+                                        </button>                                        <button className="delete-btn">Delete</button>
                                     </td>
                                 </tr>
 
