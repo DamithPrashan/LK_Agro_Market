@@ -299,3 +299,17 @@ td {
     overflow-x: auto;
   }
 }
+
+.orders-btn {
+  background: #0d5c25;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.orders-btn:hover {
+  background: #084018;
+}

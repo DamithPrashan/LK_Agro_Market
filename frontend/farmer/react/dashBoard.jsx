@@ -6,14 +6,31 @@ function DashBoard() {
     const navigate = useNavigate();
 
     return (
+
         <div className="dashboard">
 
             <div className="content">
+                <div>
+
+                    <button
+                        className="orders-btn"
+                        onClick={() => navigate("/farmer/orders")}
+                    >
+                        My Orders
+                    </button>
+
+                </div>
 
                 {/* Header */}
                 <div className="page-header">
                     <h1>Hello, Randeniya 👋</h1>
                     <p>Here's what's happening with your farm today.</p>
+                </div>
+                <button className="btn" onClick={() => navigate("/edit-list")}>
+                    Edit Listings
+                </button>
+                <div>
+
                 </div>
 
                 {/* Stats */}
@@ -159,8 +176,22 @@ function DashBoard() {
                                     </td>
 
                                     <td>
-                                        <button className="edit-btn">Edit</button>
-                                        <button className="delete-btn">Delete</button>
+                                        <button
+                                            className="edit-btn"
+                                            onClick={() =>
+                                                navigate("/farmer/edit-listing", {
+                                                    state: {
+                                                        cropName: "Tomato",
+                                                        category: "Vegetable",
+                                                        quantity: 200,
+                                                        harvestDate: "2026-08-01",
+                                                        price: 250,
+                                                    },
+                                                })
+                                            }
+                                        >
+                                            Edit
+                                        </button>                                        <button className="delete-btn">Delete</button>
                                     </td>
                                 </tr>
 
