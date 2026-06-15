@@ -6,14 +6,31 @@ function DashBoard() {
     const navigate = useNavigate();
 
     return (
+
         <div className="dashboard">
 
             <div className="content">
+                <div>
+
+                    <button
+                        className="orders-btn"
+                        onClick={() => navigate("/farmer/orders")}
+                    >
+                        My Orders
+                    </button>
+
+                </div>
 
                 {/* Header */}
                 <div className="page-header">
                     <h1>Hello, Randeniya 👋</h1>
                     <p>Here's what's happening with your farm today.</p>
+                </div>
+                <button className="btn" onClick={() => navigate("/edit-list")}>
+                    Edit Listings
+                </button>
+                <div>
+
                 </div>
 
                 {/* Stats */}

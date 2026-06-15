@@ -18,6 +18,8 @@ import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "./pages/EditList.jsx";
+import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
+
 
 
 // Other team members will add their routes here
@@ -47,6 +49,8 @@ function App() {
         <Route path="/ratings" element={<Ratings />} />
         <Route path="/farmer/add-listing" element={<AddListing />} />
         <Route path="/farmer/edit-listing" element={<EditList />} />
+        <Route path="/farmer/orders" element={<OrderManagement />}
+        />
 
       </Routes>
 
