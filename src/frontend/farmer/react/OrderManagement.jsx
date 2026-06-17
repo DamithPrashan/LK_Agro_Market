@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../csss/OrderManagement.css";
+import "./OrderManagement.css";
 
 function OrderManagement() {
     const [activeTab, setActiveTab] = useState("All");
@@ -32,15 +32,6 @@ function OrderManagement() {
             status: "Ready",
             payment: "Paid (Full)",
         },
-        {
-            id: "#1003",
-            buyer: "Green Supermarket",
-            crop: "Beans",
-            quantity: "70 kg",
-            date: "2026-07-30",
-            status: "Completed",
-            payment: "Completed",
-        }
     ];
 
     const filteredOrders =
@@ -157,16 +148,7 @@ function OrderManagement() {
                 </div>
             ))}
         </div>
-
     );
-    <span
-        className={`payment-badge ${order.payment === "Completed"
-                ? "payment-completed"
-                : ""
-            }`}
-    >
-        {order.payment}
-    </span>
 }
 
 export default OrderManagement;
