@@ -21,7 +21,7 @@ try {
     $pdo = new PDO($dsn, $user, $password, $options);
     
     // Uncomment the line below just to test if it works, then comment it out again!
-     echo "Database connection successful!"; 
+    //  echo "Database connection successful!"; 
     
 } catch (\PDOException $e) {
     // If something goes wrong, stop execution and show the error message
