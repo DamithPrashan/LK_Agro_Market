@@ -1,10 +1,21 @@
 import React from "react";
 import "../csss/dashBoard.css";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function DashBoard() {
     const navigate = useNavigate();
+    const [myCrops, setCrops] = useState([]);
 
+    useEffect(() => {
+        fetch("http://localhost/backend/getCrops.php")
+            .then((response) => response.json())
+            .then((data) => {
+                setCrops(data);
+                console.log(data);
+            })
+        //.catch((error) => console.error(error));
+    }, []);
     return (
 
         <div className="dashboard">
@@ -124,78 +135,32 @@ function DashBoard() {
                             </thead>
 
                             <tbody>
+                                {myCrops.map((crop) => (
+                                    <tr key={crop.crop_id}>
+                                        <td>{crop.crop_name}</td>
+                                        <td>{crop.category}</td>
+                                        <td>{crop.quantity} kg</td>
+                                        <td>Rs.{crop.price_per_unit}</td>
+                                        <td>{crop.harvest_date}</td>
 
-                                <tr>
-                                    <td>Tomato</td>
-                                    <td>Vegetable</td>
-                                    <td>200 kg</td>
-                                    <td>Rs.250</td>
-                                    <td>2026-08-01</td>
+                                        <td>
+                                            <span
+                                                className={
+                                                    crop.crop_status === "active"
+                                                        ? "status active-status"
+                                                        : "status sold-status"
+                                                }
+                                            >
+                                                {crop.crop_status}
+                                            </span>
+                                        </td>
 
-                                    <td>
-                                        <span className="status active-status">
-                                            Active
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <button className="edit-btn">Edit</button>
-                                        <button className="delete-btn">Delete</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>Beans</td>
-                                    <td>Vegetable</td>
-                                    <td>150 kg</td>
-                                    <td>Rs.300</td>
-                                    <td>2026-07-25</td>
-
-                                    <td>
-                                        <span className="status active-status">
-                                            Active
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <button className="edit-btn">Edit</button>
-                                        <button className="delete-btn">Delete</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>Carrot</td>
-                                    <td>Vegetable</td>
-                                    <td>100 kg</td>
-                                    <td>Rs.180</td>
-                                    <td>2026-07-30</td>
-
-                                    <td>
-                                        <span className="status sold-status">
-                                            Sold Out
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <button
-                                            className="edit-btn"
-                                            onClick={() =>
-                                                navigate("/farmer/edit-listing", {
-                                                    state: {
-                                                        cropName: "Tomato",
-                                                        category: "Vegetable",
-                                                        quantity: 200,
-                                                        harvestDate: "2026-08-01",
-                                                        price: 250,
-                                                    },
-                                                })
-                                            }
-                                        >
-                                            Edit
-                                        </button>                                        <button className="delete-btn">Delete</button>
-                                    </td>
-                                </tr>
-
+                                        <td>
+                                            <button className="edit-btn">Edit</button>
+                                            <button className="delete-btn">Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
 

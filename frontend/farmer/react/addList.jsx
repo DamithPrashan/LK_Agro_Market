@@ -20,9 +20,33 @@ function AddListing() {
         });
     };
 
-    const handleSubmit = () => {
-        alert("Listing Submitted Successfully!");
-        console.log(formData);
+    // const handleSubmit = () => {
+    //     alert("Listing Submitted Successfully!");
+    //     console.log(formData);
+    // };
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch(
+                "http://localhost/backend/addCrop.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Listing Submitted Successfully!");
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
