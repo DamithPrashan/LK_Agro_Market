@@ -1,5 +1,3 @@
-const Browse = () => {
-  return <h1>Browse</h1>;
-};
+import Browse from "../../frontend/buyer/react/browse.jsx";
 
 export default Browse;
