@@ -38,7 +38,8 @@ function DashBoard() {
                     <h1>Hello, Randeniya 👋</h1>
                     <p>Here's what's happening with your farm today.</p>
                 </div>
-                <button className="btn" onClick={() => navigate("/edit-list")}>
+                <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
+                >
                     Edit Listings
                 </button>
                 <div>
