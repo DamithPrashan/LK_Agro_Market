@@ -1,8 +1,9 @@
 import "../../buyer/csss/buyerDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 export default function BuyerDashboard() {
   const buyerName = "Nadeeshi";
-
+const navigate = useNavigate();
   const stats = {
     pending: 12,
     active: 7,
@@ -111,9 +112,13 @@ export default function BuyerDashboard() {
             directly from trusted farmers in your area.
           </p>
 
-          <button className="secondary-btn">
+          <button className="secondary-btn"
+        onClick={() => navigate("/buyer/BuyerOrderHistory")}
+>
             View Full Order History
           </button>
+          
+                                
         </div>
 
       </section>

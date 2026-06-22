@@ -19,6 +19,7 @@ import Ratings from "./pages/Ratings.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "./pages/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
+import BuyerOrderHistory from "../frontend/buyer/react/BuyerOrderHistory.jsx";
 
 
 
@@ -52,7 +53,8 @@ function App() {
         <Route path="/farmer/edit-listing" element={<EditList />} />
         <Route path="/farmer/orders" element={<OrderManagement />}
         />
-
+      <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />}
+/>
       </Routes>
 
       <Footer />
