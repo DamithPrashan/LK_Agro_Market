@@ -1,154 +1,124 @@
-import React from "react";
-import "../../buyer/csss/buyerDashboard.css"; 
-
-const crops = [
-  {
-    emoji: "🍅",
-    name: "Tomato",
-    farm: "Randeniya Farm",
-    price: 85,
-    harvest: "250 kg • Harvest Jun 20",
-    color: "#f7e3c2"
-  },
-  {
-    emoji: "🥕",
-    name: "Carrot",
-    farm: "Jayarathna Agro",
-    price: 65,
-    harvest: "180 kg • Harvest Jun 28",
-    color: "#f8efd4"
-  },
-  {
-    emoji: "🥬",
-    name: "Leeks",
-    farm: "Jayaweera Estate",
-    price: 90,
-    harvest: "120 kg • Harvest Jul 5",
-    color: "#dfe9d5"
-  },
-  {
-    emoji: "🌶️",
-    name: "Capsicum",
-    farm: "Dasanayaka Farm",
-    price: 220,
-    harvest: "80 kg • Harvest Jul 12",
-    color: "#f8dbe5"
-  },
-  {
-    emoji: "🥔",
-    name: "Potato",
-    farm: "Randeniya Farm",
-    price: 55,
-    harvest: "300 kg • Harvest Jul 8",
-    color: "#e7def7"
-  },
-  {
-    emoji: "🫘",
-    name: "Green Beans",
-    farm: "Jayaweera Estate",
-    price: 110,
-    harvest: "60 kg • Harvest Jul 15",
-    color: "#d7f1f7"
-  },
-  
-];
+import "../../buyer/csss/buyerDashboard.css";
 
 export default function BuyerDashboard() {
+  const buyerName = "Nadeeshi";
+
+  const stats = {
+    pending: 12,
+    active: 7,
+    completed: 45,
+  };
+
+  const location = "Colombo";
+
+  const recentActivities = [
+    "Reserved 10kg Tomatoes",
+    "New Corn listing available",
+    "Order delivered successfully",
+  ];
+
+  const quickLinks = [
+    { label: "🥦 Browse Crops", key: "browse" },
+    { label: "🚜 Find Farmers", key: "farmers" },
+    { label: "📦 My Reservations", key: "reservations" },
+    { label: "❤️ Wishlist", key: "wishlist" },
+  ];
+
   return (
-    <div>
+    <div className="dashboard">
 
+      {/* NAVBAR */}
+      <header className="navbar">
+        <div className="logo">🌱 LK Agro Market</div>
 
-      <div className="layout">
-        <main className="content">
+        <nav>
+          <ul>
+            <li>Dashboard</li>
+            <li>Products</li>
+            <li>Reservations</li>
+            <li>Profile</li>
+          </ul>
+        </nav>
 
-          <h2>Browse Crops</h2>
+       
+      </header>
 
-          <p>Fresh produce from verified Sri Lankan farmers</p>
+      {/* HERO */}
+      <section className="hero">
+        <div>
+          <h1>Welcome Back {buyerName} 👋</h1>
+          <p>Discover fresh vegetables, fruits and connect with trusted farmers.</p>
+        </div>
+      </section>
 
-          <div className="search">
+      {/* STATS */}
+      <section className="stats-container">
+        <div className="stat-card">
+          <h2>{stats.pending}</h2>
+          <p>Pending Reservations</p>
+        </div>
 
-            <input placeholder="Search crops, farmers, districts..." />
+        <div className="stat-card">
+          <h2>{stats.active}</h2>
+          <p>Active Reservations</p>
+        </div>
 
-            <select>
-              <option>Badulla</option>
-            </select>
+        <div className="stat-card">
+          <h2>{stats.completed}</h2>
+          <p>Completed Orders</p>
+        </div>
+      </section>
 
-            <select>
-              <option>All Crops</option>
-            </select>
+      {/* LOCATION BANNER */}
+      <section className="location-banner">
+        <div>
+          📍 Farmers near <strong>{location}</strong> have fresh products today.
+        </div>
+        <button>Explore Nearby</button>
+      </section>
 
-            <button>Filters</button>
+      {/* QUICK LINKS */}
+      <section className="quick-links">
+        <h2>Quick Actions</h2>
 
-          </div>
-
-          <div className="message">
-            Showing crops near <b>Badulla.</b> Use Map Search to find farms on a map.
-          </div>
-
-          <div className="stats">
-
-            <div className="box">
-              <h1>2</h1>
-              Pending Orders
+        <div className="quick-grid">
+          {quickLinks.map((q, i) => (
+            <div className="quick-card" key={i}>
+              {q.label}
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="box">
-              <h1>3</h1>
-              Active Reservations
-            </div>
+      {/* CONTENT GRID */}
+      <section className="content-grid">
 
-            <div className="box">
-              <h1>8</h1>
-              Completed Orders
-            </div>
-
-          </div>
-
-          <div className="cards">
-
-            {crops.map((item, index) => (
-
-              <div className="card" key={index}>
-
-                <div
-                  className="top"
-                  style={{ background: item.color }}
-                >
-                  {item.emoji}
-                </div>
-
-                <div className="body">
-
-                  <h3>{item.name}</h3>
-
-                  <small>{item.farm} ✓</small>
-
-                  <h2>
-                    Rs {item.price}
-                    <span>/kg</span>
-                  </h2>
-
-                  <p>{item.harvest}</p>
-
-                  <div className="star">
-                    ★★★★★
-                  </div>
-
-                  <button>
-                    Pre-Order
-                  </button>
-
-                </div>
-
-              </div>
-
+        {/* RECENT ACTIVITY */}
+        <div className="content-box">
+          <h2>Recent Activity</h2>
+          <ul>
+            {recentActivities.map((item, i) => (
+              <li key={i}>✅ {item}</li>
             ))}
+          </ul>
+        </div>
 
-          </div>
+        {/* INFO BOX */}
+        <div className="content-box">
+          <h2>Buyer Insights</h2>
+          <p>
+            Track your reservations, manage orders, and explore fresh farm produce
+            directly from trusted farmers in your area.
+          </p>
 
-        </main>
+          <button className="secondary-btn">
+            View Full Order History
+          </button>
+        </div>
 
-      </div>
+      </section>
+
+      
 
     </div>
   );
