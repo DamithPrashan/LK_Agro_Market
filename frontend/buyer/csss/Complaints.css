@@ -1,231 +1,241 @@
-/* Global */
-
 html,
 body,
 #root {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-    font-family: "Segoe UI", sans-serif;
-    background: #f5f5f5;
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Main Layout */
-
-.complaint-layout {
-    width: 100%;
-    min-height: 100vh;
-    padding: 25px;
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* Content */
-
-.complaint-content {
-    width: 100%;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
+body {
+  background: #f5f7f8;
 }
 
-/* Header */
+.dashboard {
+  width: 100%;
+  padding: 25px;
+  background: #f5f7f8;
+}
+
+.content {
+  width: 100%;
+}
+
+/* HEADER */
 
 .page-header {
-    padding: 30px;
-    border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 25px;
 }
 
-.page-header h2 {
-    margin: 0;
-    color: #0d5b2a;
-    font-size: 34px;
+.page-header h1 {
+  margin: 0;
+  color: #155724;
+  font-size: 32px;
 }
 
 .page-header p {
-    margin-top: 8px;
-    color: #7d8ba1;
-    font-size: 18px;
+  margin-top: 5px;
+  color: #666;
 }
 
-/* Tabs */
+/* TABS */
 
 .tabs {
-    display: flex;
-    border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
 }
 
-.tabs button {
-    background: white;
-    border: none;
-    padding: 18px 30px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    color: #888;
+.tab {
+  border: none;
+  background: #e5e7eb;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.tabs button.active {
-    color: #0b6c32;
-    border-bottom: 4px solid #0b6c32;
+.tab.active {
+  background: #0d6b2f;
+  color: white;
 }
 
-/* Complaint Card */
+/* CARDS */
 
-.complaint-card {
-    margin: 25px;
-    border: 2px solid #ff9d9d;
-    border-radius: 18px;
-    padding: 25px;
+.complaint-card,
+.flow-card,
+.admin-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* Title */
-
-.card-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-title h3 {
-    color: #8d1e10;
-    letter-spacing: 2px;
+.card-top,
+.admin-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 .buyer-tag {
-    background: #f7dede;
-    color: #8d1e10;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: bold;
+  background: #ffe6e6;
+  color: #c62828;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
-/* Order */
-
-.order-box {
-    background: #f2f3f6;
-    margin-top: 20px;
-    padding: 18px;
-    border-radius: 10px;
-    font-size: 18px;
+.evidence-tag {
+  background: #e8f5e9;
+  color: #0d6b2f;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
-/* Form */
+/* INFO BOXES */
 
-.form-group {
-    margin-top: 25px;
+.order-info,
+.evidence-box {
+  background: #f4f6f8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #3a4c63;
+.evidence-box p {
+  margin: 8px 0;
 }
 
-.optional {
-    color: #888;
-    font-size: 16px;
-    margin-left: 5px;
+/* FORM */
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-.form-group select,
-.form-group textarea {
-
-    width: 100%;
-    padding: 16px;
-    border: 1px solid #ff9d9d;
-    border-radius: 12px;
-    font-size: 18px;
-    box-sizing: border-box;
-    outline: none;
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
-.form-group textarea {
-    resize: none;
+textarea {
+  resize: vertical;
 }
-
-/* Upload */
 
 .upload-box {
-
-    border: 3px dashed #ff9d9d;
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
+  height: 100px;
+  border: 2px dashed #ff9f9f;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #777;
+  margin-bottom: 20px;
 }
-
-.upload-box input {
-
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    top: 0;
-    left: 0;
-    cursor: pointer;
-}
-
-.upload-box p {
-
-    color: #8a97b1;
-    font-size: 22px;
-}
-
-/* Button */
 
 .submit-btn {
-
-    margin-top: 25px;
-    background: #c62828;
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 12px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+  background: #c62828;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .submit-btn:hover {
-
-    background: #a71d1d;
+  background: #a91f1f;
 }
 
-/* Responsive */
+/* FLOW */
+
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.flow-step {
+  background: #dff0df;
+  color: #0d6b2f;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.active-step {
+  background: #0d6b2f;
+  color: white;
+}
+
+/* BUTTONS */
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.refund-btn {
+  background: #0d6b2f;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delivery-btn {
+  background: white;
+  color: #0d6b2f;
+  border: 1px solid #0d6b2f;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dismiss-btn {
+  background: #e5e7eb;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* FIX FOOTER OVERLAP */
+
+.footer-space {
+  height: 450px;
+}
+
+/* RESPONSIVE */
 
 @media (max-width: 768px) {
 
-    .page-header h2 {
-        font-size: 26px;
-    }
+  .tabs {
+    flex-direction: column;
+  }
 
-    .tabs {
-        flex-direction: column;
-    }
+  .action-buttons {
+    flex-direction: column;
+  }
 
-    .card-title {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
+  .flow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .complaint-card {
-        margin: 10px;
-        padding: 15px;
-    }
-
-    .form-group label {
-        font-size: 18px;
-    }
-
-    .form-group select,
-    .form-group textarea {
-        font-size: 16px;
-    }
-
+  .page-header h1 {
+    font-size: 24px;
+  }
 }
