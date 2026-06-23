@@ -44,13 +44,25 @@ function ComplaintPage() {
           <textarea
             className="input-field"
             rows="5"
-            defaultValue="Received leeks were wilted and not fresh as described. Weight was also short by about 8 kg."
-          />
+             placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+/>
 
           <label>Evidence Photo (Optional)</label>
 
           <div className="upload-box">
-            📷 Upload photo evidence
+            {/* 📷 Upload photo evidence */}
+            <div className="upload-box">
+  <label htmlFor="photo-upload" className="upload-area">
+    Click here to upload a photo
+  </label>
+
+  <input
+    id="photo-upload"
+    type="file"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
+</div>
           </div>
 
           <button className="submit-btn">
@@ -116,11 +128,10 @@ function ComplaintPage() {
           <label>Admin Notes</label>
 
           <textarea
-            className="input-field"
-            rows="4"
-            defaultValue="Photo evidence supports quality issue. Recommend partial refund of Rs.720."
-          />
-
+  className="input-field"
+  rows="5"
+  placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+/>
           <div className="action-buttons">
 
             <button className="refund-btn">

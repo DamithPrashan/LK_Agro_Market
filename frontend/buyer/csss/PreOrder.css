@@ -168,7 +168,7 @@ body,
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #1565c0;
+  background: #16d36575;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -176,7 +176,7 @@ body,
 }
 
 .contact-btn:hover {
-  background: #0d47a1;
+  background: rgb(236, 156, 8);
 }
 
 /* ==========================
