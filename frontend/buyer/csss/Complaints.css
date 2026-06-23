@@ -133,28 +133,26 @@ textarea {
   resize: vertical;
 }
 
+ 
 .upload-box {
-  height: 100px;
-  border: 2px dashed #ff9f9f;
-  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.upload-area {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #777;
-  margin-bottom: 20px;
-}
-
-.submit-btn {
-  background: #c62828;
-  color: white;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 8px;
+  height: 150px;
+  border: 2px dashed #4caf50;
+  border-radius: 10px;
+  background: #f9fff9;
   cursor: pointer;
+  font-size: 16px;
+  color: #555;
 }
 
-.submit-btn:hover {
-  background: #a91f1f;
+.upload-area:hover {
+  background: #eefcee;
 }
 
 /* FLOW */
@@ -173,10 +171,10 @@ textarea {
   border-radius: 20px;
 }
 
-.active-step {
+/* .active-step {
   background: #0d6b2f;
   color: white;
-}
+} */
 
 /* BUTTONS */
 
