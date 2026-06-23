@@ -38,10 +38,10 @@ function DashBoard() {
                     <h1>Hello, Randeniya 👋</h1>
                     <p>Here's what's happening with your farm today.</p>
                 </div>
-                <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
+                {/* <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
                 >
                     Edit Listings
-                </button>
+                </button> */}
                 <div>
 
                 </div>
@@ -157,7 +157,11 @@ function DashBoard() {
                                         </td>
 
                                         <td>
-                                            <button className="edit-btn">Edit</button>
+                                            {/* <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
+                                            >
+                                                Edit Listings
+                                            </button> */}
+                                            <button className="edit-btn" onClick={() => navigate("/farmer/edit-listing")}>Edit</button>
                                             <button className="delete-btn">Delete</button>
                                         </td>
                                     </tr>
