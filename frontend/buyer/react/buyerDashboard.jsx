@@ -28,21 +28,21 @@ const navigate = useNavigate();
   return (
     <div className="dashboard">
 
-      {/* NAVBAR */}
-      <header className="navbar">
-        <div className="logo">🌱 LK Agro Market</div>
+      {/* NAVBAR
+      <header className="navbar"> */}
+        {/* <div className="logo">🌱 LK Agro Market</div> */}
 
-        <nav>
+        {/* <nav>
           <ul>
             <li>Dashboard</li>
             <li>Products</li>
             <li>Reservations</li>
             <li>Profile</li>
           </ul>
-        </nav>
+        </nav> */}
 
        
-      </header>
+      {/* </header> */}
 
       {/* HERO */}
       <section className="hero">
