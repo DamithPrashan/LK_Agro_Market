@@ -313,3 +313,50 @@ td {
 .orders-btn:hover {
   background: #084018;
 }
+
+.menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #0d5c25;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+
+.orders-sidebar {
+  position: fixed;
+  left: 0;
+  top: 70px;
+  width: 280px;
+  height: calc(100vh - 70px);
+  background: white;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.orders-sidebar h3 {
+  margin-bottom: 25px;
+  color: #0d5c25;
+}
+
+.orders-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.orders-sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.orders-sidebar li:hover {
+  background: #f2f7f2;
+  color: #0d5c25;
+}

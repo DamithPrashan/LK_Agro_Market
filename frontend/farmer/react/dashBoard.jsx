@@ -2,11 +2,12 @@ import React from "react";
 import "../csss/dashBoard.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { FaBars } from "react-icons/fa";
 
 function DashBoard() {
     const navigate = useNavigate();
     const [myCrops, setCrops] = useState([]);
-
+    const [showOrdersMenu, setShowOrdersMenu] = useState(false);
     useEffect(() => {
         fetch("http://localhost/backend/getCrops.php")
             .then((response) => response.json())
@@ -19,16 +20,25 @@ function DashBoard() {
     return (
 
         <div className="dashboard">
+            {showOrdersMenu && (
+                <div className="orders-sidebar">
 
+                    <ul>
+                        <li className="orders-btn"
+                            onClick={() => navigate("/farmer/orders")}>My Orders</li>
+
+                    </ul>
+                </div>
+            )}
             <div className="content">
 
                 <div>
 
                     <button
-                        className="orders-btn"
-                        onClick={() => navigate("/farmer/orders")}
+                        className="menu-btn"
+                        onClick={() => setShowOrdersMenu(!showOrdersMenu)}
                     >
-                        My Orders
+                        <FaBars />
                     </button>
 
                 </div>
@@ -38,10 +48,7 @@ function DashBoard() {
                     <h1>Hello, Randeniya 👋</h1>
                     <p>Here's what's happening with your farm today.</p>
                 </div>
-                {/* <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
-                >
-                    Edit Listings
-                </button> */}
+
                 <div>
 
                 </div>
@@ -157,10 +164,7 @@ function DashBoard() {
                                         </td>
 
                                         <td>
-                                            {/* <button className="btn" onClick={() => navigate("/farmer/edit-listing")}
-                                            >
-                                                Edit Listings
-                                            </button> */}
+
                                             <button className="edit-btn" onClick={() => navigate("/farmer/edit-listing")}>Edit</button>
                                             <button className="delete-btn">Delete</button>
                                         </td>
