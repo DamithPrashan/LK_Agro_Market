@@ -6,7 +6,9 @@ body,
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-family: "Segoe UI", sans-serif;
     background: #f5f5f5;
 }
@@ -17,6 +19,7 @@ body,
     width: 100%;
     min-height: 100vh;
     padding: 25px;
+    padding-bottom: 120px;
     box-sizing: border-box;
 }
 
@@ -104,6 +107,7 @@ body,
 
 .order-box {
     background: #f2f3f6;
+    color: #110e0ea8;
     margin-top: 20px;
     padding: 18px;
     border-radius: 10px;
