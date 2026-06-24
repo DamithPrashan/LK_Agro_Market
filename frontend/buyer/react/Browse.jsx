@@ -1,59 +1,59 @@
 import React from "react";
-import "../../buyer/csss/Browse.css"; 
-import tomatoImg from "../../assets/tomato.jpg";
-const crops = [
-  {
-    
-  image: tomatoImg,
-  name: "Tomato",
-  farm: "Randeniya Farm",
-  price: 85,
-  harvest: "250 kg • Harvest Jun 20",
-  color: "#f7e3c2"
+import "../../buyer/csss/Browse.css";
+//import tomatoImg from "../../assests/tomato.jpg";
+// const crops = [
+//   {
 
-  },
-  // {
-  //   emoji: "🥕",
-  //   name: "Carrot",
-  //   farm: "Jayarathna Agro",
-  //   price: 65,
-  //   harvest: "180 kg • Harvest Jun 28",
-  //   color: "#f8efd4"
-  // },
-  // {
-  //   emoji: "🥬",
-  //   name: "Leeks",
-  //   farm: "Jayaweera Estate",
-  //   price: 90,
-  //   harvest: "120 kg • Harvest Jul 5",
-  //   color: "#dfe9d5"
-  // },
-  // {
-  //   emoji: "🌶️",
-  //   name: "Capsicum",
-  //   farm: "Dasanayaka Farm",
-  //   price: 220,
-  //   harvest: "80 kg • Harvest Jul 12",
-  //   color: "#f8dbe5"
-  // },
-  // {
-  //   emoji: "🥔",
-  //   name: "Potato",
-  //   farm: "Randeniya Farm",
-  //   price: 55,
-  //   harvest: "300 kg • Harvest Jul 8",
-  //   color: "#e7def7"
-  // },
-  // {
-  //   emoji: "🫘",
-  //   name: "Green Beans",
-  //   farm: "Jayaweera Estate",
-  //   price: 110,
-  //   harvest: "60 kg • Harvest Jul 15",
-  //   color: "#d7f1f7"
-  // },
-  
-];
+//     image: tomatoImg,
+//     name: "Tomato",
+//     farm: "Randeniya Farm",
+//     price: 85,
+//     harvest: "250 kg • Harvest Jun 20",
+//     color: "#f7e3c2"
+
+//   },
+// {
+//   emoji: "🥕",
+//   name: "Carrot",
+//   farm: "Jayarathna Agro",
+//   price: 65,
+//   harvest: "180 kg • Harvest Jun 28",
+//   color: "#f8efd4"
+// },
+// {
+//   emoji: "🥬",
+//   name: "Leeks",
+//   farm: "Jayaweera Estate",
+//   price: 90,
+//   harvest: "120 kg • Harvest Jul 5",
+//   color: "#dfe9d5"
+// },
+// {
+//   emoji: "🌶️",
+//   name: "Capsicum",
+//   farm: "Dasanayaka Farm",
+//   price: 220,
+//   harvest: "80 kg • Harvest Jul 12",
+//   color: "#f8dbe5"
+// },
+// {
+//   emoji: "🥔",
+//   name: "Potato",
+//   farm: "Randeniya Farm",
+//   price: 55,
+//   harvest: "300 kg • Harvest Jul 8",
+//   color: "#e7def7"
+// },
+// {
+//   emoji: "🫘",
+//   name: "Green Beans",
+//   farm: "Jayaweera Estate",
+//   price: 110,
+//   harvest: "60 kg • Harvest Jul 15",
+//   color: "#d7f1f7"
+// },
+
+// ];
 
 export default function BuyerDashboard() {
   return (
