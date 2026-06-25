@@ -9,7 +9,7 @@ function DashBoard() {
     const [myCrops, setCrops] = useState([]);
     const [showOrdersMenu, setShowOrdersMenu] = useState(false);
     useEffect(() => {
-        fetch("http://localhost/backend/getCrops.php")
+        fetch("/backend/getCrops.php", { credentials: "include" })
             .then((response) => response.json())
             .then((data) => {
                 setCrops(data);
