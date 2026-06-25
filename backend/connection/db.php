@@ -1,13 +1,14 @@
 <?php
 // Database configuration variables
 $host     = '127.0.0.1';     // Or 'localhost'
+$port     = '4306';          // Custom port for this machine
 $db       = 'lk_agro_market'; // Replace with your actual database name
 $user     = 'root';           // Default XAMPP username
 $password = '';               // Default XAMPP password is empty
 $charset  = 'utf8mb4';        // Best practice for character encoding
 
 // Data Source Name (DSN) specifies the driver, host, database, and charset
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 // Configuration options for PDO
 $options = [
