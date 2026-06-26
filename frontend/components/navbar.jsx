@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import "./navbar.css";
-import notificationIcon from '../assests/png/notification.png'; 
+import notificationIcon from '../assests/png/notification.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -21,42 +21,42 @@ const Navbar = () => {
       </div>
 
       <nav className="app-nav">
-        
-          <NavLink to="/" end>Home</NavLink>
-          {user?.role === "farmer" && <NavLink to="/farmer">Farmer</NavLink>}
-          <NavLink to="/browse" hidden>Browse</NavLink>
-          <NavLink to="/preorder">Pre-Order</NavLink>
-          {user?.role === "buyer" && <NavLink to="/payment">Payment</NavLink>}
-          {user?.role === "buyer" && <NavLink to="/buyer">Buyer</NavLink>}
-          <NavLink to="/complaints">Complaints</NavLink>
-          <NavLink to="/ratings">Ratings</ NavLink>
-          {user?.role === "admin" && <NavLink to="/admin">Admin</ NavLink>}
-          {!user && <NavLink to="/register" hidden>Register</ NavLink>}
+
+        <NavLink to="/" end>Home</NavLink>
+        {user?.role === "farmer" && <NavLink to="/farmer">Farmer</NavLink>}
+        <NavLink to="/browse">Browse</NavLink>
+        <NavLink to="/preorder">Pre-Order</NavLink>
+        {user?.role === "buyer" && <NavLink to="/payment">Payment</NavLink>}
+        {user?.role === "buyer" && <NavLink to="/buyer">Buyer</NavLink>}
+        <NavLink to="/complaints">Complaints</NavLink>
+        <NavLink to="/ratings">Ratings</ NavLink>
+        {user?.role === "admin" && <NavLink to="/admin">Admin</ NavLink>}
+        {!user && <NavLink to="/register" hidden>Register</ NavLink>}
         {!user && <NavLink to="/login" hidden>Login</NavLink>}
         {user && <NavLink to="/profile">Profile</NavLink>}
-       
 
-<div className="language-buttons">
 
-<button className="En-button"
-onClick={()=>setLanguage("en")}
->
-EN
-</button>
+        <div className="language-buttons">
 
-<button className="Si-button"
-onClick={()=>setLanguage("si")}
->
-සිං
-</button>
+          <button className="En-button"
+            onClick={() => setLanguage("en")}
+          >
+            EN
+          </button>
 
-<button className="Ta-button"
-onClick={()=>setLanguage("ta")}
->
-தமிழ்
-</button>
+          <button className="Si-button"
+            onClick={() => setLanguage("si")}
+          >
+            සිං
+          </button>
 
-</div>
+          <button className="Ta-button"
+            onClick={() => setLanguage("ta")}
+          >
+            தமிழ்
+          </button>
+
+        </div>
 
         {/* --- NOTIFICATION POPUP CONTAINER --- */}
         <div className="notification-container" style={{ display: 'flex', alignItems: 'center' }}>
