@@ -31,6 +31,37 @@ try {
         echo "The 'image_url' column already exists in the 'crop' table.<br>";
     }
 
+    // 4. Create 'complaints' table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `complaints` (
+          `id` INT AUTO_INCREMENT PRIMARY KEY,
+          `reservation_id` INT NOT NULL,
+          `buyer_id` INT NOT NULL,
+          `reason` VARCHAR(255) NOT NULL,
+          `description` TEXT NOT NULL,
+          `evidence_file` VARCHAR(255) NULL,
+          `status` VARCHAR(50) NOT NULL DEFAULT 'submitted',
+          `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (`reservation_id`) REFERENCES `reservation`(`reservation_id`) ON DELETE CASCADE,
+          FOREIGN KEY (`buyer_id`) REFERENCES `buyer`(`buyer_id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+    echo "Verified/Created 'complaints' table successfully!<br>";
+
+    // 5. Create 'notifications' table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `notifications` (
+          `id` INT AUTO_INCREMENT PRIMARY KEY,
+          `user_id` INT NOT NULL,
+          `title` VARCHAR(255) NOT NULL,
+          `message` TEXT NOT NULL,
+          `is_read` TINYINT(1) DEFAULT 0,
+          `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+    echo "Verified/Created 'notifications' table successfully!<br>";
+
 } catch (PDOException $e) {
     echo "Error updating database: " . $e->getMessage();
 }
