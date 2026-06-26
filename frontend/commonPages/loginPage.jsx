@@ -34,7 +34,8 @@ export default function LoginPage() {
       } else {
         setError(data.message || "Invalid email or password.");
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
       setError("Network error. Make sure XAMPP is running.");
     } finally {
       setLoading(false);
