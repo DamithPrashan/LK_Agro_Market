@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../src/context/AuthContext";
 import "./navbar.css";
 import notificationIcon from '../assests/png/notification.png'; 
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
 
   const notifications = [
@@ -19,20 +21,22 @@ const Navbar = () => {
       </div>
 
       <nav className="app-nav">
-        <NavLink to="/" end>Home</NavLink>
-        <NavLink to="/farmer">Farmer</NavLink>
-        <NavLink to="/browse">Browse</NavLink>
-        <NavLink to="/preorder">Pre-Order</NavLink>
-        <NavLink to="/payment">Payment</NavLink>
-        <NavLink to="/buyer">Buyer</NavLink>
-        <NavLink to="/complaints">Complaints</NavLink>
-        <NavLink to="/ratings">Ratings</NavLink>
-        <NavLink to="/admin">Admin</NavLink>
-        <NavLink to="/register">Register</NavLink>
-        <NavLink to="/login">Login</NavLink>
-        <NavLink to="/profile">Profile</NavLink>
+        
+          <NavLink to="/" end>Home</NavLink>
+          {user?.role === "farmer" && <NavLink to="/farmer">Farmer</NavLink>}
+          <NavLink to="/browse" hidden>Browse</NavLink>
+          <NavLink to="/preorder">Pre-Order</NavLink>
+          {user?.role === "buyer" && <NavLink to="/payment">Payment</NavLink>}
+          {user?.role === "buyer" && <NavLink to="/buyer">Buyer</NavLink>}
+          <NavLink to="/complaints">Complaints</NavLink>
+          <NavLink to="/ratings">Ratings</ NavLink>
+          {user?.role === "admin" && <NavLink to="/admin">Admin</ NavLink>}
+          {!user && <NavLink to="/register" hidden>Register</ NavLink>}
+        {!user && <NavLink to="/login" hidden>Login</NavLink>}
+        {user && <NavLink to="/profile">Profile</NavLink>}
+       
 
-       <div className="language-buttons">
+<div className="language-buttons">
 
 <button className="En-button"
 onClick={()=>setLanguage("en")}
@@ -93,7 +97,14 @@ onClick={()=>setLanguage("ta")}
         </div>
 
         <div className="logPerson">
-          <button className="log-btn">Randeniya</button>
+          {user ? (
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button className="log-btn" style={{ fontWeight: 600 }}>{user.name}</button>
+              <button className="log-btn" onClick={logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
+            </div>
+          ) : (
+            <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign In</NavLink>
+          )}
         </div>
       </nav>
     </header>

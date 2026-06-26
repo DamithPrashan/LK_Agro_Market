@@ -16,6 +16,7 @@ import Footer from "../frontend/components/footer.jsx";
 import Login from "./pages/Login";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
@@ -47,6 +48,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/ratings" element={<Ratings />} />
         <Route path="/farmer/add-listing" element={<AddListing />} />

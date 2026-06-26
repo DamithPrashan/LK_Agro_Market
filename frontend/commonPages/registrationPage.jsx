@@ -2,39 +2,39 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useForm } from "../../src/hooks/useForm";
-import FarmerVerificationForm from "../components/farmerVerificationForm";
+import FarmerVerificationForm from "../components/FarmerVerificationForm";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
 const DISTRICTS = [
-  "Ampara","Anuradhapura","Badulla","Batticaloa","Colombo","Galle","Gampaha",
-  "Hambantota","Jaffna","Kalutara","Kandy","Kegalle","Kilinochchi","Kurunegala",
-  "Mannar","Matale","Matara","Monaragala","Mullaitivu","Nuwara Eliya",
-  "Polonnaruwa","Puttalam","Ratnapura","Trincomalee","Vavuniya",
+  "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha",
+  "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala",
+  "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+  "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
 ];
 
 function validate(v) {
   const e = {};
-  if (!v.name.trim())                         e.name     = "Full name is required.";
-  if (!v.contact.trim())                      e.contact  = "Contact number is required.";
-  if (!/\S+@\S+\.\S+/.test(v.email))         e.email    = "Enter a valid email address.";
-  if (!v.district)                            e.district = "Please select your district.";
-  if (v.password.length < 8)                  e.password = "Password must be at least 8 characters.";
-  if (v.password !== v.confirm)               e.confirm  = "Passwords do not match.";
+  if (!v.name.trim()) e.name = "Full name is required.";
+  if (!v.contact.trim()) e.contact = "Contact number is required.";
+  if (!/\S+@\S+\.\S+/.test(v.email)) e.email = "Enter a valid email address.";
+  if (!v.district) e.district = "Please select your district.";
+  if (v.password.length < 8) e.password = "Password must be at least 8 characters.";
+  if (v.password !== v.confirm) e.confirm = "Passwords do not match.";
   return e;
 }
 
 export default function RegistrationPage() {
-  const navigate       = useNavigate();
-  const { login }      = useAuth();
-  const [role, setRole]         = useState("farmer");
-  const [apiErr, setApiErr]     = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [nicFile, setNicFile]         = useState(null);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [role, setRole] = useState("farmer");
+  const [apiErr, setApiErr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [nicFile, setNicFile] = useState(null);
   const [evidenceFile, setEvidenceFile] = useState(null);
 
   const { values, errors, touched, handleChange, handleBlur, validateAll } = useForm(
-    { name:"", contact:"", email:"", district:"", language:"sinhala", password:"", confirm:"", nic:"", farm_location:"" },
+    { name: "", contact: "", email: "", district: "", language: "sinhala", password: "", confirm: "", nic: "", farm_location: "" },
     validate
   );
 
@@ -47,11 +47,11 @@ export default function RegistrationPage() {
     const body = new FormData();
     Object.entries(values).forEach(([k, v]) => body.append(k, v));
     body.append("role", role);
-    if (nicFile)      body.append("nic_image", nicFile);
-    if (evidenceFile) body.append("evidence",  evidenceFile);
+    if (nicFile) body.append("nic_image", nicFile);
+    if (evidenceFile) body.append("evidence", evidenceFile);
 
     try {
-      const res  = await fetch("/backend/Apis/register.php",
+      const res = await fetch("/backend/Apis/register.php",
         { method: "POST", body, credentials: "include" });
       const data = await res.json();
       if (data.success) {
@@ -67,9 +67,9 @@ export default function RegistrationPage() {
     }
   };
 
-  // Reusable field renderer
-  const Field = ({ label, name, type = "text", placeholder, hint }) => (
-    <div className="field">
+  // Reusable field renderer function
+  const renderField = (label, name, type = "text", placeholder = "", hint = "") => (
+    <div className="field" key={name}>
       <label htmlFor={name}>{label}</label>
       <input
         id={name} name={name} type={type} placeholder={placeholder}
@@ -83,7 +83,7 @@ export default function RegistrationPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      
+
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
@@ -112,10 +112,10 @@ export default function RegistrationPage() {
           <form onSubmit={handleSubmit} noValidate>
             <p className="section-label">Personal information</p>
             <div className="grid-2">
-              <Field label="Full Name"       name="name"    placeholder="R.M.S.T. Randeniya" />
-              <Field label="Contact Number"  name="contact" placeholder="+94 71 234 5678" />
+              {renderField("Full Name", "name", "text", "R.M.S.T. Randeniya")}
+              {renderField("Contact Number", "contact", "text", "+94 71 234 5678")}
             </div>
-            <Field label="Email Address" name="email" type="email" placeholder="you@email.com" />
+            {renderField("Email Address", "email", "email", "you@email.com")}
             <div className="grid-2">
               <div className="field">
                 <label htmlFor="district">District</label>
@@ -139,8 +139,8 @@ export default function RegistrationPage() {
               </div>
             </div>
             <div className="grid-2">
-              <Field label="Password"         name="password" type="password" hint="Min 8 characters" />
-              <Field label="Confirm Password" name="confirm"  type="password" />
+              {renderField("Password", "password", "password", "", "Min 8 characters")}
+              {renderField("Confirm Password", "confirm", "password")}
             </div>
 
             {/* Farmer verification — rendered from its own component */}
@@ -170,20 +170,20 @@ export default function RegistrationPage() {
           </p>
         </div>
       </main>
-      
+
     </div>
   );
 }
 
 const s = {
-  page:      { flex: 1, background: "var(--page)", display: "flex", justifyContent: "center", padding: "28px 16px" },
-  card:      { width: "100%", maxWidth: 540, alignSelf: "flex-start" },
-  header:    { textAlign: "center", marginBottom: 22 },
-  logo:      { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
-  title:     { fontSize: 20, fontWeight: 700, marginBottom: 4 },
-  sub:       { fontSize: 12, color: "var(--t-3)" },
-  roleGrid:  { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 },
-  roleBtn:   { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "14px 10px", borderRadius: "var(--r-lg)", border: "2px solid var(--s-200)", background: "var(--white)", cursor: "pointer", transition: "all .15s" },
-  roleActive:{ borderColor: "var(--g-600)", background: "var(--g-50)" },
-  foot:      { textAlign: "center", fontSize: 12, color: "var(--t-3)", marginTop: 16 },
+  page: { flex: 1, background: "var(--page)", display: "flex", justifyContent: "center", padding: "28px 16px" },
+  card: { width: "100%", maxWidth: 540, alignSelf: "flex-start" },
+  header: { textAlign: "center", marginBottom: 22 },
+  logo: { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: 700, marginBottom: 4 },
+  sub: { fontSize: 12, color: "var(--t-3)" },
+  roleGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 },
+  roleBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "14px 10px", borderRadius: "var(--r-lg)", border: "2px solid var(--s-200)", background: "var(--white)", cursor: "pointer", transition: "all .15s" },
+  roleActive: { borderColor: "var(--g-600)", background: "var(--g-50)" },
+  foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)", marginTop: 16 },
 };

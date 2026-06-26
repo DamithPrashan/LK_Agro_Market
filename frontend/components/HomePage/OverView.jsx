@@ -1,5 +1,8 @@
 import React from "react";
 import "../../commonPages/csss/HomePage/overview.css";
+import { Link } from "react-router-dom";
+
+
 
 function Overview() {
 
@@ -19,13 +22,19 @@ Sri Lanka's direct farm-to-buyer marketplace
 
 <div className="overview-buttons">
 
+<Link to="/login">
 <button className="signin-btn">
 Sign In
-</button>
 
-<button className="register-btn">
+</button>
+</Link>
+
+
+<Link to="/register">
+<button className="register-btn" >
 Register Free
 </button>
+</Link>
 
 </div>
 
