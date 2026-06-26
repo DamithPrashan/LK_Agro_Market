@@ -1,7 +1,7 @@
 <?php
 // Database configuration variables
 $host     = '127.0.0.1';     // Or 'localhost'
-$port     = '4306';          // Custom port for this machine
+$port     = '3306';          // Custom port for this machine
 $db       = 'lk_agro_market'; // Replace with your actual database name
 $user     = 'root';           // Default XAMPP username
 $password = '';               // Default XAMPP password is empty
