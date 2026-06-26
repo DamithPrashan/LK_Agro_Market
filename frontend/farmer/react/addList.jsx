@@ -27,13 +27,14 @@ function AddListing() {
     const handleSubmit = async () => {
         try {
             const response = await fetch(
-                "http://localhost/backend/addCrop.php",
+                "/backend/addCrop.php",
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(formData),
+                    credentials: "include",
                 }
             );
 
@@ -97,13 +98,17 @@ function AddListing() {
                             onChange={handleChange}
                         />
 
-                        <input
-                            type="text"
+                        <select
                             name="growthStage"
-                            placeholder="Growth Stage"
                             value={formData.growthStage}
                             onChange={handleChange}
-                        />
+                        >
+                            <option value="">Select Growth Stage</option>
+                            <option value="planted">Planted</option>
+                            <option value="growing">Growing</option>
+                            <option value="ready_for_harvest">Ready for Harvest</option>
+                            <option value="harvested">Harvested</option>
+                        </select>
 
                         <input
                             type="date"

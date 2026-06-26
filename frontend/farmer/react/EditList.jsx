@@ -14,7 +14,7 @@ function EditList() {
     quantity: state?.quantity || "",
     harvestDate: state?.harvestDate || "",
     price: state?.price || "",
-    stage: "Flowering",
+    stage: state?.stage || "Flowering",
   });
 
   const handleChange = (e) => {
@@ -38,172 +38,136 @@ function EditList() {
   };
 
   return (
-    <div className="edit-container">
+    <div className="add-listing-container">
 
-      {/* Progress */}
+      <div className="listing-card">
+        <h2>Edit Listing</h2>
 
-      <div className="steps">
-
-        <div className={step >= 1 ? "step active" : "step"}>
-          <div className="circle">1</div>
-          <span>Crop Details</span>
+        {/* STEP CIRCLES */}
+        <div className="stepper">
+          <div className={`step ${step >= 1 ? "active-step" : ""}`}>1</div>
+          <div className={`step ${step >= 2 ? "active-step" : ""}`}>2</div>
+          <div className={`step ${step >= 3 ? "active-step" : ""}`}>3</div>
         </div>
 
-        <div className={step >= 2 ? "step active" : "step"}>
-          <div className="circle">2</div>
-          <span>Pricing</span>
+        {/* STEP LABELS */}
+        <div className="step-labels">
+          <span className={step >= 1 ? "active-label" : ""}>Crop Details</span>
+          <span className={step >= 2 ? "active-label" : ""}>Pricing</span>
+          <span className={step >= 3 ? "active-label" : ""}>Review</span>
         </div>
 
-        <div className={step >= 3 ? "step active" : "step"}>
-          <div className="circle">3</div>
-          <span>Review</span>
-        </div>
+        {/* STEP 1 */}
+        {step === 1 && (
+          <div className="form-section">
+            <h3>Crop Details</h3>
+
+            <input
+              type="text"
+              name="cropName"
+              placeholder="Crop Name"
+              value={formData.cropName}
+              onChange={handleChange}
+            />
+
+            <input
+              type="text"
+              name="stage"
+              placeholder="Growth Stage"
+              value={formData.stage}
+              onChange={handleChange}
+            />
+
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            >
+              <option value="">Select Category</option>
+              <option value="Vegetable">Vegetable</option>
+              <option value="Fruit">Fruit</option>
+              <option value="Grain">Grain</option>
+            </select>
+
+            <input
+              type="date"
+              name="harvestDate"
+              value={formData.harvestDate}
+              onChange={handleChange}
+            />
+
+            <input
+              type="number"
+              name="quantity"
+              placeholder="Quantity (kg)"
+              value={formData.quantity}
+              onChange={handleChange}
+            />
+
+            <div className="btn-group">
+              <button className="back-btn" onClick={() => navigate(-1)}>
+                Cancel
+              </button>
+
+              <button className="next-btn" onClick={nextStep}>
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2 */}
+        {step === 2 && (
+          <div className="form-section">
+            <h3>Pricing</h3>
+
+            <input
+              type="number"
+              name="price"
+              placeholder="Price Per Kg"
+              value={formData.price}
+              onChange={handleChange}
+            />
+
+            <div className="btn-group">
+              <button className="back-btn" onClick={prevStep}>
+                Back
+              </button>
+
+              <button className="next-btn" onClick={nextStep}>
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3 */}
+        {step === 3 && (
+          <div className="form-section">
+            <h3>Review Listing</h3>
+
+            <div className="review-box">
+              <p><b>Crop:</b> {formData.cropName}</p>
+              <p><b>Category:</b> {formData.category}</p>
+              <p><b>Quantity:</b> {formData.quantity} kg</p>
+              <p><b>Growth Stage:</b> {formData.stage}</p>
+              <p><b>Harvest Date:</b> {formData.harvestDate}</p>
+              <p><b>Price:</b> Rs. {formData.price}</p>
+            </div>
+
+            <div className="btn-group">
+              <button className="back-btn" onClick={prevStep}>
+                Back
+              </button>
+
+              <button className="submit-btn" onClick={updateListing}>
+                Update Listing
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
-
-      {/* STEP 1 */}
-
-      {step === 1 && (
-        <div className="card">
-
-          <h2>Crop Details</h2>
-
-          <div className="grid">
-
-            <div>
-              <label>Crop Name</label>
-              <input
-                type="text"
-                name="cropName"
-                value={formData.cropName}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label>Growth Stage</label>
-              <input
-                type="text"
-                name="stage"
-                value={formData.stage}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label>Category</label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-              >
-                <option>Vegetable</option>
-                <option>Fruit</option>
-                <option>Grain</option>
-              </select>
-            </div>
-
-            <div>
-              <label>Expected Harvest Date</label>
-              <input
-                type="date"
-                name="harvestDate"
-                value={formData.harvestDate}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label>Quantity (kg)</label>
-              <input
-                type="number"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-              />
-            </div>
-
-          </div>
-
-          <div className="buttons">
-            <button className="cancel-btn" onClick={() => navigate(-1)}>
-              Cancel
-            </button>
-
-            <button className="next-btn" onClick={nextStep}>
-              Next
-            </button>
-          </div>
-
-        </div>
-      )}
-
-      {/* STEP 2 */}
-
-      {step === 2 && (
-        <div className="card">
-
-          <h2>Pricing</h2>
-
-          <label>Price Per Kg (Rs)</label>
-
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-          />
-
-          <div className="buttons">
-
-            <button className="cancel-btn" onClick={prevStep}>
-              Back
-            </button>
-
-            <button className="next-btn" onClick={nextStep}>
-              Next
-            </button>
-
-          </div>
-
-        </div>
-      )}
-
-      {/* STEP 3 */}
-
-      {step === 3 && (
-        <div className="card">
-
-          <h2>Review Listing</h2>
-
-          <div className="review">
-
-            <p><b>Crop:</b> {formData.cropName}</p>
-            <p><b>Category:</b> {formData.category}</p>
-            <p><b>Quantity:</b> {formData.quantity} kg</p>
-            <p><b>Harvest Date:</b> {formData.harvestDate}</p>
-            <p><b>Price:</b> Rs.{formData.price}</p>
-
-          </div>
-
-          <div className="buttons">
-
-            <button className="cancel-btn" onClick={prevStep}>
-              Back
-            </button>
-
-            <button
-              className="update-btn"
-              onClick={updateListing}
-            >
-              Update Listing
-            </button>
-
-          </div>
-
-        </div>
-      )}
-
     </div>
   );
 }

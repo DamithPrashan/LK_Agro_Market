@@ -16,8 +16,9 @@ import Footer from "../frontend/components/footer.jsx";
 import Login from "./pages/Login";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
-import EditList from "./pages/EditList.jsx";
+import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/BuyerOrderHistory.jsx";
 
@@ -31,15 +32,17 @@ import BuyerOrderHistory from "../frontend/buyer/react/BuyerOrderHistory.jsx";
 
 function App() {
   return (
-    <>
-
+    <div className="app-shell">
       <Navbar />
 
-      <Routes>
+      <main className="main-content">
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/farmer" element={<Farmer />} />
         <Route path="/browse" element={<Browse />} />
         <Route path="/preorder" element={<PreOrder />} />
+        <Route path="/pre-order" element={<PreOrder />} />
+        <Route path="/crop/:id" element={<PreOrder />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/buyer" element={<Buyer />} />
         <Route path="/complaints" element={<Complaints />} />
@@ -47,19 +50,19 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/ratings" element={<Ratings />} />
         <Route path="/farmer/add-listing" element={<AddListing />} />
         <Route path="/farmer/edit-listing" element={<EditList />} />
         <Route path="/farmer/orders" element={<OrderManagement />}
         />
-      <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />}
-/>
-      </Routes>
+        <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />} />
+        </Routes>
+      </main>
 
       <Footer />
-
-    </>
+    </div>
   );
 }
 

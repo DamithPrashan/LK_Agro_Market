@@ -147,3 +147,8 @@
         width: 220px;
     }
 }
+
+.active-label {
+    color: #2e7d32;
+    font-weight: bold;
+}

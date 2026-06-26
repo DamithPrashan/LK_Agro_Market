@@ -24,7 +24,7 @@
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-
+  justify-content: space-between;
   /* margin-left:40px; */
 }
 
@@ -43,32 +43,47 @@
   border-bottom: 3px solid white;
 }
 
-.multiLang {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
+.language-buttons{
+
+display:flex;
+gap:1px;
 }
 
-.lang-btn {
-  border: none;
-  background: transparent;
-  color: #ffffff;
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.3s ease;
-  align-items: right;
+.language-buttons .En-button{
+
+
+border-bottom-left-radius:25px;
+
 }
 
-.lang-btn:hover {
-  background: rgba(255, 255, 255, 0.256);
+.language-buttons .Ta-button{
+border-top-right-radius:25px;
+
 }
 
-.lang-btn.active {
-  background: rgba(255, 255, 255, 0.2);
+
+.language-buttons button{
+
+padding:8px 14px;
+border:none;
+/* border-radius:4px; */
+background:#ffffff20;
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+
+.language-buttons button:hover{
+
+transform:translateY(-2px);
+background:#57c84d;
+}
+
+
+.language-buttons button:active{
+
+transform:scale(.95);
 }
 
 .logPerson {

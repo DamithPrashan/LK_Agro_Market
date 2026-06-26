@@ -1,91 +1,68 @@
 import React from "react";
-import "../../buyer/csss/complaints.css";
+import "../../buyer/csss/Complaints.css";
 
-export default function ComplaintPage() {
+function ComplaintPage() {
   return (
-    <div className="complaint-layout">
+    <div className="dashboard">
+      <div className="content">
 
-      <div className="complaint-content">
-
+        {/* Header */}
         <div className="page-header">
-          <h2>Complaint & Dispute Resolution</h2>
+          <h1>Complaint & Dispute Resolution</h1>
           <p>Fair resolution for every transaction</p>
         </div>
 
+        {/* Tabs */}
         <div className="tabs">
-          <button className="active">Submit Complaint</button>
-          <button>Farmer Response</button>
+          <button className="tab active">Submit Complaint</button>
+          <button className="tab">Farmer Response</button>
         </div>
 
+        {/* Complaint Form */}
         <div className="complaint-card">
 
-          <div className="card-title">
+          <div className="card-top">
             <h3>SUBMIT A COMPLAINT</h3>
-
-            <span className="buyer-tag">
-              Buyer View
-            </span>
+            <span className="buyer-tag">Buyer View</span>
           </div>
 
-          <div className="order-box">
-            <strong>Order #2035</strong> — 80 kg Leeks —
-            Completed May 25 — Rs 7,200
+          <div className="order-info">
+            <strong>Order #2035</strong> — 80kg Leeks — Completed May 25 — Rs 7,200
           </div>
 
-          <div className="form-group">
+          <label>Complaint Reason</label>
 
-            <label>Complaint Reason</label>
+          <select className="input-field">
+            <option>Crop quality does not match listing</option>
+            <option>Late Delivery</option>
+            <option>Wrong Quantity</option>
+            <option>Damaged Product</option>
+          </select>
 
-            <select>
+          <label>Description</label>
 
-              <option>
-                Crop quality does not match listing
-              </option>
+          <textarea
+            className="input-field"
+            rows="5"
+             placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+/>
 
-              <option>
-                Wrong quantity
-              </option>
+          <label>Evidence Photo (Optional)</label>
 
-              <option>
-                Late delivery
-              </option>
-
-              <option>
-                Payment issue
-              </option>
-
-            </select>
-
-          </div>
-
-          <div className="form-group">
-
-            <label>Description</label>
-
-            <textarea
-              rows="6"
-              defaultValue="Received leeks were wilted and not fresh as described. Weight was also short by about 8 kg."
-            />
-
-          </div>
-
-          <div className="form-group">
-
-            <label>
-              Evidence Photo
-              <span className="optional">
-                (optional)
-              </span>
-            </label>
-
+          <div className="upload-box">
+            {/* 📷 Upload photo evidence */}
             <div className="upload-box">
+  <label htmlFor="photo-upload" className="upload-area">
+    Click here to upload a photo
+  </label>
 
-              <input type="file" />
-
-              <p>Upload photo evidence</p>
-
-            </div>
-
+  <input
+    id="photo-upload"
+    type="file"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
+</div>
           </div>
 
           <button className="submit-btn">
@@ -94,8 +71,91 @@ export default function ComplaintPage() {
 
         </div>
 
-      </div>
+        {/* Flow Section */}
+        <div className="flow-card">
+          <h3>DISPUTE RESOLUTION FLOW</h3>
 
+          <div className="flow">
+
+            <div className="flow-step active-step">
+              Buyer Submits
+            </div>
+
+            <span>→</span>
+
+            <div className="flow-step">
+              Admin Notified
+            </div>
+
+            <span>→</span>
+
+            <div className="flow-step">
+              Farmer Responds
+            </div>
+
+            <span>→</span>
+
+            <div className="flow-step">
+              Admin Reviews
+            </div>
+
+            <span>→</span>
+
+            <div className="flow-step">
+              Resolved
+            </div>
+
+          </div>
+        </div>
+
+        {/* Admin Section */}
+        <div className="admin-card">
+
+          <div className="admin-top">
+            <h3>ADMIN - RESOLVE COMPLAINT #C019</h3>
+
+            <span className="evidence-tag">
+              Evidence Received
+            </span>
+          </div>
+
+          <div className="evidence-box">
+            <p><strong>Buyer:</strong> Wilted leeks, 8kg short.</p>
+            <p><strong>Farmer:</strong> Produce was fresh at collection.</p>
+            <p><strong>Evidence:</strong> 1 photo uploaded by buyer.</p>
+          </div>
+
+          <label>Admin Notes</label>
+
+          <textarea
+  className="input-field"
+  rows="5"
+  placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+/>
+          <div className="action-buttons">
+
+            <button className="refund-btn">
+              Resolve - Refund
+            </button>
+
+            <button className="delivery-btn">
+              Resolve - Re-delivery
+            </button>
+
+            <button className="dismiss-btn">
+              Dismiss
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* Footer Space */}
+        {/* <div className="footer-space"></div> */}
+
+      </div>
     </div>
   );
 }
+
+export default ComplaintPage;
