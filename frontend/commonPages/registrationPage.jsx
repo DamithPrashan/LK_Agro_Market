@@ -82,7 +82,7 @@ export default function RegistrationPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       
       <main style={s.page}>
         <div className="card" style={s.card}>

@@ -3,7 +3,7 @@
 $host     = '127.0.0.1';     // Or 'localhost'
 $db       = 'lk_agro_market'; // Replace with your actual database name
 $user     = 'root';           // Default XAMPP username
-$password = '';               // Default XAMPP password is empty
+$password = 'damith@SQL2025';               // Default XAMPP password is empty
 $charset  = 'utf8mb4';        // Best practice for character encoding
 
 // Data Source Name (DSN) specifies the driver, host, database, and charset

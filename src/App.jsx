@@ -31,11 +31,11 @@ import BuyerOrderHistory from "../frontend/buyer/react/BuyerOrderHistory.jsx";
 
 function App() {
   return (
-    <>
-
+    <div className="app-shell">
       <Navbar />
 
-      <Routes>
+      <main className="main-content">
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/farmer" element={<Farmer />} />
         <Route path="/browse" element={<Browse />} />
@@ -53,13 +53,12 @@ function App() {
         <Route path="/farmer/edit-listing" element={<EditList />} />
         <Route path="/farmer/orders" element={<OrderManagement />}
         />
-        <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />}
-        />
-      </Routes>
+        <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />} />
+        </Routes>
+      </main>
 
       <Footer />
-
-    </>
+    </div>
   );
 }
 

@@ -1,3 +1,3 @@
-import Home from "../../frontend/commonPages/react/landingPage.jsx";
+import Home from "../../frontend/commonPages/react/Home.jsx";
 
 export default Home;

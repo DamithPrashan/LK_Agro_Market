@@ -32,11 +32,27 @@ const Navbar = () => {
         <NavLink to="/login">Login</NavLink>
         <NavLink to="/profile">Profile</NavLink>
 
-        <div className="multiLang">
-          <button className="lang-btn">EN</button>
-          <button className="lang-btn">සිං</button>
-          <button className="lang-btn">தமிழ்</button>
-        </div>
+       <div className="language-buttons">
+
+<button className="En-button"
+onClick={()=>setLanguage("en")}
+>
+EN
+</button>
+
+<button className="Si-button"
+onClick={()=>setLanguage("si")}
+>
+සිං
+</button>
+
+<button className="Ta-button"
+onClick={()=>setLanguage("ta")}
+>
+தமிழ்
+</button>
+
+</div>
 
         {/* --- NOTIFICATION POPUP CONTAINER --- */}
         <div className="notification-container" style={{ display: 'flex', alignItems: 'center' }}>
