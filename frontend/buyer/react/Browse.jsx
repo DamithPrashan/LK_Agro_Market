@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate } from "react-router-dom";
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -22,6 +22,30 @@ import watermelonImg from "../../assests/png/watermelon.jpg";
 import brinjalImg from "../../assests/png/brinjal.jpg";
 import cornImg from "../../assests/png/corn.jpg";
 
+// Static local assets fallback map
+const imageMap = {
+  "Tomato": tomatoImg,
+  "Carrot": carrotImg,
+  "Leeks": leeksImg,
+  "Capsicum": capsicumImg,
+  "Potato": potatoImg,
+  "Green Beans": greenBeansImg,
+  "Avocado": avocadoImg,
+  "Beetroot": beetrootImg,
+  "Grapes": grapesImg,
+  "Pineapple": pineappleImg,
+  "Pumpkin": pumpkinImg,
+  "Banana": bananaImg,
+  "Cabbage": cabbageImg,
+  "Ladies Finger": ladiesFingerImg,
+  "Lemon": lemonImg,
+  "Mango": mangoImg,
+  "Onion": onionImg,
+  "Watermelon": watermelonImg,
+  "Brinjal": brinjalImg,
+  "Corn": cornImg
+};
+
 export default function Browse() {
   const navigate = useNavigate();
 
@@ -31,248 +55,71 @@ export default function Browse() {
     completed: 8,
   };
 
-  const crops = [
-    {
-      id: 1,
-      name: "Tomato",
-      farm: "Randeniya Farm",
-      verified: true,
-      price: 85,
-      qty: "250 kg",
-      harvest: "Jun 20",
-      rating: 5,
-      img: tomatoImg,
-      bgClass: "bg-orange",
-    },
-    {
-      id: 2,
-      name: "Carrot",
-      farm: "Jayarathna Agro",
-      verified: true,
-      price: 65,
-      qty: "180 kg",
-      harvest: "Jun 28",
-      rating: 4.5,
-      img: carrotImg,
-      bgClass: "bg-yellow",
-    },
-    {
-      id: 3,
-      name: "Leeks",
-      farm: "Jayaweera Estate",
-      verified: false,
-      price: 90,
-      qty: "120 kg",
-      harvest: "Jul 5",
-      rating: 4.5,
-      img: leeksImg,
-      bgClass: "bg-green",
-    },
-    {
-      id: 4,
-      name: "Capsicum",
-      farm: "Dasanayaka Farm",
-      verified: true,
-      price: 220,
-      qty: "80 kg",
-      harvest: "Jul 12",
-      rating: 5,
-      img: capsicumImg,
-      bgClass: "bg-pink",
-    },
-    {
-      id: 5,
-      name: "Potato",
-      farm: "Randeniya Farm",
-      verified: true,
-      price: 55,
-      qty: "300 kg",
-      harvest: "Jul 8",
-      rating: 5,
-      img: potatoImg,
-      bgClass: "bg-purple",
-    },
-    {
-      id: 6,
-      name: "Green Beans",
-      farm: "Jayaweera Estate",
-      verified: false,
-      price: 110,
-      qty: "60 kg",
-      harvest: "Jul 15",
-      rating: 4,
-      img: greenBeansImg,
-      bgClass: "bg-blue",
-    },
-    {
-      id: 7,
-      name: "Avocado",
-      farm: "Green Valley Farm",
-      verified: true,
-      price: 180,
-      qty: "150 kg",
-      harvest: "Jul 18",
-      rating: 4.8,
-      img: avocadoImg,
-      bgClass: "bg-green",
-    },
-    {
-      id: 8,
-      name: "Beetroot",
-      farm: "Jayarathna Agro",
-      verified: true,
-      price: 95,
-      qty: "200 kg",
-      harvest: "Jul 10",
-      rating: 4.5,
-      img: beetrootImg,
-      bgClass: "bg-pink",
-    },
-    {
-      id: 9,
-      name: "Grapes",
-      farm: "Jaffna Vineyards",
-      verified: true,
-      price: 450,
-      qty: "90 kg",
-      harvest: "Jul 22",
-      rating: 5,
-      img: grapesImg,
-      bgClass: "bg-purple",
-    },
-    {
-      id: 10,
-      name: "Pineapple",
-      farm: "Gampaha Agro",
-      verified: false,
-      price: 150,
-      qty: "110 kg",
-      harvest: "Jul 25",
-      rating: 4.2,
-      img: pineappleImg,
-      bgClass: "bg-yellow",
-    },
-    {
-      id: 11,
-      name: "Pumpkin",
-      farm: "Dasanayaka Farm",
-      verified: true,
-      price: 70,
-      qty: "400 kg",
-      harvest: "Jul 14",
-      rating: 4.7,
-      img: pumpkinImg,
-      bgClass: "bg-orange",
-    },
-    {
-      id: 12,
-      name: "Banana",
-      farm: "Kandy Farms",
-      verified: true,
-      price: 120,
-      qty: "500 kg",
-      harvest: "Jul 16",
-      rating: 4.6,
-      img: bananaImg,
-      bgClass: "bg-yellow",
-    },
-    {
-      id: 13,
-      name: "Cabbage",
-      farm: "Nuwara Eliya Gardens",
-      verified: true,
-      price: 80,
-      qty: "350 kg",
-      harvest: "Jul 11",
-      rating: 4.8,
-      img: cabbageImg,
-      bgClass: "bg-green",
-    },
-    {
-      id: 14,
-      name: "Ladies Finger",
-      farm: "Jayarathna Agro",
-      verified: false,
-      price: 75,
-      qty: "150 kg",
-      harvest: "Jul 13",
-      rating: 4.3,
-      img: ladiesFingerImg,
-      bgClass: "bg-green",
-    },
-    {
-      id: 15,
-      name: "Lemon",
-      farm: "Dasanayaka Farm",
-      verified: true,
-      price: 240,
-      qty: "90 kg",
-      harvest: "Jul 20",
-      rating: 4.9,
-      img: lemonImg,
-      bgClass: "bg-yellow",
-    },
-    {
-      id: 16,
-      name: "Mango",
-      farm: "Kurunegala Orchards",
-      verified: true,
-      price: 160,
-      qty: "250 kg",
-      harvest: "Jul 28",
-      rating: 5,
-      img: mangoImg,
-      bgClass: "bg-orange",
-    },
-    {
-      id: 17,
-      name: "Onion",
-      farm: "Anuradhapura Fields",
-      verified: true,
-      price: 130,
-      qty: "600 kg",
-      harvest: "Jul 9",
-      rating: 4.5,
-      img: onionImg,
-      bgClass: "bg-purple",
-    },
-    {
-      id: 18,
-      name: "Watermelon",
-      farm: "Hambantota Farms",
-      verified: false,
-      price: 90,
-      qty: "800 kg",
-      harvest: "Jul 21",
-      rating: 4.7,
-      img: watermelonImg,
-      bgClass: "bg-green",
-    },
-    {
-      id: 19,
-      name: "Brinjal",
-      farm: "Jayaweera Estate",
-      verified: true,
-      price: 85,
-      qty: "140 kg",
-      harvest: "Jul 17",
-      rating: 4.4,
-      img: brinjalImg,
-      bgClass: "bg-purple",
-    },
-    {
-      id: 20,
-      name: "Corn",
-      farm: "Wellawaya Farms",
-      verified: true,
-      price: 110,
-      qty: "350 kg",
-      harvest: "Jul 19",
-      rating: 4.6,
-      img: cornImg,
-      bgClass: "bg-yellow",
-    },
-  ];
+  const [crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [district, setDistrict] = useState("Badulla");
+  const [cropType, setCropType] = useState("All Crops");
+  
+  // Advanced filters state
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
+  const [harvestDate, setHarvestDate] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const [sortBy, setSortBy] = useState("");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Dynamic backgrounds helper
+  const getBgClass = (cropName) => {
+    if (!cropName) return "bg-blue";
+    const name = cropName.toLowerCase();
+    if (name.includes("tomato") || name.includes("pumpkin") || name.includes("mango")) return "bg-orange";
+    if (name.includes("carrot") || name.includes("banana") || name.includes("pineapple") || name.includes("corn") || name.includes("lemon")) return "bg-yellow";
+    if (name.includes("leeks") || name.includes("cabbage") || name.includes("watermelon") || name.includes("green beans") || name.includes("beans") || name.includes("ladies finger") || name.includes("avocado")) return "bg-green";
+    if (name.includes("capsicum") || name.includes("beetroot")) return "bg-pink";
+    if (name.includes("potato") || name.includes("brinjal") || name.includes("grapes")) return "bg-purple";
+    return "bg-blue";
+  };
+
+  // Fetch listings hook
+  useEffect(() => {
+    const fetchListings = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams();
+        if (searchQuery) queryParams.append("search_query", searchQuery);
+        if (district && district !== "All" && district !== "All Districts") queryParams.append("district", district);
+        if (cropType && cropType !== "All Crops") queryParams.append("crop_type", cropType);
+        if (priceMin) queryParams.append("price_min", priceMin);
+        if (priceMax) queryParams.append("price_max", priceMax);
+        if (harvestDate) queryParams.append("harvest_date", harvestDate);
+        if (isVerified) queryParams.append("is_verified", "true");
+        if (sortBy) queryParams.append("sort_by", sortBy);
+
+        const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
+        const data = await response.json();
+        
+        if (data.success && data.listings) {
+          setCrops(data.listings);
+        } else {
+          console.error("API Error: ", data.message);
+          setCrops([]);
+        }
+      } catch (err) {
+        console.error("Fetch failed: ", err);
+        setCrops([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounceId = setTimeout(() => {
+      fetchListings();
+    }, 300);
+
+    return () => clearTimeout(debounceId);
+  }, [searchQuery, district, cropType, priceMin, priceMax, harvestDate, isVerified, sortBy]);
+
 
   return (
     <div className="layout-wrapper">
@@ -340,8 +187,15 @@ export default function Browse() {
               type="text"
               placeholder="Search crops, farmers, districts..."
               className="search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <select className="dropdown">
+            <select 
+              className="dropdown" 
+              value={district} 
+              onChange={(e) => setDistrict(e.target.value)}
+            >
+              <option value="All">All Districts</option>
               <option>Badulla</option>
               <option>Colombo</option>
               <option>Kandy</option>
@@ -363,7 +217,11 @@ export default function Browse() {
               <option>Vavuniya</option>
               <option>Ampara</option>
             </select>
-            <select className="dropdown">
+            <select 
+              className="dropdown" 
+              value={cropType} 
+              onChange={(e) => setCropType(e.target.value)}
+            >
               <option>All Crops</option>
               <option>Tomato</option>
               <option>Carrot</option>
@@ -389,12 +247,79 @@ export default function Browse() {
               <option>Watermelon</option>
               <option>Corn</option>
             </select>
-            <button className="filters-btn">Filters</button>
+            <button 
+              className="filters-btn" 
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            >
+              {showAdvancedFilters ? "Hide Filters" : "Filters"}
+            </button>
           </div>
+
+          {/* ADVANCED FILTERS PANEL */}
+          {showAdvancedFilters && (
+            <div className="advanced-filters-panel">
+              <div className="filter-group">
+                <label>Price Range (Rs.)</label>
+                <div className="price-inputs">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={priceMin}
+                    onChange={(e) => setPriceMin(e.target.value)}
+                    className="small-input"
+                  />
+                  <span className="price-sep">-</span>
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={priceMax}
+                    onChange={(e) => setPriceMax(e.target.value)}
+                    className="small-input"
+                  />
+                </div>
+              </div>
+
+              <div className="filter-group">
+                <label>Harvest Date (On/After)</label>
+                <input
+                  type="date"
+                  value={harvestDate}
+                  onChange={(e) => setHarvestDate(e.target.value)}
+                  className="date-input"
+                />
+              </div>
+
+              <div className="filter-group">
+                <label>Sort By</label>
+                <select 
+                  className="dropdown-sort" 
+                  value={sortBy} 
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="">Default (Soonest Harvest)</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="rating_desc">Rating: High to Low</option>
+                  <option value="harvest_desc">Harvest: Newest to Oldest</option>
+                </select>
+              </div>
+
+              <div className="filter-group toggle-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={isVerified}
+                    onChange={(e) => setIsVerified(e.target.checked)}
+                  />
+                  Verified Farmers Only
+                </label>
+              </div>
+            </div>
+          )}
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            Showing crops near <strong>Badulla</strong>. <a href="#">Use Map Search</a> to find farms on a map.
+            Showing crops near <strong>{district === "All" ? "All of Sri Lanka" : district}</strong>. <a href="#">Use Map Search</a> to find farms on a map.
           </div>
 
           {/* STATS */}
@@ -414,35 +339,62 @@ export default function Browse() {
           </div>
 
           {/* CROP GRID */}
-          <div className="crop-grid">
-            {crops.map((crop) => (
-              <div className="crop-card" key={crop.id}>
-                <div className={`crop-image-area ${crop.bgClass}`}>
-                  {crop.img ? (
-                    <img src={crop.img} alt={crop.name} className="crop-image" />
-                  ) : (
-                    <span className="crop-icon">{crop.icon}</span>
-                  )}
-                </div>
-                <div className="crop-details">
-                  <h3>{crop.name}</h3>
-                  <p className="farm-name">
-                    {crop.farm} {crop.verified && <span className="verified-tick">✓</span>}
-                  </p>
-                  <p className="price">
-                    <strong>Rs {crop.price}</strong>/kg
-                  </p>
-                  <p className="meta-info">
-                    {crop.qty} • Harvest {crop.harvest}
-                  </p>
-                  <div className="rating">
-                    ★★★★★
+          {loading ? (
+            <div className="loading-state">Loading fresh crops...</div>
+          ) : crops.length === 0 ? (
+            <div className="empty-state">No crops found matching your filters.</div>
+          ) : (
+            <div className="crop-grid">
+              {crops.map((crop) => (
+                <div 
+                  className="crop-card" 
+                  key={crop.id}
+                  onClick={() => navigate(`/crop/${crop.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className={`crop-image-area ${getBgClass(crop.name)}`}>
+                    {(() => {
+                      const capitalized = crop.name ? crop.name.charAt(0).toUpperCase() + crop.name.slice(1).toLowerCase() : "";
+                      const localImg = imageMap[capitalized] || imageMap[crop.name];
+                      if (localImg) {
+                        return <img src={localImg} alt={crop.name} className="crop-image" />;
+                      } else if (crop.image_url) {
+                        return <img src={crop.image_url} alt={crop.name} className="crop-image" />;
+                      } else {
+                        return <span className="crop-icon">🌱</span>;
+                      }
+                    })()}
                   </div>
-                  <button className="pre-order-btn">Pre-Order</button>
+                  <div className="crop-details">
+                    <h3>{crop.name}</h3>
+                    <p className="farm-name">
+                      {crop.farmer_name} {parseInt(crop.is_verified) === 1 && <span className="verified-tick">✓</span>}
+                    </p>
+                    <p className="price">
+                      <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>/kg
+                    </p>
+                    <p className="meta-info">
+                      {parseFloat(crop.qty).toFixed(0)} kg • Harvest {crop.harvest}
+                    </p>
+                    <div className="rating">
+                      {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
+                      {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
+                      <span className="rating-num">({parseFloat(crop.rating).toFixed(1)})</span>
+                    </div>
+                    <button 
+                      className="pre-order-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/preorder`, { state: { cropId: crop.id } });
+                      }}
+                    >
+                      Pre-Order
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>
