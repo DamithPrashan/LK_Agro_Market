@@ -1,5 +1,4 @@
-const PreOrder = () => {
-  return <h1>PreOrder</h1>;
-};
+import PreOrder from "../../frontend/buyer/react/PreOrder.jsx";
+
 
 export default PreOrder;

@@ -1,5 +1,5 @@
-const Complaints = () => {
-  return <h1>Complaints</h1>;
-};
+import Complaints from "../../frontend/buyer/react/Complaints.jsx";
+
+
 
 export default Complaints;

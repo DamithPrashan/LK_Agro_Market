@@ -1,5 +1,3 @@
-const Farmer = () => {
-  return <h1>Farmer</h1>;
-};
+import Farmer from "../../frontend/farmer/react/dashBoard.jsx";
 
 export default Farmer;

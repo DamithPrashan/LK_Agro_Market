@@ -1,5 +1,5 @@
 .app-header {
-  
+
   color: white;
   background: #0f5c25;
   display: flex;
@@ -17,14 +17,14 @@
 .app-brand {
   font-size: 1.4rem;
   font-weight: bold;
-  
+
 }
 
 .app-nav {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  
+  justify-content: space-between;
   /* margin-left:40px; */
 }
 
@@ -43,32 +43,47 @@
   border-bottom: 3px solid white;
 }
 
-.multiLang {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
+.language-buttons{
+
+display:flex;
+gap:1px;
 }
 
-.lang-btn {
-  border: none;
-  background: transparent;
-  color: #ffffff;
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.3s ease;
-  align-items: right;
+.language-buttons .En-button{
+
+
+border-bottom-left-radius:25px;
+
 }
 
-.lang-btn:hover {
-  background: rgba(255, 255, 255, 0.256);
+.language-buttons .Ta-button{
+border-top-right-radius:25px;
+
 }
 
-.lang-btn.active {
-  background: rgba(255, 255, 255, 0.2);
+
+.language-buttons button{
+
+padding:8px 14px;
+border:none;
+/* border-radius:4px; */
+background:#ffffff20;
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+
+.language-buttons button:hover{
+
+transform:translateY(-2px);
+background:#57c84d;
+}
+
+
+.language-buttons button:active{
+
+transform:scale(.95);
 }
 
 .logPerson {
@@ -134,5 +149,224 @@
   .nav-actions {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   TRUE FLOATING NOTIFICATION POPUP
+   ========================================================================== */
+
+/* The anchor container */
+.notification-container {
+  position: relative !important;
+  /* This is the anchor point for the popup */
+}
+
+/* Bell button reset */
+.notification-btn {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.notification-btn img {
+  width: 26px;
+  height: 26px;
+}
+
+/* Small Red Badge Count */
+.badge {
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10;
+}
+
+/* THE FLOATING POPUP PANEL */
+.notification-dropdown {
+  position: absolute !important;
+  right: -100px !important;
+  /* Shifts it nicely directly under the bell */
+  top: 45px !important;
+  /* Moves it completely out of the header line */
+  width: 360px !important;
+  /* Fixed desktop sizing width */
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2) !important;
+  /* Soft backdrop shadow blur */
+  border: 1px solid #e2e8f0 !important;
+  z-index: 9999 !important;
+  /* Forces it above all context layers */
+  overflow: hidden !important;
+}
+
+/* Tiny visual indicator pointer triangle arrow on top */
+.notification-dropdown::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -6px !important;
+  right: 108px !important;
+  width: 12px !important;
+  height: 12px !important;
+  background-color: #ffffff !important;
+  transform: rotate(45deg) !important;
+  border-left: 1px solid #e2e8f0 !important;
+  border-top: 1px solid #e2e8f0 !important;
+  z-index: 1;
+}
+
+/* Header design */
+.dropdown-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: #ffffff !important;
+}
+
+.dropdown-header h3 {
+  margin: 0 !important;
+  font-size: 16px !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+.mark-read-btn {
+  background: none !important;
+  border: none !important;
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+/* Inner List Item Scroll Container */
+.dropdown-body {
+  max-height: 340px !important;
+  overflow-y: auto !important;
+  background: #ffffff !important;
+}
+
+/* Single Item Row format */
+.notification-item {
+  display: flex !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #f8fafc !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  background: #ffffff !important;
+}
+
+.notification-item:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Left Indicator Status Icon Circle styling */
+.status-icon {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  margin-top: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.status-icon.success {
+  background-color: #10b981 !important;
+}
+
+.status-icon.info {
+  background-color: #3b82f6 !important;
+}
+
+.status-icon.warning {
+  background-color: #f59e0b !important;
+}
+
+/* Mid Info block typography adjustments */
+.notif-content {
+  flex-grow: 1 !important;
+  text-align: left !important;
+}
+
+.notif-content h4 {
+  margin: 0 0 3px 0 !important;
+  font-size: 14px !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+.notif-content p {
+  margin: 0 0 4px 0 !important;
+  font-size: 13px !important;
+  color: #64748b !important;
+  line-height: 1.4 !important;
+}
+
+.notif-content .time {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+}
+
+/* Right Status Unread tracking dot */
+.unread-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  align-self: center !important;
+  flex-shrink: 0 !important;
+}
+
+.unread-dot.success {
+  background-color: #10b981 !important;
+}
+
+.unread-dot.info {
+  background-color: #3b82f6 !important;
+}
+
+.unread-dot.warning {
+  background-color: #f59e0b !important;
+}
+
+/* Footer components layout links */
+.dropdown-footer {
+  text-align: center !important;
+  padding: 14px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background-color: #ffffff !important;
+}
+
+.dropdown-footer a {
+  color: #0f5c25 !important;
+  /* Theme corporate green choice alignment */
+  text-decoration: none !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+
+/* Responsive adjustment viewports layout fallback */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    position: fixed !important;
+    top: 70px !important;
+    right: 5% !important;
+    left: 5% !important;
+    width: 90% !important;
   }
 }
