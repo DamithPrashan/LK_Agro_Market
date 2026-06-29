@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/backend": {
-        target: "http://localhost/LK_Agro_Market",   // XAMPP Apache port 80
+        target: "http://127.0.0.1:8000",   // XAMPP Apache port 80
         changeOrigin: true,
         secure: false,
       },
