@@ -3,6 +3,7 @@ import "../csss/dashBoard.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaBars } from "react-icons/fa";
+import DemandForecast from "./demandForecast";
 
 function DashBoard() {
     const navigate = useNavigate();
@@ -81,36 +82,7 @@ function DashBoard() {
                     </div>
 
                 </div>
-
-                {/* Forecast */}
-                <div className="section">
-                    <h3>DEMAND FORECAST (Next 30 Days)</h3>
-
-                    <div className="forecast-grid">
-
-                        <div className="forecast-card">
-                            <div className="crop-icon">🍅</div>
-                            <h4>Tomato</h4>
-                            <p className="high">Demand : High</p>
-                            <small>250 kg Reserved</small>
-                        </div>
-
-                        <div className="forecast-card">
-                            <div className="crop-icon">🥕</div>
-                            <h4>Carrot</h4>
-                            <p className="medium">Demand : Medium</p>
-                            <small>120 kg Reserved</small>
-                        </div>
-
-                        <div className="forecast-card">
-                            <div className="crop-icon">🫘</div>
-                            <h4>Beans</h4>
-                            <p className="low">Demand : Low</p>
-                            <small>80 kg Reserved</small>
-                        </div>
-
-                    </div>
-                </div>
+                <DemandForecast />
 
                 {/* Listings + Orders */}
                 <div className="bottom-grid">
