@@ -16,10 +16,20 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login  = (userData) => setUser(userData);
-  const logout = () => {
-    fetch("/backend/Apis/logout.php", { method: "POST", credentials: "include" })
-      .finally(() => setUser(null));
-  };
+  const logout = async () => {
+  try {
+    await fetch(
+      "/backend/Apis/logout.php",
+      {
+        method: "POST",
+        credentials: "include"
+      }
+    );
+  }
+  finally {
+    setUser(null);
+  }
+};
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>

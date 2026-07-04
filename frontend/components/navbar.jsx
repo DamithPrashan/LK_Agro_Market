@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink,useNavigate } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import "./navbar.css";
 import notificationIcon from '../assests/png/notification.png';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const Logout = async () => {
+  await logout();
+  navigate("/");
+};
+
 
   const notifications = [
     { id: 1, title: 'Reservation Accepted', desc: 'Your order #1001 has been accepted.', time: '2 minutes ago', type: 'success', unread: true },
@@ -22,19 +28,109 @@ const Navbar = () => {
 
       <nav className="app-nav">
 
-        <NavLink to="/" end>Home</NavLink>
-        {user?.role === "farmer" && <NavLink to="/farmer">Farmer</NavLink>}
-        <NavLink to="/browse">Browse</NavLink>
-        <NavLink to="/preorder">Pre-Order</NavLink>
-        {user?.role === "buyer" && <NavLink to="/payment">Payment</NavLink>}
-        {user?.role === "buyer" && <NavLink to="/buyer">Buyer</NavLink>}
-        <NavLink to="/complaints">Complaints</NavLink>
-        <NavLink to="/ratings">Ratings</ NavLink>
-        {user?.role === "admin" && <NavLink to="/admin">Admin</ NavLink>}
-        {!user && <NavLink to="/register" hidden>Register</ NavLink>}
-        {!user && <NavLink to="/login" hidden>Login</NavLink>}
-        {user && <NavLink to="/profile">Profile</NavLink>}
+        <div className="nav-links">
 
+        {/* Default navbar (not logged in) */}
+
+        {!user && (
+          <>
+            <NavLink to="/" end>Home</NavLink>
+            <NavLink to="/browse">Browse</NavLink>
+            <NavLink to="/ratings">Ratings</NavLink>
+
+            <NavLink to="/register">
+              Register
+            </NavLink>
+
+            <NavLink to="/login">
+              Login
+            </NavLink>
+          </>
+        )}
+
+
+        {/* Farmer navbar */}
+
+        {user?.role === "farmer" && (
+          <>
+            <NavLink to="/">
+              Home
+            </NavLink>
+
+            <NavLink to="/preorder">
+              Pre-Order
+            </NavLink>
+
+            <NavLink to="/complaints">
+              Complaints
+            </NavLink>
+
+            <NavLink to="/ratings">
+              Ratings
+            </NavLink>
+
+            <NavLink to="/farmer">
+              Farmer
+            </NavLink>
+
+            <NavLink to="/profile">
+              Profile
+            </NavLink>
+          </>
+        )}
+
+        {/* Buyer navbar */}
+
+        {user?.role === "buyer" && (
+          <>
+            <NavLink to="/">
+              Home
+            </NavLink>
+
+            <NavLink to="/preorder">
+              Pre-Order
+            </NavLink>
+
+            <NavLink to="/complaints">
+              Complaints
+            </NavLink>
+
+            <NavLink to="/ratings">
+              Ratings
+            </NavLink>
+
+            <NavLink to="/farmer">
+              Farmer
+            </NavLink>
+
+            <NavLink to="/profile">
+              Profile
+            </NavLink>
+          </>
+        )}
+
+
+        {/* Admin navbar */}
+
+        {user?.role === "admin" && (
+          <>
+            <NavLink to="/">
+              Home
+            </NavLink>
+
+            <NavLink to="/admin">
+              Admin
+            </NavLink>
+
+            <NavLink to="/profile">
+              Profile
+            </NavLink>
+          </>
+        )}
+
+        </div>
+
+        <div className="nav-right">
 
         <div className="language-buttons">
 
@@ -100,11 +196,13 @@ const Navbar = () => {
           {user ? (
             <div style={{ display: "flex", gap: "8px" }}>
               <button className="log-btn" style={{ fontWeight: 600 }}>{user.name}</button>
-              <button className="log-btn" onClick={logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
+              <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
             </div>
           ) : (
             <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign In</NavLink>
           )}
+        </div>
+
         </div>
       </nav>
     </header>

@@ -1,5 +1,11 @@
+import AdminDashboard from "../../frontend/admin/react/AdminDashboard.jsx";
+
 const Admin = () => {
-  return <h1>Admin</h1>;
+  return (
+    <>
+      <AdminDashboard />
+    </>
+  );
 };
 
 export default Admin;

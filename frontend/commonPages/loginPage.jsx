@@ -5,13 +5,13 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
 export default function LoginPage() {
-  const navigate     = useNavigate();
-  const { login }    = useAuth();
-  const [email, setEmail]       = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw]     = useState(false);
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res  = await fetch("/backend/Apis/login.php", {
+      const res = await fetch("/backend/Apis/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -28,9 +28,9 @@ export default function LoginPage() {
       const data = await res.json();
       if (data.success) {
         login(data.user);
-        if      (data.user.role === "farmer") navigate("/farmer/dashboard");
-        else if (data.user.role === "buyer")  navigate("/buyer/dashboard");
-        else if (data.user.role === "admin")  navigate("/admin/dashboard");
+        if (data.user.role === "farmer") navigate("/farmer/dashboard");
+        else if (data.user.role === "buyer") navigate("/buyer/dashboard");
+        else if (data.user.role === "admin") navigate("/admin/dashboard");
       } else {
         setError(data.message || "Invalid email or password.");
       }
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      
+
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
@@ -103,19 +103,19 @@ export default function LoginPage() {
           </p>
         </div>
       </main>
-      
+
     </div>
   );
 }
 
 const s = {
-  page:   { flex: 1, background: "var(--page)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px" },
-  card:   { width: "100%", maxWidth: 420 },
+  page: { flex: 1, background: "var(--page)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px" },
+  card: { width: "100%", maxWidth: 420 },
   header: { textAlign: "center", marginBottom: 24 },
-  logo:   { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
-  title:  { fontSize: 20, fontWeight: 700, marginBottom: 4 },
-  sub:    { fontSize: 12, color: "var(--t-3)" },
+  logo: { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: 700, marginBottom: 4 },
+  sub: { fontSize: 12, color: "var(--t-3)" },
   pwWrap: { position: "relative" },
   eyeBtn: { position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, padding: 0, color: "var(--t-3)" },
-  foot:   { textAlign: "center", fontSize: 12, color: "var(--t-3)" },
+  foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)" },
 };

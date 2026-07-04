@@ -1,0 +1,194 @@
+.dashboard{
+
+padding:30px;
+background:#f3f6f2;
+min-height:100vh;
+}
+
+.dashboard-header{
+
+margin-bottom:30px;
+}
+
+.dashboard-header h1{
+
+font-size:32px;
+color:#145a32;
+}
+
+.stats-container{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:30px;
+margin-left:10%;
+}
+
+.chart-row{
+
+display:grid;
+
+grid-template-columns:1.5fr 1fr;
+
+gap:25px;
+
+margin-bottom:30px;
+}
+
+.rating-section{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:25px;
+
+margin-bottom:30px;
+}
+
+
+.dashboard-card{
+
+background:white;
+
+border-radius:20px;
+
+padding:25px;
+
+box-shadow:
+0 4px 12px rgba(0,0,0,.05);
+
+margin-bottom:25px;
+}
+
+.dashboard-card h2{
+
+font-size:16px;
+margin-bottom:20px;
+color:#145a32;
+}
+
+.dashboard-card button{
+border: none;
+border-radius: 20px;
+width: 80px;
+height: 30px;
+margin-top: -10px;
+font-size: 14px;
+color: white;
+background-color: #1c934f;
+cursor: pointer;
+}
+
+.dashboard table{
+
+width:100%;
+border-collapse:collapse;
+}
+
+.dashboard td, .dashboard th{
+
+padding:15px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+.dashboard th{
+
+background:#edf6ee;
+}
+
+.dashboard .status{
+
+padding:6px 12px;
+
+border-radius:30px;
+
+font-size:13px;
+}
+
+.dashboard .pending{
+
+background:#fff3cd;
+}
+
+.dashboard .review{
+
+background:#ffd9d9;
+}
+
+.dashboard .active{
+
+background:#d4f4d7;
+}
+
+.district{
+
+display:flex;
+align-items:center;
+gap:15px;
+margin:18px 0;
+}
+
+.district-name{
+width:55px;
+font-size:14px;
+color:#333;
+}
+
+.district-value{
+font-weight:700;
+width:30px;
+text-align:right;
+color:black;
+}
+
+.bar{
+flex:1;
+height:10px;
+background:#edf1ee;
+border-radius:20px;
+overflow:hidden;
+}
+
+.fill{
+
+height:100%;
+border-radius:20px;
+transition:width .8s ease;
+}
+
+.fill1{
+
+width:75%;
+background:#43a047;
+}
+
+.fill2{
+
+width:52%;
+background:#66bb6a;
+}
+
+.fill3{
+
+width:36%;
+background:#81c784;
+}
+
+.fill4{
+
+width:20%;
+background:#a5d6a7;
+}
+
+@media(max-width:768px){
+
+.chart-row,
+.rating-section{
+
+grid-template-columns:1fr;
+}
+
+}
