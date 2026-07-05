@@ -9,12 +9,13 @@ function EditList() {
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
+    crop_id: state?.crop_id || "",
     cropName: state?.cropName || "",
     category: state?.category || "",
     quantity: state?.quantity || "",
     harvestDate: state?.harvestDate || "",
     price: state?.price || "",
-    stage: state?.stage || "Flowering",
+    stage: state?.stage || "planted",
   });
 
   const handleChange = (e) => {
@@ -32,9 +33,37 @@ function EditList() {
     if (step > 1) setStep(step - 1);
   };
 
-  const updateListing = () => {
-    alert("Listing Updated Successfully!");
-    navigate("/");
+  const updateListing = async () => {
+    try {
+      const response = await fetch("/backend/updateCrop.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          crop_id: formData.crop_id,
+          cropName: formData.cropName,
+          category: formData.category,
+          quantity: formData.quantity,
+          price: formData.price,
+          growthStage: formData.stage,
+          harvestDate: formData.harvestDate,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Listing Updated Successfully!");
+        navigate("/");
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Update failed.");
+    }
   };
 
   return (

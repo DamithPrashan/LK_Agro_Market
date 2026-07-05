@@ -137,8 +137,24 @@ function DashBoard() {
 
                                         <td>
 
-                                            <button className="edit-btn" onClick={() => navigate("/farmer/edit-listing")}>Edit</button>
-                                            <button className="delete-btn">Delete</button>
+                                            <button
+                                                className="edit-btn"
+                                                onClick={() =>
+                                                    navigate("/farmer/edit-listing", {
+                                                        state: {
+                                                            crop_id: crop.crop_id,
+                                                            cropName: crop.crop_name,
+                                                            category: crop.category,
+                                                            quantity: crop.quantity,
+                                                            harvestDate: crop.harvest_date,
+                                                            price: crop.price_per_unit,
+                                                            stage: crop.growth_stage,
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                Edit
+                                            </button>                                            <button className="delete-btn">Delete</button>
                                         </td>
                                     </tr>
                                 ))}
