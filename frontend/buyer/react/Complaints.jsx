@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import "../../buyer/csss/Complaints.css";
+import { useNavigate } from "react-router-dom";
+import "../csss/Complaints.css";
 
 function ComplaintPage() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [reason, setReason] = useState("Crop quality does not match listing");
   const [description, setDescription] = useState("");
   const [evidenceFile, setEvidenceFile] = useState(null);
   const [uploadMsg, setUploadMsg] = useState("");
-  
+
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
@@ -99,7 +101,12 @@ function ComplaintPage() {
         {/* Tabs */}
         <div className="tabs">
           <button className="tab active">Submit Complaint</button>
-          <button className="tab">Farmer Response</button>
+          <button
+            className="tab"
+            onClick={() => navigate("/farmer-response")}
+          >
+            Farmer Response
+          </button>
         </div>
 
         {/* Complaint Form */}
@@ -129,7 +136,7 @@ function ComplaintPage() {
             {fetchLoading ? (
               <div style={{ padding: "10px 0", fontSize: "14px", color: "#666" }}>Loading your orders...</div>
             ) : (
-              <select 
+              <select
                 className="input-field"
                 value={selectedOrderId}
                 onChange={(e) => setSelectedOrderId(e.target.value)}
@@ -145,7 +152,7 @@ function ComplaintPage() {
             )}
 
             <label>Complaint Reason</label>
-            <select 
+            <select
               className="input-field"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
