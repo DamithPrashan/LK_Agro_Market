@@ -9,15 +9,66 @@ function DashBoard() {
     const navigate = useNavigate();
     const [myCrops, setCrops] = useState([]);
     const [showOrdersMenu, setShowOrdersMenu] = useState(false);
-    useEffect(() => {
-        fetch("/backend/getCrops.php", { credentials: "include" })
+    const fetchCrops = () => {
+        fetch("/backend/getCrops.php", {
+            credentials: "include",
+        })
             .then((response) => response.json())
             .then((data) => {
                 setCrops(data);
-                console.log(data);
-            })
-        //.catch((error) => console.error(error));
+            });
+    };
+
+    useEffect(() => {
+        fetchCrops();
     }, []);
+    const deleteCrop = async (cropId) => {
+
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this listing?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+
+            const response = await fetch("/backend/deleteCrop.php", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                },
+
+                credentials: "include",
+
+                body: JSON.stringify({
+                    crop_id: cropId,
+                }),
+
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+
+                alert(result.message);
+
+                fetchCrops();
+
+            } else {
+
+                alert(result.message);
+
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
     return (
 
         <div className="dashboard">
@@ -154,7 +205,14 @@ function DashBoard() {
                                                 }
                                             >
                                                 Edit
-                                            </button>                                            <button className="delete-btn">Delete</button>
+                                            </button>
+                                            <button
+                                                className="delete-btn"
+                                                onClick={() => deleteCrop(crop.crop_id)}
+                                            >
+                                                Delete
+                                            </button>
+
                                         </td>
                                     </tr>
                                 ))}
