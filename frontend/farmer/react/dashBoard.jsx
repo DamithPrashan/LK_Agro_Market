@@ -4,11 +4,26 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaBars } from "react-icons/fa";
 import DemandForecast from "./demandForecast";
+import { useAuth } from "../../../src/context/AuthContext";
 
 function DashBoard() {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [myCrops, setCrops] = useState([]);
     const [showOrdersMenu, setShowOrdersMenu] = useState(false);
+    const [welcomeMsg, setWelcomeMsg] = useState("Hello 👋");
+
+    useEffect(() => {
+        if (user) {
+            const key = `hasLoggedIn_${user.id}`;
+            if (localStorage.getItem(key)) {
+                setWelcomeMsg(`Welcome Back ${user.name} 👋`);
+            } else {
+                setWelcomeMsg(`Welcome ${user.name} 👋`);
+                localStorage.setItem(key, "true");
+            }
+        }
+    }, [user]);
     const fetchCrops = () => {
         fetch("/backend/getCrops.php", {
             credentials: "include",
@@ -97,7 +112,7 @@ function DashBoard() {
 
                 {/* Header */}
                 <div className="page-header">
-                    <h1>Hello, Randeniya 👋</h1>
+                    <h1>{welcomeMsg}</h1>
                     <p>Here's what's happening with your farm today.</p>
                 </div>
 
@@ -148,7 +163,7 @@ function DashBoard() {
                                 className="add-btn"
                                 onClick={() => navigate("/farmer/add-listing")}
                             >
-                                Add Listing
+                                Add Crop
                             </button>
                         </div>
 

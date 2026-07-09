@@ -56,7 +56,7 @@ export default function RegistrationPage() {
       const data = await res.json();
       if (data.success) {
         login(data.user);
-        navigate(role === "farmer" ? "/farmer/dashboard" : "/buyer/dashboard");
+        navigate(role === "farmer" ? "/farmer" : "/buyer");
       } else {
         setApiErr(data.message || "Registration failed. Please try again.");
       }

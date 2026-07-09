@@ -1,9 +1,24 @@
+import { useState, useEffect } from "react";
 import "../../buyer/csss/buyerDashboard.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../src/context/AuthContext";
 
 export default function BuyerDashboard() {
-  const buyerName = "Nadeeshi";
-const navigate = useNavigate();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [welcomeMsg, setWelcomeMsg] = useState("Hello 👋");
+
+  useEffect(() => {
+    if (user) {
+      const key = `hasLoggedIn_${user.id}`;
+      if (localStorage.getItem(key)) {
+        setWelcomeMsg(`Welcome Back ${user.name} 👋`);
+      } else {
+        setWelcomeMsg(`Welcome ${user.name} 👋`);
+        localStorage.setItem(key, "true");
+      }
+    }
+  }, [user]);
   const stats = {
     pending: 12,
     active: 7,
@@ -47,7 +62,7 @@ const navigate = useNavigate();
       {/* HERO */}
       <section className="hero">
         <div>
-          <h1>Welcome Back {buyerName} 👋</h1>
+          <h1>{welcomeMsg}</h1>
           <p>Discover fresh vegetables, fruits and connect with trusted farmers.</p>
         </div>
       </section>

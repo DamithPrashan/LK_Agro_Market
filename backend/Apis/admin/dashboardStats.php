@@ -3,7 +3,7 @@
 header("Access-Control-Allow-Origin:*");
 header("Content-Type:application/json");
 
-require "../../config/database.php";
+require_once __DIR__ . '/../../connection/db.php';
 
 $response=[];
 

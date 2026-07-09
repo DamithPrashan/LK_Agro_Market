@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../csss/addList.css";
 
 function AddListing() {
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
 
     const [formData, setFormData] = useState({
@@ -41,7 +43,7 @@ function AddListing() {
             const result = await response.json();
 
             if (result.success) {
-                alert("Listing Submitted Successfully!");
+                alert("Crop Submitted Successfully!");
             } else {
                 alert(result.message);
             }
@@ -53,7 +55,7 @@ function AddListing() {
     return (
         <div className="add-listing-container">
             <div className="listing-card">
-                <h2>Add New Listing</h2>
+                <h2>Add New Crop</h2>
 
                 <div className="stepper">
                     <div className={`step ${step >= 1 ? "active-step" : ""}`}>1</div>
@@ -129,12 +131,21 @@ function AddListing() {
                             <input type="file" multiple />
                         </div>
 
-                        <button
-                            className="next-btn"
-                            onClick={() => setStep(2)}
-                        >
-                            Next
-                        </button>
+                        <div className="btn-group">
+                            <button
+                                className="next-btn"
+                                onClick={() => setStep(2)}
+                            >
+                                Next
+                            </button>
+
+                            <button
+                                className="back-btn"
+                                onClick={() => navigate("/farmer")}
+                            >
+                                Back
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -157,17 +168,17 @@ function AddListing() {
 
                         <div className="btn-group">
                             <button
-                                className="back-btn"
-                                onClick={() => setStep(1)}
-                            >
-                                Back
-                            </button>
-
-                            <button
                                 className="next-btn"
                                 onClick={() => setStep(3)}
                             >
                                 Next
+                            </button>
+
+                            <button
+                                className="back-btn"
+                                onClick={() => setStep(1)}
+                            >
+                                Back
                             </button>
                         </div>
                     </div>
@@ -175,7 +186,7 @@ function AddListing() {
 
                 {step === 3 && (
                     <div className="form-section">
-                        <h3>Review Listing</h3>
+                        <h3>Review Crop Details</h3>
 
                         <div className="review-box">
                             <p><strong>Crop Name:</strong> {formData.cropName}</p>
@@ -188,17 +199,17 @@ function AddListing() {
 
                         <div className="btn-group">
                             <button
+                                className="submit-btn"
+                                onClick={handleSubmit}
+                            >
+                                Submit Crop
+                            </button>
+
+                            <button
                                 className="back-btn"
                                 onClick={() => setStep(2)}
                             >
                                 Back
-                            </button>
-
-                            <button
-                                className="submit-btn"
-                                onClick={handleSubmit}
-                            >
-                                Submit Listing
                             </button>
                         </div>
                     </div>
