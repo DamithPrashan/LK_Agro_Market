@@ -64,17 +64,16 @@ $stmt->fetch()['total'];
 /* pending farmer verification */
 
 $stmt=$pdo->query(
-
-"SELECT
-verification_id,
-nic_number,
-farm_location,
-verification_status
-
-FROM farmer_verification
-
-WHERE verification_status='pending'"
-
+    "SELECT
+        fv.verification_id,
+        fv.nic_number,
+        fv.farm_location,
+        fv.verification_status,
+        u.name AS farmer_name
+    FROM farmer_verification fv
+    INNER JOIN farmer f ON fv.farmer_id = f.farmer_id
+    INNER JOIN user u ON f.user_id = u.user_id
+    WHERE fv.verification_status='pending'"
 );
 
 $response["pendingVerification"]=

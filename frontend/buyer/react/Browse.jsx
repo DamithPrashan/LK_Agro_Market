@@ -354,12 +354,17 @@ export default function Browse() {
                 >
                   <div className={`crop-image-area ${getBgClass(crop.name)}`}>
                     {(() => {
+                      if (crop.image_url) {
+                        let imgUrl = crop.image_url;
+                        if (!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
+                          imgUrl = "/backend/" + imgUrl;
+                        }
+                        return <img src={imgUrl} alt={crop.name} className="crop-image" />;
+                      }
                       const capitalized = crop.name ? crop.name.charAt(0).toUpperCase() + crop.name.slice(1).toLowerCase() : "";
                       const localImg = imageMap[capitalized] || imageMap[crop.name];
                       if (localImg) {
                         return <img src={localImg} alt={crop.name} className="crop-image" />;
-                      } else if (crop.image_url) {
-                        return <img src={crop.image_url} alt={crop.name} className="crop-image" />;
                       } else {
                         return <span className="crop-icon">🌱</span>;
                       }

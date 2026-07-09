@@ -75,14 +75,26 @@ export default function CropDetail() {
           setCropData(data.crop);
           
           // Determine initial main image
-          const capitalized = data.crop.name ? data.crop.name.charAt(0).toUpperCase() + data.crop.name.slice(1).toLowerCase() : "";
-          const resolvedLocalImage = imageMap[capitalized] || imageMap[data.crop.name];
-          if (resolvedLocalImage) {
-            setMainImage(resolvedLocalImage);
-          } else if (data.crop.image_url) {
-            setMainImage(data.crop.image_url);
+          if (data.crop.images && data.crop.images.length > 0) {
+            let firstImg = data.crop.images[0];
+            if (!firstImg.startsWith("http") && !firstImg.startsWith("/")) {
+              firstImg = "/backend/" + firstImg;
+            }
+            setMainImage(firstImg);
           } else {
-            setMainImage("https://images.unsplash.com/photo-1606787366850-de6330128bfc");
+            const capitalized = data.crop.name ? data.crop.name.charAt(0).toUpperCase() + data.crop.name.slice(1).toLowerCase() : "";
+            const resolvedLocalImage = imageMap[capitalized] || imageMap[data.crop.name];
+            if (resolvedLocalImage) {
+              setMainImage(resolvedLocalImage);
+            } else if (data.crop.image_url) {
+              let imgUrl = data.crop.image_url;
+              if (!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
+                imgUrl = "/backend/" + imgUrl;
+              }
+              setMainImage(imgUrl);
+            } else {
+              setMainImage("https://images.unsplash.com/photo-1606787366850-de6330128bfc");
+            }
           }
         } else {
           console.error("Listing loading failed: ", data.message);
@@ -115,18 +127,34 @@ export default function CropDetail() {
 
   // Set up thumbnail carousel images
   const images = [];
-  const capitalizedName = cropData.name ? cropData.name.charAt(0).toUpperCase() + cropData.name.slice(1).toLowerCase() : "";
-  const localImage = imageMap[capitalizedName] || imageMap[cropData.name];
-  if (localImage) {
-    images.push(localImage);
+  if (cropData.images && cropData.images.length > 0) {
+    cropData.images.forEach((img) => {
+      let url = img;
+      if (!url.startsWith("http") && !url.startsWith("/")) {
+        url = "/backend/" + url;
+      }
+      images.push(url);
+    });
+  } else {
+    const capitalizedName = cropData.name ? cropData.name.charAt(0).toUpperCase() + cropData.name.slice(1).toLowerCase() : "";
+    const localImage = imageMap[capitalizedName] || imageMap[cropData.name];
+    if (localImage) {
+      images.push(localImage);
+    }
+    if (cropData.image_url) {
+      let imgUrl = cropData.image_url;
+      if (!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
+        imgUrl = "/backend/" + imgUrl;
+      }
+      if (imgUrl !== localImage) {
+        images.push(imgUrl);
+      }
+    }
+    // Generic high-quality agricultural fallbacks to make a premium looking carousel
+    images.push("https://images.unsplash.com/photo-1606787366850-de6330128bfc");
+    images.push("https://images.unsplash.com/photo-1592924357228-91a4daadcfea");
+    images.push("https://images.unsplash.com/photo-1582281298055-e25b84a5a2f4");
   }
-  if (cropData.image_url && cropData.image_url !== localImage) {
-    images.push(cropData.image_url);
-  }
-  // Generic high-quality agricultural fallbacks to make a premium looking carousel
-  images.push("https://images.unsplash.com/photo-1606787366850-de6330128bfc");
-  images.push("https://images.unsplash.com/photo-1592924357228-91a4daadcfea");
-  images.push("https://images.unsplash.com/photo-1582281298055-e25b84a5a2f4");
 
   // Handle mock reservation submission
   const handlePreOrder = (e) => {

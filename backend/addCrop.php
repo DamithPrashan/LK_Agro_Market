@@ -29,14 +29,13 @@ try {
     $location = $farmer['location'];
     $crop_status = "active";
 
-    $data = json_decode(file_get_contents("php://input"), true);
-    
-    $cropName = isset($data['cropName']) ? trim($data['cropName']) : '';
-    $category = isset($data['category']) ? trim($data['category']) : '';
-    $quantity = isset($data['quantity']) ? floatval($data['quantity']) : 0.0;
-    $price = isset($data['price']) ? floatval($data['price']) : 0.0;
-    $growthStage = isset($data['growthStage']) ? strtolower(trim($data['growthStage'])) : 'planted';
-    $harvestDate = isset($data['harvestDate']) ? trim($data['harvestDate']) : '';
+    // Extracting from $_POST
+    $cropName = isset($_POST['cropName']) ? trim($_POST['cropName']) : '';
+    $category = isset($_POST['category']) ? trim($_POST['category']) : '';
+    $quantity = isset($_POST['quantity']) ? floatval($_POST['quantity']) : 0.0;
+    $price = isset($_POST['price']) ? floatval($_POST['price']) : 0.0;
+    $growthStage = isset($_POST['growthStage']) ? strtolower(trim($_POST['growthStage'])) : 'planted';
+    $harvestDate = isset($_POST['harvestDate']) ? trim($_POST['harvestDate']) : '';
 
     if (empty($cropName) || empty($category) || $quantity <= 0 || $price <= 0 || empty($harvestDate)) {
         echo json_encode([
@@ -52,6 +51,7 @@ try {
         $growthStage = 'planted';
     }
 
+    // Insert data into Crop table
     $sql = "INSERT INTO crop 
     (
         farmer_id,
@@ -82,9 +82,48 @@ try {
         $crop_status
     ]);
 
+    $crop_id = $pdo->lastInsertId();
+
+    // Ensure uploads directory exists
+    if (!is_dir('uploads')) {
+        mkdir('uploads', 0777, true);
+    }
+
+    $first_photo_path = null;
+
+    // --- PHOTO PROCESSING LOGIC ---
+    if (isset($_FILES['photos'])) {
+        $uploadedFiles = $_FILES['photos'];
+        
+        // Loop through each submitted array item file
+        for ($i = 0; $i < count($uploadedFiles['name']); $i++) {
+            if ($uploadedFiles['error'][$i] === UPLOAD_ERR_OK) {
+                $tmpName = $uploadedFiles['tmp_name'][$i];
+                $name = time() . "_" . $i . "_" . basename($uploadedFiles['name'][$i]);
+                $targetPath = "uploads/" . $name; // Make sure this folder exists & is writable!
+
+                if (move_uploaded_file($tmpName, $targetPath)) {
+                    // Save path string mapping entries to the crop_photos table
+                    $imgSql = "INSERT INTO crop_photos (crop_id, photo_path) VALUES (?, ?)";
+                    $pdo->prepare($imgSql)->execute([$crop_id, $targetPath]);
+                    
+                    if ($first_photo_path === null) {
+                        $first_photo_path = $targetPath;
+                    }
+                }
+            }
+        }
+
+        // Update the main image_url in the crop table with the first uploaded photo path
+        if ($first_photo_path !== null) {
+            $updateSql = "UPDATE crop SET image_url = ? WHERE crop_id = ?";
+            $pdo->prepare($updateSql)->execute([$first_photo_path, $crop_id]);
+        }
+    }
+
     echo json_encode([
         "success" => true,
-        "message" => "Crop added successfully"
+        "message" => "Crop added successfully with images"
     ]);
 
 } catch (PDOException $e) {
@@ -93,3 +132,4 @@ try {
         "message" => "Database error: " . $e->getMessage()
     ]);
 }
+?>
