@@ -38,13 +38,7 @@ const Navbar = () => {
             <NavLink to="/browse">Browse</NavLink>
             <NavLink to="/ratings">Ratings</NavLink>
 
-            <NavLink to="/register">
-              Register
-            </NavLink>
-
-            <NavLink to="/login">
-              Login
-            </NavLink>
+            
           </>
         )}
 
@@ -99,8 +93,8 @@ const Navbar = () => {
               Ratings
             </NavLink>
 
-            <NavLink to="/farmer">
-              Farmer
+            <NavLink to="/buyer">
+              Buyer
             </NavLink>
 
             <NavLink to="/profile">
