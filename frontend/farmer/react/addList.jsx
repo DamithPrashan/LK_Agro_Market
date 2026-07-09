@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../csss/addList.css";
 
 function AddListing() {
     const [step, setStep] = useState(1);
-
     const [formData, setFormData] = useState({
         cropName: "",
         category: "",
@@ -11,42 +10,66 @@ function AddListing() {
         growthStage: "",
         harvestDate: "",
         price: "",
+        photos: [null, null, null], // Initialize an array with 3 spots
     });
 
+    // Refs to programmatically trigger hidden file inputs
+    const fileInputRefs = [useRef(null), useRef(null), useRef(null)];
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setFormData((prev) => ({
+            ...prev,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
-    // const handleSubmit = () => {
-    //     alert("Listing Submitted Successfully!");
-    //     console.log(formData);
-    // };
+    // Update photo at a specific slot index
+    const handleFileChangeSlot = (e, index) => {
+        if (e.target.files && e.target.files[0]) {
+            const selectedFile = e.target.files[0];
+            setFormData((prev) => {
+                const updatedPhotos = [...prev.photos];
+                updatedPhotos[index] = selectedFile; // Save file to its explicit box slot
+                return { ...prev, photos: updatedPhotos };
+            });
+        }
+    };
+
+    const triggerFileInput = (index) => {
+        fileInputRefs[index].current.click();
+    };
+
     const handleSubmit = async () => {
-        try {
-            const response = await fetch(
-                "/backend/addCrop.php",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                    credentials: "include",
-                }
-            );
+        const data = new FormData();
 
-            const result = await response.json();
+        data.append("cropName", formData.cropName);
+        data.append("category", formData.category);
+        data.append("quantity", formData.quantity);
+        data.append("growthStage", formData.growthStage);
+        data.append("harvestDate", formData.harvestDate);
+        data.append("price", formData.price);
 
-            if (result.success) {
-                alert("Listing Submitted Successfully!");
-            } else {
-                alert(result.message);
+        // Filter out null slots and append to payload
+        formData.photos.forEach((photo) => {
+            if (photo) {
+                data.append("photos[]", photo);
             }
-        } catch (error) {
-            console.error(error);
+        });
+
+        // NOTE: Since you are uploading files via multipart/form-data, 
+        // we must not use JSON headers in fetch or PHP's php://input.
+        const response = await fetch("/backend/addCrop.php", {
+            method: "POST",
+            body: data,
+            credentials: "include"
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert("Listing Submitted Successfully!");
+        } else {
+            alert(result.message);
         }
     };
 
@@ -111,22 +134,48 @@ function AddListing() {
                         </select>
 
                         <input
-                            type="date"
+                            type="text"
+                            placeholder="Harvest Date"
+                            onFocus={(e) => (e.target.type = "date")}
+                            onBlur={(e) => {
+                                if (!e.target.value) e.target.type = "text";
+                            }}
                             name="harvestDate"
                             value={formData.harvestDate}
                             onChange={handleChange}
                         />
 
                         <div className="upload-section">
-                            <label>Upload Photos</label>
+                            <label>Upload Photos (Max 3)</label>
 
                             <div className="photo-boxes">
-                                <div className="photo-box">+</div>
-                                <div className="photo-box">+</div>
-                                <div className="photo-box">+</div>
+                                {[0, 1, 2].map((index) => (
+                                    <div
+                                        className="photo-box"
+                                        key={index}
+                                        onClick={() => triggerFileInput(index)}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        {formData.photos[index] ? (
+                                            <img
+                                                src={URL.createObjectURL(formData.photos[index])}
+                                                alt=""
+                                                className="preview-image"
+                                            />
+                                        ) : (
+                                            "+"
+                                        )}
+                                        {/* Hidden inputs connected programmatically to their box layout */}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            ref={fileInputRefs[index]}
+                                            onChange={(e) => handleFileChangeSlot(e, index)}
+                                            style={{ display: "none" }}
+                                        />
+                                    </div>
+                                ))}
                             </div>
-
-                            <input type="file" multiple />
                         </div>
 
                         <button
@@ -184,6 +233,7 @@ function AddListing() {
                             <p><strong>Growth Stage:</strong> {formData.growthStage}</p>
                             <p><strong>Harvest Date:</strong> {formData.harvestDate}</p>
                             <p><strong>Price:</strong> Rs. {formData.price}</p>
+                            <p><strong>Uploaded Photos:</strong> {formData.photos.filter(Boolean).length}</p>
                         </div>
 
                         <div className="btn-group">
