@@ -1,22 +1,14 @@
+import React, { useState, useEffect } from "react";
 import "../../buyer/csss/buyerDashboard.css";
 import { useNavigate } from "react-router-dom";
 
 export default function BuyerDashboard() {
-  const buyerName = "Nadeeshi";
-const navigate = useNavigate();
-  const stats = {
-    pending: 12,
-    active: 7,
-    completed: 45,
-  };
-
-  const location = "Colombo";
-
-  const recentActivities = [
-    "Reserved 10kg Tomatoes",
-    "New Corn listing available",
-    "Order delivered successfully",
-  ];
+  const navigate = useNavigate();
+  const [buyerName, setBuyerName] = useState("Nadeeshi");
+  const [location, setLocation] = useState("Colombo");
+  const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const quickLinks = [
     { label: "🥦 Browse Crops", key: "browse" },
@@ -25,14 +17,46 @@ const navigate = useNavigate();
     { label: "❤️ Wishlist", key: "wishlist" },
   ];
 
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await fetch("/backend/get_buyer_dashboard.php", {
+          credentials: "include"
+        });
+        const data = await response.json();
+        if (data.success) {
+          setBuyerName(data.buyerName);
+          setLocation(data.location);
+          setStats(data.stats);
+          setRecentActivities(data.recentActivities);
+        } else {
+          console.error("Dashboard fetch failed: ", data.message);
+        }
+      } catch (err) {
+        console.error("Failed to load buyer dashboard details: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: "100px", color: "#1a5c2d", fontSize: "18px", fontWeight: "bold" }}>
+        Loading Dashboard...
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard">
 
       {/* NAVBAR
       <header className="navbar"> */}
-        {/* <div className="logo">🌱 LK Agro Market</div> */}
+      {/* <div className="logo">🌱 LK Agro Market</div> */}
 
-        {/* <nav>
+      {/* <nav>
           <ul>
             <li>Dashboard</li>
             <li>Products</li>
@@ -41,7 +65,7 @@ const navigate = useNavigate();
           </ul>
         </nav> */}
 
-       
+
       {/* </header> */}
 
       {/* HERO */}
@@ -84,7 +108,21 @@ const navigate = useNavigate();
 
         <div className="quick-grid">
           {quickLinks.map((q, i) => (
-            <div className="quick-card" key={i}>
+            <div
+              className="quick-card"
+              key={i}
+              onClick={() => {
+                if (q.key === "browse") {
+                  navigate("/browse");
+                } else if (q.key === "farmers") {
+                  navigate("/farmers");
+                } else if (q.key === "reservations") {
+                  navigate("/buyer/BuyerOrderHistory");
+                } else if (q.key === "wishlist") {
+                  navigate("/wishlist");
+                }
+              }}
+            >
               {q.label}
             </div>
           ))}
@@ -113,17 +151,17 @@ const navigate = useNavigate();
           </p>
 
           <button className="secondary-btn"
-        onClick={() => navigate("/buyer/BuyerOrderHistory")}
->
+            onClick={() => navigate("/buyer/BuyerOrderHistory")}
+          >
             View Full Order History
           </button>
-          
-                                
+
+
         </div>
 
       </section>
 
-      
+
 
     </div>
   );
