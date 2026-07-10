@@ -28,8 +28,17 @@ if (empty($name) || empty($contact) || empty($email) || empty($district) || empt
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(["success" => false, "message" => "Invalid email address."]);
+// Clean and validate contact number format (+94...)
+$sanitizedContact = str_replace([' ', '-'], '', $contact);
+if (!preg_match('/^\+94\d{9}$/', $sanitizedContact)) {
+    echo json_encode(["success" => false, "message" => "Contact number must start with +94 followed by 9 digits (e.g. +94771234567)."]);
+    exit;
+}
+$contact = $sanitizedContact;
+
+// Validate Gmail address format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email)) {
+    echo json_encode(["success" => false, "message" => "Please enter a valid Gmail address (ending in @gmail.com)."]);
     exit;
 }
 
