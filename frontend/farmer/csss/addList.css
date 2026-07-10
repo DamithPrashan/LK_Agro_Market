@@ -215,3 +215,72 @@ body {
     object-fit: cover;
     border-radius: 8px;
 }
+
+/* Price Suggestion Styling */
+.price-suggestion-box {
+    background: #e8f5e9;
+    border: 1px solid #81c784;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    animation: priceFadeIn 0.4s ease;
+}
+
+.suggestion-info {
+    font-size: 15px;
+    color: #2e7d32;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.suggestion-info strong {
+    font-size: 17px;
+}
+
+.suggestion-subtext {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.suggestion-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.use-suggestion-btn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.use-suggestion-btn:hover {
+    background: #1b5e20;
+}
+
+.suggestion-loading {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+@keyframes priceFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -55,6 +55,7 @@ try {
     $sql = "INSERT INTO crop 
     (
         farmer_id,
+        district,
         crop_name,
         category,
         location,
@@ -66,12 +67,13 @@ try {
     )
     VALUES
     (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     )";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $farmer_id,
+        $location,
         $cropName,
         $category,
         $location,

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../csss/EditList.css";
+import { useAuth } from "../../../src/context/AuthContext";
 
 function EditList() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -17,6 +19,33 @@ function EditList() {
     price: state?.price || "",
     stage: state?.stage || "planted",
   });
+
+  const [suggestion, setSuggestion] = useState(null);
+  const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+
+  useEffect(() => {
+    if (step === 2 && formData.cropName) {
+      setLoadingSuggestion(true);
+      const userDistrict = user?.district || "";
+      fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
+        credentials: "include"
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        setLoadingSuggestion(false);
+        if (data.success) {
+          setSuggestion(data);
+        } else {
+          setSuggestion(null);
+        }
+      })
+      .catch((err) => {
+        setLoadingSuggestion(false);
+        setSuggestion(null);
+        console.error("Error fetching price suggestion:", err);
+      });
+    }
+  }, [step, formData.cropName, user?.district]);
 
   const handleChange = (e) => {
     setFormData({
@@ -157,6 +186,49 @@ function EditList() {
               value={formData.price}
               onChange={handleChange}
             />
+
+            {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
+            
+            {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
+              <div className="price-suggestion-box">
+                {suggestion.basis === 'district' ? (
+                  <>
+                    <p className="suggestion-info">
+                      ℹ Suggested price: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                    </p>
+                    <p className="suggestion-subtext">
+                      Based on {suggestion.sample_count} similar listings in your district.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="suggestion-info">
+                      No local data yet. National average for this crop: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                    </p>
+                    <p className="suggestion-subtext">
+                      Based on {suggestion.sample_count} listings across Sri Lanka.
+                    </p>
+                  </>
+                )}
+                <div className="suggestion-actions">
+                  <button 
+                    type="button" 
+                    className="use-suggestion-btn"
+                    onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
+                  >
+                    Use Suggested Price
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
+              <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
+                <p className="suggestion-info" style={{ color: '#666' }}>
+                  ℹ No historical pricing data available for "{formData.cropName || 'this crop'}".
+                </p>
+              </div>
+            )}
 
             <div className="btn-group">
               <button className="back-btn" onClick={prevStep}>
