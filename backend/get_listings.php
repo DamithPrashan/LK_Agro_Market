@@ -92,8 +92,14 @@ try {
             }
         }
         
+        // Fetch crop photos from crop_photos table
+        $photosStmt = $pdo->prepare("SELECT photo_path FROM crop_photos WHERE crop_id = ?");
+        $photosStmt->execute([$crop_id]);
+        $crop_photos = $photosStmt->fetchAll(PDO::FETCH_COLUMN);
+
         $crop['rating'] = $average_rating;
         $crop['reviews'] = $reviews;
+        $crop['images'] = $crop_photos;
         
         echo json_encode([
             "success" => true,

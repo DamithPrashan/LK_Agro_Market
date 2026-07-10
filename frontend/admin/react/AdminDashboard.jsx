@@ -8,10 +8,25 @@ import StatCard from "./AdminDashboard/StatCard.jsx";
 import DashboardCharts from "./AdminDashboard/DashboardCharts.jsx";
 import RatingCard from "./AdminDashboard/RatingCard.jsx";
 import CalendarSection from "./AdminDashboard/CalendarSection.jsx";
+import { useAuth } from "../../../src/context/AuthContext";
 
 import "../csss/AdminDashboard/admin.css";
 
 function AdminDashboard() {
+    const { user } = useAuth();
+    const [welcomeMsg, setWelcomeMsg] = useState("Welcome");
+
+    useEffect(() => {
+        if (user) {
+            const key = `hasLoggedIn_${user.id}`;
+            if (localStorage.getItem(key)) {
+                setWelcomeMsg(`Welcome Back ${user.name} 👋`);
+            } else {
+                setWelcomeMsg(`Welcome ${user.name} 👋`);
+                localStorage.setItem(key, "true");
+            }
+        }
+    }, [user]);
     const [stats, setStats] = useState({
         farmers: "0",
         buyers: "0",
@@ -37,7 +52,7 @@ function AdminDashboard() {
 
             <div className="dashboard-header">
 
-                <h1>Welcome</h1>
+                <h1>{welcomeMsg}</h1>
 
                 <p>
                     Monitor LK Agro Market activity

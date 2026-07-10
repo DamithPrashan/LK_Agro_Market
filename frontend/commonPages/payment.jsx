@@ -79,8 +79,8 @@ export default function Payment() {
               ))}
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 20 }}>
-              <button className="btn btn-primary btn-sm" onClick={() => navigate("/buyer/dashboard")}>View My Orders</button>
-              <button className="btn btn-outline btn-sm" onClick={() => navigate("/buyer/browse")}>Browse More</button>
+              <button className="btn btn-primary btn-sm" onClick={() => navigate("/buyer")}>View My Orders</button>
+              <button className="btn btn-outline btn-sm" onClick={() => navigate("/browse")}>Browse More</button>
             </div>
           </div>
         </main>

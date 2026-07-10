@@ -62,6 +62,17 @@ try {
     ");
     echo "Verified/Created 'notifications' table successfully!<br>";
 
+    // 6. Create 'crop_photos' table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `crop_photos` (
+          `id` INT AUTO_INCREMENT PRIMARY KEY,
+          `crop_id` INT NOT NULL,
+          `photo_path` VARCHAR(255) NOT NULL,
+          FOREIGN KEY (`crop_id`) REFERENCES `crop`(`crop_id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+    echo "Verified/Created 'crop_photos' table successfully!<br>";
+
 } catch (PDOException $e) {
     echo "Error updating database: " . $e->getMessage();
 }
