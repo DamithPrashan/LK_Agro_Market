@@ -12,105 +12,66 @@ require_login();
 $user_id = $_SESSION['user']['id'];
 
 try {
-
-    // Get farmer details
-    $farmerQuery = $pdo->prepare("
-        SELECT farmer_id
-        FROM farmer
-        WHERE user_id = ?
-    ");
-
+    // Get the logged-in farmer's own farmer_id (used for the ownership check below)
+    $farmerQuery = $pdo->prepare("SELECT farmer_id FROM farmer WHERE user_id = ?");
     $farmerQuery->execute([$user_id]);
-
-    $farmer = $farmerQuery->fetch(PDO::FETCH_ASSOC);
+    $farmer = $farmerQuery->fetch();
 
     if (!$farmer) {
         echo json_encode([
             "success" => false,
-            "message" => "Unauthorized: Farmer not found."
+            "message" => "Unauthorized: Logged in user is not registered as a farmer."
         ]);
         exit;
     }
 
     $farmer_id = $farmer['farmer_id'];
 
-    // Read JSON data
-    $data = json_decode(file_get_contents("php://input"), true);
+    // EditList.jsx sends JSON (Content-Type: application/json), not FormData,
+    // so we read the raw body instead of $_POST here.
+    $input = json_decode(file_get_contents("php://input"), true);
 
-    $crop_id = isset($data['crop_id']) ? intval($data['crop_id']) : 0;
-    $cropName = isset($data['cropName']) ? trim($data['cropName']) : "";
-    $category = isset($data['category']) ? trim($data['category']) : "";
-    $quantity = isset($data['quantity']) ? floatval($data['quantity']) : 0;
-    $price = isset($data['price']) ? floatval($data['price']) : 0;
-    $growthStage = isset($data['growthStage']) ? trim($data['growthStage']) : "planted";
-    $harvestDate = isset($data['harvestDate']) ? trim($data['harvestDate']) : "";
+    $crop_id     = isset($input['crop_id']) ? intval($input['crop_id']) : 0;
+    $cropName    = isset($input['cropName']) ? trim($input['cropName']) : '';
+    $category    = isset($input['category']) ? trim($input['category']) : '';
+    $quantity    = isset($input['quantity']) ? floatval($input['quantity']) : 0.0;
+    $location    = isset($input['location']) ? trim($input['location']) : '';
+    $price       = isset($input['price']) ? floatval($input['price']) : 0.0;
+    $growthStage = isset($input['growthStage']) ? strtolower(trim($input['growthStage'])) : 'planted';
+    $harvestDate = isset($input['harvestDate']) ? trim($input['harvestDate']) : '';
 
-    // Validation
-    if (
-        $crop_id <= 0 ||
-        empty($cropName) ||
-        empty($category) ||
-        $quantity <= 0 ||
-        $price <= 0 ||
-        empty($harvestDate)
-    ) {
+    if ($crop_id <= 0 || empty($cropName) || empty($category) || $quantity <= 0 || $price <= 0 || empty($harvestDate) || empty($location)) {
         echo json_encode([
             "success" => false,
-            "message" => "Please fill all fields correctly."
+            "message" => "Please fill in all crop details correctly."
         ]);
         exit;
     }
 
-    // Validate growth stage
-    $allowedStages = [
-        "planted",
-        "growing",
-        "ready_for_harvest",
-        "harvested"
-    ];
-
-    if (!in_array($growthStage, $allowedStages)) {
-        $growthStage = "planted";
+    // Validate enum options for growth stage
+    $allowed_stages = ['planted', 'growing', 'ready_for_harvest', 'harvested'];
+    if (!in_array($growthStage, $allowed_stages)) {
+        $growthStage = 'planted';
     }
 
-    // Check ownership
-    $check = $pdo->prepare("
-        SELECT crop_id
-        FROM crop
-        WHERE crop_id = ?
-        AND farmer_id = ?
-    ");
-
-    $check->execute([$crop_id, $farmer_id]);
-
-    if ($check->rowCount() == 0) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Crop not found or permission denied."
-        ]);
-        exit;
-    }
-
-    // Update crop
-    $sql = "
-        UPDATE crop
-        SET
-            crop_name = ?,
-            category = ?,
-            quantity = ?,
-            price_per_unit = ?,
-            growth_stage = ?,
-            harvest_date = ?
-        WHERE crop_id = ?
-        AND farmer_id = ?
-    ";
+    // Ownership check baked into the WHERE clause: a farmer can only ever
+    // update a row that actually belongs to them, even if they tamper with crop_id.
+    $sql = "UPDATE crop SET
+                crop_name = ?,
+                category = ?,
+                quantity = ?,
+                location = ?,
+                price_per_unit = ?,
+                growth_stage = ?,
+                harvest_date = ?
+            WHERE crop_id = ? AND farmer_id = ?";
 
     $stmt = $pdo->prepare($sql);
-
     $stmt->execute([
         $cropName,
         $category,
         $quantity,
+        $location,
         $price,
         $growthStage,
         $harvestDate,
@@ -118,16 +79,23 @@ try {
         $farmer_id
     ]);
 
+    if ($stmt->rowCount() === 0) {
+        echo json_encode([
+            "success" => false,
+            "message" => "No matching listing found, or you don't have permission to edit it."
+        ]);
+        exit;
+    }
+
     echo json_encode([
         "success" => true,
-        "message" => "Crop listing updated successfully."
+        "message" => "Listing updated successfully."
     ]);
 
 } catch (PDOException $e) {
-
     echo json_encode([
         "success" => false,
-        "message" => "Database Error: " . $e->getMessage()
+        "message" => "Database error: " . $e->getMessage()
     ]);
-
 }
+?>
