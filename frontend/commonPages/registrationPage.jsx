@@ -16,8 +16,22 @@ const DISTRICTS = [
 function validate(v) {
   const e = {};
   if (!v.name.trim()) e.name = "Full name is required.";
-  if (!v.contact.trim()) e.contact = "Contact number is required.";
-  if (!/\S+@\S+\.\S+/.test(v.email)) e.email = "Enter a valid email address.";
+  
+  // Clean contact number and validate
+  const cleanContact = v.contact.trim().replace(/[\s-]/g, "");
+  if (!cleanContact) {
+    e.contact = "Contact number is required.";
+  } else if (!/^\+94\d{9}$/.test(cleanContact)) {
+    e.contact = "Contact number must start with +94 followed by 9 digits (e.g. +94771234567).";
+  }
+
+  // Validate Gmail
+  if (!v.email.trim()) {
+    e.email = "Email address is required.";
+  } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(v.email)) {
+    e.email = "Please enter a valid Gmail address (ending in @gmail.com).";
+  }
+
   if (!v.district) e.district = "Please select your district.";
   if (v.password.length < 8) e.password = "Password must be at least 8 characters.";
   if (v.password !== v.confirm) e.confirm = "Passwords do not match.";
@@ -45,7 +59,13 @@ export default function RegistrationPage() {
     setApiErr("");
 
     const body = new FormData();
-    Object.entries(values).forEach(([k, v]) => body.append(k, v));
+    Object.entries(values).forEach(([k, v]) => {
+      if (k === "contact") {
+        body.append(k, v.trim().replace(/[\s-]/g, ""));
+      } else {
+        body.append(k, v);
+      }
+    });
     body.append("role", role);
     if (nicFile) body.append("nic_image", nicFile);
     if (evidenceFile) body.append("evidence", evidenceFile);

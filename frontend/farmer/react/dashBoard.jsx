@@ -12,6 +12,7 @@ function DashBoard() {
     const [myCrops, setCrops] = useState([]);
     const [showOrdersMenu, setShowOrdersMenu] = useState(false);
     const [welcomeMsg, setWelcomeMsg] = useState("Hello 👋");
+    const [incomingOrders, setIncomingOrders] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -34,8 +35,47 @@ function DashBoard() {
             });
     };
 
+    const fetchIncomingOrders = () => {
+        fetch("/backend/get_farmer_orders.php", {
+            credentials: "include",
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    setIncomingOrders(data.orders.filter(o => o.status === "Pending"));
+                }
+            })
+            .catch((err) => console.error("Error fetching incoming orders:", err));
+    };
+
+    const handleOrderAction = async (orderId, action) => {
+        try {
+            const res = await fetch("/backend/update_order_status.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    action: action
+                }),
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                fetchIncomingOrders();
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            alert("Error updating order status.");
+        }
+    };
+
     useEffect(() => {
         fetchCrops();
+        fetchIncomingOrders();
     }, []);
     const deleteCrop = async (cropId) => {
 
@@ -238,35 +278,24 @@ function DashBoard() {
 
                     {/* Orders */}
                     <div className="section orders-section">
-
                         <h3>INCOMING ORDERS</h3>
+                        {incomingOrders.length > 0 ? (
+                            incomingOrders.map((order) => (
+                                <div className="order-card" key={order.id}>
+                                    <p><b>Buyer :</b> {order.buyer}</p>
+                                    <p><b>Crop :</b> {order.crop}</p>
+                                    <p><b>Quantity :</b> {order.quantity}</p>
+                                    <p><b>Collection :</b> {order.date}</p>
 
-                        <div className="order-card">
-                            <p><b>Buyer :</b> ABC Hotel</p>
-                            <p><b>Crop :</b> Tomato</p>
-                            <p><b>Quantity :</b> 50 kg</p>
-                            <p><b>Collection :</b> 2026-08-10</p>
-
-                            <div className="buttons">
-                                <button className="accept">Accept</button>
-                                <button className="partial">Partial</button>
-                                <button className="decline">Decline</button>
-                            </div>
-                        </div>
-
-                        <div className="order-card">
-                            <p><b>Buyer :</b> XYZ Restaurant</p>
-                            <p><b>Crop :</b> Carrot</p>
-                            <p><b>Quantity :</b> 30 kg</p>
-                            <p><b>Collection :</b> 2026-07-28</p>
-
-                            <div className="buttons">
-                                <button className="accept">Accept</button>
-                                <button className="partial">Partial</button>
-                                <button className="decline">Decline</button>
-                            </div>
-                        </div>
-
+                                    <div className="buttons">
+                                        <button className="accept" onClick={() => handleOrderAction(order.db_id, 'accept')}>Accept</button>
+                                        <button className="decline" onClick={() => handleOrderAction(order.db_id, 'decline')}>Decline</button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p style={{ color: "#7f8c8d", fontStyle: "italic", padding: "10px" }}>No new incoming orders.</p>
+                        )}
                     </div>
 
                 </div>

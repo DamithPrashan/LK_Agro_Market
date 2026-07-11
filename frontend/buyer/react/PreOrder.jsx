@@ -156,8 +156,8 @@ export default function CropDetail() {
     images.push("https://images.unsplash.com/photo-1582281298055-e25b84a5a2f4");
   }
 
-  // Handle mock reservation submission
-  const handlePreOrder = (e) => {
+  // Handle actual reservation submission
+  const handlePreOrder = async (e) => {
     e.preventDefault();
     if (!quantity || parseFloat(quantity) <= 0) {
       setSubmitMsg("Please enter a valid quantity.");
@@ -171,12 +171,32 @@ export default function CropDetail() {
     setSubmitting(true);
     setSubmitMsg("");
     
-    setTimeout(() => {
+    try {
+      const response = await fetch("/backend/place_preorder.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          crop_id: cropId,
+          quantity: parseFloat(quantity),
+          collection_date: deliveryDate,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSubmitMsg(`Success! Your pre-order request for ${quantity} kg has been received.`);
+        setQuantity("");
+        setDeliveryDate("");
+      } else {
+        setSubmitMsg(data.message || "Failed to place pre-order.");
+      }
+    } catch (err) {
+      setSubmitMsg("Failed to connect to the server.");
+      console.error("Failed to place pre-order: ", err);
+    } finally {
       setSubmitting(false);
-      setSubmitMsg(`Success! Your pre-order request for ${quantity} kg has been received.`);
-      setQuantity("");
-      setDeliveryDate("");
-    }, 1500);
+    }
   };
 
   return (
