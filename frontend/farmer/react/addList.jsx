@@ -27,20 +27,20 @@ function AddListing() {
             fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
                 credentials: "include"
             })
-            .then((res) => res.json())
-            .then((data) => {
-                setLoadingSuggestion(false);
-                if (data.success) {
-                    setSuggestion(data);
-                } else {
+                .then((res) => res.json())
+                .then((data) => {
+                    setLoadingSuggestion(false);
+                    if (data.success) {
+                        setSuggestion(data);
+                    } else {
+                        setSuggestion(null);
+                    }
+                })
+                .catch((err) => {
+                    setLoadingSuggestion(false);
                     setSuggestion(null);
-                }
-            })
-            .catch((err) => {
-                setLoadingSuggestion(false);
-                setSuggestion(null);
-                console.error("Error fetching price suggestion:", err);
-            });
+                    console.error("Error fetching price suggestion:", err);
+                });
         }
     }, [step, formData.cropName, user?.district]);
 
@@ -240,7 +240,7 @@ function AddListing() {
                         />
 
                         {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
-                        
+
                         {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
                             <div className="price-suggestion-box">
                                 {suggestion.basis === 'district' ? (
@@ -263,17 +263,17 @@ function AddListing() {
                                     </>
                                 )}
                                 <div className="suggestion-actions">
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="use-suggestion-btn"
                                         onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
                                     >
-                                        Use Suggested Price
+                                        Use Average Price
                                     </button>
                                 </div>
                             </div>
                         )}
-                        
+
                         {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
                             <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
                                 <p className="suggestion-info" style={{ color: '#666' }}>
