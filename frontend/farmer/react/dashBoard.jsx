@@ -7,7 +7,6 @@ import {
     FaTimes,
     FaSeedling,
     FaClipboardList,
-    FaMoneyBillWave,
     FaExclamationCircle,
     FaPlus,
     FaPen,
@@ -181,7 +180,12 @@ function DashBoard() {
                         </div>
                         <div className="stat-body">
                             <h4>Active Listings</h4>
-                            <h2>12</h2>
+                            <h2>
+                                {
+                                    myCrops.filter((c) => c.crop_status === "active")
+                                        .length
+                                }
+                            </h2>
                             <p>View all listings</p>
                         </div>
                     </div>
@@ -192,19 +196,8 @@ function DashBoard() {
                         </div>
                         <div className="stat-body">
                             <h4>Pending Orders</h4>
-                            <h2>5</h2>
+                            <h2>{incomingOrders.length}</h2>
                             <p>View all orders</p>
-                        </div>
-                    </div>
-
-                    <div className="stat-card yellow">
-                        <div className="stat-icon">
-                            <FaMoneyBillWave />
-                        </div>
-                        <div className="stat-body">
-                            <h4>Revenue (This Month)</h4>
-                            <h2>Rs. 25,000</h2>
-                            <p>View details</p>
                         </div>
                     </div>
 
@@ -246,10 +239,9 @@ function DashBoard() {
                                             <th>Crop</th>
                                             <th>Category</th>
                                             <th>Quantity</th>
-                                            <th>Location</th>
-                                            <th>Growth Stage</th>
                                             <th>Price / Kg</th>
                                             <th>Harvest Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -260,15 +252,23 @@ function DashBoard() {
                                                 <td data-label="Crop">{crop.crop_name}</td>
                                                 <td data-label="Category">{crop.category}</td>
                                                 <td data-label="Quantity">{crop.quantity} kg</td>
-                                                <td data-label="Location">{crop.location}</td>
-                                                <td data-label="Growth Stage">
-                                                    {crop.growth_stage}
-                                                </td>
                                                 <td data-label="Price / Kg">
                                                     Rs.{crop.price_per_unit}
                                                 </td>
                                                 <td data-label="Harvest Date">
                                                     {crop.harvest_date}
+                                                </td>
+
+                                                <td data-label="Status">
+                                                    <span
+                                                        className={
+                                                            crop.crop_status === "active"
+                                                                ? "status active-status"
+                                                                : "status sold-status"
+                                                        }
+                                                    >
+                                                        {crop.crop_status}
+                                                    </span>
                                                 </td>
 
                                                 <td data-label="Action">
@@ -282,7 +282,6 @@ function DashBoard() {
                                                                         cropName: crop.crop_name,
                                                                         category: crop.category,
                                                                         quantity: crop.quantity,
-                                                                        location: crop.location,
                                                                         harvestDate: crop.harvest_date,
                                                                         price: crop.price_per_unit,
                                                                         stage: crop.growth_stage,

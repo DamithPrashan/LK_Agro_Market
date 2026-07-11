@@ -111,16 +111,19 @@ function AddListing() {
             <div className="listing-card">
                 <h2>Add New Crop</h2>
 
-                <div className="stepper">
-                    <div className={`step ${step >= 1 ? "active-step" : ""}`}>1</div>
-                    <div className={`step ${step >= 2 ? "active-step" : ""}`}>2</div>
-                    <div className={`step ${step >= 3 ? "active-step" : ""}`}>3</div>
-                </div>
-
-                <div className="step-labels">
-                    <span>Crop Details</span>
-                    <span>Pricing</span>
-                    <span>Review</span>
+                <div className="edit-steps">
+                    <div className={`edit-step ${step === 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
+                        <div className="edit-circle">1</div>
+                        <span>Crop Details</span>
+                    </div>
+                    <div className={`edit-step ${step === 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
+                        <div className="edit-circle">2</div>
+                        <span>Pricing</span>
+                    </div>
+                    <div className={`edit-step ${step === 3 ? "active" : ""}`}>
+                        <div className="edit-circle">3</div>
+                        <span>Review</span>
+                    </div>
                 </div>
 
                 {step === 1 && (
