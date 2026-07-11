@@ -20,7 +20,7 @@ function ComplaintPage() {
     const fetchOrders = async () => {
       setFetchLoading(true);
       try {
-        const response = await fetch("/backend/get_orders.php");
+        const response = await fetch("/backend/get_buyer_complaint_orders.php");
         const data = await response.json();
         if (data.success && data.orders) {
           setOrders(data.orders);
@@ -143,11 +143,15 @@ function ComplaintPage() {
                 required
               >
                 <option value="">-- Select Order --</option>
-                {orders.map((ord) => (
-                  <option key={ord.id} value={ord.id}>
-                    Order #{ord.id} — {parseFloat(ord.quantity).toFixed(0)}kg {ord.crop_name} — Rs {parseFloat(ord.total_price).toFixed(0)} — Farmer: {ord.farmer_name}
-                  </option>
-                ))}
+                {orders.length === 0 ? (
+                  <option value="" disabled>No eligible orders found</option>
+                ) : (
+                  orders.map((ord) => (
+                    <option key={ord.id} value={ord.id}>
+                      {ord.orderId} - {ord.cropName} - {ord.date}
+                    </option>
+                  ))
+                )}
               </select>
             )}
 

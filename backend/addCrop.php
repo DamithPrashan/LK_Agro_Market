@@ -26,18 +26,22 @@ try {
     }
     
     $farmer_id = $farmer['farmer_id'];
-    $location = $farmer['location'];
     $crop_status = "active";
 
     // Extracting from $_POST
     $cropName = isset($_POST['cropName']) ? trim($_POST['cropName']) : '';
     $category = isset($_POST['category']) ? trim($_POST['category']) : '';
     $quantity = isset($_POST['quantity']) ? floatval($_POST['quantity']) : 0.0;
+    // Use the district selected in the Add Listing form.
+    // Fall back to the farmer's profile location only if none was submitted.
+    $location = isset($_POST['location']) && trim($_POST['location']) !== ''
+        ? trim($_POST['location'])
+        : $farmer['location'];
     $price = isset($_POST['price']) ? floatval($_POST['price']) : 0.0;
     $growthStage = isset($_POST['growthStage']) ? strtolower(trim($_POST['growthStage'])) : 'planted';
     $harvestDate = isset($_POST['harvestDate']) ? trim($_POST['harvestDate']) : '';
 
-    if (empty($cropName) || empty($category) || $quantity <= 0 || $price <= 0 || empty($harvestDate)) {
+    if (empty($cropName) || empty($category) || $quantity <= 0 || $price <= 0 || empty($harvestDate) || empty($location)) {
         echo json_encode([
             "success" => false,
             "message" => "Please fill in all crop details correctly."

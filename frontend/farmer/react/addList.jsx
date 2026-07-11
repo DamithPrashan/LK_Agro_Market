@@ -11,6 +11,7 @@ function AddListing() {
         cropName: "",
         category: "",
         quantity: "",
+        location: "",
         growthStage: "",
         harvestDate: "",
         price: "",
@@ -27,20 +28,20 @@ function AddListing() {
             fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
                 credentials: "include"
             })
-            .then((res) => res.json())
-            .then((data) => {
-                setLoadingSuggestion(false);
-                if (data.success) {
-                    setSuggestion(data);
-                } else {
+                .then((res) => res.json())
+                .then((data) => {
+                    setLoadingSuggestion(false);
+                    if (data.success) {
+                        setSuggestion(data);
+                    } else {
+                        setSuggestion(null);
+                    }
+                })
+                .catch((err) => {
+                    setLoadingSuggestion(false);
                     setSuggestion(null);
-                }
-            })
-            .catch((err) => {
-                setLoadingSuggestion(false);
-                setSuggestion(null);
-                console.error("Error fetching price suggestion:", err);
-            });
+                    console.error("Error fetching price suggestion:", err);
+                });
         }
     }, [step, formData.cropName, user?.district]);
 
@@ -76,6 +77,7 @@ function AddListing() {
         data.append("cropName", formData.cropName);
         data.append("category", formData.category);
         data.append("quantity", formData.quantity);
+        data.append("location", formData.location);
         data.append("growthStage", formData.growthStage);
         data.append("harvestDate", formData.harvestDate);
         data.append("price", formData.price);
@@ -109,16 +111,19 @@ function AddListing() {
             <div className="listing-card">
                 <h2>Add New Crop</h2>
 
-                <div className="stepper">
-                    <div className={`step ${step >= 1 ? "active-step" : ""}`}>1</div>
-                    <div className={`step ${step >= 2 ? "active-step" : ""}`}>2</div>
-                    <div className={`step ${step >= 3 ? "active-step" : ""}`}>3</div>
-                </div>
-
-                <div className="step-labels">
-                    <span>Crop Details</span>
-                    <span>Pricing</span>
-                    <span>Review</span>
+                <div className="edit-steps">
+                    <div className={`edit-step ${step === 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
+                        <div className="edit-circle">1</div>
+                        <span>Crop Details</span>
+                    </div>
+                    <div className={`edit-step ${step === 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
+                        <div className="edit-circle">2</div>
+                        <span>Pricing</span>
+                    </div>
+                    <div className={`edit-step ${step === 3 ? "active" : ""}`}>
+                        <div className="edit-circle">3</div>
+                        <span>Review</span>
+                    </div>
                 </div>
 
                 {step === 1 && (
@@ -151,6 +156,39 @@ function AddListing() {
                             value={formData.quantity}
                             onChange={handleChange}
                         />
+
+                        <select
+                            name="location"
+                            value={formData.location}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select District</option>
+                            <option value="Ampara">Ampara</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Badulla">Badulla</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Hambantota">Hambantota</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Kegalle">Kegalle</option>
+                            <option value="Kilinochchi">Kilinochchi</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Mannar">Mannar</option>
+                            <option value="Matale">Matale</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Monaragala">Monaragala</option>
+                            <option value="Mullaitivu">Mullaitivu</option>
+                            <option value="Nuwara Eliya">Nuwara Eliya</option>
+                            <option value="Polonnaruwa">Polonnaruwa</option>
+                            <option value="Puttalam">Puttalam</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                        </select>
 
                         <select
                             name="growthStage"
@@ -240,7 +278,7 @@ function AddListing() {
                         />
 
                         {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
-                        
+
                         {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
                             <div className="price-suggestion-box">
                                 {suggestion.basis === 'district' ? (
@@ -263,17 +301,17 @@ function AddListing() {
                                     </>
                                 )}
                                 <div className="suggestion-actions">
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="use-suggestion-btn"
                                         onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
                                     >
-                                        Use Suggested Price
+                                        Use Average Price
                                     </button>
                                 </div>
                             </div>
                         )}
-                        
+
                         {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
                             <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
                                 <p className="suggestion-info" style={{ color: '#666' }}>
@@ -308,6 +346,7 @@ function AddListing() {
                             <p><strong>Crop Name:</strong> {formData.cropName}</p>
                             <p><strong>Category:</strong> {formData.category}</p>
                             <p><strong>Quantity:</strong> {formData.quantity} Kg</p>
+                            <p><strong>Location:</strong> {formData.location}</p>
                             <p><strong>Growth Stage:</strong> {formData.growthStage}</p>
                             <p><strong>Harvest Date:</strong> {formData.harvestDate}</p>
                             <p><strong>Price:</strong> Rs. {formData.price}</p>
