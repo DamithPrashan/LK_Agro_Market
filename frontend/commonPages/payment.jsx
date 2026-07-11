@@ -1,62 +1,124 @@
-import { useState } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
 const fmt = (n) => "Rs " + Number(n).toLocaleString("en-LK");
 
-// Demo order used when page is accessed directly without router state
-const DEMO = {
-  id: 2041, crop_name: "Tomato", crop_emoji: "🍅",
-  farmer_name: "Randeniya Farm", farmer_verified: true,
-  quantity: 60, price_per_unit: 85,
-  collection_date: "Jun 22, 2026", payment_status: "pending",
-};
-
 export default function Payment() {
-  const location = useLocation();
+  const { orderId } = useParams();
   const navigate = useNavigate();
-  const order = location.state?.order ?? DEMO;
 
-  const isPrePayment = order.payment_status === "pending";
-  const total = order.quantity * order.price_per_unit;
-  const prePayment = Math.round(total / 3);
-  const balance = total - prePayment;
-  const amountDue = isPrePayment ? prePayment : balance;
-
+  const [order, setOrder] = useState(null);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [method, setMethod] = useState("bank");
   const [proof, setProof] = useState(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!orderId) {
+        setError("No order ID provided.");
+        setFetchLoading(false);
+        return;
+      }
+      setFetchLoading(true);
+      setError("");
+      try {
+        const res = await fetch(`/backend/get_order_payment_details.php?orderId=${orderId}`, {
+          credentials: "include"
+        });
+        const data = await res.json();
+        if (data.success && data.order) {
+          setOrder(data.order);
+        } else {
+          setError(data.message || "Failed to load order payment details.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Network error loading order payment details.");
+      } finally {
+        setFetchLoading(false);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!proof) { setError("Please upload your payment receipt or screenshot."); return; }
     setLoading(true); setError("");
+
+    const isPrePayment = order.paymentStatus === "pending";
+    const total = order.subtotal;
+    const amountDue = isPrePayment ? order.prePaymentDue : order.balanceOnCollection;
+
     const body = new FormData();
     body.append("order_id", order.id);
     body.append("payment_type", isPrePayment ? "prepayment" : "balance");
     body.append("amount", amountDue);
     body.append("method", method);
     body.append("proof", proof);
+
     try {
-      const res = await fetch("/backend/Apis/submit_payment.php",
-        { method: "POST", body, credentials: "include" });
+      const res = await fetch("/backend/Apis/submit_payment.php", {
+        method: "POST",
+        body,
+        credentials: "include"
+      });
       const data = await res.json();
-      if (data.success) setDone(true);
-      else setError(data.message || "Payment submission failed.");
-    } catch {
+      if (data.success) {
+        setDone(true);
+      } else {
+        setError(data.message || "Payment submission failed.");
+      }
+    } catch (err) {
+      console.error(err);
       setError("Network error. Make sure XAMPP is running.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (fetchLoading) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <h3>Loading order payment details...</h3>
+      </div>
+    );
+  }
+
+  if (error && !order) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+        <h2 style={{ color: "#c0392b", marginBottom: "15px" }}>Error</h2>
+        <p style={{ marginBottom: "25px", textAlign: "center" }}>{error}</p>
+        {/* edit for payment page confirm */}
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button className="btn btn-primary" onClick={() => navigate("/buyer/BuyerOrderHistory")} style={{ cursor: "pointer", padding: "8px 16px" }}>
+            Go to Order History
+          </button>
+          <button className="btn btn-outline" onClick={() => navigate(-1)} style={{ cursor: "pointer", padding: "8px 16px", background: "none", border: "1px solid #ccc", borderRadius: "var(--r-md)" }}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!order) return null;
+
+  const isPrePayment = order.paymentStatus === "pending";
+  const total = order.subtotal;
+  const amountDue = isPrePayment ? order.prePaymentDue : order.balanceOnCollection;
+  const balance = order.balanceOnCollection;
+
   if (done) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-
         <main style={s.page}>
           <div className="card" style={{ maxWidth: 460, width: "100%", textAlign: "center", padding: "32px 28px" }}>
             <div style={{ fontSize: 52, marginBottom: 12 }}>✅</div>
@@ -71,7 +133,7 @@ export default function Payment() {
             <div style={s.sumBox}>
               {[
                 ["Order", `#${order.id}`],
-                ["Crop", `${order.crop_name} · ${order.quantity} kg`],
+                ["Crop", `${order.cropName} · ${order.quantity} kg`],
                 ["Amount paid", fmt(amountDue)],
                 ...(isPrePayment ? [["Balance on collection", fmt(balance)]] : []),
               ].map(([k, v]) => (
@@ -79,19 +141,17 @@ export default function Payment() {
               ))}
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 20 }}>
-              <button className="btn btn-primary btn-sm" onClick={() => navigate("/buyer")}>View My Orders</button>
+              <button className="btn btn-primary btn-sm" onClick={() => navigate("/buyer/BuyerOrderHistory")}>View My Orders</button>
               <button className="btn btn-outline btn-sm" onClick={() => navigate("/browse")}>Browse More</button>
             </div>
           </div>
         </main>
-
       </div>
     );
   }
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-
       <main style={s.page}>
         <div style={{ width: "100%", maxWidth: 500 }}>
           <button onClick={() => navigate(-1)} style={s.back}>← Back</button>
@@ -100,21 +160,21 @@ export default function Payment() {
 
           {/* Order summary */}
           <div className="card" style={{ marginBottom: 14, display: "flex", gap: 14, alignItems: "center", borderColor: "var(--g-100)" }}>
-            <div style={{ fontSize: 38, flexShrink: 0 }}>{order.crop_emoji}</div>
+            <div style={{ fontSize: 38, flexShrink: 0 }}>{order.cropEmoji}</div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--g-800)" }}>{order.crop_name} — {fmt(order.price_per_unit)}/kg</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--g-800)" }}>{order.cropName} — {fmt(order.pricePerUnit)}/kg</div>
               <div style={{ fontSize: 12, color: "var(--t-3)", margin: "2px 0 4px" }}>
-                {order.farmer_name}
-                {order.farmer_verified && <span className="badge badge-green" style={{ marginLeft: 6, fontSize: 9 }}>✓ Verified</span>}
+                {order.farmerName}
+                {order.farmerVerified && <span className="badge badge-green" style={{ marginLeft: 6, fontSize: 9 }}>✓ Verified</span>}
               </div>
-              <div style={{ fontSize: 11, color: "var(--t-2)" }}>{order.quantity} kg · Collection {order.collection_date}</div>
+              <div style={{ fontSize: 11, color: "var(--t-2)" }}>{order.quantity} kg · Collection {order.collectionDate}</div>
             </div>
           </div>
 
           {/* Payment breakdown */}
           <div style={s.payBox}>
             <p className="section-label" style={{ marginBottom: 10 }}>Payment Breakdown</p>
-            <div style={s.payRow}><span>{order.quantity} kg × {fmt(order.price_per_unit)}</span><span style={s.payTotal}>{fmt(total)}</span></div>
+            <div style={s.payRow}><span>{order.quantity} kg × {fmt(order.pricePerUnit)}</span><span style={s.payTotal}>{fmt(total)}</span></div>
             <hr style={{ border: "none", borderTop: "1px solid var(--g-100)", margin: "8px 0" }} />
             <div style={{ ...s.payRow, background: "var(--a-50)", margin: "0 -16px", padding: "8px 16px" }}>
               <span style={{ fontWeight: 700 }}>{isPrePayment ? "1/3 Pre-payment due now" : "Balance due now"}</span>
@@ -160,10 +220,10 @@ export default function Payment() {
                       ["Amount", fmt(amountDue)],
                       ["Reference", `LKA-${order.id}-${isPrePayment ? "PRE" : "BAL"}`],
                     ].map(([k, v]) => (
-                      <>
-                        <span key={k + "-k"} style={{ color: "var(--t-3)" }}>{k}</span>
-                        <span key={k + "-v"} style={{ fontWeight: 500, color: k === "Amount" ? "var(--g-800)" : "var(--t-1)", fontFamily: k === "Reference" ? "monospace" : "inherit" }}>{v}</span>
-                      </>
+                      <React.Fragment key={k}>
+                        <span style={{ color: "var(--t-3)" }}>{k}</span>
+                        <span style={{ fontWeight: 500, color: k === "Amount" ? "var(--g-800)" : "var(--t-1)", fontFamily: k === "Reference" ? "monospace" : "inherit" }}>{v}</span>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>
@@ -215,7 +275,6 @@ export default function Payment() {
           </form>
         </div>
       </main>
-
     </div>
   );
 }

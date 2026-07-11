@@ -46,6 +46,7 @@ function App() {
           <Route path="/pre-order" element={<PreOrder />} />
           <Route path="/crop/:id" element={<PreOrder />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/:orderId" element={<Payment />} />
           <Route path="/buyer" element={<Buyer />} />
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/ratings" element={<Ratings />} />
