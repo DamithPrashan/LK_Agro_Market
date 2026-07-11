@@ -15,6 +15,7 @@ function EditList() {
     cropName: state?.cropName || "",
     category: state?.category || "",
     quantity: state?.quantity || "",
+    location: state?.location || "",
     harvestDate: state?.harvestDate || "",
     price: state?.price || "",
     stage: state?.stage || "planted",
@@ -30,20 +31,20 @@ function EditList() {
       fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
         credentials: "include"
       })
-      .then((res) => res.json())
-      .then((data) => {
-        setLoadingSuggestion(false);
-        if (data.success) {
-          setSuggestion(data);
-        } else {
+        .then((res) => res.json())
+        .then((data) => {
+          setLoadingSuggestion(false);
+          if (data.success) {
+            setSuggestion(data);
+          } else {
+            setSuggestion(null);
+          }
+        })
+        .catch((err) => {
+          setLoadingSuggestion(false);
           setSuggestion(null);
-        }
-      })
-      .catch((err) => {
-        setLoadingSuggestion(false);
-        setSuggestion(null);
-        console.error("Error fetching price suggestion:", err);
-      });
+          console.error("Error fetching price suggestion:", err);
+        });
     }
   }, [step, formData.cropName, user?.district]);
 
@@ -75,6 +76,7 @@ function EditList() {
           cropName: formData.cropName,
           category: formData.category,
           quantity: formData.quantity,
+          location: formData.location,
           price: formData.price,
           growthStage: formData.stage,
           harvestDate: formData.harvestDate,
@@ -101,18 +103,20 @@ function EditList() {
       <div className="listing-card">
         <h2>Edit Listing</h2>
 
-        {/* STEP CIRCLES */}
-        <div className="stepper">
-          <div className={`step ${step >= 1 ? "active-step" : ""}`}>1</div>
-          <div className={`step ${step >= 2 ? "active-step" : ""}`}>2</div>
-          <div className={`step ${step >= 3 ? "active-step" : ""}`}>3</div>
-        </div>
-
-        {/* STEP LABELS */}
-        <div className="step-labels">
-          <span className={step >= 1 ? "active-label" : ""}>Crop Details</span>
-          <span className={step >= 2 ? "active-label" : ""}>Pricing</span>
-          <span className={step >= 3 ? "active-label" : ""}>Review</span>
+        {/* STEP CIRCLES + LABELS PAIRED TOGETHER */}
+        <div className="edit-steps">
+          <div className={`edit-step ${step === 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
+            <div className="edit-circle">1</div>
+            <span>Crop Details</span>
+          </div>
+          <div className={`edit-step ${step === 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
+            <div className="edit-circle">2</div>
+            <span>Pricing</span>
+          </div>
+          <div className={`edit-step ${step === 3 ? "active" : ""}`}>
+            <div className="edit-circle">3</div>
+            <span>Review</span>
+          </div>
         </div>
 
         {/* STEP 1 */}
@@ -145,6 +149,39 @@ function EditList() {
               <option value="Vegetable">Vegetable</option>
               <option value="Fruit">Fruit</option>
               <option value="Grain">Grain</option>
+            </select>
+
+            <select
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+            >
+              <option value="">Select District</option>
+              <option value="Ampara">Ampara</option>
+              <option value="Anuradhapura">Anuradhapura</option>
+              <option value="Badulla">Badulla</option>
+              <option value="Batticaloa">Batticaloa</option>
+              <option value="Colombo">Colombo</option>
+              <option value="Galle">Galle</option>
+              <option value="Gampaha">Gampaha</option>
+              <option value="Hambantota">Hambantota</option>
+              <option value="Jaffna">Jaffna</option>
+              <option value="Kalutara">Kalutara</option>
+              <option value="Kandy">Kandy</option>
+              <option value="Kegalle">Kegalle</option>
+              <option value="Kilinochchi">Kilinochchi</option>
+              <option value="Kurunegala">Kurunegala</option>
+              <option value="Mannar">Mannar</option>
+              <option value="Matale">Matale</option>
+              <option value="Matara">Matara</option>
+              <option value="Monaragala">Monaragala</option>
+              <option value="Mullaitivu">Mullaitivu</option>
+              <option value="Nuwara Eliya">Nuwara Eliya</option>
+              <option value="Polonnaruwa">Polonnaruwa</option>
+              <option value="Puttalam">Puttalam</option>
+              <option value="Ratnapura">Ratnapura</option>
+              <option value="Trincomalee">Trincomalee</option>
+              <option value="Vavuniya">Vavuniya</option>
             </select>
 
             <input
@@ -188,7 +225,7 @@ function EditList() {
             />
 
             {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
-            
+
             {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
               <div className="price-suggestion-box">
                 {suggestion.basis === 'district' ? (
@@ -211,8 +248,8 @@ function EditList() {
                   </>
                 )}
                 <div className="suggestion-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="use-suggestion-btn"
                     onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
                   >
@@ -221,7 +258,7 @@ function EditList() {
                 </div>
               </div>
             )}
-            
+
             {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
               <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
                 <p className="suggestion-info" style={{ color: '#666' }}>
@@ -251,6 +288,7 @@ function EditList() {
               <p><b>Crop:</b> {formData.cropName}</p>
               <p><b>Category:</b> {formData.category}</p>
               <p><b>Quantity:</b> {formData.quantity} kg</p>
+              <p><b>Location:</b> {formData.location}</p>
               <p><b>Growth Stage:</b> {formData.stage}</p>
               <p><b>Harvest Date:</b> {formData.harvestDate}</p>
               <p><b>Price:</b> Rs. {formData.price}</p>
