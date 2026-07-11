@@ -11,6 +11,7 @@ function AddListing() {
         cropName: "",
         category: "",
         quantity: "",
+        location: "",
         growthStage: "",
         harvestDate: "",
         price: "",
@@ -76,6 +77,7 @@ function AddListing() {
         data.append("cropName", formData.cropName);
         data.append("category", formData.category);
         data.append("quantity", formData.quantity);
+        data.append("location", formData.location);
         data.append("growthStage", formData.growthStage);
         data.append("harvestDate", formData.harvestDate);
         data.append("price", formData.price);
@@ -151,6 +153,39 @@ function AddListing() {
                             value={formData.quantity}
                             onChange={handleChange}
                         />
+
+                        <select
+                            name="location"
+                            value={formData.location}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select District</option>
+                            <option value="Ampara">Ampara</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Badulla">Badulla</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Hambantota">Hambantota</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Kegalle">Kegalle</option>
+                            <option value="Kilinochchi">Kilinochchi</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Mannar">Mannar</option>
+                            <option value="Matale">Matale</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Monaragala">Monaragala</option>
+                            <option value="Mullaitivu">Mullaitivu</option>
+                            <option value="Nuwara Eliya">Nuwara Eliya</option>
+                            <option value="Polonnaruwa">Polonnaruwa</option>
+                            <option value="Puttalam">Puttalam</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                        </select>
 
                         <select
                             name="growthStage"
@@ -308,6 +343,7 @@ function AddListing() {
                             <p><strong>Crop Name:</strong> {formData.cropName}</p>
                             <p><strong>Category:</strong> {formData.category}</p>
                             <p><strong>Quantity:</strong> {formData.quantity} Kg</p>
+                            <p><strong>Location:</strong> {formData.location}</p>
                             <p><strong>Growth Stage:</strong> {formData.growthStage}</p>
                             <p><strong>Harvest Date:</strong> {formData.harvestDate}</p>
                             <p><strong>Price:</strong> Rs. {formData.price}</p>
