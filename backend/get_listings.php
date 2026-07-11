@@ -137,20 +137,75 @@ try {
         $params[] = trim($_GET['crop_type']);
     }
     
-    // Price range filters
-    if (isset($_GET['price_min']) && is_numeric($_GET['price_min'])) {
-        $whereClauses[] = "c.price_per_unit >= ?";
-        $params[] = floatval($_GET['price_min']);
+    // Helper function to validate dates (YYYY-MM-DD)
+    if (!function_exists('isValidDateString')) {
+        function isValidDateString($dateStr) {
+            $d = DateTime::createFromFormat('Y-m-d', $dateStr);
+            return $d && $d->format('Y-m-d') === $dateStr;
+        }
     }
-    if (isset($_GET['price_max']) && is_numeric($_GET['price_max'])) {
-        $whereClauses[] = "c.price_per_unit <= ?";
-        $params[] = floatval($_GET['price_max']);
+
+    // Min Price range filter (with validation and legacy support)
+    $minPriceVal = '';
+    if (isset($_GET['minPrice']) && trim($_GET['minPrice']) !== '') {
+        $minPriceVal = trim($_GET['minPrice']);
+    } elseif (isset($_GET['price_min']) && trim($_GET['price_min']) !== '') {
+        $minPriceVal = trim($_GET['price_min']);
+    }
+
+    // Max Price range filter (with validation and legacy support)
+    $maxPriceVal = '';
+    if (isset($_GET['maxPrice']) && trim($_GET['maxPrice']) !== '') {
+        $maxPriceVal = trim($_GET['maxPrice']);
+    } elseif (isset($_GET['price_max']) && trim($_GET['price_max']) !== '') {
+        $maxPriceVal = trim($_GET['price_max']);
+    }
+
+    // Apply Price filter (using BETWEEN if both are provided, otherwise >= or <=)
+    $hasMin = ($minPriceVal !== '' && is_numeric($minPriceVal) && floatval($minPriceVal) >= 0);
+    $hasMax = ($maxPriceVal !== '' && is_numeric($maxPriceVal) && floatval($maxPriceVal) >= 0);
+
+    if ($hasMin && $hasMax) {
+        $whereClauses[] = "c.price_per_unit BETWEEN ? AND ?";
+        $params[] = floatval($minPriceVal);
+        $params[] = floatval($maxPriceVal);
+    } else {
+        if ($hasMin) {
+            $whereClauses[] = "c.price_per_unit >= ?";
+            $params[] = floatval($minPriceVal);
+        }
+        if ($hasMax) {
+            $whereClauses[] = "c.price_per_unit <= ?";
+            $params[] = floatval($maxPriceVal);
+        }
     }
     
-    // Harvest Date filter (crops expected to be harvested on or after this date, or exactly on this date)
-    if (isset($_GET['harvest_date']) && trim($_GET['harvest_date']) !== '') {
-        $whereClauses[] = "c.harvest_date >= ?";
-        $params[] = trim($_GET['harvest_date']);
+    // Parse Harvest dates (with validation)
+    $hFrom = isset($_GET['harvestFrom']) && trim($_GET['harvestFrom']) !== '' && isValidDateString(trim($_GET['harvestFrom'])) ? trim($_GET['harvestFrom']) : null;
+    $hTo = isset($_GET['harvestTo']) && trim($_GET['harvestTo']) !== '' && isValidDateString(trim($_GET['harvestTo'])) ? trim($_GET['harvestTo']) : null;
+
+    if ($hFrom && $hTo) {
+        $whereClauses[] = "c.harvest_date BETWEEN ? AND ?";
+        $params[] = $hFrom;
+        $params[] = $hTo;
+    } else {
+        if ($hFrom) {
+            $whereClauses[] = "c.harvest_date >= ?";
+            $params[] = $hFrom;
+        }
+        if ($hTo) {
+            $whereClauses[] = "c.harvest_date <= ?";
+            $params[] = $hTo;
+        }
+    }
+
+    // Backwards compatibility for legacy single harvest_date
+    if (isset($_GET['harvest_date']) && trim($_GET['harvest_date']) !== '' && !$hFrom && !$hTo) {
+        $hDate = trim($_GET['harvest_date']);
+        if (isValidDateString($hDate)) {
+            $whereClauses[] = "c.harvest_date >= ?";
+            $params[] = $hDate;
+        }
     }
     
     // Verified-only Toggle filter

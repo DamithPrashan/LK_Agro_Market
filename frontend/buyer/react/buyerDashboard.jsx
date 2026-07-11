@@ -15,9 +15,9 @@ export default function BuyerDashboard() {
 
   const getTimeGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
   };
 
   const firstName = user?.name ? user.name.split(" ")[0] : "";
@@ -33,9 +33,8 @@ export default function BuyerDashboard() {
 
   const quickLinks = [
     { label: "Browse Crops", icon: "🥦", key: "browse", path: "/browse" },
-    { label: "Find Farmers", icon: "🚜", key: "farmers", path: "/farmers" },
     { label: "My Reservations", icon: "📦", key: "reservations", path: "/buyer/BuyerOrderHistory" },
-    { label: "Wishlist", icon: "❤️", key: "wishlist", path: "/wishlist" },
+    { label: "Pre-Order", icon: "📝", key: "preorder", path: "/preorder" },
   ];
 
   const fetchDashboard = useCallback(async () => {

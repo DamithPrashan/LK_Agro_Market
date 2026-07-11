@@ -58,16 +58,18 @@ export default function Browse() {
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [district, setDistrict] = useState("Badulla");
-  const [cropType, setCropType] = useState("All Crops");
   
-  // Advanced filters state
-  const [priceMin, setPriceMin] = useState("");
-  const [priceMax, setPriceMax] = useState("");
-  const [harvestDate, setHarvestDate] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
-  const [sortBy, setSortBy] = useState("");
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  // Consolidated advanced filters state
+  const [filters, setFilters] = useState({
+    district: "All Districts",
+    cropType: "All Crops",
+    priceMin: "",
+    priceMax: "",
+    harvestFrom: "",
+    harvestTo: "",
+    isVerified: false,
+    sortBy: ""
+  });
 
   // Dynamic backgrounds helper
   const getBgClass = (cropName) => {
@@ -81,44 +83,78 @@ export default function Browse() {
     return "bg-blue";
   };
 
-  // Fetch listings hook
-  useEffect(() => {
-    const fetchListings = async () => {
-      setLoading(true);
-      try {
-        const queryParams = new URLSearchParams();
-        if (searchQuery) queryParams.append("search_query", searchQuery);
-        if (district && district !== "All" && district !== "All Districts") queryParams.append("district", district);
-        if (cropType && cropType !== "All Crops") queryParams.append("crop_type", cropType);
-        if (priceMin) queryParams.append("price_min", priceMin);
-        if (priceMax) queryParams.append("price_max", priceMax);
-        if (harvestDate) queryParams.append("harvest_date", harvestDate);
-        if (isVerified) queryParams.append("is_verified", "true");
-        if (sortBy) queryParams.append("sort_by", sortBy);
-
-        const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
-        const data = await response.json();
-        
-        if (data.success && data.listings) {
-          setCrops(data.listings);
-        } else {
-          console.error("API Error: ", data.message);
-          setCrops([]);
-        }
-      } catch (err) {
-        console.error("Fetch failed: ", err);
-        setCrops([]);
-      } finally {
-        setLoading(false);
+  // Fetch listings function
+  const fetchListings = async (customFilters = filters, customSearch = searchQuery) => {
+    setLoading(true);
+    try {
+      const queryParams = new URLSearchParams();
+      if (customSearch) queryParams.append("search_query", customSearch);
+      if (customFilters.district && customFilters.district !== "All" && customFilters.district !== "All Districts") {
+        queryParams.append("district", customFilters.district);
       }
+      if (customFilters.cropType && customFilters.cropType !== "All Crops") {
+        queryParams.append("crop_type", customFilters.cropType);
+      }
+
+      // Validate and apply Price Min / Max (Min Price should not exceed Max Price)
+      const isPriceRangeValid = !(
+        customFilters.priceMin &&
+        customFilters.priceMax &&
+        parseFloat(customFilters.priceMin) > parseFloat(customFilters.priceMax)
+      );
+
+      if (isPriceRangeValid) {
+        if (customFilters.priceMin) queryParams.append("minPrice", customFilters.priceMin);
+        if (customFilters.priceMax) queryParams.append("maxPrice", customFilters.priceMax);
+      }
+
+      if (customFilters.harvestFrom) queryParams.append("harvestFrom", customFilters.harvestFrom);
+      if (customFilters.harvestTo) queryParams.append("harvestTo", customFilters.harvestTo);
+      if (customFilters.isVerified) queryParams.append("is_verified", "true");
+      if (customFilters.sortBy) queryParams.append("sort_by", customFilters.sortBy);
+
+      const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
+      const data = await response.json();
+      
+      if (data.success && data.listings) {
+        setCrops(data.listings);
+      } else {
+        console.error("API Error: ", data.message);
+        setCrops([]);
+      }
+    } catch (err) {
+      console.error("Fetch failed: ", err);
+      setCrops([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch listings once on initial mount
+  useEffect(() => {
+    fetchListings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleApplyFilters = () => {
+    fetchListings(filters, searchQuery);
+  };
+
+  const handleResetFilters = () => {
+    const defaultFilters = {
+      district: "All Districts",
+      cropType: "All Crops",
+      priceMin: "",
+      priceMax: "",
+      harvestFrom: "",
+      harvestTo: "",
+      isVerified: false,
+      sortBy: ""
     };
-
-    const debounceId = setTimeout(() => {
-      fetchListings();
-    }, 300);
-
-    return () => clearTimeout(debounceId);
-  }, [searchQuery, district, cropType, priceMin, priceMax, harvestDate, isVerified, sortBy]);
+    setFilters(defaultFilters);
+    setSearchQuery("");
+    fetchListings(defaultFilters, "");
+  };
 
 
   return (
@@ -192,8 +228,8 @@ export default function Browse() {
             />
             <select 
               className="dropdown" 
-              value={district} 
-              onChange={(e) => setDistrict(e.target.value)}
+              value={filters.district} 
+              onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
             >
               <option value="All">All Districts</option>
               <option>Badulla</option>
@@ -219,8 +255,8 @@ export default function Browse() {
             </select>
             <select 
               className="dropdown" 
-              value={cropType} 
-              onChange={(e) => setCropType(e.target.value)}
+              value={filters.cropType} 
+              onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
             >
               <option>All Crops</option>
               <option>Tomato</option>
@@ -247,54 +283,61 @@ export default function Browse() {
               <option>Watermelon</option>
               <option>Corn</option>
             </select>
-            <button 
-              className="filters-btn" 
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            >
-              {showAdvancedFilters ? "Hide Filters" : "Filters"}
-            </button>
           </div>
 
-          {/* ADVANCED FILTERS PANEL */}
-          {showAdvancedFilters && (
-            <div className="advanced-filters-panel">
+          {/* ADVANCED FILTERS PANEL (Always Visible) */}
+          <div className="advanced-filters-panel">
               <div className="filter-group">
                 <label>Price Range (Rs.)</label>
                 <div className="price-inputs">
                   <input
                     type="number"
                     placeholder="Min"
-                    value={priceMin}
-                    onChange={(e) => setPriceMin(e.target.value)}
-                    className="small-input"
+                    value={filters.priceMin}
+                    onChange={(e) => setFilters(prev => ({ ...prev, priceMin: e.target.value }))}
+                    className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
                   />
                   <span className="price-sep">-</span>
                   <input
                     type="number"
                     placeholder="Max"
-                    value={priceMax}
-                    onChange={(e) => setPriceMax(e.target.value)}
-                    className="small-input"
+                    value={filters.priceMax}
+                    onChange={(e) => setFilters(prev => ({ ...prev, priceMax: e.target.value }))}
+                    className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
                   />
                 </div>
+                {filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) && (
+                  <span className="error-text">Min price cannot exceed Max price</span>
+                )}
               </div>
 
-              <div className="filter-group">
-                <label>Harvest Date (On/After)</label>
-                <input
-                  type="date"
-                  value={harvestDate}
-                  onChange={(e) => setHarvestDate(e.target.value)}
-                  className="date-input"
-                />
+              <div className="filter-group harvest-date-group">
+                <label>Harvest Date Window</label>
+                <div className="date-range-inputs">
+                  <input
+                    type="date"
+                    value={filters.harvestFrom}
+                    onChange={(e) => setFilters(prev => ({ ...prev, harvestFrom: e.target.value }))}
+                    className="date-input"
+                    placeholder="From"
+                  />
+                  <span className="date-sep">to</span>
+                  <input
+                    type="date"
+                    value={filters.harvestTo}
+                    onChange={(e) => setFilters(prev => ({ ...prev, harvestTo: e.target.value }))}
+                    className="date-input"
+                    placeholder="To"
+                  />
+                </div>
               </div>
 
               <div className="filter-group">
                 <label>Sort By</label>
                 <select 
                   className="dropdown-sort" 
-                  value={sortBy} 
-                  onChange={(e) => setSortBy(e.target.value)}
+                  value={filters.sortBy} 
+                  onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
                 >
                   <option value="">Default (Soonest Harvest)</option>
                   <option value="price_asc">Price: Low to High</option>
@@ -308,18 +351,37 @@ export default function Browse() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={isVerified}
-                    onChange={(e) => setIsVerified(e.target.checked)}
+                    checked={filters.isVerified}
+                    onChange={(e) => setFilters(prev => ({ ...prev, isVerified: e.target.checked }))}
                   />
                   Verified Farmers Only
                 </label>
               </div>
+
+              {/* FILTER BUTTON */}
+              <div className="filter-group reset-group">
+                <button 
+                  className="apply-filters-btn"
+                  onClick={handleApplyFilters}
+                >
+                  Filter
+                </button>
+              </div>
+
+              {/* RESET FILTERS BUTTON */}
+              <div className="filter-group reset-group">
+                <button 
+                  className="reset-filters-btn"
+                  onClick={handleResetFilters}
+                >
+                  Reset Filters
+                </button>
+              </div>
             </div>
-          )}
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            Showing crops near <strong>{district === "All" ? "All of Sri Lanka" : district}</strong>. <a href="#">Use Map Search</a> to find farms on a map.
+            Showing crops near <strong>{filters.district === "All" || filters.district === "All Districts" ? "All of Sri Lanka" : filters.district}</strong>. <a href="#">Use Map Search</a> to find farms on a map.
           </div>
 
           {/* STATS */}
