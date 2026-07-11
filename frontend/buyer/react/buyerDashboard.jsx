@@ -151,8 +151,8 @@ export default function BuyerDashboard() {
           <p>Completed Orders</p>
         </div>
 
-        <div 
-          className="stat-card clickable-card" 
+        <div
+          className="stat-card clickable-card"
           onClick={() => navigate("/complaints")}
           role="button"
           tabIndex={0}

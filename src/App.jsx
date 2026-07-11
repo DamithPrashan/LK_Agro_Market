@@ -22,7 +22,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
-import BuyerOrderHistory from "../frontend/buyer/react/BuyerOrderHistory.jsx";
+import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 
 
 

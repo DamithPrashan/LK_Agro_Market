@@ -54,7 +54,7 @@ export default function Browse() {
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Consolidated advanced filters state
   const [filters, setFilters] = useState({
     district: "All Districts",
@@ -111,7 +111,7 @@ export default function Browse() {
 
       const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
       const data = await response.json();
-      
+
       if (data.success && data.listings) {
         setCrops(data.listings);
       } else {
@@ -241,9 +241,9 @@ export default function Browse() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <select 
-              className="dropdown" 
-              value={filters.district} 
+            <select
+              className="dropdown"
+              value={filters.district}
               onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
             >
               <option value="All">All Districts</option>
@@ -268,9 +268,9 @@ export default function Browse() {
               <option>Vavuniya</option>
               <option>Ampara</option>
             </select>
-            <select 
-              className="dropdown" 
-              value={filters.cropType} 
+            <select
+              className="dropdown"
+              value={filters.cropType}
               onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
             >
               <option>All Crops</option>
@@ -302,97 +302,88 @@ export default function Browse() {
 
           {/* ADVANCED FILTERS PANEL (Always Visible) */}
           <div className="advanced-filters-panel">
-              <div className="filter-group">
-                <label>Price Range (Rs.)</label>
-                <div className="price-inputs">
-                  <input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.priceMin}
-                    onChange={(e) => setFilters(prev => ({ ...prev, priceMin: e.target.value }))}
-                    className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
-                  />
-                  <span className="price-sep">-</span>
-                  <input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.priceMax}
-                    onChange={(e) => setFilters(prev => ({ ...prev, priceMax: e.target.value }))}
-                    className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
-                  />
-                </div>
-                {filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) && (
-                  <span className="error-text">Min price cannot exceed Max price</span>
-                )}
+            <div className="filter-group">
+              <label>Price Range (Rs.)</label>
+              <div className="price-inputs">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.priceMin}
+                  onChange={(e) => setFilters(prev => ({ ...prev, priceMin: e.target.value }))}
+                  className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
+                />
+                <span className="price-sep">-</span>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.priceMax}
+                  onChange={(e) => setFilters(prev => ({ ...prev, priceMax: e.target.value }))}
+                  className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
+                />
               </div>
+              {filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) && (
+                <span className="error-text">Min price cannot exceed Max price</span>
+              )}
+            </div>
 
-              <div className="filter-group harvest-date-group">
-                <label>Harvest Date Window</label>
-                <div className="date-range-inputs">
-                  <input
-                    type="date"
-                    value={filters.harvestFrom}
-                    onChange={(e) => setFilters(prev => ({ ...prev, harvestFrom: e.target.value }))}
-                    className="date-input"
-                    placeholder="From"
-                  />
-                  <span className="date-sep">to</span>
-                  <input
-                    type="date"
-                    value={filters.harvestTo}
-                    onChange={(e) => setFilters(prev => ({ ...prev, harvestTo: e.target.value }))}
-                    className="date-input"
-                    placeholder="To"
-                  />
-                </div>
-              </div>
-
-              <div className="filter-group">
-                <label>Sort By</label>
-                <select 
-                  className="dropdown-sort" 
-                  value={filters.sortBy} 
-                  onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-                >
-                  <option value="">Default (Soonest Harvest)</option>
-                  <option value="price_asc">Price: Low to High</option>
-                  <option value="price_desc">Price: High to Low</option>
-                  <option value="rating_desc">Rating: High to Low</option>
-                  <option value="harvest_desc">Harvest: Newest to Oldest</option>
-                </select>
-              </div>
-
-              <div className="filter-group toggle-group">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={filters.isVerified}
-                    onChange={(e) => setFilters(prev => ({ ...prev, isVerified: e.target.checked }))}
-                  />
-                  Verified Farmers Only
-                </label>
-              </div>
-
-              {/* FILTER BUTTON */}
-              <div className="filter-group reset-group">
-                <button 
-                  className="apply-filters-btn"
-                  onClick={handleApplyFilters}
-                >
-                  Filter
-                </button>
-              </div>
-
-              {/* RESET FILTERS BUTTON */}
-              <div className="filter-group reset-group">
-                <button 
-                  className="reset-filters-btn"
-                  onClick={handleResetFilters}
-                >
-                  Reset Filters
-                </button>
+            <div className="filter-group harvest-date-group">
+              <label>Harvest Date Window</label>
+              <div className="date-range-inputs">
+                <input
+                  type="date"
+                  value={filters.harvestFrom}
+                  onChange={(e) => setFilters(prev => ({ ...prev, harvestFrom: e.target.value }))}
+                  className="date-input"
+                  placeholder="From"
+                />
+                <span className="date-sep">to</span>
+                <input
+                  type="date"
+                  value={filters.harvestTo}
+                  onChange={(e) => setFilters(prev => ({ ...prev, harvestTo: e.target.value }))}
+                  className="date-input"
+                  placeholder="To"
+                />
               </div>
             </div>
+
+            <div className="filter-group">
+              <label>Sort By</label>
+              <select
+                className="dropdown-sort"
+                value={filters.sortBy}
+                onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+              >
+                <option value="">Default (Soonest Harvest)</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="rating_desc">Rating: High to Low</option>
+                <option value="harvest_desc">Harvest: Newest to Oldest</option>
+              </select>
+            </div>
+
+            
+
+            {/* FILTER BUTTON */}
+            <div className="filter-group reset-group">
+              <button
+                className="apply-filters-btn"
+                onClick={handleApplyFilters}
+              >
+                Filter
+              </button>
+            </div>
+
+            {/* RESET FILTERS BUTTON */}
+            <div className="filter-group reset-group">
+              <button
+                className="reset-filters-btn"
+                onClick={handleResetFilters}
+              >
+                Reset Filters
+              </button>
+            </div>
+          </div>
 
           {/* INFO BANNER */}
           <div className="info-banner">
@@ -423,8 +414,8 @@ export default function Browse() {
           ) : (
             <div className="crop-grid">
               {crops.map((crop) => (
-                <div 
-                  className="crop-card" 
+                <div
+                  className="crop-card"
                   key={crop.id}
                   onClick={() => navigate(`/crop/${crop.id}`)}
                   style={{ cursor: "pointer" }}
@@ -463,7 +454,7 @@ export default function Browse() {
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
                       <span className="rating-num">({parseFloat(crop.rating).toFixed(1)})</span>
                     </div>
-                    <button 
+                    <button
                       className="pre-order-btn"
                       onClick={(e) => {
                         e.stopPropagation();

@@ -14,7 +14,7 @@ require_role('buyer');
 $user_id = $_SESSION['user']['id'];
 
 // Get POST JSON data
-$data = json_decode(file_get_contents("php://input"), true);
+$data = isset($mockInput) ? $mockInput : json_decode(file_get_contents("php://input"), true);
 $crop_id = isset($data['crop_id']) ? intval($data['crop_id']) : 0;
 $quantity = isset($data['quantity']) ? floatval($data['quantity']) : 0.0;
 $collection_date = isset($data['collection_date']) ? trim($data['collection_date']) : '';
@@ -36,7 +36,7 @@ try {
     $buyer_id = $buyer['buyer_id'];
 
     // 2. Fetch crop details
-    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status FROM crop WHERE crop_id = ?");
+    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ?");
     $cropQuery->execute([$crop_id]);
     $crop = $cropQuery->fetch();
     if (!$crop) {
@@ -49,6 +49,23 @@ try {
     }
     if ($quantity > floatval($crop['quantity'])) {
         echo json_encode(["success" => false, "message" => "Requested quantity exceeds available quantity."]);
+        exit;
+    }
+
+    // Validate delivery date (collection_date) against harvest_date
+    $harvest_date = $crop['harvest_date'];
+    $harvest_dt = new DateTime($harvest_date);
+    $max_dt = clone $harvest_dt;
+    $max_dt->modify('+10 days');
+    
+    $collection_dt = new DateTime($collection_date);
+    
+    if ($collection_dt < $harvest_dt || $collection_dt > $max_dt) {
+        $formatted_max = $max_dt->format('Y-m-d');
+        echo json_encode([
+            "success" => false, 
+            "message" => "Delivery date must be between {$harvest_date} and {$formatted_max}."
+        ]);
         exit;
     }
 
