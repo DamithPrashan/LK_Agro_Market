@@ -49,11 +49,7 @@ const imageMap = {
 export default function Browse() {
   const navigate = useNavigate();
 
-  const stats = {
-    pending: 2,
-    active: 3,
-    completed: 8,
-  };
+  const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,9 +126,28 @@ export default function Browse() {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const response = await fetch("/backend/get_buyer_dashboard.php", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success && data.stats) {
+        setStats({
+          pending: data.stats.pending || 0,
+          active: data.stats.active || 0,
+          completed: data.stats.completed || 0
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch stats: ", err);
+    }
+  };
+
   // Fetch listings once on initial mount
   useEffect(() => {
     fetchListings();
+    fetchStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

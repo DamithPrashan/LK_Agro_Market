@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "../../components/navbar.jsx";
 import Footer from "../../components/footer.jsx";
@@ -14,7 +15,9 @@ import "../csss/AdminDashboard/admin.css";
 
 function AdminDashboard() {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [welcomeMsg, setWelcomeMsg] = useState("Welcome");
+    const [complaints, setComplaints] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -40,6 +43,18 @@ function AdminDashboard() {
             .then(res => res.json())
             .then(data => {
                 setStats(data);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+            // complaint page parts
+
+        fetch("/backend/get_complaints_list.php")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.complaints) {
+                    setComplaints(data.complaints);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -183,43 +198,30 @@ function AdminDashboard() {
                     </thead>
 
                     <tbody>
-
-                        <tr>
-
-                            <td>C019</td>
-                            <td>Colombo Fresh Mart</td>
-                            <td>Quality issue</td>
-
-                            <td>
-
-                                <span className="status pending">
-
-                                    Under Review
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>C018</td>
-                            <td>Hotel Ella Inn</td>
-                            <td>Non-delivery</td>
-
-                            <td>
-
-                                <span className="status review">
-
-                                    Escalated
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
+                        {complaints.length > 0 ? (
+                            complaints.map((comp) => (
+                                <tr 
+                                    key={comp.complaint_id} 
+                                    onClick={() => navigate(`/admin/complaint/${comp.complaint_id}`)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <td>#{comp.complaint_id}</td>
+                                    <td>{comp.buyer_name}</td>
+                                    <td>{comp.reason} ({comp.crop_name})</td>
+                                    <td>
+                                        <span className={`status ${comp.status === 'resolved' || comp.status === 'dismissed' ? 'resolved' : 'pending'}`}>
+                                            {comp.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" style={{ textAlign: "center", color: "#666" }}>
+                                    No complaints found
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
 
                 </table>

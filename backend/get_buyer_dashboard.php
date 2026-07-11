@@ -67,6 +67,15 @@ try {
     ");
     $completedQuery->execute([$buyer_id]);
     $completedCount = intval($completedQuery->fetch()['cnt']);
+
+    // Complaints: Count of complaints where buyer_id = ? and status != 'resolved' / is in 'submitted', 'pending', 'open'
+    $complaintsQuery = $pdo->prepare("
+        SELECT COUNT(*) as cnt 
+        FROM complaints 
+        WHERE buyer_id = ? AND status IN ('submitted', 'pending', 'open')
+    ");
+    $complaintsQuery->execute([$buyer_id]);
+    $complaintsCount = intval($complaintsQuery->fetch()['cnt']);
     
     // 3. Fetch recent activities
     $activities = [];
@@ -167,7 +176,8 @@ try {
         "stats" => [
             "pending" => $pendingCount,
             "active" => $activeCount,
-            "completed" => $completedCount
+            "completed" => $completedCount,
+            "complaints" => $complaintsCount
         ],
         "recentActivities" => $recentActivityList
     ]);

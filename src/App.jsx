@@ -12,6 +12,7 @@ import Buyer from "./pages/Buyer.jsx";
 import Complaints from "./pages/Complaints";
 import FarmerResponse from "./pages/farmerResponse";
 import Admin from "./pages/Admin";
+import ResolveComplaint from "./pages/ResolveComplaint";
 import Register from "./pages/Register";
 import Footer from "../frontend/components/footer.jsx";
 import Login from "./pages/Login";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/complaint/:id" element={<ResolveComplaint />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

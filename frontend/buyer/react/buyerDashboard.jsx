@@ -8,7 +8,7 @@ export default function BuyerDashboard() {
   const navigate = useNavigate();
 
   const [location, setLocation] = useState("Colombo");
-  const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
+  const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0, complaints: 0 });
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -149,6 +149,18 @@ export default function BuyerDashboard() {
           <span className="stat-icon">✅</span>
           <h2>{stats.completed}</h2>
           <p>Completed Orders</p>
+        </div>
+
+        <div 
+          className="stat-card clickable-card" 
+          onClick={() => navigate("/complaints")}
+          role="button"
+          tabIndex={0}
+          style={{ cursor: "pointer" }}
+        >
+          <span className="stat-icon">⚠️</span>
+          <h2>{stats.complaints}</h2>
+          <p>Open Complaints</p>
         </div>
       </section>
 

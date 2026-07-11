@@ -48,6 +48,17 @@ try {
     ");
     echo "Verified/Created 'complaints' table successfully!<br>";
 
+    // 4b. Add missing fields to 'complaints' table
+    $stmt4b = $pdo->query("SHOW COLUMNS FROM complaints LIKE 'farmer_response'");
+    if (!$stmt4b->fetch()) {
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN farmer_response TEXT NULL AFTER status");
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN admin_notes TEXT NULL AFTER farmer_response");
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN resolution_action VARCHAR(50) NULL AFTER admin_notes");
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN farmer_responded_at TIMESTAMP NULL AFTER resolution_action");
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN resolved_at TIMESTAMP NULL AFTER farmer_responded_at");
+        echo "Successfully added advanced complaint management columns to 'complaints' table!<br>";
+    }
+
     // 5. Create 'notifications' table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS `notifications` (

@@ -103,6 +103,10 @@ body {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
+.stat-card.clickable-card:hover {
+  background: #f9f9f9;
+}
+
 .stat-icon {
   font-size: 22px;
   display: block;
