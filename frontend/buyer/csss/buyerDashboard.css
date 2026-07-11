@@ -3,12 +3,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Segoe UI, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 body {
   background: #f4f6f8;
-  color: #b23b3b;
+  color: #2c2c2c;
 }
 
 /* DASHBOARD WRAPPER */
@@ -74,6 +74,11 @@ body {
   color: white;
 }
 
+.hero p {
+  font-size: 15px;
+  opacity: 0.95;
+}
+
 /* STATS */
 .stats-container {
   display: flex;
@@ -89,17 +94,30 @@ body {
   padding: 18px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: 0.3s;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  font-size: 22px;
+  display: block;
+  margin-bottom: 6px;
 }
 
 .stat-card h2 {
   color: #165d28;
   font-size: 26px;
+}
+
+.stat-card p {
+  color: #555;
+  font-size: 13px;
+  margin-top: 4px;
 }
 
 /* LOCATION */
@@ -121,6 +139,11 @@ body {
   padding: 8px 14px;
   border-radius: 5px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.location-banner button:hover {
+  background: #1f7a3a;
 }
 
 /* QUICK LINKS */
@@ -130,6 +153,7 @@ body {
 
 .quick-links h2 {
   margin-bottom: 15px;
+  color: #165d28;
 }
 
 .quick-grid {
@@ -143,14 +167,34 @@ body {
   padding: 18px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.quick-card:hover {
+.quick-icon {
+  font-size: 24px;
+}
+
+.quick-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.quick-card:hover,
+.quick-card:focus-visible {
   transform: scale(1.05);
   background: #e8f5e9;
+  outline: none;
+}
+
+.quick-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.5);
 }
 
 /* CONTENT */
@@ -165,7 +209,7 @@ body {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .content-box h2 {
@@ -182,6 +226,29 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+.content-box p {
+  color: #555;
+  line-height: 1.5;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #777;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
 /* BUTTON */
 .secondary-btn {
   margin-top: 15px;
@@ -191,13 +258,109 @@ body {
   padding: 10px 14px;
   border-radius: 6px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .secondary-btn:hover {
   background: #1f7a3a;
 }
 
+/* ERROR STATE */
+.dashboard-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 20px;
+}
 
+.error-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  max-width: 360px;
+}
+
+.error-icon {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.error-box h2 {
+  color: #b23b3b;
+  margin-bottom: 8px;
+}
+
+.error-box p {
+  color: #666;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* SKELETON LOADING */
+.skeleton {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.hero-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #1f7a3a, #2ecc71);
+}
+
+.skeleton-title {
+  width: 260px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.35);
+  animation: none;
+}
+
+.skeleton-subtitle {
+  width: 320px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.25);
+  animation: none;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeleton-number {
+  width: 40px;
+  height: 26px;
+}
+
+.skeleton-label {
+  width: 100px;
+  height: 12px;
+}
+
+.skeleton-quick {
+  width: 90px;
+  height: 40px;
+}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
