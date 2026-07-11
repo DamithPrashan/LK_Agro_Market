@@ -5,23 +5,9 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// 1. Database Connection Configuration
-$host = "127.0.0.1";
-$db_name = "lk_agro_market";
-$username = "root";
-$password = "";
-$conn = null;
-
-try {
-    $conn = new PDO("mysql:host=" . $host . ";dbname=" . $db_name, $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $exception) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Database connection failed: " . $exception->getMessage()
-    ]);
-    exit();
-}
+// Use the same shared DB connection as the rest of the backend
+// (instead of hardcoded local-only root/no-password credentials)
+require_once 'connection/db.php';
 
 // 2. Validate GET Parameters
 $crop_name = isset($_GET['crop_name']) ? trim($_GET['crop_name']) : null;
@@ -59,7 +45,7 @@ try {
                         AND rc.reserved_date >= DATE_SUB(NOW(), INTERVAL :days DAY)
                         AND rc.status != 'cancelled'";
 
-    $demand_stmt = $conn->prepare($demand_query);
+    $demand_stmt = $pdo->prepare($demand_query);
     $demand_stmt->bindParam(':crop_name', $crop_name);
     $demand_stmt->bindParam(':location', $location);
     $demand_stmt->bindParam(':days', $days, PDO::PARAM_INT);
@@ -77,7 +63,7 @@ try {
                             AND LOWER(location) = LOWER(:location)
                             AND crop_status = 'active'";
 
-    $cultivation_stmt = $conn->prepare($cultivation_query);
+    $cultivation_stmt = $pdo->prepare($cultivation_query);
     $cultivation_stmt->bindParam(':crop_name', $crop_name);
     $cultivation_stmt->bindParam(':location', $location);
     $cultivation_stmt->execute();

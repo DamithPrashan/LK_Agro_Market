@@ -11,12 +11,14 @@ export default function ForecastDashboard() {
     const [forecastData, setForecastData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Fetch call directly interacting with your live PHP development server endpoint
+    // Fetch call - uses a relative path so it works on any machine/domain
+    // serving the app, instead of being hardcoded to one developer's localhost.
     const fetchForecast = async () => {
         setLoading(true);
         try {
             const res = await fetch(
-                `http://127.0.0.1:8000/backend/get_demand_forecast.php?crop_name=${cropName}&location=${location}&days=${days}`
+                `/backend/get_demand_forecast.php?crop_name=${cropName}&location=${location}&days=${days}`,
+                { credentials: "include" }
             );
             const data = await res.json();
             if (data.status === "success") {
