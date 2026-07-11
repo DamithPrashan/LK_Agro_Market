@@ -3,38 +3,78 @@ import "../csss/dashBoard.css";
 import { FaSearch, FaSeedling, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 
 export default function ForecastDashboard() {
+    // Full list of Sri Lankan districts, so the farmer can check demand
+    // forecasts for any district — not just the ones they happen to have
+    // crops listed in.
+    const allDistricts = [
+        "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+        "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+        "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+        "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+        "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
+    ];
+
     // Component Search States
     const [cropName, setCropName] = useState("carrot");
-    const [location, setLocation] = useState("Ratnapura");
+    const [location, setLocation] = useState("");
     const [days, setDays] = useState(7);
 
     const [forecastData, setForecastData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [optionsLoaded, setOptionsLoaded] = useState(false);
+
+    // Fetch the farmer's own crops once, just to default the Location
+    // dropdown to a district that actually has one of their listings.
+    useEffect(() => {
+        fetch("/backend/getCrops.php", { credentials: "include" })
+            .then((res) => res.json())
+            .then((crops) => {
+                const firstCropLocation = Array.isArray(crops)
+                    ? crops.find((c) => c.location)?.location
+                    : null;
+                setLocation(firstCropLocation || allDistricts[0]);
+                setOptionsLoaded(true);
+            })
+            .catch((err) => {
+                console.error("Error loading crop options:", err);
+                setLocation(allDistricts[0]);
+                setOptionsLoaded(true);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Fetch call - uses a relative path so it works on any machine/domain
     // serving the app, instead of being hardcoded to one developer's localhost.
     const fetchForecast = async () => {
+        if (!cropName || !location) return;
         setLoading(true);
         try {
             const res = await fetch(
-                `/backend/get_demand_forecast.php?crop_name=${cropName}&location=${location}&days=${days}`,
+                `/backend/get_demand_forecast.php?crop_name=${encodeURIComponent(cropName)}&location=${encodeURIComponent(location)}&days=${days}`,
                 { credentials: "include" }
             );
             const data = await res.json();
             if (data.status === "success") {
                 setForecastData(data);
+            } else {
+                setForecastData(null);
             }
         } catch (error) {
             console.error("Error loading forecast metrics:", error);
+            setForecastData(null);
         } finally {
             setLoading(false);
         }
     };
 
-    // Auto-fetch entry metrics on initial component mount
+    // Auto-fetch once the real crop/location options have loaded and
+    // defaults have been set (instead of firing immediately with empty values).
     useEffect(() => {
-        fetchForecast();
-    }, []);
+        if (optionsLoaded && cropName && location) {
+            fetchForecast();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [optionsLoaded]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -73,13 +113,18 @@ export default function ForecastDashboard() {
                     <label htmlFor="forecast-location">
                         <FaMapMarkerAlt /> Location
                     </label>
-                    <input
+                    <select
                         id="forecast-location"
-                        type="text"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        placeholder="e.g. Ratnapura"
-                    />
+                    >
+                        <option value="">Select District</option>
+                        {allDistricts.map((loc) => (
+                            <option key={loc} value={loc}>
+                                {loc}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="search-field search-field-narrow">
@@ -97,7 +142,7 @@ export default function ForecastDashboard() {
                     </select>
                 </div>
 
-                <button type="submit" className="search-btn" disabled={loading}>
+                <button type="submit" className="search-btn" disabled={loading || !cropName || !location}>
                     <FaSearch />
                     {loading ? "Analyzing..." : "Search"}
                 </button>
