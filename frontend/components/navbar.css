@@ -158,6 +158,14 @@
   }
 
   .app-nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links {
+    position: static;
+    transform: none;
+    flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
     gap: 15px;
@@ -168,6 +176,12 @@
     transform: none;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .nav-right {
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .nav-right {
