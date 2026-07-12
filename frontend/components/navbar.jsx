@@ -196,7 +196,7 @@ const Navbar = () => {
                 <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
               </div>
             ) : (
-              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign In</NavLink>
+              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign in</NavLink>
             )}
           </div>
 
