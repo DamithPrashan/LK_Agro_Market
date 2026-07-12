@@ -151,14 +151,28 @@
   font-weight: 600;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1450px) {
   .app-header {
     flex-direction: column;
     gap: 15px;
   }
 
   .app-nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links {
+    position: static;
+    transform: none;
+    flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .nav-right {
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
