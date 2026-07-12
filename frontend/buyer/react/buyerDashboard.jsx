@@ -13,13 +13,6 @@ export default function BuyerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const getTimeGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
-  };
-
   const firstName = user?.name ? user.name.split(" ")[0] : "";
   const isReturningUser = user
     ? !!localStorage.getItem(`hasLoggedIn_${user.id}`)
@@ -120,12 +113,11 @@ export default function BuyerDashboard() {
       <section className="hero">
         <div>
           <h1>
-            {getTimeGreeting()}
-            {firstName ? `, ${firstName}` : ""} 👋
+            Welcome back{firstName ? `, ${firstName}` : ""} 👋
           </h1>
           <p>
             {isReturningUser
-              ? "Welcome back! Here's what's happening with your reservations."
+              ? "Here's what's happening with your reservations today."
               : "Discover fresh vegetables, fruits and connect with trusted farmers."}
           </p>
         </div>
@@ -151,8 +143,8 @@ export default function BuyerDashboard() {
           <p>Completed Orders</p>
         </div>
 
-        <div 
-          className="stat-card clickable-card" 
+        <div
+          className="stat-card clickable-card"
           onClick={() => navigate("/complaints")}
           role="button"
           tabIndex={0}

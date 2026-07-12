@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once '../connection/db.php';
-require_once 'auth_check.php';
+require_once __DIR__ . '/../connection/db.php';
+require_once __DIR__ . '/auth_check.php';
 
 // Ensure user is logged in
 require_login();
@@ -31,6 +31,72 @@ if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
 
 // Map payment type: prepayment -> advance, balance -> final
 $payment_type = ($payment_type_raw === 'prepayment') ? 'advance' : 'final';
+
+// Validate order ownership, status, and server-calculated amount
+try {
+    $buyerQuery = $pdo->prepare("SELECT buyer_id FROM buyer WHERE user_id = ?");
+    $buyerQuery->execute([$_SESSION['user']['id']]);
+    $buyer = $buyerQuery->fetch();
+
+    if (!$buyer) {
+        echo json_encode(["success" => false, "message" => "Buyer account not found."]);
+        exit;
+    }
+    $buyer_id = intval($buyer['buyer_id']);
+
+    $resQuery = $pdo->prepare("
+        SELECT 
+            r.reservation_id, 
+            r.reservation_status, 
+            r.transaction_status,
+            rc.buyer_id, 
+            rc.total_amount
+        FROM reservation r
+        JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+        WHERE r.reservation_id = ? AND rc.buyer_id = ?
+    ");
+    $resQuery->execute([$reservation_id, $buyer_id]);
+    $order = $resQuery->fetch();
+
+    if (!$order) {
+        echo json_encode(["success" => false, "message" => "Reservation not found or access denied."]);
+        exit;
+    }
+
+    $resStatus = strtolower($order['reservation_status']);
+    $txStatus = strtolower($order['transaction_status']);
+
+    if (!in_array($resStatus, ['confirmed', 'ready'], true)) {
+        echo json_encode(["success" => false, "message" => "This order is not in a payable status. Current status: " . strtoupper($resStatus)]);
+        exit;
+    }
+
+    $total_amount = floatval($order['total_amount']);
+    $expected_prepayment = round($total_amount / 3);
+    $expected_balance = $total_amount - $expected_prepayment;
+
+    if ($payment_type === 'advance') {
+        if ($txStatus !== 'unpaid') {
+            echo json_encode(["success" => false, "message" => "Pre-payment has already been made."]);
+            exit;
+        }
+        $expected_amount = $expected_prepayment;
+    } else {
+        if ($txStatus !== 'partially_paid') {
+            echo json_encode(["success" => false, "message" => "Final balance payment requires a prior pre-payment."]);
+            exit;
+        }
+        $expected_amount = $expected_balance;
+    }
+
+    if (abs($amount - $expected_amount) > 1.0) {
+        echo json_encode(["success" => false, "message" => "Payment amount mismatch. Expected: Rs " . $expected_amount . ", Submitted: Rs " . $amount]);
+        exit;
+    }
+} catch (PDOException $e) {
+    echo json_encode(["success" => false, "message" => "Validation error: " . $e->getMessage()]);
+    exit;
+}
 
 $upload_dir = '../uploads/';
 if (!is_dir($upload_dir)) {

@@ -62,6 +62,46 @@ export default function CropDetail() {
   const [deliveryDate, setDeliveryDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
+  const [dateError, setDateError] = useState("");
+
+  const getMinMaxDates = () => {
+    if (!cropData || !cropData.harvest) return { minStr: "", maxStr: "" };
+    const minStr = cropData.harvest;
+    const harvestDate = new Date(cropData.harvest);
+    if (isNaN(harvestDate.getTime())) return { minStr: "", maxStr: "" };
+    
+    const maxDate = new Date(harvestDate);
+    maxDate.setDate(maxDate.getDate() + 10);
+    const yyyy = maxDate.getFullYear();
+    const mm = String(maxDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(maxDate.getDate()).padStart(2, '0');
+    const maxStr = `${yyyy}-${mm}-${dd}`;
+    return { minStr, maxStr };
+  };
+
+  const { minStr: minDateStr, maxStr: maxDateStr } = getMinMaxDates();
+
+  const validateDeliveryDate = (dateVal) => {
+    if (!dateVal || !cropData || !cropData.harvest) {
+      setDateError("");
+      return true;
+    }
+    const { minStr, maxStr } = getMinMaxDates();
+    if (!minStr || !maxStr) {
+      setDateError("");
+      return true;
+    }
+    if (dateVal < minStr) {
+      setDateError(`Delivery date cannot be before the expected harvest date (${minStr}). This order is not possible.`);
+      return false;
+    }
+    if (dateVal > maxStr) {
+      setDateError(`Delivery date must be within 10 days of the expected harvest date (by ${maxStr}). Please choose an earlier date.`);
+      return false;
+    }
+    setDateError("");
+    return true;
+  };
 
   // Fetch listing details from get_listings.php API
   useEffect(() => {
@@ -165,6 +205,10 @@ export default function CropDetail() {
     }
     if (!deliveryDate) {
       setSubmitMsg("Please select a target delivery date.");
+      return;
+    }
+    if (!validateDeliveryDate(deliveryDate)) {
+      setSubmitMsg("Invalid target delivery date.");
       return;
     }
     
@@ -296,11 +340,23 @@ export default function CropDetail() {
             <input 
               type="date" 
               value={deliveryDate} 
-              onChange={(e) => setDeliveryDate(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDeliveryDate(val);
+                validateDeliveryDate(val);
+              }}
+              min={minDateStr}
+              max={maxDateStr}
+              className={dateError ? "input-error" : ""}
               required
             />
+            {dateError && (
+              <span className="error-text" style={{ fontSize: "11px", color: "#c0392b", marginTop: "4px", display: "block" }}>
+                {dateError}
+              </span>
+            )}
 
-            <button type="submit" className="order-btn" disabled={submitting}>
+            <button type="submit" className="order-btn" disabled={submitting || !!dateError}>
               {submitting ? "Processing..." : "Place Pre Order"}
             </button>
           </form>
