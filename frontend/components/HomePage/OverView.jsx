@@ -6,72 +6,72 @@ import { Link } from "react-router-dom";
 
 function Overview() {
 
-return (
+    return (
 
-<div className="overview-container">
+        <div className="overview-container">
 
-<div className="overview-left">
+            <div className="overview-left">
 
-<h1>
-LK Agro Market — Platform Overview
-</h1>
+                <h1>
+                    LK Agro Market — Platform Overview
+                </h1>
 
-<p className="sub-title">
-Sri Lanka's direct farm-to-buyer marketplace
-</p>
+                <p className="sub-title">
+                    Sri Lanka's direct farm-to-buyer marketplace
+                </p>
 
-<div className="overview-buttons">
+                <div className="overview-buttons">
 
-<Link to="/login">
-<button className="signin-btn">
-Sign In
+                    <Link to="/login">
+                        <button className="signin-btn">
+                            Sign in
 
-</button>
-</Link>
-
-
-<Link to="/register">
-<button className="register-btn" >
-Register Free
-</button>
-</Link>
-
-</div>
-
-</div>
+                        </button>
+                    </Link>
 
 
-<div className="overview-right">
+                    <Link to="/register">
+                        <button className="register-btn" >
+                            Register Free
+                        </button>
+                    </Link>
 
-<div className="stat-card">
+                </div>
 
-<h2>148</h2>
+            </div>
 
-<p>Farmers</p>
 
-</div>
+            <div className="overview-right">
 
-<div className="stat-card">
+                <div className="stat-card">
 
-<h2>62</h2>
+                    <h2>148</h2>
 
-<p>Listings</p>
+                    <p>Farmers</p>
 
-</div>
+                </div>
 
-<div className="stat-card">
+                <div className="stat-card">
 
-<h2>1.2K</h2>
+                    <h2>62</h2>
 
-<p>Orders</p>
+                    <p>Listings</p>
 
-</div>
+                </div>
 
-</div>
+                <div className="stat-card">
 
-</div>
+                    <h2>1.2K</h2>
 
-);
+                    <p>Orders</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    );
 
 }
 
