@@ -92,7 +92,7 @@ export default function LoginPage() {
             {error && <div className="info-red" style={{ marginBottom: 14 }}>{error}</div>}
 
             <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? "Signing in…" : "Sign In"}
+              {loading ? "Signing in…" : "Sign in"}
             </button>
           </form>
 
