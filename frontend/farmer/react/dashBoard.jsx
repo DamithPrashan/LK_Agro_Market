@@ -210,7 +210,7 @@ function DashBoard() {
                         </div>
                         <div className="stat-body">
                             <h4>Complaints</h4>
-                            <h2>1</h2>
+                            <h2>0</h2>
                             <p>View complaints</p>
                         </div>
                     </div>
