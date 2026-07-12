@@ -158,14 +158,6 @@
   }
 
   .app-nav {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .nav-links {
-    position: static;
-    transform: none;
-    flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
     gap: 15px;
@@ -175,7 +167,6 @@
     position: static;
     transform: none;
     flex-wrap: wrap;
-    justify-content: center;
   }
 
   .nav-right {
@@ -184,11 +175,6 @@
     flex-wrap: wrap;
   }
 
-  .nav-right {
-    margin-left: 0;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
 }
 
 @media (max-width:768px) {
