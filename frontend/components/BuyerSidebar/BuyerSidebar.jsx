@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
-import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle } from "react-icons/fa";
+import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt } from "react-icons/fa";
 import "./BuyerSidebar.css";
 
 export default function BuyerSidebar() {
@@ -12,6 +12,12 @@ export default function BuyerSidebar() {
   const currentPath = location.pathname.toLowerCase();
 
   const menuItems = [
+    {
+      label: "Dashboard",
+      path: "/buyer/dashboard",
+      icon: <FaTachometerAlt className="sidebar-icon" />,
+      active: currentPath === "/buyer/dashboard" || currentPath === "/buyer" || currentPath === "/buyer/"
+    },
     {
       label: "Pre-Order",
       path: "/preorder",

@@ -1,15 +1,15 @@
-import BuyerDashboard from "../../frontend/buyer/react/buyerDashboard";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import BuyerSidebar from "../../frontend/components/BuyerSidebar/BuyerSidebar";
 import "../../frontend/components/BuyerSidebar/BuyerPageLayout.css";
 
-export default function Buyer() {
+export default function BuyerLayout() {
   return (
     <div className="buyer-page-layout">
       <BuyerSidebar />
       <div className="buyer-page-content">
-        <BuyerDashboard />
+        <Outlet />
       </div>
     </div>
   );
 }
-

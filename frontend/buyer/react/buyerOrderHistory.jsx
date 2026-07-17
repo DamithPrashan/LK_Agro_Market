@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../csss/BuyerOrderHistory.css";
-import BuyerSidebar from "../../components/BuyerSidebar/BuyerSidebar";
-import "../../components/BuyerSidebar/BuyerPageLayout.css";
-
 
 export default function BuyerOrderHistory() {
   const [activeTab, setActiveTab] = useState("all");
@@ -94,11 +91,8 @@ export default function BuyerOrderHistory() {
   };
 
   return (
-    <div className="buyer-page-layout">
-      <BuyerSidebar />
-      <div className="buyer-page-content">
-        <div className="container">
-          <h1>Order History</h1>
+    <div className="container">
+      <h1>Order History</h1>
 
           {/* Cancellation Success/Error Modals */}
           {cancelErrorMsg && (
@@ -245,7 +239,5 @@ export default function BuyerOrderHistory() {
             )}
           </div>
         </div>
-      </div>
-    </div>
   );
 }
