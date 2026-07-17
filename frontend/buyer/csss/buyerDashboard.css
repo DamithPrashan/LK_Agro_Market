@@ -89,6 +89,10 @@ body {
 }
 
 .stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px;
   background: white;
   width: 200px;
   padding: 18px;
@@ -119,9 +123,10 @@ body {
 }
 
 .stat-card p {
-  color: #555;
+  color: #555 ;
   font-size: 13px;
   margin-top: 4px;
+  font-weight: bold;
 }
 
 /* LOCATION */
