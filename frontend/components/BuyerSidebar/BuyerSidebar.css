@@ -8,6 +8,7 @@
   position: sticky;
   top: 108px;
   height: calc(100vh - 108px);
+  align-self: flex-start;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
   z-index: 900;
@@ -79,6 +80,7 @@
   cursor: pointer;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   transition: background-color 0.2s ease;
+  margin-top: auto;
 }
 
 .sidebar-profile-footer:hover {

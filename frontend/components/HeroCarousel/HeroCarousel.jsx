@@ -5,7 +5,7 @@ import buyer3 from "../../assests/png/buyer3.jpg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./HeroCarousel.css";
 
-export default function HeroCarousel() {
+export default function HeroCarousel({ children }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -43,7 +43,7 @@ export default function HeroCarousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Slides */}
+      {/* Slides (Background Layer) */}
       <div className="carousel-inner">
         {slides.map((slide, index) => (
           <div
@@ -54,6 +54,14 @@ export default function HeroCarousel() {
             aria-label={slide.alt}
           />
         ))}
+      </div>
+
+      {/* Dark Readability Overlay */}
+      <div className="carousel-overlay" />
+
+      {/* Foreground Content Layer */}
+      <div className="carousel-content">
+        {children}
       </div>
 
       {/* Navigation Arrows */}

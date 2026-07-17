@@ -67,8 +67,8 @@ export default function BuyerSidebar() {
         </ul>
       </div>
 
-      <div 
-        className="sidebar-profile-footer" 
+      <div
+        className="sidebar-profile-footer"
         onClick={() => navigate("/profile")}
         title="Profile"
       >

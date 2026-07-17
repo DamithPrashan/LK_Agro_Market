@@ -113,21 +113,16 @@ export default function BuyerDashboard() {
     <div className="dashboard">
       {/* HERO */}
       <section className="hero">
-        <div className="hero-container">
-          <div className="hero-text">
-            <h1>
-              Welcome back{firstName ? `, ${firstName}` : ""} 👋
-            </h1>
-            <p>
-              {isReturningUser
-                ? "Here's what's happening with your reservations today."
-                : "Discover fresh vegetables, fruits and connect with trusted farmers."}
-            </p>
-          </div>
-          <div className="hero-carousel-wrapper">
-            <HeroCarousel />
-          </div>
-        </div>
+        <HeroCarousel>
+          <h1>
+            Welcome back{firstName ? `, ${firstName}` : ""} 👋
+          </h1>
+          <p>
+            {isReturningUser
+              ? "Here's what's happening with your reservations today."
+              : "Discover fresh vegetables, fruits and connect with trusted farmers."}
+          </p>
+        </HeroCarousel>
       </section>
 
       {/* STATS */}
