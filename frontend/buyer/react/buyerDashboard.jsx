@@ -163,7 +163,7 @@ export default function BuyerDashboard() {
         <div>
           📍 Farmers near <strong>{location}</strong> have fresh products today.
         </div>
-        <button onClick={() => navigate("/browse")}>Explore Nearby</button>
+        <button onClick={() => navigate("")}>Explore Nearby</button>
       </section>
 
       {/* QUICK LINKS */}
