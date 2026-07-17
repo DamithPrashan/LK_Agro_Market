@@ -20,21 +20,21 @@ export default function BuyerSidebar() {
     },
     {
       label: "Pre-Order",
-      path: "/preorder",
+      path: "/buyer/preorder",
       icon: <FaClipboardList className="sidebar-icon" />,
-      active: currentPath === "/preorder" || currentPath === "/pre-order"
+      active: currentPath === "/buyer/preorder" || currentPath === "/buyer/pre-order"
     },
     {
       label: "Complaints",
-      path: "/complaints",
+      path: "/buyer/complaints",
       icon: <FaExclamationTriangle className="sidebar-icon" />,
-      active: currentPath === "/complaints"
+      active: currentPath === "/buyer/complaints"
     },
     {
       label: "Ratings",
-      path: "/ratings",
+      path: "/buyer/ratings",
       icon: <FaStar className="sidebar-icon" />,
-      active: currentPath === "/ratings"
+      active: currentPath === "/buyer/ratings"
     },
     {
       label: "View Order History",
