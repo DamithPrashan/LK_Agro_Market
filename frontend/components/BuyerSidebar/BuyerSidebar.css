@@ -5,10 +5,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: sticky;
-  top: 108px;
-  height: calc(100vh - 108px);
-  align-self: flex-start;
+  height: auto;
+  align-self: stretch;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
   z-index: 900;
@@ -21,7 +19,11 @@
 /* Sidebar Nav Group */
 .sidebar-nav-group {
   padding: 15px 0;
+  position: sticky;
+  top: 68px;
+  z-index: 10;
 }
+
 
 .sidebar-nav-title {
   font-size: 11px;

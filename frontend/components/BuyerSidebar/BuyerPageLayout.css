@@ -1,6 +1,7 @@
 .buyer-page-layout {
   display: flex;
-  min-height: calc(100vh - 108px);
+  align-items: stretch;
+  flex: 1;
   background-color: #f4f6f8;
   width: 100%;
   box-sizing: border-box;
@@ -15,22 +16,14 @@
 }
 
 @media (max-width: 1450px) {
-  .buyer-page-layout {
-    min-height: calc(100vh - 160px);
-  }
-  .buyer-sidebar {
-    top: 160px;
-    height: calc(100vh - 160px);
+  .sidebar-nav-group {
+    top: 150px;
   }
 }
 
 @media (max-width: 768px) {
-  .buyer-page-layout {
-    min-height: calc(100vh - 220px);
-  }
-  .buyer-sidebar {
-    top: 220px;
-    height: calc(100vh - 220px);
+  .sidebar-nav-group {
+    top: 200px;
   }
   .buyer-page-content {
     padding: 16px;
