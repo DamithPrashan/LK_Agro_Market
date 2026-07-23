@@ -564,7 +564,7 @@ export default function Payment() {
                 disabled={loading}
                 onClick={handlePayHerePayment}
               >
-                {loading ? "Processing..." : `Confirm Payment — ${fmt(amountDue)}`}
+                {loading ? "Processing..." : `Proceed Payment — ${fmt(amountDue)}`}
               </button>
             )}
           </form>
