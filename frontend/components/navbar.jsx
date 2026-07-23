@@ -103,8 +103,8 @@ const Navbar = () => {
                 Ratings
               </NavLink> */}
 
-            <NavLink to="/farmer">
-              Farmer
+            <NavLink to="/buyer">
+              Buyer
             </NavLink>
 
               {/* <NavLink to="/profile">

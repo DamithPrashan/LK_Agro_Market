@@ -24,9 +24,11 @@ if ($reservation_id === 0 || empty($payment_type_raw) || $amount <= 0 || empty($
     exit;
 }
 
-if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(["success" => false, "message" => "Please upload a valid payment proof."]);
-    exit;
+if ($method === 'bank') {
+    if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(["success" => false, "message" => "Please upload a valid payment proof."]);
+        exit;
+    }
 }
 
 // Map payment type: prepayment -> advance, balance -> final
@@ -98,20 +100,22 @@ try {
     exit;
 }
 
-$upload_dir = '../uploads/';
-if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0755, true);
-}
-
 try {
-    // Process proof file
-    $ext = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
-    $filename = 'pay_' . time() . '_' . uniqid() . '.' . $ext;
-    $proof_file_path = 'backend/uploads/' . $filename;
+    $proof_file_path = 'online';
+    if ($method === 'bank') {
+        $upload_dir = '../uploads/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        // Process proof file
+        $ext = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
+        $filename = 'pay_' . time() . '_' . uniqid() . '.' . $ext;
+        $proof_file_path = 'backend/uploads/' . $filename;
 
-    if (!move_uploaded_file($_FILES['proof']['tmp_name'], $upload_dir . $filename)) {
-        echo json_encode(["success" => false, "message" => "Failed to save uploaded proof file."]);
-        exit;
+        if (!move_uploaded_file($_FILES['proof']['tmp_name'], $upload_dir . $filename)) {
+            echo json_encode(["success" => false, "message" => "Failed to save uploaded proof file."]);
+            exit;
+        }
     }
 
     // Begin Transaction
