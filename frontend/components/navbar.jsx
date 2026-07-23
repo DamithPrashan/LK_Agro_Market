@@ -91,7 +91,7 @@ const Navbar = () => {
                 Browse
               </NavLink>
 
-              <NavLink to="/preorder">
+              {/* <NavLink to="/preorder">
                 Pre-Order
               </NavLink>
 
@@ -101,15 +101,15 @@ const Navbar = () => {
 
               <NavLink to="/ratings">
                 Ratings
-              </NavLink>
+              </NavLink> */}
 
             <NavLink to="/farmer">
               Farmer
             </NavLink>
 
-              <NavLink to="/profile">
+              {/* <NavLink to="/profile">
                 Profile
-              </NavLink>
+              </NavLink> */}
             </>
           )}
 
@@ -203,7 +203,7 @@ const Navbar = () => {
                 <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
               </div>
             ) : (
-              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign In</NavLink>
+              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign in</NavLink>
             )}
           </div>
 

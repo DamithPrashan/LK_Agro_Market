@@ -1,0 +1,31 @@
+.buyer-page-layout {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  background-color: #f4f6f8;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.buyer-page-content {
+  flex-grow: 1;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: #f4f6f8;
+}
+
+@media (max-width: 1450px) {
+  .sidebar-nav-group {
+    top: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-nav-group {
+    top: 200px;
+  }
+  .buyer-page-content {
+    padding: 16px;
+  }
+}

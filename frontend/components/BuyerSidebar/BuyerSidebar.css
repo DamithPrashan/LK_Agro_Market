@@ -1,0 +1,168 @@
+.buyer-sidebar {
+  width: 250px;
+  background-color: #0f3d1f;
+  color: #d1e2d6;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
+  align-self: stretch;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  z-index: 900;
+  transition: width 0.3s ease, padding 0.3s ease;
+  flex-shrink: 0;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+/* Sidebar Nav Group */
+.sidebar-nav-group {
+  padding: 15px 0;
+  position: sticky;
+  top: 68px;
+  z-index: 10;
+}
+
+
+.sidebar-nav-title {
+  font-size: 11px;
+  color: #8dae96;
+  padding: 0 20px;
+  margin-bottom: 15px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #c2dcc8;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.sidebar-menu-item.active {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-weight: 600;
+  border-left-color: #4cd137;
+}
+
+.sidebar-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Profile Footer Section */
+.sidebar-profile-footer {
+  padding: 15px 20px;
+  background-color: #0b3017;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+  margin-top: auto;
+}
+
+.sidebar-profile-footer:hover {
+  background-color: #0d3b1c;
+}
+
+.sidebar-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #4cd137;
+  color: #0f3d1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebar-avatar-circle.active-avatar {
+  border-color: #ffffff;
+}
+
+.avatar-icon {
+  font-size: 32px;
+  color: #d1e2d6;
+}
+
+.sidebar-profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-profile-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #c2dcc8;
+  transition: color 0.2s ease;
+}
+
+.sidebar-profile-label.active-text {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Mobile & Small Screen Responsiveness */
+@media (max-width: 768px) {
+  .buyer-sidebar {
+    width: 70px;
+  }
+
+  .sidebar-nav-title {
+    display: none;
+  }
+
+  .sidebar-nav-label {
+    display: none;
+  }
+
+  .sidebar-profile-info {
+    display: none;
+  }
+
+  .sidebar-menu-item {
+    justify-content: center;
+    padding: 14px 0;
+    border-left: none;
+    border-right: 4px solid transparent;
+  }
+
+  .sidebar-menu-item.active {
+    border-left: none;
+    border-right-color: #4cd137;
+  }
+
+  .sidebar-profile-footer {
+    justify-content: center;
+    padding: 15px 0;
+  }
+}

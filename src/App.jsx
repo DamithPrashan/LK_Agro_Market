@@ -8,7 +8,8 @@ import Farmer from "./pages/Farmer";
 import Browse from "./pages/Browse";
 import PreOrder from "./pages/PreOrder";
 import Payment from "./pages/Payment";
-import Buyer from "./pages/Buyer.jsx";
+import BuyerLayout from "./pages/BuyerLayout.jsx";
+import BuyerDashboard from "../frontend/buyer/react/buyerDashboard.jsx";
 import Complaints from "./pages/Complaints";
 import FarmerResponse from "./pages/farmerResponse";
 import Admin from "./pages/Admin";
@@ -47,7 +48,14 @@ function App() {
           <Route path="/crop/:id" element={<PreOrder />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment/:orderId" element={<Payment />} />
-          <Route path="/buyer" element={<Buyer />} />
+          <Route path="/buyer" element={<BuyerLayout />}>
+            <Route index element={<BuyerDashboard />} />
+            <Route path="dashboard" element={<BuyerDashboard />} />
+            <Route path="preorder" element={<PreOrder />} />
+            <Route path="complaints" element={<Complaints />} />
+            <Route path="ratings" element={<Ratings />} />
+            <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
+          </Route>
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path="/admin" element={<Admin />} />
@@ -61,7 +69,6 @@ function App() {
           <Route path="/farmer/edit-listing" element={<EditList />} />
           <Route path="/farmer/orders" element={<OrderManagement />}
           />
-          <Route path="/buyer/BuyerOrderHistory" element={<BuyerOrderHistory />} />
           <Route path="/farmer-response" element={<FarmerResponse />} />
         </Routes>
       </main>

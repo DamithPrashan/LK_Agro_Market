@@ -147,6 +147,7 @@ function AddListing() {
                             <option value="Vegetable">Vegetable</option>
                             <option value="Fruit">Fruit</option>
                             <option value="Grain">Grain</option>
+                            <option value="Other">Other</option>
                         </select>
 
                         <input
@@ -200,7 +201,7 @@ function AddListing() {
                             <option value="growing">Growing</option>
                             <option value="ready_for_harvest">Ready for Harvest</option>
                             <option value="harvested">Harvested</option>
-                            <option value="Other">Other</option>
+
                         </select>
 
                         <input

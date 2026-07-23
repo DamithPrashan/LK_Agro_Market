@@ -220,6 +220,9 @@
 
 .main-content {
   flex: 1;
+  /* //when modify the buyer sidebar this page added below 2 parts */
+  display: flex;
+  flex-direction: column;
 }
 
 .page-subtitle {

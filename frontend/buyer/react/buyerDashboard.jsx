@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import "../../buyer/csss/buyerDashboard.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
+import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
+
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
@@ -111,7 +113,7 @@ export default function BuyerDashboard() {
     <div className="dashboard">
       {/* HERO */}
       <section className="hero">
-        <div>
+        <HeroCarousel>
           <h1>
             Welcome back{firstName ? `, ${firstName}` : ""} 👋
           </h1>
@@ -120,7 +122,7 @@ export default function BuyerDashboard() {
               ? "Here's what's happening with your reservations today."
               : "Discover fresh vegetables, fruits and connect with trusted farmers."}
           </p>
-        </div>
+        </HeroCarousel>
       </section>
 
       {/* STATS */}
@@ -161,11 +163,11 @@ export default function BuyerDashboard() {
         <div>
           📍 Farmers near <strong>{location}</strong> have fresh products today.
         </div>
-        <button onClick={() => navigate("/browse")}>Explore Nearby</button>
+        <button onClick={() => navigate("")}>Explore Nearby</button>
       </section>
 
       {/* QUICK LINKS */}
-      <section className="quick-links">
+      {/* <section className="quick-links">
         <h2>Quick Actions</h2>
 
         <div className="quick-grid">
@@ -184,7 +186,7 @@ export default function BuyerDashboard() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* CONTENT GRID */}
       <section className="content-grid">
@@ -208,7 +210,7 @@ export default function BuyerDashboard() {
           )}
         </div>
 
-        {/* INFO BOX */}
+        {/* INFO BOX
         <div className="content-box">
           <h2>Buyer Insights</h2>
           <p>
@@ -222,7 +224,7 @@ export default function BuyerDashboard() {
           >
             View Full Order History
           </button>
-        </div>
+        </div> */}
       </section>
     </div>
   );
