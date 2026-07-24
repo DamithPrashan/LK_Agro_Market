@@ -3,6 +3,9 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json");
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 require_once 'connection/db.php';
 require_once 'Apis/auth_check.php';

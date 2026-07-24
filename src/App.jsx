@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
+import { CropProvider } from "./context/CropContext";
 
 
 import Home from "./pages/Home";
@@ -35,46 +36,48 @@ import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 
 function App() {
   return (
-    <div className="app-shell">
-      <Navbar />
+    <CropProvider>
+      <div className="app-shell">
+        <Navbar />
 
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/farmer" element={<Farmer />} />
-          <Route path="/browse" element={<Browse />} />
-          <Route path="/preorder" element={<PreOrder />} />
-          <Route path="/pre-order" element={<PreOrder />} />
-          <Route path="/crop/:id" element={<PreOrder />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/payment/:orderId" element={<Payment />} />
-          <Route path="/buyer" element={<BuyerLayout />}>
-            <Route index element={<BuyerDashboard />} />
-            <Route path="dashboard" element={<BuyerDashboard />} />
-            <Route path="preorder" element={<PreOrder />} />
-            <Route path="complaints" element={<Complaints />} />
-            <Route path="ratings" element={<Ratings />} />
-            <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
-          </Route>
-          <Route path="/complaints" element={<Complaints />} />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/complaint/:id" element={<ResolveComplaint />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/farmer/add-listing" element={<AddListing />} />
-          <Route path="/farmer/edit-listing" element={<EditList />} />
-          <Route path="/farmer/orders" element={<OrderManagement />}
-          />
-          <Route path="/farmer-response" element={<FarmerResponse />} />
-        </Routes>
-      </main>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/farmer" element={<Farmer />} />
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/preorder" element={<PreOrder />} />
+            <Route path="/pre-order" element={<PreOrder />} />
+            <Route path="/crop/:id" element={<PreOrder />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment/:orderId" element={<Payment />} />
+            <Route path="/buyer" element={<BuyerLayout />}>
+              <Route index element={<BuyerDashboard />} />
+              <Route path="dashboard" element={<BuyerDashboard />} />
+              <Route path="preorder" element={<PreOrder />} />
+              <Route path="complaints" element={<Complaints />} />
+              <Route path="ratings" element={<Ratings />} />
+              <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
+            </Route>
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/ratings" element={<Ratings />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/complaint/:id" element={<ResolveComplaint />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/ratings" element={<Ratings />} />
+            <Route path="/farmer/add-listing" element={<AddListing />} />
+            <Route path="/farmer/edit-listing" element={<EditList />} />
+            <Route path="/farmer/orders" element={<OrderManagement />}
+            />
+            <Route path="/farmer-response" element={<FarmerResponse />} />
+          </Routes>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </CropProvider>
   );
 }
 

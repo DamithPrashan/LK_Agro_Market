@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate } from "react-router-dom";
+import { useCrops } from "../../../src/context/CropContext";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
 import leeksImg from "../../assests/png/leeks.jpg";
@@ -51,8 +52,7 @@ export default function Browse() {
 
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
-  const [crops, setCrops] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { crops, loading, fetchCrops } = useCrops();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Consolidated advanced filters state
@@ -79,51 +79,9 @@ export default function Browse() {
     return "bg-blue";
   };
 
-  // Fetch listings function
-  const fetchListings = async (customFilters = filters, customSearch = searchQuery) => {
-    setLoading(true);
-    try {
-      const queryParams = new URLSearchParams();
-      if (customSearch) queryParams.append("search_query", customSearch);
-      if (customFilters.district && customFilters.district !== "All" && customFilters.district !== "All Districts") {
-        queryParams.append("district", customFilters.district);
-      }
-      if (customFilters.cropType && customFilters.cropType !== "All Crops") {
-        queryParams.append("crop_type", customFilters.cropType);
-      }
-
-      // Validate and apply Price Min / Max (Min Price should not exceed Max Price)
-      const isPriceRangeValid = !(
-        customFilters.priceMin &&
-        customFilters.priceMax &&
-        parseFloat(customFilters.priceMin) > parseFloat(customFilters.priceMax)
-      );
-
-      if (isPriceRangeValid) {
-        if (customFilters.priceMin) queryParams.append("minPrice", customFilters.priceMin);
-        if (customFilters.priceMax) queryParams.append("maxPrice", customFilters.priceMax);
-      }
-
-      if (customFilters.harvestFrom) queryParams.append("harvestFrom", customFilters.harvestFrom);
-      if (customFilters.harvestTo) queryParams.append("harvestTo", customFilters.harvestTo);
-      if (customFilters.isVerified) queryParams.append("is_verified", "true");
-      if (customFilters.sortBy) queryParams.append("sort_by", customFilters.sortBy);
-
-      const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
-      const data = await response.json();
-
-      if (data.success && data.listings) {
-        setCrops(data.listings);
-      } else {
-        console.error("API Error: ", data.message);
-        setCrops([]);
-      }
-    } catch (err) {
-      console.error("Fetch failed: ", err);
-      setCrops([]);
-    } finally {
-      setLoading(false);
-    }
+  // Wrapper for existing calls to fetchListings
+  const fetchListings = (customFilters = filters, customSearch = searchQuery) => {
+    fetchCrops(customFilters, customSearch);
   };
 
   const fetchStats = async () => {
@@ -144,12 +102,22 @@ export default function Browse() {
     }
   };
 
-  // Fetch listings once on initial mount
+  // Fetch listings on initial mount and when tab/window gains focus
   useEffect(() => {
-    fetchListings();
+    fetchCrops(filters, searchQuery);
     fetchStats();
+
+    const handleFocus = () => {
+      fetchCrops(filters, searchQuery);
+      fetchStats();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filters, searchQuery, fetchCrops]);
 
   const handleApplyFilters = () => {
     fetchListings(filters, searchQuery);
@@ -420,7 +388,24 @@ export default function Browse() {
                   onClick={() => navigate(`/crop/${crop.id}`)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div className={`crop-image-area ${getBgClass(crop.name)}`}>
+                  <div className={`crop-image-area ${getBgClass(crop.name)}`} style={{ position: "relative" }}>
+                    {parseFloat(crop.qty) <= 0 && (
+                      <span className="out-of-stock-badge" style={{
+                        position: "absolute",
+                        top: "10px",
+                        left: "10px",
+                        background: "#e74c3c",
+                        color: "white",
+                        padding: "5px 10px",
+                        borderRadius: "5px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        zIndex: 10,
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                      }}>
+                        Out of Stock
+                      </span>
+                    )}
                     {(() => {
                       if (crop.image_url) {
                         let imgUrl = crop.image_url;
@@ -447,22 +432,44 @@ export default function Browse() {
                       <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>/kg
                     </p>
                     <p className="meta-info">
-                      {parseFloat(crop.qty).toFixed(0)} kg • Harvest {crop.harvest}
+                      Available: {parseFloat(crop.qty) <= 0 ? (
+                        <span style={{ color: "#e74c3c", fontWeight: "bold" }}>Out of Stock</span>
+                      ) : (
+                        `${parseFloat(crop.qty).toFixed(0)} kg`
+                      )} • Harvest {crop.harvest}
                     </p>
                     <div className="rating">
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
                       <span className="rating-num">({parseFloat(crop.rating).toFixed(1)})</span>
                     </div>
-                    <button
-                      className="pre-order-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/preorder`, { state: { cropId: crop.id } });
-                      }}
-                    >
-                      Pre-Order
-                    </button>
+                    {parseFloat(crop.qty) <= 0 ? (
+                      <button
+                        className="pre-order-btn out-of-stock-btn"
+                        disabled
+                        style={{
+                          background: "#95a5a6",
+                          color: "white",
+                          cursor: "not-allowed",
+                          boxShadow: "none"
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        Out of Stock
+                      </button>
+                    ) : (
+                      <button
+                        className="pre-order-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/crop/${crop.id}`);
+                        }}
+                      >
+                        Pre-Order
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

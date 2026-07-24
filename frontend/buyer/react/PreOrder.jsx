@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "../../buyer/csss/PreOrder.css";
+import { useCrops } from "../../../src/context/CropContext";
 
 // local images map for fallback rendering
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -51,6 +52,7 @@ export default function CropDetail() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { updateCropQuantity } = useCrops();
 
   // Determine which listing ID to load (defaulting to 1 if not specified)
   const cropId = id || location.state?.cropId || 1;
@@ -199,8 +201,15 @@ export default function CropDetail() {
   // Handle actual reservation submission
   const handlePreOrder = async (e) => {
     e.preventDefault();
-    if (!quantity || parseFloat(quantity) <= 0) {
+    const qtyVal = parseFloat(quantity);
+    const availableQty = parseFloat(cropData.qty);
+
+    if (!quantity || qtyVal <= 0) {
       setSubmitMsg("Please enter a valid quantity.");
+      return;
+    }
+    if (qtyVal > availableQty) {
+      setSubmitMsg(`Requested quantity (${qtyVal} kg) exceeds available quantity (${availableQty} kg).`);
       return;
     }
     if (!deliveryDate) {
@@ -223,13 +232,25 @@ export default function CropDetail() {
         },
         body: JSON.stringify({
           crop_id: cropId,
-          quantity: parseFloat(quantity),
+          quantity: qtyVal,
           collection_date: deliveryDate,
         }),
       });
       const data = await response.json();
       if (data.success) {
-        setSubmitMsg(`Success! Your pre-order request for ${quantity} kg has been received.`);
+        setSubmitMsg(`Success! Your pre-order request for ${qtyVal} kg has been received.`);
+        
+        const newQty = data.updated_quantity !== undefined ? data.updated_quantity : (parseFloat(cropData.qty) - qtyVal);
+        
+        // Update cropData.qty in state immediately without requiring page reload
+        setCropData(prev => ({
+          ...prev,
+          qty: newQty
+        }));
+
+        // Also update shared CropContext so Browse page updates immediately
+        updateCropQuantity(cropId, newQty);
+
         setQuantity("");
         setDeliveryDate("");
       } else {
@@ -242,6 +263,8 @@ export default function CropDetail() {
       setSubmitting(false);
     }
   };
+
+  const isOutOfStock = parseFloat(cropData.qty) <= 0;
 
   return (
     <div className="crop-container">
@@ -277,7 +300,9 @@ export default function CropDetail() {
 
           <div className="meta">
             <span>📍 District: {cropData.location}</span>
-            <span>📦 Available Quantity: {parseFloat(cropData.qty).toFixed(0)} kg</span>
+            <span style={{ color: isOutOfStock ? "#c0392b" : "inherit", fontWeight: isOutOfStock ? "bold" : "normal" }}>
+              📦 Available Quantity: {isOutOfStock ? "Out of Stock" : `${parseFloat(cropData.qty).toFixed(0)} kg`}
+            </span>
             <span>📅 Expected Harvest: {cropData.harvest}</span>
           </div>
           
@@ -322,17 +347,18 @@ export default function CropDetail() {
         </div>
 
         {/* Pre Order Box */}
-        <div className="order-box">
-          <h2>Pre-Order Now</h2>
+        <div className="order-box" style={{ background: isOutOfStock ? "#34495e" : "#1b5e20" }}>
+          <h2>{isOutOfStock ? "Out of Stock" : "Pre-Order Now"}</h2>
           <form onSubmit={handlePreOrder}>
             <label>Quantity (kg)</label>
             <input 
               type="number" 
-              placeholder="Enter quantity" 
+              placeholder={isOutOfStock ? "Currently unavailable" : "Enter quantity"} 
               value={quantity} 
               onChange={(e) => setQuantity(e.target.value)}
               min="1"
               max={parseFloat(cropData.qty)}
+              disabled={isOutOfStock}
               required
             />
 
@@ -348,33 +374,43 @@ export default function CropDetail() {
               min={minDateStr}
               max={maxDateStr}
               className={dateError ? "input-error" : ""}
+              disabled={isOutOfStock}
               required
             />
             {dateError && (
-              <span className="error-text" style={{ fontSize: "11px", color: "#c0392b", marginTop: "4px", display: "block" }}>
+              <span className="error-text" style={{ fontSize: "11px", color: "#e74c3c", marginTop: "4px", display: "block", fontWeight: "bold" }}>
                 {dateError}
               </span>
             )}
 
-            <button type="submit" className="order-btn" disabled={submitting || !!dateError}>
-              {submitting ? "Processing..." : "Place Pre Order"}
+            <button 
+              type="submit" 
+              className="order-btn" 
+              disabled={submitting || !!dateError || isOutOfStock}
+              style={{ background: isOutOfStock ? "#7f8c8d" : "#ff9800", cursor: isOutOfStock ? "not-allowed" : "pointer" }}
+            >
+              {isOutOfStock ? "Out of Stock" : (submitting ? "Processing..." : "Place Pre Order")}
             </button>
           </form>
 
           {submitMsg && (
-            <p style={{ 
-              marginTop: "12px", 
+            <div style={{ 
+              marginTop: "15px", 
+              padding: "12px 15px", 
+              borderRadius: "8px", 
               fontSize: "13px", 
               fontWeight: "600",
               textAlign: "center", 
-              color: submitMsg.includes("Success") ? "#27ae60" : "#c0392b" 
+              background: submitMsg.toLowerCase().includes("success") ? "#d4edda" : "#f8d7da",
+              color: submitMsg.toLowerCase().includes("success") ? "#155724" : "#721c24",
+              border: `1px solid ${submitMsg.toLowerCase().includes("success") ? "#c3e6cb" : "#f5c6cb"}`
             }}>
               {submitMsg}
-            </p>
+            </div>
           )}
 
           <p className="note">
-            Secure your harvest before stock runs out 🌱
+            {isOutOfStock ? "Check back later when the farmer updates stock!" : "Secure your harvest before stock runs out 🌱"}
           </p>
         </div>
       </div>
