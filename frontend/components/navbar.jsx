@@ -39,15 +39,15 @@ const Navbar = () => {
               <NavLink to="/browse">Browse</NavLink>
               <NavLink to="/ratings">Ratings</NavLink>
 
-            <NavLink to="/register">
-              Register
-            </NavLink>
+              <NavLink to="/register">
+                Register
+              </NavLink>
 
-            <NavLink to="/login">
-              Login
-            </NavLink>
-          </>
-        )}
+              <NavLink to="/login">
+                Login
+              </NavLink>
+            </>
+          )}
 
 
           {/* Farmer navbar */}
@@ -58,17 +58,17 @@ const Navbar = () => {
                 Home
               </NavLink>
 
-              <NavLink to="/preorder">
+              {/* <NavLink to="/preorder">
                 Pre-Order
-              </NavLink>
+              </NavLink> */}
 
-              <NavLink to="/complaints">
+              {/* <NavLink to="/complaints">
                 Complaints
-              </NavLink>
+              </NavLink> */}
 
-              <NavLink to="/ratings">
+              {/* <NavLink to="/ratings">
                 Ratings
-              </NavLink>
+              </NavLink> */}
 
               <NavLink to="/farmer">
                 Farmer
@@ -103,9 +103,9 @@ const Navbar = () => {
                 Ratings
               </NavLink> */}
 
-            <NavLink to="/buyer">
-              Buyer
-            </NavLink>
+              <NavLink to="/buyer">
+                Buyer
+              </NavLink>
 
               {/* <NavLink to="/profile">
                 Profile

@@ -25,6 +25,8 @@ import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
+import FarmerLayout from "./pages/FarmerLayout.jsx";
+import MyListings from "../frontend/farmer/react/MyListings.jsx";
 
 
 
@@ -43,7 +45,16 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/farmer" element={<Farmer />} />
+            <Route path="/farmer" element={<FarmerLayout />}>
+              <Route index element={<Farmer />} />
+              <Route path="dashboard" element={<Farmer />} />
+              <Route path="add-listing" element={<AddListing />} />
+              <Route path="edit-listing" element={<EditList />} />
+              <Route path="orders" element={<OrderManagement />} />
+              <Route path="listings" element={<MyListings />} />
+              <Route path="complaints" element={<Complaints />} />
+              <Route path="ratings" element={<Ratings />} />
+            </Route>
             <Route path="/browse" element={<Browse />} />
             <Route path="/preorder" element={<PreOrder />} />
             <Route path="/pre-order" element={<PreOrder />} />
@@ -67,10 +78,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/ratings" element={<Ratings />} />
-            <Route path="/farmer/add-listing" element={<AddListing />} />
-            <Route path="/farmer/edit-listing" element={<EditList />} />
-            <Route path="/farmer/orders" element={<OrderManagement />}
-            />
+
             <Route path="/farmer-response" element={<FarmerResponse />} />
           </Routes>
         </main>
