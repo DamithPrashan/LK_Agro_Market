@@ -1,20 +1,23 @@
+import { useTranslation } from "react-i18next";
+
 export default function FarmerVerificationForm({
   nic, farm_location, onChange, onBlur,
   onNicFile, onEvidenceFile, nicFile, evidenceFile,
 }) {
+  const { t } = useTranslation();
+
   return (
     <div style={s.box}>
       <div style={s.head}>
-        <span style={s.title}>Farmer Verification</span>
-        <span className="badge badge-amber">Required for Verified Badge</span>
+        <span style={s.title}>{t("verification.title")}</span>
+        <span className="badge badge-amber">{t("verification.requiredBadge")}</span>
       </div>
       <div className="info-green" style={{ marginBottom: 14 }}>
-        🛡 Completing verification earns you a <strong>Verified Farmer Badge</strong>.
-        Buyers trust verified farmers significantly more.
+        {t("verification.infoGreen")}
       </div>
 
       <div className="field">
-        <label htmlFor="nic">NIC Number</label>
+        <label htmlFor="nic">{t("verification.nic")}</label>
         <input
           id="nic" name="nic" value={nic}
           placeholder="982341234V" onChange={onChange} onBlur={onBlur}
@@ -22,7 +25,7 @@ export default function FarmerVerificationForm({
       </div>
 
       <div className="field">
-        <label htmlFor="farm_location">Farm Location / GPS Coordinates</label>
+        <label htmlFor="farm_location">{t("verification.farmLocation")}</label>
         <div style={{ display: "flex", gap: 8 }}>
           <input
             id="farm_location" name="farm_location" value={farm_location}
@@ -42,13 +45,13 @@ export default function FarmerVerificationForm({
               }
             }}
           >
-            📍 Locate
+            {t("verification.btnLocate")}
           </button>
         </div>
       </div>
 
       <div className="field">
-        <label>NIC Image</label>
+        <label>{t("verification.nicImage")}</label>
         <div
           className="upload-zone"
           onClick={() => document.getElementById("nic-upload").click()}
@@ -59,12 +62,12 @@ export default function FarmerVerificationForm({
             onChange={(e) => onNicFile(e.target.files[0])}
           />
           <span>{nicFile ? "✅" : "🪪"}</span>
-          <p>{nicFile ? nicFile.name : "Click to upload NIC photo (JPG, PNG — max 5 MB)"}</p>
+          <p>{nicFile ? nicFile.name : t("verification.nicPlaceholder")}</p>
         </div>
       </div>
 
       <div className="field">
-        <label>Crop / Production Evidence Photo</label>
+        <label>{t("verification.evidence")}</label>
         <div
           className="upload-zone"
           onClick={() => document.getElementById("ev-upload").click()}
@@ -75,7 +78,7 @@ export default function FarmerVerificationForm({
             onChange={(e) => onEvidenceFile(e.target.files[0])}
           />
           <span>{evidenceFile ? "✅" : "📷"}</span>
-          <p>{evidenceFile ? evidenceFile.name : "Click to upload farm or crop photo (JPG, PNG — max 5 MB)"}</p>
+          <p>{evidenceFile ? evidenceFile.name : t("verification.evidencePlaceholder")}</p>
         </div>
       </div>
     </div>
@@ -86,4 +89,4 @@ const s = {
   box:   { background: "var(--g-50)", border: "1px solid var(--g-100)", borderRadius: "var(--r-lg)", padding: "16px 18px", marginBottom: 14 },
   head:  { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 8 },
   title: { fontSize: 13, fontWeight: 700, color: "var(--g-800)" },
-};
+};

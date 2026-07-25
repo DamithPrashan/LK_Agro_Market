@@ -1,19 +1,42 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./navbar.css";
 import notificationIcon from '../assests/png/notification.png';
 import logo from '../../src/assets/logo.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, login, logout } = useAuth();
+  const { t, i18n } = useTranslation();
   const [showNotifications, setShowNotifications] = useState(false);
+
+  const handleLanguageChange = async (langCode) => {
+    i18n.changeLanguage(langCode);
+    localStorage.setItem("preferredLanguage", langCode);
+
+    if (user) {
+      const dbLanguage = langCode === "si" ? "sinhala" : (langCode === "ta" ? "tamil" : "english");
+      login({ ...user, language: dbLanguage });
+
+      try {
+        await fetch("/backend/Apis/update_language.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ language: langCode }),
+        });
+      } catch (err) {
+        console.error("Failed to sync language to database:", err);
+      }
+    }
+  };
+
   const Logout = async () => {
     await logout();
     navigate("/");
   };
-
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -76,134 +99,65 @@ const Navbar = () => {
       </div>
 
       <nav className="app-nav">
-
         <div className="nav-links">
-
           {/* Default navbar (not logged in) */}
-
           {!user && (
             <>
-              <NavLink to="/" end>Home</NavLink>
-              <NavLink to="/browse">Browse</NavLink>
-              <NavLink to="/ratings">Ratings</NavLink>
-
-              <NavLink to="/register">
-                Register
-              </NavLink>
-
-              <NavLink to="/login">
-                Login
-              </NavLink>
+              <NavLink to="/" end>{t("navbar.home")}</NavLink>
+              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
+              <NavLink to="/ratings">{t("navbar.ratings")}</NavLink>
+              <NavLink to="/register">{t("navbar.register")}</NavLink>
+              <NavLink to="/login">{t("navbar.login")}</NavLink>
             </>
           )}
 
-
           {/* Farmer navbar */}
-
           {user?.role === "farmer" && (
             <>
-              <NavLink to="/">
-                Home
-              </NavLink>
-
-              {/* <NavLink to="/preorder">
-                Pre-Order
-              </NavLink> */}
-
-              {/* <NavLink to="/complaints">
-                Complaints
-              </NavLink> */}
-
-              {/* <NavLink to="/ratings">
-                Ratings
-              </NavLink> */}
-
-              <NavLink to="/farmer">
-                Farmer
-              </NavLink>
-
-              <NavLink to="/profile">
-                Profile
-              </NavLink>
+              <NavLink to="/">{t("navbar.home")}</NavLink>
+              <NavLink to="/farmer">{t("navbar.farmer")}</NavLink>
+              <NavLink to="/profile">{t("navbar.profile")}</NavLink>
             </>
           )}
 
           {/* Buyer navbar */}
-
           {user?.role === "buyer" && (
             <>
-              <NavLink to="/">
-                Home
-              </NavLink>
-              <NavLink to="/browse">
-                Browse
-              </NavLink>
-
-              {/* <NavLink to="/preorder">
-                Pre-Order
-              </NavLink>
-
-              <NavLink to="/complaints">
-                Complaints
-              </NavLink>
-
-              <NavLink to="/ratings">
-                Ratings
-              </NavLink> */}
-
-              <NavLink to="/buyer">
-                Buyer
-              </NavLink>
-
-              {/* <NavLink to="/profile">
-                Profile
-              </NavLink> */}
+              <NavLink to="/">{t("navbar.home")}</NavLink>
+              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
+              <NavLink to="/buyer">{t("navbar.buyer")}</NavLink>
             </>
           )}
-
 
           {/* Admin navbar */}
-
           {user?.role === "admin" && (
             <>
-              <NavLink to="/">
-                Home
-              </NavLink>
-
-              <NavLink to="/admin">
-                Admin
-              </NavLink>
-
-              <NavLink to="/profile">
-                Profile
-              </NavLink>
+              <NavLink to="/">{t("navbar.home")}</NavLink>
+              <NavLink to="/admin">{t("navbar.admin")}</NavLink>
+              <NavLink to="/profile">{t("navbar.profile")}</NavLink>
             </>
           )}
-
         </div>
 
         <div className="nav-right">
-
           <div className="language-buttons">
-
-            <button className="En-button"
-              onClick={() => setLanguage("en")}
+            <button className={`En-button ${i18n.language === "en" ? "active" : ""}`}
+              onClick={() => handleLanguageChange("en")}
             >
               EN
             </button>
 
-            <button className="Si-button"
-              onClick={() => setLanguage("si")}
+            <button className={`Si-button ${i18n.language === "si" ? "active" : ""}`}
+              onClick={() => handleLanguageChange("si")}
             >
               සිං
             </button>
 
-            <button className="Ta-button"
-              onClick={() => setLanguage("ta")}
+            <button className={`Ta-button ${i18n.language === "ta" ? "active" : ""}`}
+              onClick={() => handleLanguageChange("ta")}
             >
               தமிழ்
             </button>
-
           </div>
 
           {/* --- NOTIFICATION POPUP CONTAINER --- */}
@@ -219,13 +173,13 @@ const Navbar = () => {
             {showNotifications && (
               <div className="notification-dropdown">
                 <div className="dropdown-header">
-                  <h3>Notifications</h3>
-                  <button className="mark-read-btn" onClick={handleMarkAllRead}>Mark all read</button>
+                  <h3>{t("navbar.notifications")}</h3>
+                  <button className="mark-read-btn" onClick={handleMarkAllRead}>{t("navbar.markAllRead")}</button>
                 </div>
 
                 <div className="dropdown-body">
                   {notifications.length === 0 ? (
-                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No notifications</div>
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>{t("navbar.noNotifications")}</div>
                   ) : (
                     notifications.map((notif) => (
                       <div key={notif.id} className="notification-item">
@@ -242,7 +196,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="dropdown-footer">
-                  <a href="/notifications">View all notifications</a>
+                  <a href="/notifications">{t("navbar.viewAllNotifications")}</a>
                 </div>
               </div>
             )}
@@ -252,13 +206,12 @@ const Navbar = () => {
             {user ? (
               <div style={{ display: "flex", gap: "8px" }}>
                 <button className="log-btn" style={{ fontWeight: 600 }}>{user.name}</button>
-                <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>Logout</button>
+                <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>{t("navbar.logout")}</button>
               </div>
             ) : (
-              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>Sign in</NavLink>
+              <NavLink to="/login" className="log-btn" style={{ display: "inline-block", padding: "8px 14px", textAlign: "center", lineHeight: "22px" }}>{t("navbar.signIn")}</NavLink>
             )}
           </div>
-
         </div>
       </nav>
     </header>

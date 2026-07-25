@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
+import { useTranslation } from "react-i18next";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
 import leeksImg from "../../assests/png/leeks.jpg";
@@ -49,6 +50,7 @@ const imageMap = {
 
 export default function Browse() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
@@ -142,69 +144,19 @@ export default function Browse() {
 
   return (
     <div className="layout-wrapper">
-      {/* TOP NAVBAR */}
-      {/* <header className="top-navbar">
-        <div className="logo">LK AGRO MARKET</div>
-        <nav className="top-nav-links">
-          <span onClick={() => navigate("/")}>Home</span>
-          <span onClick={() => navigate("/farmer")}>Farmer</span>
-          <span className="active" onClick={() => navigate("/browse")}>Browse</span>
-          <span onClick={() => navigate("/pre-order")}>Pre-Order</span>
-          <span onClick={() => navigate("/payment")}>Payment</span>
-          <span onClick={() => navigate("/map-search")}>Map Search</span>
-          <span onClick={() => navigate("/complaints")}>Complaints</span>
-          <span onClick={() => navigate("/ratings")}>Ratings</span>
-          <span onClick={() => navigate("/admin")}>Admin</span>
-          <span onClick={() => navigate("/register")}>Register</span>
-        </nav>
-        <div className="top-nav-actions">
-          <button className="lang-btn">EN</button>
-          <button className="icon-btn">👤</button>
-          <button className="lang-btn tamil">தமிழ் <span className="badge">3</span></button>
-          <span className="user-name">Randeniya</span>
-        </div>
-      </header> */}
-
       <div className="main-layout">
-        {/* SIDEBAR */}
-        {/* <aside className="sidebar">
-          <div className="nav-group">
-            <p className="nav-title">NAVIGATION</p>
-            <ul>
-              <li onClick={() => navigate("/dashboard")}>Dashboard</li>
-              <li onClick={() => navigate("/farmer-home")}>Farmer Home</li>
-              <li className="active" onClick={() => navigate("/browse")}>Browse Crops</li>
-              <li onClick={() => navigate("/pre-order")}>Pre-Order</li>
-              <li onClick={() => navigate("/payment")}>Payment</li>
-              <li onClick={() => navigate("/map")}>Map Search</li>
-              <li onClick={() => navigate("/complaints")}>Complaints</li>
-              <li onClick={() => navigate("/ratings")}>Ratings</li>
-              <li onClick={() => navigate("/admin-panel")}>Admin Panel</li>
-              <li onClick={() => navigate("/login")}>Register / Login</li>
-            </ul>
-          </div>
-
-          <div className="sidebar-profile">
-            <div className="avatar">RR</div>
-            <div className="profile-info">
-              <strong>R.M.S.T. Randeniya</strong>
-              <span>Farmer <span className="verified-badge">✓ Verified</span></span>
-            </div>
-          </div>
-        </aside> */}
-
         {/* MAIN CONTENT */}
         <main className="content-area">
           <div className="page-header">
-            <h1>Browse Crops</h1>
-            <p>Fresh produce from verified Sri Lankan farmers</p>
+            <h1>{t("sidebar.browseCrops")}</h1>
+            <p>{t("browse.subtitle")}</p>
           </div>
 
           {/* SEARCH BAR */}
           <div className="search-section">
             <input
               type="text"
-              placeholder="Search crops, farmers, districts..."
+              placeholder={t("browse.searchPlaceholder")}
               className="search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -214,7 +166,7 @@ export default function Browse() {
               value={filters.district}
               onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
             >
-              <option value="All">All Districts</option>
+              <option value="All Districts">{t("forms.selectDistrict")}</option>
               <option>Badulla</option>
               <option>Colombo</option>
               <option>Kandy</option>
@@ -241,7 +193,7 @@ export default function Browse() {
               value={filters.cropType}
               onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
             >
-              <option>All Crops</option>
+              <option value="All Crops">{t("forms.selectCategory")}</option>
               <option>Tomato</option>
               <option>Carrot</option>
               <option>Leeks</option>
@@ -271,11 +223,11 @@ export default function Browse() {
           {/* ADVANCED FILTERS PANEL (Always Visible) */}
           <div className="advanced-filters-panel">
             <div className="filter-group">
-              <label>Price Range (Rs.)</label>
+              <label>{t("forms.priceRange")}</label>
               <div className="price-inputs">
                 <input
                   type="number"
-                  placeholder="Min"
+                  placeholder={t("forms.min")}
                   value={filters.priceMin}
                   onChange={(e) => setFilters(prev => ({ ...prev, priceMin: e.target.value }))}
                   className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
@@ -283,26 +235,26 @@ export default function Browse() {
                 <span className="price-sep">-</span>
                 <input
                   type="number"
-                  placeholder="Max"
+                  placeholder={t("forms.max")}
                   value={filters.priceMax}
                   onChange={(e) => setFilters(prev => ({ ...prev, priceMax: e.target.value }))}
                   className={`small-input ${filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) ? "input-error" : ""}`}
                 />
               </div>
               {filters.priceMin && filters.priceMax && parseFloat(filters.priceMin) > parseFloat(filters.priceMax) && (
-                <span className="error-text">Min price cannot exceed Max price</span>
+                <span className="error-text">{t("errors.minPriceExceeds")}</span>
               )}
             </div>
 
             <div className="filter-group harvest-date-group">
-              <label>Harvest Date Window</label>
+              <label>{t("forms.harvestDateWindow")}</label>
               <div className="date-range-inputs">
                 <input
                   type="date"
                   value={filters.harvestFrom}
                   onChange={(e) => setFilters(prev => ({ ...prev, harvestFrom: e.target.value }))}
                   className="date-input"
-                  placeholder="From"
+                  placeholder={t("forms.min")}
                 />
                 <span className="date-sep">to</span>
                 <input
@@ -310,27 +262,25 @@ export default function Browse() {
                   value={filters.harvestTo}
                   onChange={(e) => setFilters(prev => ({ ...prev, harvestTo: e.target.value }))}
                   className="date-input"
-                  placeholder="To"
+                  placeholder={t("forms.max")}
                 />
               </div>
             </div>
 
             <div className="filter-group">
-              <label>Sort By</label>
+              <label>{t("forms.sortBy")}</label>
               <select
                 className="dropdown-sort"
                 value={filters.sortBy}
                 onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
               >
-                <option value="">Default (Soonest Harvest)</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-                <option value="rating_desc">Rating: High to Low</option>
-                <option value="harvest_desc">Harvest: Newest to Oldest</option>
+                <option value="">{t("forms.sortDefault")}</option>
+                <option value="price_asc">{t("forms.sortPriceAsc")}</option>
+                <option value="price_desc">{t("forms.sortPriceDesc")}</option>
+                <option value="rating_desc">{t("forms.sortRatingDesc")}</option>
+                <option value="harvest_desc">{t("forms.sortHarvestDesc")}</option>
               </select>
             </div>
-
-            
 
             {/* FILTER BUTTON */}
             <div className="filter-group reset-group">
@@ -338,7 +288,7 @@ export default function Browse() {
                 className="apply-filters-btn"
                 onClick={handleApplyFilters}
               >
-                Filter
+                {t("buttons.filter")}
               </button>
             </div>
 
@@ -348,37 +298,37 @@ export default function Browse() {
                 className="reset-filters-btn"
                 onClick={handleResetFilters}
               >
-                Reset Filters
+                {t("buttons.resetFilters")}
               </button>
             </div>
           </div>
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            Showing crops near <strong>{filters.district === "All" || filters.district === "All Districts" ? "All of Sri Lanka" : filters.district}</strong>. <a href="#">Use Map Search</a> to find farms on a map.
+            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? "All of Sri Lanka" : filters.district })}. <a href="#">{t("browse.useMapSearch")}</a>
           </div>
 
           {/* STATS */}
           <div className="stats-row">
             <div className="stat-box">
               <h2>{stats.pending}</h2>
-              <p>Pending Orders</p>
+              <p>{t("stats.pendingOrders")}</p>
             </div>
             <div className="stat-box">
               <h2>{stats.active}</h2>
-              <p>Active Reservations</p>
+              <p>{t("stats.activeReservations")}</p>
             </div>
             <div className="stat-box">
               <h2>{stats.completed}</h2>
-              <p>Completed Orders</p>
+              <p>{t("stats.completedOrders")}</p>
             </div>
           </div>
 
           {/* CROP GRID */}
           {loading ? (
-            <div className="loading-state">Loading fresh crops...</div>
+            <div className="loading-state">{t("loadingStates.loadingCrops", "Loading fresh crops...")}</div>
           ) : crops.length === 0 ? (
-            <div className="empty-state">No crops found matching your filters.</div>
+            <div className="empty-state">{t("emptyStates.noCropsMatching")}</div>
           ) : (
             <div className="crop-grid">
               {crops.map((crop) => (
@@ -403,7 +353,7 @@ export default function Browse() {
                         zIndex: 10,
                         boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
                       }}>
-                        Out of Stock
+                        {t("emptyStates.outOfStock")}
                       </span>
                     )}
                     {(() => {
@@ -433,7 +383,7 @@ export default function Browse() {
                     </p>
                     <p className="meta-info">
                       Available: {parseFloat(crop.qty) <= 0 ? (
-                        <span style={{ color: "#e74c3c", fontWeight: "bold" }}>Out of Stock</span>
+                        <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
                       ) : (
                         `${parseFloat(crop.qty).toFixed(0)} kg`
                       )} • Harvest {crop.harvest}
@@ -457,7 +407,7 @@ export default function Browse() {
                           e.stopPropagation();
                         }}
                       >
-                        Out of Stock
+                        {t("emptyStates.outOfStock")}
                       </button>
                     ) : (
                       <button
@@ -467,7 +417,7 @@ export default function Browse() {
                           navigate(`/crop/${crop.id}`);
                         }}
                       >
-                        Pre-Order
+                        {t("sidebar.preOrder")}
                       </button>
                     )}
                   </div>
@@ -479,4 +429,4 @@ export default function Browse() {
       </div>
     </div>
   );
-}
+}

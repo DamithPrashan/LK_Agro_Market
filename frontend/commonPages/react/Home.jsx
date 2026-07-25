@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import OverView from "../../components/HomePage/OverView.jsx";
 import HeroCarousel from "../../components/HomePage/HeroCarousel.jsx";
@@ -15,37 +16,38 @@ import rating from "../../assests/png/ratings.jpg";
 import "../csss/home.css";
 
 function Home() {
+const { t } = useTranslation();
 
 const workSteps = [
 
 {
-title:"1. Farmer Lists Crop",
+title:"home.step1Title",
 description:
-"Farmers can list crops during cultivation with expected harvest dates.",
+"home.step1Desc",
 
 image: farmer
 },
 
 {
-title:"2. Buyer Pre-Orders",
+title:"home.step2Title",
 description:
-"Buyers can reserve crops early and secure orders before harvest.",
+"home.step2Desc",
 
 image: preorder
 },
 
 {
-title:"3. Collect & Pay",
+title:"home.step3Title",
 description:
-"Collect products and complete secure payments through the platform.",
+"home.step3Desc",
 
 image: payment
 },
 
 {
-title:"4. Rate Each Other",
+title:"home.step4Title",
 description:
-"Buyers and farmers rate each other to build trust.",
+"home.step4Desc",
 
 image: rating
 }
@@ -64,7 +66,7 @@ return (
 
 <h1 className="section-title">
 
-How It Works
+{t("home.howItWorks")}
 
 </h1>
 
@@ -72,8 +74,8 @@ How It Works
 
 <WorkCard
 key={index}
-title={step.title}
-description={step.description}
+title={t(step.title)}
+description={t(step.description)}
 image={step.image}
 reverse={index%2!==0}
 />

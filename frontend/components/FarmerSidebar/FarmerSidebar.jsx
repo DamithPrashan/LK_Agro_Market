@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import { FaClipboardList, FaPlus, FaSeedling, FaUserCircle, FaTachometerAlt, FaExclamationTriangle, FaStar } from "react-icons/fa";
 import "./FarmerSidebar.css";
 
@@ -8,42 +9,43 @@ export default function FarmerSidebar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const currentPath = location.pathname.toLowerCase();
 
   const menuItems = [
     {
-      label: "Dashboard",
+      label: t("sidebar.dashboard"),
       path: "/farmer/dashboard",
       icon: <FaTachometerAlt className="sidebar-icon" />,
       active: currentPath === "/farmer/dashboard" || currentPath === "/farmer" || currentPath === "/farmer/"
     },
     {
-      label: "My Orders",
+      label: t("sidebar.myOrders"),
       path: "/farmer/orders",
       icon: <FaClipboardList className="sidebar-icon" />,
       active: currentPath === "/farmer/orders"
     },
     {
-      label: "Add Listing",
+      label: t("sidebar.addListing"),
       path: "/farmer/add-listing",
       icon: <FaPlus className="sidebar-icon" />,
       active: currentPath === "/farmer/add-listing"
     },
     {
-      label: "My Listings",
+      label: t("sidebar.myListings"),
       path: "/farmer/listings",
       icon: <FaSeedling className="sidebar-icon" />,
       active: currentPath === "/farmer/listings"
     },
     {
-      label: "Complaints",
+      label: t("sidebar.complaints"),
       path: "/farmer/complaints",
       icon: <FaExclamationTriangle className="sidebar-icon" />,
       active: currentPath === "/farmer/complaints"
     },
     {
-      label: "Ratings",
+      label: t("sidebar.ratings"),
       path: "/farmer/ratings",
       icon: <FaStar className="sidebar-icon" />,
       active: currentPath === "/farmer/ratings"
@@ -63,7 +65,7 @@ export default function FarmerSidebar() {
   return (
     <aside className="farmer-sidebar">
       <div className="sidebar-nav-group">
-        <p className="sidebar-nav-title">FARMER PANEL</p>
+        <p className="sidebar-nav-title">{t("sidebar.farmerPanel")}</p>
         <ul className="sidebar-menu">
           {menuItems.map((item, index) => (
             <li
@@ -82,7 +84,7 @@ export default function FarmerSidebar() {
       <div
         className="sidebar-profile-footer"
         onClick={() => navigate("/profile")}
-        title="Profile"
+        title={t("sidebar.profile")}
       >
         <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`}>
           {user?.name ? (
@@ -92,9 +94,10 @@ export default function FarmerSidebar() {
           )}
         </div>
         <div className="sidebar-profile-info">
-          <span className={`sidebar-profile-label ${currentPath === "/profile" ? "active-text" : ""}`}>Profile</span>
+          <span className={`sidebar-profile-label ${currentPath === "/profile" ? "active-text" : ""}`}>{t("sidebar.profile")}</span>
         </div>
       </div>
     </aside>
   );
 }
+

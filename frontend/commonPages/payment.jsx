@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { useAuth } from "../../src/context/AuthContext";
@@ -10,6 +11,7 @@ export default function Payment() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [order, setOrder] = useState(null);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -22,7 +24,7 @@ export default function Payment() {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       if (!orderId) {
-        setError("No order ID provided.");
+        setError(t("payment.errorNoOrderId", "No order ID provided."));
         setFetchLoading(false);
         return;
       }
@@ -39,11 +41,11 @@ export default function Payment() {
         if (data.success && data.order) {
           setOrder(data.order);
         } else {
-          setError(data.message || "Failed to load order payment details.");
+          setError(data.message || t("payment.loading"));
         }
       } catch (err) {
         console.error(err);
-        setError("Network error loading order payment details.");
+        setError(t("errors.networkXamppError"));
       } finally {
         setFetchLoading(false);
       }
@@ -55,7 +57,7 @@ export default function Payment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (method === "bank" && !proof) {
-      setError("Please upload your payment receipt or screenshot.");
+      setError(t("payment.errorNoProof"));
       return;
     }
     setLoading(true);
@@ -84,11 +86,11 @@ export default function Payment() {
       if (data.success) {
         setDone(true);
       } else {
-        setError(data.message || "Payment submission failed.");
+        setError(data.message || t("errors.submissionFailed"));
       }
     } catch (err) {
       console.error(err);
-      setError("Network error. Make sure XAMPP is running.");
+      setError(t("errors.networkXamppError"));
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ export default function Payment() {
 
   const handlePayHerePayment = async () => {
     if (!window.payhere) {
-      setError("PayHere payment gateway is currently unavailable. Please refresh or try again.");
+      setError(t("payment.errorPayHereUnav"));
       return;
     }
 
@@ -124,7 +126,7 @@ export default function Payment() {
 
       const hashData = await hashRes.json();
       if (!hashData.success) {
-        setError(hashData.message || "Failed to initiate payment gateway.");
+        setError(hashData.message || t("errors.submissionFailed"));
         setLoading(false);
         return;
       }
@@ -149,11 +151,11 @@ export default function Payment() {
           if (data.success) {
             setDone(true);
           } else {
-            setError(data.message || "Payment verification failed.");
+            setError(data.message || t("errors.submissionFailed"));
           }
         } catch (err) {
           console.error(err);
-          setError("Network error verifying payment.");
+          setError(t("errors.networkXamppError"));
         } finally {
           setLoading(false);
         }
@@ -161,13 +163,13 @@ export default function Payment() {
 
       window.payhere.onDismissed = function () {
         console.log("PayHere Payment dismissed");
-        setError("Payment was dismissed/cancelled.");
+        setError(t("payment.errorDismissed"));
         setLoading(false);
       };
 
       window.payhere.onError = function (errorMsg) {
         console.log("PayHere Error:" + errorMsg);
-        setError("Payment gateway error: " + errorMsg);
+        setError(t("payment.errorGateway", "Payment gateway error:") + " " + errorMsg);
         setLoading(false);
       };
 
@@ -195,7 +197,7 @@ export default function Payment() {
       window.payhere.startPayment(paymentObj);
     } catch (err) {
       console.error(err);
-      setError("Failed to start PayHere gateway. Please try again.");
+      setError(t("payment.errorPayHereUnav"));
       setLoading(false);
     }
   };
@@ -210,7 +212,7 @@ export default function Payment() {
           alignItems: "center",
         }}
       >
-        <h3>Loading order payment details...</h3>
+        <h3>{t("payment.loading")}</h3>
       </div>
     );
   }
@@ -227,16 +229,15 @@ export default function Payment() {
           padding: "20px",
         }}
       >
-        <h2 style={{ color: "#c0392b", marginBottom: "15px" }}>Error</h2>
+        <h2 style={{ color: "#c0392b", marginBottom: "15px" }}>{t("payment.errorTitle")}</h2>
         <p style={{ marginBottom: "25px", textAlign: "center" }}>{error}</p>
-        {/* edit for payment page confirm */}
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             className="btn btn-primary"
             onClick={() => navigate("/buyer/BuyerOrderHistory")}
             style={{ cursor: "pointer", padding: "8px 16px" }}
           >
-            Go to Order History
+            {t("payment.btnHistory")}
           </button>
           <button
             className="btn btn-outline"
@@ -249,7 +250,7 @@ export default function Payment() {
               borderRadius: "var(--r-md)",
             }}
           >
-            Go Back
+            {t("payment.btnBack")}
           </button>
         </div>
       </div>
@@ -289,7 +290,7 @@ export default function Payment() {
                 marginBottom: 8,
               }}
             >
-              {isPrePayment ? "Pre-Payment Confirmed!" : "Payment Complete!"}
+              {isPrePayment ? t("payment.successPrepaymentTitle") : t("payment.successCompleteTitle")}
             </h2>
             <p
               style={{
@@ -300,16 +301,16 @@ export default function Payment() {
               }}
             >
               {isPrePayment
-                ? `Your 1/3 pre-payment of ${fmt(amountDue)} has been recorded. The farmer has been notified.`
-                : `Your final payment of ${fmt(amountDue)} has been recorded. Transaction is complete.`}
+                ? t("payment.successPrepaymentMsg", { amount: fmt(amountDue) })
+                : t("payment.successCompleteMsg", { amount: fmt(amountDue) })}
             </p>
             <div style={s.sumBox}>
               {[
-                ["Order", `#${order.id}`],
-                ["Crop", `${order.cropName} · ${order.quantity} kg`],
-                ["Amount paid", fmt(amountDue)],
+                [t("payment.summaryOrder"), `#${order.id}`],
+                [t("payment.summaryCrop"), `${order.cropName} · ${order.quantity} kg`],
+                [t("payment.summaryAmountPaid"), fmt(amountDue)],
                 ...(isPrePayment
-                  ? [["Balance on collection", fmt(balance)]]
+                  ? [[t("payment.summaryBalance"), fmt(balance)]]
                   : []),
               ].map(([k, v]) => (
                 <div key={k} style={s.sumRow}>
@@ -330,13 +331,13 @@ export default function Payment() {
                 className="btn btn-primary btn-sm"
                 onClick={() => navigate("/buyer/BuyerOrderHistory")}
               >
-                View My Orders
+                {t("payment.btnViewOrders")}
               </button>
               <button
                 className="btn btn-outline btn-sm"
                 onClick={() => navigate("/browse")}
               >
-                Browse More
+                {t("payment.btnBrowseMore")}
               </button>
             </div>
           </div>
@@ -352,16 +353,15 @@ export default function Payment() {
       <main style={s.page}>
         <div style={{ width: "100%", maxWidth: 500 }}>
           <button onClick={() => navigate(-1)} style={s.back}>
-            ← Back
+            ← {t("payment.btnBack")}
           </button>
           <h1 style={s.heading}>
-            {isPrePayment ? "Pre-Payment (1/3)" : "Final Balance Payment"}
+            {isPrePayment ? t("payment.titlePrepayment") : t("payment.titleBalance")}
           </h1>
           <p style={{ fontSize: 12, color: "var(--t-3)", marginBottom: 18 }}>
-            Order #{order.id} — Secure platform payment
+            {t("payment.subtitleSecure", { id: order.id })}
           </p>
 
-          {/* Order summary */}
           <div
             className="card"
             style={{
@@ -392,7 +392,7 @@ export default function Payment() {
                     className="badge badge-green"
                     style={{ marginLeft: 6, fontSize: 9 }}
                   >
-                    ✓ Verified
+                    {t("payment.verified")}
                   </span>
                 )}
               </div>
@@ -402,10 +402,9 @@ export default function Payment() {
             </div>
           </div>
 
-          {/* Payment breakdown */}
           <div style={s.payBox}>
             <p className="section-label" style={{ marginBottom: 10 }}>
-              Payment Breakdown
+              {t("payment.breakdownTitle")}
             </p>
             <div style={s.payRow}>
               <span>
@@ -429,7 +428,7 @@ export default function Payment() {
               }}
             >
               <span style={{ fontWeight: 700 }}>
-                {isPrePayment ? "1/3 Pre-payment due now" : "Balance due now"}
+                {isPrePayment ? t("payment.prepaymentDue") : t("payment.balanceDue")}
               </span>
               <span
                 style={{ fontWeight: 700, fontSize: 15, color: "var(--a-600)" }}
@@ -439,17 +438,16 @@ export default function Payment() {
             </div>
             {isPrePayment && (
               <div style={{ ...s.payRow, color: "var(--t-3)", marginTop: 6 }}>
-                <span>Balance on collection</span>
+                <span>{t("payment.summaryBalance")}</span>
                 <span style={{ fontWeight: 600 }}>{fmt(balance)}</span>
               </div>
             )}
           </div>
 
           <form onSubmit={handleSubmit}>
-            {/* Payment method */}
             <div className="card" style={{ marginBottom: 14 }}>
               <p className="section-label" style={{ marginBottom: 12 }}>
-                Payment Method
+                {t("payment.methodTitle")}
               </p>
               <div
                 style={{
@@ -463,14 +461,14 @@ export default function Payment() {
                   {
                     id: "bank",
                     icon: "🏦",
-                    label: "Bank Transfer",
-                    sub: "IPG / Internet Banking",
+                    label: t("payment.methodBank"),
+                    sub: t("payment.methodBankSub"),
                   },
                   {
                     id: "lanka",
                     icon: "💳",
-                    label: "PayHere",
-                    sub: "Online Payment",
+                    label: t("payment.methodLanka"),
+                    sub: t("payment.methodLankaSub"),
                   },
                 ].map((m) => (
                   <button
@@ -496,7 +494,7 @@ export default function Payment() {
               {method === "bank" && (
                 <div className="card" style={{ marginBottom: 14 }}>
                   <p className="section-label" style={{ marginBottom: 10 }}>
-                    Upload Payment Proof
+                    {t("payment.uploadTitle")}
                   </p>
                   <div
                     className="upload-zone"
@@ -526,7 +524,7 @@ export default function Payment() {
                     <p>
                       {proof
                         ? proof.name
-                        : "Click to upload receipt or screenshot (JPG / PNG / PDF · max 5 MB)"}
+                        : t("payment.uploadPlaceholder")}
                     </p>
                   </div>
                 </div>
@@ -536,8 +534,7 @@ export default function Payment() {
             </div>
 
             <div className="info-green">
-              🔒 Payments are processed securely through LK Agro Market. Your
-              bank details are never shared with the farmer.
+              {t("payment.securityNote")}
             </div>
 
             {error && <div className="info-red">{error}</div>}
@@ -546,14 +543,14 @@ export default function Payment() {
               <button className="btn btn-primary btn-lg btn-full" type="button" disabled={loading}
                 onClick={(e) => {
                   if (!proof) {
-                    setError("Please upload your payment receipt or screenshot.",);
+                    setError(t("payment.errorNoProof"));
                     return;
                   }
 
                   handleSubmit(e);
                 }}
               >
-                {loading ? "Submitting…" : `Confirm Payment — ${fmt(amountDue)}`}
+                {loading ? t("payment.btnSubmitting") : t("payment.btnConfirm", { amount: fmt(amountDue) })}
               </button>
             )}
 
@@ -564,7 +561,7 @@ export default function Payment() {
                 disabled={loading}
                 onClick={handlePayHerePayment}
               >
-                {loading ? "Processing..." : `Proceed Payment — ${fmt(amountDue)}`}
+                {loading ? t("payment.btnProcessing") : t("payment.btnProceed", { amount: fmt(amountDue) })}
               </button>
             )}
           </form>

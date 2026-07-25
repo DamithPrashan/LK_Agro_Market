@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt } from "react-icons/fa";
 import "./BuyerSidebar.css";
 
@@ -8,36 +9,37 @@ export default function BuyerSidebar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const currentPath = location.pathname.toLowerCase();
 
   const menuItems = [
     {
-      label: "Dashboard",
+      label: t("sidebar.dashboard"),
       path: "/buyer/dashboard",
       icon: <FaTachometerAlt className="sidebar-icon" />,
       active: currentPath === "/buyer/dashboard" || currentPath === "/buyer" || currentPath === "/buyer/"
     },
     {
-      label: "Pre-Order",
+      label: t("sidebar.preOrder"),
       path: "/buyer/preorder",
       icon: <FaClipboardList className="sidebar-icon" />,
       active: currentPath === "/buyer/preorder" || currentPath === "/buyer/pre-order"
     },
     {
-      label: "Complaints",
+      label: t("sidebar.complaints"),
       path: "/buyer/complaints",
       icon: <FaExclamationTriangle className="sidebar-icon" />,
       active: currentPath === "/buyer/complaints"
     },
     {
-      label: "Ratings",
+      label: t("sidebar.ratings"),
       path: "/buyer/ratings",
       icon: <FaStar className="sidebar-icon" />,
       active: currentPath === "/buyer/ratings"
     },
     {
-      label: "View Order History",
+      label: t("sidebar.viewOrderHistory"),
       path: "/buyer/buyerorderhistory",
       icon: <FaHistory className="sidebar-icon" />,
       active: currentPath === "/buyer/buyerorderhistory"
@@ -57,7 +59,7 @@ export default function BuyerSidebar() {
   return (
     <aside className="buyer-sidebar">
       <div className="sidebar-nav-group">
-        <p className="sidebar-nav-title">BUYER PANEL</p>
+        <p className="sidebar-nav-title">{t("sidebar.buyerPanel")}</p>
         <ul className="sidebar-menu">
           {menuItems.map((item, index) => (
             <li
@@ -76,7 +78,7 @@ export default function BuyerSidebar() {
       <div
         className="sidebar-profile-footer"
         onClick={() => navigate("/profile")}
-        title="Profile"
+        title={t("sidebar.profile")}
       >
         <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`}>
           {user?.name ? (
@@ -86,7 +88,7 @@ export default function BuyerSidebar() {
           )}
         </div>
         <div className="sidebar-profile-info">
-          <span className={`sidebar-profile-label ${currentPath === "/profile" ? "active-text" : ""}`}>Profile</span>
+          <span className={`sidebar-profile-label ${currentPath === "/profile" ? "active-text" : ""}`}>{t("sidebar.profile")}</span>
         </div>
       </div>
     </aside>

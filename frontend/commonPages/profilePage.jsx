@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
@@ -11,6 +12,7 @@ const DISTRICTS = [
 
 export default function Profile() {
   const { user, login }       = useAuth();
+  const { t }                 = useTranslation();
   const [name, setName]       = useState(user?.name     ?? "");
   const [contact, setContact] = useState(user?.contact  ?? "");
   const [district, setDistrict] = useState(user?.district ?? "");
@@ -31,12 +33,12 @@ export default function Profile() {
       const data = await res.json();
       if (data.success) {
         login({ ...user, name, contact, district, language });
-        setMsg({ text:"✅ Profile updated successfully.", ok:true });
+        setMsg({ text: t("profile.successAlert"), ok:true });
       } else {
-        setMsg({ text: data.message || "Update failed.", ok:false });
+        setMsg({ text: data.message || t("profile.failedAlert"), ok:false });
       }
     } catch {
-      setMsg({ text:"Network error. Make sure XAMPP is running.", ok:false });
+      setMsg({ text: t("errors.networkXamppError"), ok:false });
     } finally {
       setSaving(false);
     }
@@ -49,7 +51,7 @@ export default function Profile() {
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
       
       <main style={s.page}>
-        <h1 style={s.heading}>My Profile</h1>
+        <h1 style={s.heading}>{t("profile.title")}</h1>
 
         {/* Profile header */}
         <div className="card" style={{ display:"flex", gap:16, alignItems:"center", marginBottom:14, background:"var(--g-50)", borderColor:"var(--g-100)" }}>
@@ -57,37 +59,37 @@ export default function Profile() {
           <div>
             <div style={{ fontSize:16, fontWeight:700 }}>{user?.name}</div>
             <div style={{ fontSize:12, color:"var(--t-3)", marginTop:2 }}>
-              {user?.role === "farmer" ? "🌾 Farmer" : user?.role === "admin" ? "🛡 Admin" : "🛒 Buyer"} · {user?.district}
+              {user?.role === "farmer" ? t("profile.roleFarmer") : user?.role === "admin" ? t("profile.roleAdmin") : t("profile.roleBuyer")} · {user?.district}
             </div>
             {user?.verified && (
-              <span className="badge badge-green" style={{ marginTop:6, display:"inline-flex" }}>✓ Verified Farmer</span>
+              <span className="badge badge-green" style={{ marginTop:6, display:"inline-flex" }}>{t("profile.verifiedBadge")}</span>
             )}
           </div>
         </div>
 
         {/* Edit form */}
         <div className="card" style={{ marginBottom:14 }}>
-          <p className="section-label">Edit Details</p>
+          <p className="section-label">{t("profile.editDetails")}</p>
           <form onSubmit={handleSave}>
             <div className="grid-2">
               <div className="field">
-                <label>Full Name</label>
+                <label>{t("forms.fullName")}</label>
                 <input value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="field">
-                <label>Contact Number</label>
+                <label>{t("forms.contactNumber")}</label>
                 <input value={contact} onChange={(e) => setContact(e.target.value)} />
               </div>
             </div>
             <div className="grid-2">
               <div className="field">
-                <label>District</label>
+                <label>{t("forms.district", "District")}</label>
                 <select value={district} onChange={(e) => setDistrict(e.target.value)}>
                   {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
                 </select>
               </div>
               <div className="field">
-                <label>Preferred Language</label>
+                <label>{t("forms.preferredLanguage")}</label>
                 <select value={language} onChange={(e) => setLanguage(e.target.value)}>
                   <option value="sinhala">සිංහල (Sinhala)</option>
                   <option value="tamil">தமிழ் (Tamil)</option>
@@ -99,7 +101,7 @@ export default function Profile() {
               <div className={msg.ok ? "info-green" : "info-red"} style={{ marginBottom:12 }}>{msg.text}</div>
             )}
             <button className="btn btn-primary btn-sm" type="submit" disabled={saving}>
-              {saving ? "Saving…" : "Save Changes"}
+              {saving ? t("profile.btnSaving") : t("profile.btnSave")}
             </button>
           </form>
         </div>
@@ -107,11 +109,11 @@ export default function Profile() {
         {/* Verification status — farmers only */}
         {user?.role === "farmer" && (
           <div className="card" style={{ borderColor:"var(--g-100)" }}>
-            <p className="section-label">Verification Status</p>
+            <p className="section-label">{t("profile.statusHeading")}</p>
             {[
-              { label:"NIC Verified",            done: user.verified },
-              { label:"Farm Location Confirmed", done: user.verified },
-              { label:"Crop Evidence Submitted", done: user.verified },
+              { label: t("profile.nicVerified"),            done: user.verified },
+              { label: t("profile.farmLocationConfirmed"), done: user.verified },
+              { label: t("profile.cropEvidenceSubmitted"), done: user.verified },
             ].map(({ label, done }) => (
               <div key={label} style={s.verifyRow}>
                 <span style={{ fontSize:18, color: done ? "var(--g-600)" : "var(--s-200)" }}>
@@ -121,8 +123,8 @@ export default function Profile() {
                   {label}
                 </span>
                 {done
-                  ? <span className="badge badge-green" style={{ marginLeft:"auto" }}>Complete</span>
-                  : <span className="badge badge-amber" style={{ marginLeft:"auto" }}>Pending</span>
+                  ? <span className="badge badge-green" style={{ marginLeft:"auto" }}>{t("profile.badgeComplete")}</span>
+                  : <span className="badge badge-amber" style={{ marginLeft:"auto" }}>{t("profile.badgePending")}</span>
                 }
               </div>
             ))}
@@ -139,4 +141,4 @@ const s = {
   heading:   { fontSize:20, fontWeight:700, color:"var(--t-1)", marginBottom:18 },
   avatar:    { width:52, height:52, borderRadius:"50%", background:"var(--g-600)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, fontWeight:700, flexShrink:0 },
   verifyRow: { display:"flex", alignItems:"center", gap:10, padding:"9px 0", borderBottom:"1px solid var(--s-100)" },
-};
+};

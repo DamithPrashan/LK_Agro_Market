@@ -36,8 +36,35 @@ import MyListings from "../frontend/farmer/react/MyListings.jsx";
 // import BuyerDashboard  from "../frontend/buyer/react/dashBoard";
 // import AdminDashboard  from "../frontend/admin/react/dashBoard";
 
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "./context/AuthContext";
+
 function App() {
+  const { user } = useAuth();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (user && user.language) {
+      let mappedLang = "en";
+      const userLang = user.language.toLowerCase();
+      if (userLang === "sinhala" || userLang === "si") {
+        mappedLang = "si";
+      } else if (userLang === "tamil" || userLang === "ta") {
+        mappedLang = "ta";
+      } else if (userLang === "english" || userLang === "en") {
+        mappedLang = "en";
+      }
+
+      if (i18n.language !== mappedLang) {
+        i18n.changeLanguage(mappedLang);
+        localStorage.setItem("preferredLanguage", mappedLang);
+      }
+    }
+  }, [user, i18n]);
+
   return (
+
     <CropProvider>
       <div className="app-shell">
         <Navbar />

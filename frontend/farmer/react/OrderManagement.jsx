@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "../csss/OrderManagement.css";
 
 function OrderManagement() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("All");
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ function OrderManagement() {
                 setError(data.message);
             }
         } catch (err) {
-            setError("Failed to fetch orders.");
+            setError(t("errors.failedFetchOrders"));
         } finally {
             setLoading(false);
         }
@@ -50,7 +52,7 @@ function OrderManagement() {
                 alert(data.message);
             }
         } catch (err) {
-            alert("Error updating order status.");
+            alert(t("errors.submissionFailed"));
         }
     };
 
@@ -62,7 +64,7 @@ function OrderManagement() {
     if (loading) {
         return (
             <div style={{ textAlign: "center", padding: "100px", color: "#1a5c2d", fontSize: "18px", fontWeight: "bold" }}>
-                Loading Orders...
+                {t("farmer.loadingOrders")}
             </div>
         );
     }
@@ -70,14 +72,14 @@ function OrderManagement() {
     if (error) {
         return (
             <div style={{ textAlign: "center", padding: "100px", color: "#e74c3c", fontSize: "18px", fontWeight: "bold" }}>
-                Error: {error}
+                {t("errors.genericError")}: {error}
             </div>
         );
     }
 
     return (
         <div className="order-management">
-            <h2 className="page-title">My Orders</h2>
+            <h2 className="page-title">{t("farmer.ordersTitle")}</h2>
 
             {/* Tabs */}
             <div className="tabs">
@@ -87,7 +89,7 @@ function OrderManagement() {
                         className={`tab-btn ${activeTab === tab ? "active-tab" : ""}`}
                         onClick={() => setActiveTab(tab)}
                     >
-                        {tab}
+                        {t(`orders.tab${tab}`, tab)}
                     </button>
                 ))}
             </div>
@@ -97,35 +99,35 @@ function OrderManagement() {
                 filteredOrders.map((order) => (
                     <div className="order-card" key={order.id}>
                         <div className="order-header">
-                            <h3>Order {order.id}</h3>
+                            <h3>{t("farmer.orderCardTitle", { id: order.id })}</h3>
                             <span className={`status-badge ${order.status.toLowerCase()}`}>
-                                {order.status}
+                                {t(`orders.tab${order.status}`, order.status)}
                             </span>
                         </div>
 
                         <div className="order-details">
                             <div>
-                                <p className="label">Buyer</p>
+                                <p className="label">{t("farmer.buyerLabel")}</p>
                                 <p>{order.buyer}</p>
                             </div>
 
                             <div>
-                                <p className="label">Crop</p>
+                                <p className="label">{t("farmer.cropLabel")}</p>
                                 <p>{order.crop}</p>
                             </div>
 
                             <div>
-                                <p className="label">Quantity</p>
+                                <p className="label">{t("farmer.quantityLabel")}</p>
                                 <p>{order.quantity}</p>
                             </div>
 
                             <div>
-                                <p className="label">Collection Date</p>
+                                <p className="label">{t("farmer.collectionDateLabel")}</p>
                                 <p>{order.date}</p>
                             </div>
 
                             <div>
-                                <p className="label">Payment</p>
+                                <p className="label">{t("farmer.paymentLabel")}</p>
                                 <span className={`payment-badge ${order.payment === "Paid (Full)" ? "payment-completed" : ""}`}>
                                     {order.payment}
                                 </span>
@@ -137,23 +139,23 @@ function OrderManagement() {
                             {order.status === "Pending" && (
                                 <>
                                     <button className="accept-btn" onClick={() => handleAction(order.db_id, 'accept')}>
-                                        Accept
+                                        {t("buttons.accept")}
                                     </button>
                                     <button className="decline-btn" onClick={() => handleAction(order.db_id, 'decline')}>
-                                        Decline
+                                        {t("buttons.decline")}
                                     </button>
                                 </>
                             )}
 
                             {order.status === "Accepted" && (
                                 <button className="ready-btn" onClick={() => handleAction(order.db_id, 'ready')}>
-                                    Mark Ready
+                                    {t("buttons.markReady")}
                                 </button>
                             )}
 
                             {order.status === "Ready" && (
                                 <button className="complete-btn" onClick={() => handleAction(order.db_id, 'complete')}>
-                                    Completed
+                                    {t("buttons.completePayment", "Completed")}
                                 </button>
                             )}
                         </div>
@@ -161,11 +163,11 @@ function OrderManagement() {
                 ))
             ) : (
                 <p style={{ color: "#7f8c8d", textAlign: "center", fontStyle: "italic", padding: "20px" }}>
-                    No orders found in this category.
+                    {t("farmer.noOrdersCategory")}
                 </p>
             )}
         </div>
     );
 }
 
-export default OrderManagement;
+export default OrderManagement;

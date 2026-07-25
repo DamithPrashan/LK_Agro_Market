@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "../../commonPages/csss/HomePage/featurecards.css";
 
 import { FaUserCheck } from "react-icons/fa";
@@ -7,27 +8,29 @@ import { FaBalanceScale } from "react-icons/fa";
 
 function FeatureCards() {
 
+const { t } = useTranslation();
+
 const features=[
 
 {
 icon:<FaUserCheck />,
-title:"Verified Farmers",
+title:"home.featureVerified",
 description:
-"NIC-checked and location-verified farmers earn trusted badges before listing."
+"home.featureVerifiedDesc"
 },
 
 {
 icon:<FaMoneyCheckAlt />,
-title:"Secure Payments",
+title:"home.featureSecure",
 description:
-"Secure pre-payments and balance collection via Bank and Lanka QR."
+"home.featureSecureDesc"
 },
 
 {
 icon:<FaBalanceScale />,
-title:"Dispute Resolution",
+title:"home.featureDispute",
 description:
-"Admin-managed complaint handling for fair resolution of every order."
+"home.featureDisputeDesc"
 }
 
 ];
@@ -44,9 +47,9 @@ return (
 {item.icon}
 </div>
 
-<h3>{item.title}</h3>
+<h3>{t(item.title)}</h3>
 
-<p>{item.description}</p>
+<p>{t(item.description)}</p>
 
 </div>
 

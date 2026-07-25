@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../csss/addList.css";
 import { useAuth } from "../../../src/context/AuthContext";
 
 function AddListing() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         cropName: "",
@@ -100,7 +102,7 @@ function AddListing() {
         const result = await response.json();
 
         if (result.success) {
-            alert("Crop Submitted Successfully!");
+            alert(t("farmer.cropSubmittedSuccess"));
         } else {
             alert(result.message);
         }
@@ -109,31 +111,31 @@ function AddListing() {
     return (
         <div className="add-listing-container">
             <div className="listing-card">
-                <h2>Add New Crop</h2>
+                <h2>{t("farmer.addNewCropTitle")}</h2>
 
                 <div className="edit-steps">
                     <div className={`edit-step ${step === 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
                         <div className="edit-circle">1</div>
-                        <span>Crop Details</span>
+                        <span>{t("farmer.cropDetailsTab")}</span>
                     </div>
                     <div className={`edit-step ${step === 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
                         <div className="edit-circle">2</div>
-                        <span>Pricing</span>
+                        <span>{t("farmer.pricingTab")}</span>
                     </div>
                     <div className={`edit-step ${step === 3 ? "active" : ""}`}>
                         <div className="edit-circle">3</div>
-                        <span>Review</span>
+                        <span>{t("farmer.reviewTab")}</span>
                     </div>
                 </div>
 
                 {step === 1 && (
                     <div className="form-section">
-                        <h3>Crop Details</h3>
+                        <h3>{t("farmer.cropDetailsTab")}</h3>
 
                         <input
                             type="text"
                             name="cropName"
-                            placeholder="Crop Name"
+                            placeholder={t("farmer.cropNamePlaceholder")}
                             value={formData.cropName}
                             onChange={handleChange}
                         />
@@ -143,17 +145,17 @@ function AddListing() {
                             value={formData.category}
                             onChange={handleChange}
                         >
-                            <option value="">Select Category</option>
-                            <option value="Vegetable">Vegetable</option>
-                            <option value="Fruit">Fruit</option>
-                            <option value="Grain">Grain</option>
-                            <option value="Other">Other</option>
+                            <option value="">{t("farmer.selectCategory")}</option>
+                            <option value="Vegetable">{t("farmer.categoryVegetable")}</option>
+                            <option value="Fruit">{t("farmer.categoryFruit")}</option>
+                            <option value="Grain">{t("farmer.categoryGrain")}</option>
+                            <option value="Other">{t("farmer.categoryOther")}</option>
                         </select>
 
                         <input
                             type="number"
                             name="quantity"
-                            placeholder="Quantity (kg)"
+                            placeholder={t("farmer.quantityPlaceholder")}
                             value={formData.quantity}
                             onChange={handleChange}
                         />
@@ -163,7 +165,7 @@ function AddListing() {
                             value={formData.location}
                             onChange={handleChange}
                         >
-                            <option value="">Select District</option>
+                            <option value="">{t("forms.selectDistrict")}</option>
                             <option value="Ampara">Ampara</option>
                             <option value="Anuradhapura">Anuradhapura</option>
                             <option value="Badulla">Badulla</option>
@@ -196,17 +198,16 @@ function AddListing() {
                             value={formData.growthStage}
                             onChange={handleChange}
                         >
-                            <option value="">Select Growth Stage</option>
-                            <option value="planted">Planted</option>
-                            <option value="growing">Growing</option>
-                            <option value="ready_for_harvest">Ready for Harvest</option>
-                            <option value="harvested">Harvested</option>
-
+                            <option value="">{t("farmer.selectGrowthStage")}</option>
+                            <option value="planted">{t("farmer.stagePlanted")}</option>
+                            <option value="growing">{t("farmer.stageGrowing")}</option>
+                            <option value="ready_for_harvest">{t("farmer.stageReadyForHarvest")}</option>
+                            <option value="harvested">{t("farmer.stageHarvested")}</option>
                         </select>
 
                         <input
                             type="text"
-                            placeholder="Harvest Date"
+                            placeholder={t("farmer.harvestDatePlaceholder")}
                             onFocus={(e) => (e.target.type = "date")}
                             onBlur={(e) => {
                                 if (!e.target.value) e.target.type = "text";
@@ -217,7 +218,7 @@ function AddListing() {
                         />
 
                         <div className="upload-section">
-                            <label>Upload Photos (Max 3)</label>
+                            <label>{t("farmer.uploadPhotosLabel")}</label>
 
                             <div className="photo-boxes">
                                 {[0, 1, 2].map((index) => (
@@ -254,14 +255,14 @@ function AddListing() {
                                 className="next-btn"
                                 onClick={() => setStep(2)}
                             >
-                                Next
+                                {t("buttons.next")}
                             </button>
 
                             <button
                                 className="back-btn"
                                 onClick={() => navigate("/farmer")}
                             >
-                                Back
+                                {t("buttons.back")}
                             </button>
                         </div>
                     </div>
@@ -269,36 +270,36 @@ function AddListing() {
 
                 {step === 2 && (
                     <div className="form-section">
-                        <h3>Pricing Information</h3>
+                        <h3>{t("farmer.pricingInfoHeading")}</h3>
 
                         <input
                             type="number"
                             name="price"
-                            placeholder="Price Per Kg"
+                            placeholder={t("farmer.pricePlaceholder")}
                             value={formData.price}
                             onChange={handleChange}
                         />
 
-                        {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
+                        {loadingSuggestion && <p className="suggestion-loading">{t("farmer.loadingPriceSuggestion")}</p>}
 
                         {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
                             <div className="price-suggestion-box">
                                 {suggestion.basis === 'district' ? (
                                     <>
                                         <p className="suggestion-info">
-                                            ℹ Suggested price: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                                            ℹ {t("farmer.suggestedPriceLabel")}: <strong>Rs. {suggestion.suggested_price} / kg</strong>
                                         </p>
                                         <p className="suggestion-subtext">
-                                            Based on {suggestion.sample_count} similar listings in your district.
+                                            {t("farmer.basedOnDistrict", { count: suggestion.sample_count })}
                                         </p>
                                     </>
                                 ) : (
                                     <>
                                         <p className="suggestion-info">
-                                            No local data yet. National average for this crop: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                                            {t("farmer.nationalAverage", { price: suggestion.suggested_price })}
                                         </p>
                                         <p className="suggestion-subtext">
-                                            Based on {suggestion.sample_count} listings across Sri Lanka.
+                                            {t("farmer.basedOnNational", { count: suggestion.sample_count })}
                                         </p>
                                     </>
                                 )}
@@ -308,7 +309,7 @@ function AddListing() {
                                         className="use-suggestion-btn"
                                         onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
                                     >
-                                        Use Average Price
+                                        {t("farmer.btnUseAveragePrice")}
                                     </button>
                                 </div>
                             </div>
@@ -317,7 +318,7 @@ function AddListing() {
                         {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
                             <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
                                 <p className="suggestion-info" style={{ color: '#666' }}>
-                                    ℹ No historical pricing data available for "{formData.cropName || 'this crop'}".
+                                    ℹ {t("farmer.noPricingData", { cropName: formData.cropName || t("farmer.thisCropLabel", "this crop") })}
                                 </p>
                             </div>
                         )}
@@ -327,14 +328,14 @@ function AddListing() {
                                 className="next-btn"
                                 onClick={() => setStep(3)}
                             >
-                                Next
+                                {t("buttons.next")}
                             </button>
 
                             <button
                                 className="back-btn"
                                 onClick={() => setStep(1)}
                             >
-                                Back
+                                {t("buttons.back")}
                             </button>
                         </div>
                     </div>
@@ -342,17 +343,17 @@ function AddListing() {
 
                 {step === 3 && (
                     <div className="form-section">
-                        <h3>Review Crop Details</h3>
+                        <h3>{t("farmer.reviewCropDetailsHeading")}</h3>
 
                         <div className="review-box">
-                            <p><strong>Crop Name:</strong> {formData.cropName}</p>
-                            <p><strong>Category:</strong> {formData.category}</p>
-                            <p><strong>Quantity:</strong> {formData.quantity} Kg</p>
-                            <p><strong>Location:</strong> {formData.location}</p>
-                            <p><strong>Growth Stage:</strong> {formData.growthStage}</p>
-                            <p><strong>Harvest Date:</strong> {formData.harvestDate}</p>
-                            <p><strong>Price:</strong> Rs. {formData.price}</p>
-                            <p><strong>Uploaded Photos:</strong> {formData.photos.filter(Boolean).length}</p>
+                            <p><strong>{t("farmer.cropLabel")}:</strong> {formData.cropName}</p>
+                            <p><strong>{t("farmer.categoryLabel")}:</strong> {formData.category}</p>
+                            <p><strong>{t("farmer.quantityLabel")}:</strong> {formData.quantity} Kg</p>
+                            <p><strong>{t("forms.location")}:</strong> {formData.location}</p>
+                            <p><strong>{t("farmer.growthStageLabel")}:</strong> {formData.growthStage}</p>
+                            <p><strong>{t("farmer.harvestDateLabel")}:</strong> {formData.harvestDate}</p>
+                            <p><strong>{t("farmer.priceLabel")}:</strong> Rs. {formData.price}</p>
+                            <p><strong>{t("farmer.uploadedPhotosLabel")}:</strong> {formData.photos.filter(Boolean).length}</p>
                         </div>
 
                         <div className="btn-group">
@@ -360,14 +361,14 @@ function AddListing() {
                                 className="submit-btn"
                                 onClick={handleSubmit}
                             >
-                                Submit Crop
+                                {t("buttons.submitCrop")}
                             </button>
 
                             <button
                                 className="back-btn"
                                 onClick={() => setStep(2)}
                             >
-                                Back
+                                {t("buttons.back")}
                             </button>
                         </div>
                     </div>
@@ -378,3 +379,4 @@ function AddListing() {
 }
 
 export default AddListing;
+

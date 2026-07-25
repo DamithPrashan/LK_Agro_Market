@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { FaPlus, FaPen, FaTrashAlt, FaBoxOpen } from "react-icons/fa";
 import "../csss/dashBoard.css";
 
 export default function MyListings() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [myCrops, setCrops] = useState([]);
 
     const fetchCrops = () => {
@@ -24,7 +26,7 @@ export default function MyListings() {
 
     const deleteCrop = async (cropId) => {
         const confirmDelete = window.confirm(
-            "Are you sure you want to delete this listing?"
+            t("confirmations.deleteListing")
         );
 
         if (!confirmDelete) return;
@@ -57,12 +59,12 @@ export default function MyListings() {
     return (
         <div className="section" style={{ margin: "20px 0" }}>
             <div className="section-header">
-                <h3>My Listings</h3>
+                <h3>{t("sidebar.myListings")}</h3>
                 <button
                     className="add-btn"
                     onClick={() => navigate("/farmer/add-listing")}
                 >
-                    <FaPlus /> Add Crop
+                    <FaPlus /> {t("buttons.addCrop")}
                 </button>
             </div>
 
@@ -71,27 +73,27 @@ export default function MyListings() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Crop</th>
-                                <th>Category</th>
-                                <th>Quantity</th>
-                                <th>Location</th>
-                                <th>Growth Stage</th>
-                                <th>Price / Kg</th>
-                                <th>Harvest Date</th>
-                                <th>Action</th>
+                                <th>{t("farmer.tableCrop")}</th>
+                                <th>{t("farmer.tableCategory")}</th>
+                                <th>{t("farmer.tableQuantity")}</th>
+                                <th>{t("farmer.tableLocation")}</th>
+                                <th>{t("farmer.tableGrowthStage")}</th>
+                                <th>{t("farmer.tablePrice")}</th>
+                                <th>{t("farmer.tableHarvestDate")}</th>
+                                <th>{t("farmer.tableAction")}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {myCrops.map((crop) => (
                                 <tr key={crop.crop_id}>
-                                    <td data-label="Crop">{crop.crop_name}</td>
-                                    <td data-label="Category">{crop.category}</td>
-                                    <td data-label="Quantity">{crop.quantity} kg</td>
-                                    <td data-label="Location">{crop.location}</td>
-                                    <td data-label="Growth Stage">{crop.growth_stage}</td>
-                                    <td data-label="Price / Kg">Rs.{crop.price_per_unit}</td>
-                                    <td data-label="Harvest Date">{crop.harvest_date}</td>
-                                    <td data-label="Action">
+                                    <td data-label={t("farmer.tableCrop")}>{crop.crop_name}</td>
+                                    <td data-label={t("farmer.tableCategory")}>{crop.category}</td>
+                                    <td data-label={t("farmer.tableQuantity")}>{crop.quantity} kg</td>
+                                    <td data-label={t("farmer.tableLocation")}>{crop.location}</td>
+                                    <td data-label={t("farmer.tableGrowthStage")}>{crop.growth_stage}</td>
+                                    <td data-label={t("farmer.tablePrice")}>Rs.{crop.price_per_unit}</td>
+                                    <td data-label={t("farmer.tableHarvestDate")}>{crop.harvest_date}</td>
+                                    <td data-label={t("farmer.tableAction")}>
                                         <div className="row-actions">
                                             <button
                                                 className="edit-btn"
@@ -110,13 +112,13 @@ export default function MyListings() {
                                                     })
                                                 }
                                             >
-                                                <FaPen /> Edit
+                                                <FaPen /> {t("buttons.edit")}
                                             </button>
                                             <button
                                                 className="delete-btn"
                                                 onClick={() => deleteCrop(crop.crop_id)}
                                             >
-                                                <FaTrashAlt /> Delete
+                                                <FaTrashAlt /> {t("buttons.delete")}
                                             </button>
                                         </div>
                                     </td>
@@ -128,15 +130,16 @@ export default function MyListings() {
             ) : (
                 <div className="empty-state">
                     <FaBoxOpen />
-                    <p>You don't have any crop listings yet.</p>
+                    <p>{t("emptyStates.noListings")}</p>
                     <button
                         className="add-btn"
                         onClick={() => navigate("/farmer/add-listing")}
                     >
-                        <FaPlus /> Add your first crop
+                        <FaPlus /> {t("farmer.addFirstCrop")}
                     </button>
                 </div>
             )}
         </div>
     );
 }
+

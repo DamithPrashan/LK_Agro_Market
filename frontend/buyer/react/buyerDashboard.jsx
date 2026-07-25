@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import "../../buyer/csss/buyerDashboard.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
 
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [location, setLocation] = useState("Colombo");
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0, complaints: 0 });
@@ -45,15 +47,15 @@ export default function BuyerDashboard() {
         setStats(data.stats);
         setRecentActivities(data.recentActivities || []);
       } else {
-        setError(data.message || "Couldn't load your dashboard right now.");
+        setError(data.message || t("errors.dashboardLoadFailed"));
       }
     } catch (err) {
       console.error("Failed to load buyer dashboard details:", err);
-      setError("Couldn't connect to the server. Please check your connection.");
+      setError(t("errors.connectionFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchDashboard();
@@ -99,10 +101,10 @@ export default function BuyerDashboard() {
       <div className="dashboard-error">
         <div className="error-box">
           <span className="error-icon">⚠️</span>
-          <h2>Something went wrong</h2>
+          <h2>{t("errors.genericError")}</h2>
           <p>{error}</p>
           <button className="secondary-btn" onClick={fetchDashboard}>
-            Try Again
+            {t("buttons.tryAgain")}
           </button>
         </div>
       </div>
@@ -115,12 +117,12 @@ export default function BuyerDashboard() {
       <section className="hero">
         <HeroCarousel>
           <h1>
-            Welcome back{firstName ? `, ${firstName}` : ""} 👋
+            {t("buyerDashboard.welcomeBack", { name: firstName })}
           </h1>
           <p>
             {isReturningUser
-              ? "Here's what's happening with your reservations today."
-              : "Discover fresh vegetables, fruits and connect with trusted farmers."}
+              ? t("buyerDashboard.subtitleReturning")
+              : t("buyerDashboard.subtitleNew")}
           </p>
         </HeroCarousel>
       </section>
@@ -130,19 +132,19 @@ export default function BuyerDashboard() {
         <div className="stat-card">
           <span className="stat-icon">⏳</span>
           <h2>{stats.pending}</h2>
-          <p>Pending Reservations</p>
+          <p>{t("stats.pendingReservations")}</p>
         </div>
 
         <div className="stat-card">
           <span className="stat-icon">🔄</span>
           <h2>{stats.active}</h2>
-          <p>Active Reservations</p>
+          <p>{t("stats.activeReservations")}</p>
         </div>
 
         <div className="stat-card">
           <span className="stat-icon">✅</span>
           <h2>{stats.completed}</h2>
-          <p>Completed Orders</p>
+          <p>{t("stats.completedOrders")}</p>
         </div>
 
         <div
@@ -154,17 +156,18 @@ export default function BuyerDashboard() {
         >
           <span className="stat-icon">⚠️</span>
           <h2>{stats.complaints}</h2>
-          <p>Open Complaints</p>
+          <p>{t("stats.openComplaints")}</p>
         </div>
       </section>
 
       {/* LOCATION BANNER */}
       <section className="location-banner">
         <div>
-          📍 Farmers near <strong>{location}</strong> have fresh products today.
+          {t("buyerDashboard.locationBanner", { location: location })}
         </div>
-        <button onClick={() => navigate("")}>Explore Nearby</button>
+        <button onClick={() => navigate("")}>{t("buyerDashboard.exploreNearby")}</button>
       </section>
+
 
       {/* QUICK LINKS */}
       {/* <section className="quick-links">
@@ -192,7 +195,7 @@ export default function BuyerDashboard() {
       <section className="content-grid">
         {/* RECENT ACTIVITY */}
         <div className="content-box">
-          <h2>Recent Activity</h2>
+          <h2>{t("buyerDashboard.recentActivity", "Recent Activity")}</h2>
           {recentActivities.length > 0 ? (
             <ul>
               {recentActivities.map((item, i) => (
@@ -202,9 +205,9 @@ export default function BuyerDashboard() {
           ) : (
             <div className="empty-state">
               <span className="empty-icon">🌱</span>
-              <p>No recent activity yet. Start browsing crops to get going!</p>
+              <p>{t("emptyStates.noActivity")}</p>
               <button className="secondary-btn" onClick={() => navigate("/browse")}>
-                Browse Crops
+                {t("sidebar.browseCrops")}
               </button>
             </div>
           )}

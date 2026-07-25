@@ -2,6 +2,7 @@ import React from "react";
 import "../csss/dashBoard.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
     FaTimes,
     FaSeedling,
@@ -19,21 +20,21 @@ import farmer3 from "../../assests/png/buyer3.jpg";
 function DashBoard() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [myCrops, setCrops] = useState([]);
-    const [welcomeMsg, setWelcomeMsg] = useState("Hello 👋");
     const [incomingOrders, setIncomingOrders] = useState([]);
 
-    useEffect(() => {
-        if (user) {
-            const key = `hasLoggedIn_${user.id}`;
-            if (localStorage.getItem(key)) {
-                setWelcomeMsg(`Welcome back, ${user.name} 👋`);
-            } else {
-                setWelcomeMsg(`Welcome, ${user.name} 👋`);
-                localStorage.setItem(key, "true");
-            }
+    const getWelcomeMsg = () => {
+        if (!user) return "";
+        const key = `hasLoggedIn_${user.id}`;
+        if (localStorage.getItem(key)) {
+            return t("farmerDashboard.welcomeBack", { name: user.name });
+        } else {
+            // Set first log in flag if not present
+            localStorage.setItem(key, "true");
+            return t("farmerDashboard.welcomeNew", { name: user.name });
         }
-    }, [user]);
+    };
 
     const fetchCrops = () => {
         fetch("/backend/getCrops.php", {
@@ -95,8 +96,8 @@ function DashBoard() {
                 {/* Header */}
                 <section className="hero" style={{ marginBottom: "28px" }}>
                     <HeroCarousel images={[farmer1, farmer2, farmer3]}>
-                        <h1>{welcomeMsg}</h1>
-                        <p>Here's what's happening with your farm today.</p>
+                        <h1>{getWelcomeMsg()}</h1>
+                        <p>{t("farmerDashboard.subtitle")}</p>
                     </HeroCarousel>
                 </section>
 
@@ -107,14 +108,14 @@ function DashBoard() {
                             <FaSeedling />
                         </div>
                         <div className="stat-body">
-                            <h4>Active Listings</h4>
+                            <h4>{t("stats.activeListings")}</h4>
                             <h2>
                                 {
                                     myCrops.filter((c) => c.crop_status === "active")
                                         .length
                                 }
                             </h2>
-                            <p>View all listings</p>
+                            <p>{t("buttons.view")} {t("sidebar.myListings").toLowerCase()}</p>
                         </div>
                     </div>
 
@@ -123,9 +124,9 @@ function DashBoard() {
                             <FaClipboardList />
                         </div>
                         <div className="stat-body">
-                            <h4>Pending Orders</h4>
+                            <h4>{t("stats.pendingOrders")}</h4>
                             <h2>{incomingOrders.length}</h2>
-                            <p>View all orders</p>
+                            <p>{t("buttons.view")} {t("sidebar.myOrders").toLowerCase()}</p>
                         </div>
                     </div>
 
@@ -134,12 +135,13 @@ function DashBoard() {
                             <FaExclamationCircle />
                         </div>
                         <div className="stat-body">
-                            <h4>Complaints</h4>
+                            <h4>{t("stats.complaints")}</h4>
                             <h2>0</h2>
-                            <p>View complaints</p>
+                            <p>{t("buttons.view")} {t("sidebar.complaints").toLowerCase()}</p>
                         </div>
                     </div>
                 </div>
+
 
                 <DemandForecast />
 

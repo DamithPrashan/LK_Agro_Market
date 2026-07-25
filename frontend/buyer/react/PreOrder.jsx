@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "../../buyer/csss/PreOrder.css";
 import { useCrops } from "../../../src/context/CropContext";
+import { useTranslation } from "react-i18next";
 
 // local images map for fallback rendering
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -53,6 +54,7 @@ export default function CropDetail() {
   const location = useLocation();
   const navigate = useNavigate();
   const { updateCropQuantity } = useCrops();
+  const { t } = useTranslation();
 
   // Determine which listing ID to load (defaulting to 1 if not specified)
   const cropId = id || location.state?.cropId || 1;
@@ -71,7 +73,7 @@ export default function CropDetail() {
     const minStr = cropData.harvest;
     const harvestDate = new Date(cropData.harvest);
     if (isNaN(harvestDate.getTime())) return { minStr: "", maxStr: "" };
-    
+
     const maxDate = new Date(harvestDate);
     maxDate.setDate(maxDate.getDate() + 10);
     const yyyy = maxDate.getFullYear();
@@ -94,11 +96,11 @@ export default function CropDetail() {
       return true;
     }
     if (dateVal < minStr) {
-      setDateError(`Delivery date cannot be before the expected harvest date (${minStr}). This order is not possible.`);
+      setDateError(t("errors.deliveryBeforeHarvest", { date: minStr }));
       return false;
     }
     if (dateVal > maxStr) {
-      setDateError(`Delivery date must be within 10 days of the expected harvest date (by ${maxStr}). Please choose an earlier date.`);
+      setDateError(t("errors.deliveryDaysLimit", { date: maxStr }));
       return false;
     }
     setDateError("");
@@ -112,10 +114,10 @@ export default function CropDetail() {
       try {
         const response = await fetch(`/backend/get_listings.php?id=${cropId}`);
         const data = await response.json();
-        
+
         if (data.success && data.crop) {
           setCropData(data.crop);
-          
+
           // Determine initial main image
           if (data.crop.images && data.crop.images.length > 0) {
             let firstImg = data.crop.images[0];
@@ -147,14 +149,14 @@ export default function CropDetail() {
         setLoading(false);
       }
     };
-    
+
     fetchDetails();
   }, [cropId]);
 
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: "100px", color: "#1a5c2d", fontSize: "18px", fontWeight: "bold" }}>
-        Loading Listing Details...
+        {t("loadingStates.loadingDetails", "Loading Listing Details...")}
       </div>
     );
   }
@@ -162,7 +164,7 @@ export default function CropDetail() {
   if (!cropData) {
     return (
       <div style={{ textAlign: "center", padding: "100px", color: "#e74c3c", fontSize: "18px", fontWeight: "bold" }}>
-        Listing details could not be found. <button onClick={() => navigate("/browse")} style={{ marginLeft: "15px", padding: "8px 15px", borderRadius: "5px", background: "#1a5c2d", color: "white", border: "none", cursor: "pointer" }}>Back to Browse</button>
+        {t("errors.listingNotFound")} <button onClick={() => navigate("/browse")} style={{ marginLeft: "15px", padding: "8px 15px", borderRadius: "5px", background: "#1a5c2d", color: "white", border: "none", cursor: "pointer" }}>{t("buttons.back")}</button>
       </div>
     );
   }
@@ -205,25 +207,25 @@ export default function CropDetail() {
     const availableQty = parseFloat(cropData.qty);
 
     if (!quantity || qtyVal <= 0) {
-      setSubmitMsg("Please enter a valid quantity.");
+      setSubmitMsg(t("errors.invalidQuantity"));
       return;
     }
     if (qtyVal > availableQty) {
-      setSubmitMsg(`Requested quantity (${qtyVal} kg) exceeds available quantity (${availableQty} kg).`);
+      setSubmitMsg(t("errors.qtyExceedsAvailable", { qty: qtyVal, available: availableQty }));
       return;
     }
     if (!deliveryDate) {
-      setSubmitMsg("Please select a target delivery date.");
+      setSubmitMsg(t("errors.selectDeliveryDate"));
       return;
     }
     if (!validateDeliveryDate(deliveryDate)) {
-      setSubmitMsg("Invalid target delivery date.");
+      setSubmitMsg(t("errors.invalidDeliveryDate"));
       return;
     }
-    
+
     setSubmitting(true);
     setSubmitMsg("");
-    
+
     try {
       const response = await fetch("/backend/place_preorder.php", {
         method: "POST",
@@ -238,10 +240,10 @@ export default function CropDetail() {
       });
       const data = await response.json();
       if (data.success) {
-        setSubmitMsg(`Success! Your pre-order request for ${qtyVal} kg has been received.`);
-        
+        setSubmitMsg(t("errors.preOrderSuccess", { defaultValue: `Success! Your pre-order request for ${qtyVal} kg has been received.`, qty: qtyVal }));
+
         const newQty = data.updated_quantity !== undefined ? data.updated_quantity : (parseFloat(cropData.qty) - qtyVal);
-        
+
         // Update cropData.qty in state immediately without requiring page reload
         setCropData(prev => ({
           ...prev,
@@ -254,10 +256,10 @@ export default function CropDetail() {
         setQuantity("");
         setDeliveryDate("");
       } else {
-        setSubmitMsg(data.message || "Failed to place pre-order.");
+        setSubmitMsg(data.message || t("errors.submissionFailed"));
       }
     } catch (err) {
-      setSubmitMsg("Failed to connect to the server.");
+      setSubmitMsg(t("errors.connectionFailed"));
       console.error("Failed to place pre-order: ", err);
     } finally {
       setSubmitting(false);
@@ -293,22 +295,22 @@ export default function CropDetail() {
           <h1>{cropData.name}</h1>
           <h3>Rs. {parseFloat(cropData.price).toFixed(0)} per kg</h3>
           <p>
-            Premium quality {cropData.name.toLowerCase()} fresh from the farms of {cropData.location}. 
-            Grown under natural conditions using organic farming practices. High nutrients, rich taste, 
+            Premium quality {cropData.name.toLowerCase()} fresh from the farms of {cropData.location}.
+            Grown under natural conditions using organic farming practices. High nutrients, rich taste,
             and harvested fresh at maturity.
           </p>
 
           <div className="meta">
-            <span>📍 District: {cropData.location}</span>
+            <span>📍 {t("forms.location")}: {cropData.location}</span>
             <span style={{ color: isOutOfStock ? "#c0392b" : "inherit", fontWeight: isOutOfStock ? "bold" : "normal" }}>
-              📦 Available Quantity: {isOutOfStock ? "Out of Stock" : `${parseFloat(cropData.qty).toFixed(0)} kg`}
+              📦 {t("forms.quantity")}: {isOutOfStock ? t("emptyStates.outOfStock") : `${parseFloat(cropData.qty).toFixed(0)} kg`}
             </span>
-            <span>📅 Expected Harvest: {cropData.harvest}</span>
+            <span>📅 {t("forms.harvestDate")}: {cropData.harvest}</span>
           </div>
-          
+
           {/* Reviews List */}
           <div style={{ marginTop: "30px", borderTop: "1px solid #eee", paddingTop: "20px" }}>
-            <h2 style={{ fontSize: "18px", color: "#1a5c2d", marginBottom: "15px" }}>Reviews ({cropData.reviews ? cropData.reviews.length : 0})</h2>
+            <h2 style={{ fontSize: "18px", color: "#1a5c2d", marginBottom: "15px" }}>{t("buyerDashboard.reviews", { count: cropData.reviews ? cropData.reviews.length : 0 })}</h2>
             {cropData.reviews && cropData.reviews.length > 0 ? (
               cropData.reviews.map((rev) => (
                 <div key={rev.id} style={{ padding: "12px", background: "#f8f9fa", borderRadius: "6px", marginBottom: "10px", borderLeft: "4px solid #27ae60" }}>
@@ -316,12 +318,12 @@ export default function CropDetail() {
                     <strong>{rev.reviewer_name}</strong>
                     <span style={{ color: "#f1c40f" }}>{"★".repeat(rev.rating)}</span>
                   </div>
-                  <p style={{ fontSize: "13px", color: "#555", margin: 0 }}>{rev.comment || "No comment left."}</p>
+                  <p style={{ fontSize: "13px", color: "#555", margin: 0 }}>{rev.comment || t("emptyStates.noReviewsComment")}</p>
                   <span style={{ fontSize: "10px", color: "#999" }}>{rev.created_at}</span>
                 </div>
               ))
             ) : (
-              <p style={{ color: "#7f8c8d", fontSize: "14px", fontStyle: "italic" }}>No reviews posted for this farmer yet.</p>
+              <p style={{ color: "#7f8c8d", fontSize: "14px", fontStyle: "italic" }}>{t("emptyStates.noReviews")}</p>
             )}
           </div>
         </div>
@@ -331,30 +333,30 @@ export default function CropDetail() {
       <div className="right-section">
         {/* Farmer Card */}
         <div className="farmer-card">
-          <h2>👨‍🌾 Farmer Profile</h2>
+          <h2>{t("buyerDashboard.farmerProfile")}</h2>
 
           <div className="farmer-info">
             <h3>{cropData.farmer_name}</h3>
             <p>⭐ {parseFloat(cropData.rating).toFixed(1)} Rating</p>
-            <p>🏡 Farm Location: {cropData.farm_location || cropData.location}</p>
-            <p>⏳ Verified Status: {parseInt(cropData.is_verified) === 1 ? "✓ Verified Farmer" : "Standard Listing"}</p>
-            <p>📞 Contact: {cropData.farmer_phone || "077-XXXXXXX"}</p>
+            <p>{t("buyerDashboard.farmLocation", { location: cropData.farm_location || cropData.location })}</p>
+            <p>{t("buyerDashboard.verifiedStatus")}{parseInt(cropData.is_verified) === 1 ? t("buyerDashboard.verifiedFarmer") : t("buyerDashboard.standardListing")}</p>
+            <p>{t("buyerDashboard.contact", { phone: cropData.farmer_phone || "077-XXXXXXX" })}</p>
           </div>
 
-          <button className="contact-btn" onClick={() => alert(`Contacting ${cropData.farmer_name} via ${cropData.farmer_email || "phone"}...`)}>
-            Contact Farmer
+          <button className="contact-btn" onClick={() => alert(t("buyerDashboard.contactingFarmer", { name: cropData.farmer_name, channel: cropData.farmer_email || "phone" }))}>
+            {t("buttons.contactFarmer")}
           </button>
         </div>
 
         {/* Pre Order Box */}
         <div className="order-box" style={{ background: isOutOfStock ? "#34495e" : "#1b5e20" }}>
-          <h2>{isOutOfStock ? "Out of Stock" : "Pre-Order Now"}</h2>
+          <h2>{isOutOfStock ? t("emptyStates.outOfStock") : t("buyerDashboard.preOrderNow")}</h2>
           <form onSubmit={handlePreOrder}>
-            <label>Quantity (kg)</label>
-            <input 
-              type="number" 
-              placeholder={isOutOfStock ? "Currently unavailable" : "Enter quantity"} 
-              value={quantity} 
+            <label>{t("forms.quantity")}</label>
+            <input
+              type="number"
+              placeholder={isOutOfStock ? t("buyerDashboard.currentlyUnavailable") : t("buyerDashboard.enterQuantity")}
+              value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               min="1"
               max={parseFloat(cropData.qty)}
@@ -362,10 +364,10 @@ export default function CropDetail() {
               required
             />
 
-            <label>Target Delivery Date</label>
-            <input 
-              type="date" 
-              value={deliveryDate} 
+            <label>{t("forms.targetDeliveryDate")}</label>
+            <input
+              type="date"
+              value={deliveryDate}
               onChange={(e) => {
                 const val = e.target.value;
                 setDeliveryDate(val);
@@ -383,24 +385,24 @@ export default function CropDetail() {
               </span>
             )}
 
-            <button 
-              type="submit" 
-              className="order-btn" 
+            <button
+              type="submit"
+              className="order-btn"
               disabled={submitting || !!dateError || isOutOfStock}
               style={{ background: isOutOfStock ? "#7f8c8d" : "#ff9800", cursor: isOutOfStock ? "not-allowed" : "pointer" }}
             >
-              {isOutOfStock ? "Out of Stock" : (submitting ? "Processing..." : "Place Pre Order")}
+              {isOutOfStock ? t("emptyStates.outOfStock") : (submitting ? t("buttons.processing", "Processing...") : t("buttons.placePreOrder"))}
             </button>
           </form>
 
           {submitMsg && (
-            <div style={{ 
-              marginTop: "15px", 
-              padding: "12px 15px", 
-              borderRadius: "8px", 
-              fontSize: "13px", 
+            <div style={{
+              marginTop: "15px",
+              padding: "12px 15px",
+              borderRadius: "8px",
+              fontSize: "13px",
               fontWeight: "600",
-              textAlign: "center", 
+              textAlign: "center",
               background: submitMsg.toLowerCase().includes("success") ? "#d4edda" : "#f8d7da",
               color: submitMsg.toLowerCase().includes("success") ? "#155724" : "#721c24",
               border: `1px solid ${submitMsg.toLowerCase().includes("success") ? "#c3e6cb" : "#f5c6cb"}`
@@ -410,7 +412,7 @@ export default function CropDetail() {
           )}
 
           <p className="note">
-            {isOutOfStock ? "Check back later when the farmer updates stock!" : "Secure your harvest before stock runs out 🌱"}
+            {isOutOfStock ? t("buyerDashboard.checkBackLater") : t("buyerDashboard.secureHarvest")}
           </p>
         </div>
       </div>

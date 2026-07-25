@@ -98,6 +98,12 @@
   transition: .3s;
 }
 
+.language-buttons button.active {
+  background: #1a5c2d;
+  font-weight: bold;
+}
+
+
 
 .language-buttons button:hover {
 
