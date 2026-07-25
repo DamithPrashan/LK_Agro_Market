@@ -97,6 +97,32 @@ try {
 
     $pdo->commit();
 
+    // Trigger Notification to Farmer
+    try {
+        require_once 'create_notification.php';
+        $buyer_name = $_SESSION['user']['name'] ?? 'A buyer';
+        
+        $cropInfoStmt = $pdo->prepare("
+            SELECT c.crop_name, u.user_id as farmer_user_id
+            FROM crop c
+            JOIN farmer f ON c.farmer_id = f.farmer_id
+            JOIN user u ON f.user_id = u.user_id
+            WHERE c.crop_id = ?
+        ");
+        $cropInfoStmt->execute([$crop_id]);
+        $cropInfo = $cropInfoStmt->fetch();
+        
+        if ($cropInfo) {
+            $farmer_user_id = $cropInfo['farmer_user_id'];
+            $crop_name = $cropInfo['crop_name'];
+            $notif_title = "New Order Received";
+            $notif_msg = "{$buyer_name} has placed a new order for {$quantity} kg of {$crop_name}.";
+            create_notification($farmer_user_id, $notif_title, $notif_msg);
+        }
+    } catch (Exception $e) {
+        error_log("Notification error in place_preorder.php: " . $e->getMessage());
+    }
+
     echo json_encode([
         "success" => true, 
         "message" => "Pre-order placed successfully!",

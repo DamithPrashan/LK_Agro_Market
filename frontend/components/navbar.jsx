@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import "./navbar.css";
@@ -15,11 +15,59 @@ const Navbar = () => {
   };
 
 
-  const notifications = [
-    { id: 1, title: 'Reservation Accepted', desc: 'Your order #1001 has been accepted.', time: '2 minutes ago', type: 'success', unread: true },
-    { id: 2, title: 'New Order Received', desc: 'You have received a new order request.', time: '1 hour ago', type: 'info', unread: true },
-    { id: 3, title: 'Payment Confirmed', desc: 'Payment received for order #998.', time: 'Yesterday', type: 'warning', unread: true }
-  ];
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchNotifications = async () => {
+    if (!user) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+    try {
+      const response = await fetch('/backend/get_notifications.php');
+      const data = await response.json();
+      if (data.success) {
+        setNotifications(data.notifications || []);
+        const unread = (data.notifications || []).filter(n => n.unread).length;
+        setUnreadCount(unread);
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleMarkAllRead = async () => {
+    try {
+      const response = await fetch('/backend/mark_notifications_read.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+        setUnreadCount(0);
+      }
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
+  const formatTime = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr.replace(/-/g, '/'));
+      return date.toLocaleString();
+    } catch (e) {
+      return dateStr;
+    }
+  };
 
   return (
     <header className="app-header">
@@ -165,28 +213,32 @@ const Navbar = () => {
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <img src={notificationIcon} alt="Notification" />
-              <span className="badge">3</span>
+              {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
             </button>
 
             {showNotifications && (
               <div className="notification-dropdown">
                 <div className="dropdown-header">
                   <h3>Notifications</h3>
-                  <button className="mark-read-btn">Mark all read</button>
+                  <button className="mark-read-btn" onClick={handleMarkAllRead}>Mark all read</button>
                 </div>
 
                 <div className="dropdown-body">
-                  {notifications.map((notif) => (
-                    <div key={notif.id} className="notification-item">
-                      <div className={`status-icon ${notif.type}`}></div>
-                      <div className="notif-content">
-                        <h4>{notif.title}</h4>
-                        <p>{notif.desc}</p>
-                        <span className="time">{notif.time}</span>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No notifications</div>
+                  ) : (
+                    notifications.map((notif) => (
+                      <div key={notif.id} className="notification-item">
+                        <div className={`status-icon ${notif.type}`}></div>
+                        <div className="notif-content">
+                          <h4>{notif.title}</h4>
+                          <p>{notif.desc}</p>
+                          <span className="time">{formatTime(notif.created_at)}</span>
+                        </div>
+                        {notif.unread && <span className={`unread-dot ${notif.type}`}></span>}
                       </div>
-                      {notif.unread && <span className={`unread-dot ${notif.type}`}></span>}
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="dropdown-footer">

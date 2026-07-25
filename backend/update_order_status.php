@@ -14,7 +14,7 @@ require_role('farmer');
 $user_id = $_SESSION['user']['id'];
 
 // Get POST JSON data
-$data = json_decode(file_get_contents("php://input"), true);
+$data = isset($mockInput) ? $mockInput : json_decode(file_get_contents("php://input"), true);
 $order_id = isset($data['order_id']) ? intval($data['order_id']) : 0;
 $action = isset($data['action']) ? trim($data['action']) : '';
 
@@ -79,6 +79,42 @@ try {
     }
 
     $pdo->commit();
+
+    // Trigger Notification to Buyer
+    try {
+        if ($action === 'accept' || $action === 'decline') {
+            require_once 'create_notification.php';
+            
+            $buyerInfoStmt = $pdo->prepare("
+                SELECT b.user_id as buyer_user_id, c.crop_name 
+                FROM reservation r
+                JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+                JOIN crop c ON rc.crop_id = c.crop_id
+                JOIN buyer b ON rc.buyer_id = b.buyer_id
+                WHERE r.reservation_id = ?
+            ");
+            $buyerInfoStmt->execute([$order_id]);
+            $buyerInfo = $buyerInfoStmt->fetch();
+            
+            if ($buyerInfo) {
+                $buyer_user_id = $buyerInfo['buyer_user_id'];
+                $crop_name = $buyerInfo['crop_name'];
+                
+                if ($action === 'accept') {
+                    $notif_title = "Reservation Accepted";
+                    $notif_msg = "Your order ORD{$order_id} for {$crop_name} has been accepted. Status: confirmed.";
+                } else {
+                    $notif_title = "Reservation Declined";
+                    $notif_msg = "Your order ORD{$order_id} for {$crop_name} has been declined. Status: cancelled.";
+                }
+                
+                create_notification($buyer_user_id, $notif_title, $notif_msg);
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Notification error in update_order_status.php: " . $e->getMessage());
+    }
+
     echo json_encode(["success" => true, "message" => "Order updated successfully."]);
 
 } catch (PDOException $e) {

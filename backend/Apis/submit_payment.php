@@ -133,6 +133,43 @@ try {
 
     $pdo->commit();
 
+    // Trigger Notification to Buyer and Farmer
+    try {
+        require_once __DIR__ . '/../create_notification.php';
+        
+        $paymentInfoStmt = $pdo->prepare("
+            SELECT 
+                b.user_id as buyer_user_id,
+                u_farmer.user_id as farmer_user_id,
+                c.crop_name
+            FROM reservation r
+            JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+            JOIN crop c ON rc.crop_id = c.crop_id
+            JOIN farmer f ON c.farmer_id = f.farmer_id
+            JOIN user u_farmer ON f.user_id = u_farmer.user_id
+            JOIN buyer b ON rc.buyer_id = b.buyer_id
+            WHERE r.reservation_id = ?
+        ");
+        $paymentInfoStmt->execute([$reservation_id]);
+        $paymentInfo = $paymentInfoStmt->fetch();
+        
+        if ($paymentInfo) {
+            $buyer_user_id = $paymentInfo['buyer_user_id'];
+            $farmer_user_id = $paymentInfo['farmer_user_id'];
+            $crop_name = $paymentInfo['crop_name'];
+            
+            // Notify Buyer
+            $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
+            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg);
+            
+            // Notify Farmer
+            $farmer_msg = "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
+            create_notification($farmer_user_id, "Payment Received", $farmer_msg);
+        }
+    } catch (Exception $e) {
+        error_log("Notification error in submit_payment.php: " . $e->getMessage());
+    }
+
     echo json_encode([
         "success" => true,
         "message" => "Payment proof submitted successfully."
