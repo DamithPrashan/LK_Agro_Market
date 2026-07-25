@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import RatingStars from "../components/ratingStars";
 import ReviewList  from "../components/reviewList";
 import Navbar from "../components/navbar";
@@ -31,6 +32,7 @@ const DEMO_PENDING  = [
 
 export default function RatingsPage() {
   const { user }                       = useAuth();
+  const { t }                          = useTranslation();
   const [summary, setSummary]          = useState(null);
   const [reviews, setReviews]          = useState([]);
   const [pendingOrders, setPending]    = useState([]);
@@ -61,8 +63,8 @@ export default function RatingsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (stars === 0)    { setSubmitMsg({ text:"Please select a star rating.", ok:false }); return; }
-    if (!selectedOrder) { setSubmitMsg({ text:"Please select an order.", ok:false }); return; }
+    if (stars === 0)    { setSubmitMsg({ text: t("errors.selectStars"), ok:false }); return; }
+    if (!selectedOrder) { setSubmitMsg({ text: t("errors.selectOrderRating"), ok:false }); return; }
     setSubmitting(true); setSubmitMsg({ text:"", ok:false });
     try {
       const res  = await fetch("/backend/ratings/submit_rating.php", {
@@ -73,39 +75,39 @@ export default function RatingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setSubmitMsg({ text:"✅ Rating submitted successfully!", ok:true });
+        setSubmitMsg({ text: "✅ " + t("ratings.successAlert"), ok:true });
         setStars(0); setComment(""); setSelected("");
         setReviews((p) => [data.new_review, ...p]);
         setPending((p) => p.filter((o) => String(o.id) !== String(selectedOrder)));
         if (data.new_summary) setSummary(data.new_summary);
       } else {
-        setSubmitMsg({ text: data.message || "Submission failed.", ok:false });
+        setSubmitMsg({ text: data.message || t("errors.submissionFailed"), ok:false });
       }
     } catch {
-      setSubmitMsg({ text:"Network error. Make sure XAMPP is running.", ok:false });
+      setSubmitMsg({ text: t("errors.networkXamppError"), ok:false });
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loadingData) return <div style={{ padding:40, textAlign:"center", color:"var(--t-3)" }}>Loading ratings…</div>;
+  if (loadingData) return <div style={{ padding:40, textAlign:"center", color:"var(--t-3)" }}>{t("ratings.loading")}</div>;
 
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
       
       <main className="rp-page">
-        <h1 className="rp-heading">Ratings &amp; Reviews</h1>
+        <h1 className="rp-heading">{t("ratings.title")}</h1>
 
         <div className="rp-top-grid">
           {/* Summary card */}
           <div className="card">
-            <p className="section-label">Your Rating</p>
+            <p className="section-label">{t("ratings.yourRating")}</p>
             {summary ? (
               <>
                 <div className="rp-big-score">
                   <div className="rp-score-num">{summary.average.toFixed(1)}</div>
                   <RatingStars value={Math.round(summary.average)} readOnly size={22} />
-                  <p className="rp-score-total">{summary.total} review{summary.total !== 1 ? "s" : ""}</p>
+                  <p className="rp-score-total">{summary.total} {t(summary.total === 1 ? "ratings.review" : "ratings.reviews")}</p>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:5, marginTop:12 }}>
                   {[5,4,3,2,1].map((n) => (
@@ -114,18 +116,18 @@ export default function RatingsPage() {
                 </div>
               </>
             ) : (
-              <p style={{ fontSize:12, color:"var(--t-3)" }}>No ratings yet.</p>
+              <p style={{ fontSize:12, color:"var(--t-3)" }}>{t("ratings.noRatings")}</p>
             )}
           </div>
 
           {/* Submit rating card */}
           <div className="card">
-            <p className="section-label">Rate a completed order</p>
+            <p className="section-label">{t("ratings.rateCompleted")}</p>
             <form onSubmit={handleSubmit}>
               <div className="field">
-                <label htmlFor="order-sel">Select Order</label>
+                <label htmlFor="order-sel">{t("ratings.selectOrder")}</label>
                 <select id="order-sel" value={selectedOrder} onChange={(e) => setSelected(e.target.value)}>
-                  <option value="">— Choose an order —</option>
+                  <option value="">{t("ratings.chooseOrder")}</option>
                   {pendingOrders.map((o) => (
                     <option key={o.id} value={o.id}>
                       #{o.id} · {o.crop_name} · {o.other_party_name}
@@ -135,16 +137,16 @@ export default function RatingsPage() {
               </div>
               <div style={{ marginBottom:14 }}>
                 <label style={{ display:"block", fontSize:12, fontWeight:600, color:"var(--t-2)", marginBottom:6 }}>
-                  Your Rating
+                  {t("ratings.yourRating")}
                 </label>
                 <RatingStars value={stars} onChange={setStars} size={28} />
               </div>
               <div className="field">
-                <label htmlFor="rev-comment">Review (optional)</label>
+                <label htmlFor="rev-comment">{t("ratings.reviewOptional")}</label>
                 <textarea
                   id="rev-comment" rows={3} value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Describe your experience…"
+                  placeholder={t("ratings.reviewPlaceholder")}
                   style={{ resize:"vertical" }}
                 />
               </div>
@@ -154,7 +156,7 @@ export default function RatingsPage() {
                 </div>
               )}
               <button className="btn btn-primary btn-full" type="submit" disabled={submitting}>
-                {submitting ? "Submitting…" : "Submit Rating"}
+                {submitting ? t("ratings.btnSubmitting") : t("ratings.btnSubmit")}
               </button>
             </form>
           </div>
@@ -162,7 +164,7 @@ export default function RatingsPage() {
 
         {/* Review list */}
         <div className="card" style={{ marginTop:16 }}>
-          <p className="section-label">Reviews received ({reviews.length})</p>
+          <p className="section-label">{t("ratings.reviewsReceived", { count: reviews.length })}</p>
           <ReviewList reviews={reviews} />
         </div>
       </main>

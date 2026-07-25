@@ -83,8 +83,10 @@ try {
     $stmtUpdate->execute([$finalStatus, $adminNotes, $action, $complaintId]);
 
     // 3. Trigger notifications to both buyer and farmer
-    $notifySql = "INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)";
-    $notifyStmt = $pdo->prepare($notifySql);
+    require_once 'create_notification.php';
+    $notif_data = json_encode([
+        "complaintId" => $complaintId
+    ]);
 
     $title = "Dispute Resolved - Order #{$complaint['reservation_id']}";
     $outcomeMsg = ($action === 'dismiss') ? "dismissed" : "resolved with action: " . strtoupper($action);
@@ -92,10 +94,10 @@ try {
     $farmerMsg = "The dispute for Order #{$complaint['reservation_id']} ({$complaint['crop_name']}) has been resolved. Admin decision: {$outcomeMsg}. Notes: {$adminNotes}";
 
     // Notify Buyer
-    $notifyStmt->execute([$complaint['buyer_user_id'], $title, $buyerMsg]);
+    create_notification($complaint['buyer_user_id'], $title, $buyerMsg, 'complaintResolved', $notif_data);
     
     // Notify Farmer
-    $notifyStmt->execute([$complaint['farmer_user_id'], $title, $farmerMsg]);
+    create_notification($complaint['farmer_user_id'], $title, $farmerMsg, 'complaintResolved', $notif_data);
 
     echo json_encode([
         "success" => true,

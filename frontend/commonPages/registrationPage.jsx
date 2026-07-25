@@ -109,7 +109,7 @@ export default function RegistrationPage() {
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
-            <div style={s.logo}>🌿 LK Agro Market</div>
+            <div style={s.logo}>{t("login.logoTitle")}</div>
             <h1 style={s.title}>{t("register.header")}</h1>
             <p style={s.sub}>{t("register.subtitle")}</p>
           </div>
@@ -137,10 +137,10 @@ export default function RegistrationPage() {
               {renderField(t("forms.fullName"), "name", "text", "R.M.S.T. Randeniya")}
               {renderField(t("forms.contactNumber"), "contact", "text", "+94 71 234 5678")}
             </div>
-            {renderField(t("forms.emailAddress"), "email", "email", t("login.emailPlaceholder", "you@email.com"))}
+            {renderField(t("forms.emailAddress"), "email", "email", t("login.emailPlaceholder"))}
             <div className="grid-2">
               <div className="field">
-                <label htmlFor="district">{t("forms.district", "District")}</label>
+                <label htmlFor="district">{t("forms.district")}</label>
                 <select
                   id="district" name="district" value={values.district}
                   onChange={handleChange} onBlur={handleBlur}
@@ -161,7 +161,7 @@ export default function RegistrationPage() {
               </div>
             </div>
             <div className="grid-2">
-              {renderField(t("forms.password"), "password", "password", "", t("auth.minPasswordHint", "Min 8 characters"))}
+              {renderField(t("forms.password"), "password", "password", "", t("auth.minPasswordHint"))}
               {renderField(t("forms.confirmPassword"), "confirm", "password")}
             </div>
 

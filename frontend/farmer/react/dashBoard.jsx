@@ -81,7 +81,7 @@ function DashBoard() {
                 alert(data.message);
             }
         } catch (err) {
-            alert("Error updating order status.");
+            alert(t("errors.submissionFailed"));
         }
     };
 
@@ -148,23 +148,23 @@ function DashBoard() {
                 {/* Orders */}
                 <div className="orders-section-container" style={{ marginTop: "25px" }}>
                     <div className="section orders-section">
-                        <h3>Incoming Orders</h3>
+                        <h3>{t("farmerDashboard.incomingOrders")}</h3>
                         {incomingOrders.length > 0 ? (
                             <div className="orders-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px", marginTop: "15px" }}>
                                 {incomingOrders.map((order) => (
                                     <div className="order-card" key={order.id} style={{ marginTop: 0 }}>
                                         <div className="order-card-header">
                                             <span className="order-buyer">{order.buyer}</span>
-                                            <span className="order-badge">Pending</span>
+                                            <span className="order-badge">{t("orders.status.pending")}</span>
                                         </div>
                                         <p>
-                                            <b>Crop</b> {order.crop}
+                                            <b>{t("farmer.cropLabel")}</b> {order.crop}
                                         </p>
                                         <p>
-                                            <b>Quantity</b> {order.quantity}
+                                            <b>{t("farmer.quantityLabel")}</b> {order.quantity}
                                         </p>
                                         <p>
-                                            <b>Collection</b> {order.date}
+                                            <b>{t("farmer.collectionLabel")}</b> {order.date}
                                         </p>
 
                                         <div className="buttons">
@@ -174,7 +174,7 @@ function DashBoard() {
                                                     handleOrderAction(order.db_id, "accept")
                                                 }
                                             >
-                                                <FaCheck /> Accept
+                                                <FaCheck /> {t("buttons.accept")}
                                             </button>
                                             <button
                                                 className="decline"
@@ -182,7 +182,7 @@ function DashBoard() {
                                                     handleOrderAction(order.db_id, "decline")
                                                 }
                                             >
-                                                <FaTimes /> Decline
+                                                <FaTimes /> {t("buttons.decline")}
                                             </button>
                                         </div>
                                     </div>
@@ -191,7 +191,7 @@ function DashBoard() {
                         ) : (
                             <div className="empty-state small">
                                 <FaClipboardList />
-                                <p>No new incoming orders right now.</p>
+                                <p>{t("farmerDashboard.noIncomingOrders")}</p>
                             </div>
                         )}
                     </div>

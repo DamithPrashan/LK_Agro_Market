@@ -50,7 +50,7 @@ export default function LoginPage() {
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
-            <div style={s.logo}>🌿 LK Agro Market</div>
+            <div style={s.logo}>{t("login.logoTitle")}</div>
             <h1 style={s.title}>{t("login.header")}</h1>
             <p style={s.sub}>{t("login.subtitle")}</p>
           </div>
@@ -60,7 +60,7 @@ export default function LoginPage() {
               <label htmlFor="email">{t("forms.emailAddress")}</label>
               <input
                 id="email" type="email" value={email} autoComplete="email"
-                placeholder={t("login.emailPlaceholder", "you@email.com")}
+                placeholder={t("login.emailPlaceholder")}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -81,7 +81,7 @@ export default function LoginPage() {
                   type="button"
                   style={s.eyeBtn}
                   onClick={() => setShowPw((p) => !p)}
-                  aria-label={showPw ? "Hide password" : "Show password"}
+                  aria-label={showPw ? t("login.hidePassword") : t("login.showPassword")}
                 >
                   {showPw ? "🙈" : "👁"}
                 </button>

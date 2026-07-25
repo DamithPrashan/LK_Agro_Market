@@ -84,7 +84,12 @@
     "subtitle": "තහවුරු කරන ලද ශ්‍රී ලාංකික ගොවීන්ගෙන් නැවුම් අස්වනු",
     "searchPlaceholder": "භෝග, ගොවීන්, දිස්ත්‍රික්ක සොයන්න...",
     "showingCropsNear": "{{district}} ආශ්‍රිත භෝග පෙන්වයි",
-    "useMapSearch": "සිතියම් සෙවුම භාවිතා කරන්න"
+    "useMapSearch": "සිතියම් සෙවුම භාවිතා කරන්න",
+    "allSriLanka": "මුළු ශ්‍රී ලංකාවම",
+    "dateSeparator": "සිට",
+    "perKg": "/කි.ග්‍රෑ",
+    "harvestLabel": "අස්වැන්න",
+    "available": "තිබෙන ප්‍රමාණය:"
   },
   "complaints": {
     "title": "පැමිණිලි සහ ආරවුල් නිරාකරණය",
@@ -129,13 +134,21 @@
     "payment": "ගෙවීම්: {{status}}",
     "cancelErrorTime": "මෙම ඇණවුම අවලංගු කළ හැක්කේ එකතු කිරීමේ දිනට පැය 48කට පෙර පමණි. ගැටලුවක් ඇත්නම් කරුණාකර පැමිණිල්ලක් ඉදිරිපත් කරන්න.",
     "cancellationSuccessful": "අවලංගු කිරීම සාර්ථකයි.",
-    "cancellationFailed": "අවලංගු කිරීම අසාර්ථකයි."
+    "cancellationFailed": "අවලංගු කිරීම අසාර්ථකයි.",
+    "status": {
+      "pending": "පොරොත්තු",
+      "accepted": "පිළිගත්",
+      "ready": "සූදානම්",
+      "completed": "සම්පූර්ණ කළ",
+      "declined": "ප්‍රතික්ෂේපිත"
+    }
   },
   "farmerDashboard": {
     "welcomeBack": "නැවත සාදරයෙන් පිළිගනිමු, {{name}} 👋",
     "welcomeNew": "සාදරයෙන් පිළිගනිමු, {{name}} 👋",
     "subtitle": "ඔබේ ගොවිපල පිළිබඳ අද දවසේ යාවත්කාලීන කිරීම් මෙන්න.",
-    "incomingOrders": "ලැබුණු ඇණවුම්"
+    "incomingOrders": "ලැබුණු ඇණවුම්",
+    "noIncomingOrders": "දැනට නව ඇණවුම් කිසිවක් ලැබී නොමැත."
   },
   "stats": {
     "pendingReservations": "පොරොත්තු වෙන්කිරීම්",
@@ -218,7 +231,8 @@
     "nicUploadPlaceholder": "හැඳුනුම්පත් ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
     "evidenceUploadPlaceholder": "වගා ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
     "min": "අවම",
-    "max": "උපරිම"
+    "max": "උපරිම",
+    "district": "දිස්ත්‍රික්කය"
   },
   "emptyStates": {
     "noListings": "ඔබ තවමත් කිසිදු භෝගයක් ලැයිස්තුගත කර නොමැත.",
@@ -232,7 +246,8 @@
     "noRatings": "තවමත් ශ්‍රේණිගත කිරීම් නොමැත.",
     "noPendingVerifications": "තහවුරු කිරීමට පොරොත්තු ගොවීන් නොමැත",
     "noComplaints": "පැමිණිලි කිසිවක් හමු නොවිණි",
-    "noCropsMatching": "ඔබේ පෙරහන්වලට ගැලපෙන භෝග කිසිවක් හමු නොවීය."
+    "noCropsMatching": "ඔබේ පෙරහන්වලට ගැලපෙන භෝග කිසිවක් හමු නොවීය.",
+    "outOfStock": "තොග අවසන්"
   },
   "errors": {
     "genericError": "යම් දෝෂයක් සිදු වී ඇත",
@@ -269,9 +284,22 @@
     "orderAccepted": "{{cropName}} සඳහා ඔබගේ පූර්ව ඇණවුම් ඉල්ලීම ගොවි මහතා විසින් පිළිගෙන ඇත.",
     "orderDeclined": "{{cropName}} සඳහා ඔබගේ පූර්ව ඇණවුම් ඉල්ලීම ගොවි මහතා විසින් ප්‍රතික්ෂේප කර ඇත.",
     "paymentConfirmed": "ඇණවුම් අංක #{{orderId}} සඳහා රු. {{amount}} ක ගෙවීම තහවුරු කරන ලදී.",
+    "paymentReceived": "ඇණවුම් අංක #{{orderId}} සඳහා රු. {{amount}} ක මුදලක් ලැබී ඇත.",
     "complaintSubmitted": "ඇණවුම් අංක #{{orderId}} සම්බන්ධයෙන් ආරවුලක් මතු වී ඇත.",
     "complaintResolved": "පැමිණිලි අංක #{{complaintId}} පරිපාලක විසින් විසඳන ලද ලෙස සලකුණු කර ඇත.",
-    "verifiedBadge": "ගොවි තහවුරු කිරීම සාර්ථකයි. ඔබට තහවුරු කළ ගොවි සලකුණ (Verified Badge) හිමි වී ඇත."
+    "verifiedBadge": "ගොවි තහවුරු කිරීම සාර්ථකයි. ඔබට තහවුරු කළ ගොවි සලකුණ (Verified Badge) හිමි වී ඇත.",
+    "preorderCancelled": "ඇණවුම් අංක #{{orderId}} සඳහා වූ පූර්ව ඇණවුම අවලංගු කර ඇත.",
+    "title": {
+      "orderSubmitted": "නව ඇණවුමක් ලැබුණි",
+      "orderAccepted": "ඇණවුම පිළිගන්නා ලදී",
+      "orderDeclined": "ඇණවුම ප්‍රතික්ෂේප කරන ලදී",
+      "paymentConfirmed": "ගෙවීම තහවුරු කරන ලදී",
+      "paymentReceived": "ගෙවීම් ලැබුණි",
+      "complaintSubmitted": "ආරවුලක් විවෘත විය",
+      "complaintResolved": "ආරවුල විසඳන ලදී",
+      "verifiedBadge": "තහවුරු කිරීම සම්පූර්ණයි",
+      "preorderCancelled": "පූර්ව ඇණවුම අවලංගු කරන ලදී"
+    }
   },
   "confirmations": {
     "deleteListing": "මෙම ලැයිස්තුව මැකීමට ඔබට විශ්වාසද?",
@@ -293,7 +321,37 @@
     "reviewHeading": "භෝග විස්තර සමාලෝචනය කරන්න",
     "reviewPhotos": "උඩුගත කළ ඡායාරූප: {{count}}",
     "cropSubmitted": "භෝගය සාර්ථකව ඇතුළත් කරන ලදී!",
-    "listingUpdated": "ලැයිස්තුව සාර්ථකව යාවත්කාලීන කරන ලදී!",
+    "listingUpdated": "ලැයිස්තුව සාර්ථකව යාවත්கාලීන කරන ලදී!",
+    "addNewCropTitle": "නව භෝගයක් එක් කරන්න",
+    "cropNamePlaceholder": "භෝගයේ නම",
+    "selectCategory": "ප්‍රවර්ගය තෝරන්න",
+    "categoryVegetable": "එළවළු",
+    "categoryFruit": "පලතුරු",
+    "categoryGrain": "ධාන්‍ය",
+    "categoryOther": "වෙනත්",
+    "quantityPlaceholder": "ප්‍රමාණය (කි.ග්‍රෑ)",
+    "selectGrowthStage": "වර්ධන අවධිය තෝරන්න",
+    "stagePlanted": "පැල කර ඇත",
+    "stageGrowing": "වැඩෙමින් පවතී",
+    "stageReadyForHarvest": "අස්වැන්න නෙලීමට සූදානම්",
+    "stageHarvested": "අස්වනු නෙලා ඇත",
+    "harvestDatePlaceholder": "අපේක්ෂිත අස්වනු නෙලන දිනය",
+    "uploadPhotosLabel": "ඡායාරූප උඩුගත කරන්න (උපරිම 3)",
+    "pricingInfoHeading": "මිලකරණ තොරතුරු",
+    "pricePlaceholder": "කිලෝග්‍රෑමයක මිල",
+    "basedOnNational": "ශ්‍රී ලංකාව පුරා සමාන ලැයිස්තුගත කිරීම් {{count}}ක් මත පදනම්ව.",
+    "noPricingData": "\"{{cropName}}\" සඳහා දේශීය හෝ ජාතික සාමාන්‍ය මිලකරණ දත්ත නොමැත.",
+    "thisCropLabel": "මෙම භෝගය",
+    "reviewCropDetailsHeading": "භෝග විස්තර සමාලෝචනය කරන්න",
+    "growthStageLabel": "වර්ධන අවධිය",
+    "harvestDateLabel": "අස්වනු නෙලන දිනය",
+    "priceLabel": "මිල",
+    "uploadedPhotosLabel": "උඩුගත කළ ඡායාරූප",
+    "editListingTitle": "ලැයිස්තුගත කිරීම සංස්කරණය කරන්න",
+    "listingUpdatedSuccess": "ලැයිස්තුගත කිරීම සාර්ථකව යාවත්කාලීන කරන ලදී!",
+    "cropSubmittedSuccess": "භෝගය සාර්ථකව ඉදිරිපත් කරන ලදී!",
+    "rsPrefix": "රු. ",
+    "kgSuffix": " කි.ග්‍රෑ",
     "addFirstCrop": "ඔබේ පළමු භෝගය එක් කරන්න",
     "tableCrop": "භෝගය",
     "tableCategory": "වර්ගය",
@@ -308,6 +366,7 @@
     "buyerLabel": "මිලදී ගන්නා",
     "cropLabel": "භෝගය",
     "quantityLabel": "ප්‍රමාණය",
+    "collectionLabel": "එකතු කිරීම",
     "collectionDateLabel": "එකතු කරන දිනය",
     "paymentLabel": "ගෙවීම්",
     "noOrdersCategory": "මෙම ගණය යටතේ ඇණවුම් කිසිවක් හමු නොවිණි.",
@@ -355,6 +414,9 @@
     "logoTitle": "🌿 ලක් ඇග්‍රෝ මාකට්",
     "header": "නැවත සාදරයෙන් පිළිගනිමු",
     "subtitle": "ඉදිරියට යාමට ඔබේ ගිණුමට ඇතුළු වන්න",
+    "emailPlaceholder": "you@email.com",
+    "hidePassword": "මුරපදය සඟවන්න",
+    "showPassword": "මුරපදය පෙන්වන්න",
     "forgotPassword": "මුරපදය අමතකද?",
     "btnSignIn": "ඇතුල් වන්න",
     "btnSigningIn": "ඇතුළු වෙමින් පවතී...",
@@ -440,7 +502,8 @@
     "nicImage": "හැඳුනුම්පත් ඡායාරූපය",
     "nicPlaceholder": "හැඳුනුම්පත් ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
     "evidence": "වගා සාක්ෂි ඡායාරූපය",
-    "evidencePlaceholder": "වගා හෝ අස්වනු ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)"
+    "evidencePlaceholder": "වගා හෝ අස්වනු ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
+    "farmLocationPlaceholder": "ඇල්ල, බදුල්ල (හෝ GPS: 6.8742, 81.0457)"
   },
   "ratings": {
     "loading": "ශ්‍රේණිගත කිරීම් පූරණය වෙමින් පවතී...",
@@ -454,6 +517,122 @@
     "btnSubmit": "ශ්‍රේණිගත කිරීම ඉදිරිපත් කරන්න",
     "btnSubmitting": "ඉදිරිපත් කරමින් පවතී...",
     "reviewsReceived": "ලැබුණු සමාලෝචන ({{count}})",
-    "successAlert": "ශ්‍රේණිගත කිරීම සාර්ථකව ඉදිරිපත් කරන ලදී!"
+    "successAlert": "ශ්‍රේණිගත කිරීම සාර්ථකව ඉදිරිපත් කරන ලදී!",
+    "review": "සමාලෝචනය",
+    "reviews": "සමාලෝචන",
+    "selectOrder": "ඇණවුම තෝරන්න"
+  },
+  "auth": {
+    "minPasswordHint": "අවම අක්ෂර 8ක්"
+  },
+  "loadingStates": {
+    "loadingCrops": "භෝග පූරණය වෙමින් පවතී..."
+  },
+  "crops": {
+    "tomato": "තක්කාලි",
+    "carrot": "කැරට්",
+    "leeks": "ලීක්ස්",
+    "capsicum": "මාළු මිරිස්",
+    "potato": "අර්තාපල්",
+    "greenBeans": "කොළ බෝංචි",
+    "cucumber": "පිපිඤ්ඤා",
+    "beetroot": "බීට්රූට්",
+    "radish": "රාබු",
+    "cabbage": "ගෝවා",
+    "beans": "බෝංචි",
+    "brinjal": "වම්බටු",
+    "avocado": "අලිගැටපේර",
+    "grapes": "මිදි",
+    "pineapple": "අන්නාසි",
+    "pumpkin": "වට්ටක්කා",
+    "banana": "කෙසෙල්",
+    "ladiesFinger": "බණ්ඩක්කා",
+    "lemon": "දෙහි",
+    "mango": "අඹ",
+    "onion": "ළූණු",
+    "watermelon": "පැණි කොමඩු",
+    "corn": "බඩඉරිඟු"
+  },
+  "admin": {
+    "dashboard": {
+      "welcomeBack": "නැවත සාදරයෙන් පිළිගනිමු {{name}} 👋",
+      "welcome": "සාදරයෙන් පිළිගනිමු {{name}} 👋",
+      "monitorActivity": "LK Agro Market හි ක්‍රියාකාරකම් නිරීක්ෂණය කරන්න",
+      "stats": {
+        "farmers": "ගොවීන්",
+        "buyers": "මිලදී ගන්නන්",
+        "orders": "ඇණවුම්",
+        "complaints": "පැමිණිලි",
+        "farmerRatings": "ගොවි ශ්‍රේණිගත කිරීම්",
+        "buyerRatings": "මිලදී ගන්නන්ගේ ශ්‍රේණිගත කිරීම්",
+        "averageUserRating": "සාමාන්‍ය පරිශීලක ශ්‍රේණිගත කිරීම"
+      },
+      "schedule": "කාලසටහන",
+      "thisWeekSummary": "මෙම සතියේ සාරාංශය",
+      "newFarmers": "නව ගොවීන්",
+      "newBuyers": "නව මිලදී ගන්නන්",
+      "transactions": "ගනුදෙනු",
+      "complaintsSummary": "පැමිණිලි",
+      "pendingVerifications": "තහවුරු කිරීමට පොරොත්තු ගොවීන්",
+      "openComplaints": "විවෘත පැමිණිලි",
+      "preordersByDistrict": "දිස්ත්‍රික්ක අනුව පූර්ව ඇණවුම්",
+      "userManagement": "පරිශීලක කළමනාකරණය"
+    },
+    "verifications": {
+      "tableFarmer": "ගොවියා",
+      "tableAction": "ක්‍රියාමාර්ගය"
+    },
+    "complaints": {
+      "tableId": "අංකය",
+      "tableBuyer": "මිලදී ගන්නා",
+      "tableReason": "හේතුව",
+      "tableStatus": "තත්ත්වය",
+      "panelTitle": "ආරවුල් නිරாකරණ පාලන පැනලය",
+      "panelSub": "ගනුදෙනු ගැටළු සමාලோචනය කර නිරාකරණය කරන්න",
+      "flowTitle": "ආරවුල් නිරාකරණ ක්‍රියාවලිය",
+      "flowBuyerSubmits": "මිලදී ගන්නා ඉදිරිපත් කරයි",
+      "flowAdminNotified": "පරිපාලක දැනුවත් කර ඇත",
+      "flowFarmerResponds": "ගොවියා ප්‍රතිචාර දක්වයි",
+      "flowAdminReviews": "පරිපාලක සමාලෝචනය කරයි",
+      "flowResolved": "නිරාකරණය කරන ලදී",
+      "resolveComplaintTitle": "පැමිණිල්ල නිරාකරණය කරන්න #{{id}}",
+      "statusLabel": "තත්ත්වය: {{status}}",
+      "orderIdLabel": "ඇණවුම් අංකය:",
+      "cropItemLabel": "භෝගය:",
+      "filingDateLabel": "ඉදිරිපත් කළ දිනය:",
+      "buyerNameLabel": "මිලදී ගන්නාගේ නම:",
+      "farmerNameLabel": "ගොවියාගේ නම:",
+      "disputeReasonLabel": "ආරවුලට හේතුව:",
+      "statementsHeader": "ප්‍රකාශ සහ විස්තරය",
+      "buyerStatementLabel": "මිලදී ගන්නාගේ ප්‍රකාශය:",
+      "farmerStatementLabel": "ගොවියාගේ ප්‍රකාශය:",
+      "awaitingFarmerResponse": "ගොවියාගේ ප්‍රතිචාරය ලැබෙන තෙක් බලා සිටී...",
+      "evidenceFileLabel": "සාක්ෂි ගොනුව:",
+      "viewEvidenceLink": "උඩුගත කළ ඡායාරූප සාක්ෂි බලන්න",
+      "noFilesUploaded": "ගොනු කිසිවක් උඩුගත කර නොමැත",
+      "adminNotesLabel": "පරිපාලක සටහන්",
+      "adminNotesPlaceholder": "නිරාකරණ විස්තර, මුදල් ආපසු ගෙවීමේ කොන්දේසි හෝ මෙම ආරවුල ප්‍රතික්ෂේප කළ හේතුව ලේඛනගත කරන්න.",
+      "complaintResolvedVia": "පැමිණිල්ල නිරාකරණය කළ ක්‍රමය: {{action}}",
+      "btnRefund": "නිරාකරණය - මුදල් ආපසු ගෙවීම",
+      "btnRedelivery": "නිරාකරණය - නැවත බෙදා හැරීම",
+      "btnDismiss": "පැමිණිල්ල ප්‍රතික්ෂේප කරන්න"
+    },
+    "users": {
+      "role": "භූමිකාව",
+      "status": "තත්ත්වය",
+      "action": "ක්‍රියාමාර්ගය",
+      "statusActive": "සක්‍රීය"
+    },
+    "buttons": {
+      "verify": "තහවුරු කරන්න",
+      "view": "බලන්න"
+    },
+    "errors": {
+      "failedLoadComplaint": "පැමිණිලි විස්තර පූරණය කිරීමට අපොහොසත් විය.",
+      "networkErrorComplaint": "පැමිණිලි විස්තර පූරණය කිරීමේදී ජාල දෝෂයකි.",
+      "unauthorizedAdmin": "අනවසර ප්‍රවේශයකි. පරිපාලක භූමිකාව අවශ්‍ය වේ.",
+      "resolutionFailed": "නිරාකරණ ක්‍රියාවලිය අසාර්ථක විය.",
+      "networkErrorSubmit": "නිරාකරණය ඉදිරිපත් කිරීමේදී ජාල දෝෂයකි."
+    }
   }
 }

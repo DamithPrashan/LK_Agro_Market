@@ -29,7 +29,7 @@ export default function FarmerVerificationForm({
         <div style={{ display: "flex", gap: 8 }}>
           <input
             id="farm_location" name="farm_location" value={farm_location}
-            placeholder="Ella, Badulla  (or GPS: 6.8742, 81.0457)"
+            placeholder={t("verification.farmLocationPlaceholder")}
             onChange={onChange} onBlur={onBlur}
             style={{ flex: 1 }}
           />

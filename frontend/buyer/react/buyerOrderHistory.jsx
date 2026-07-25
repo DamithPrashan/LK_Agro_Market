@@ -3,6 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/BuyerOrderHistory.css";
 
+const statusKeyMap = {
+  "ready": "orders.status.ready",
+  "pending": "orders.status.pending",
+  "accepted": "orders.status.accepted",
+  "declined": "orders.status.declined",
+  "cancelled": "orders.status.declined",
+  "completed": "orders.status.completed"
+};
+
 export default function BuyerOrderHistory() {
   const [activeTab, setActiveTab] = useState("all");
   const [orders, setOrders] = useState([]);
@@ -177,7 +186,7 @@ export default function BuyerOrderHistory() {
                   <div className="order-header">
                     <h3>{order.cropName}</h3>
                     <span className={`status ${order.orderStatus}`}>
-                      {order.orderStatus.toUpperCase()}
+                      {t(statusKeyMap[order.orderStatus.toLowerCase()] || order.orderStatus).toUpperCase()}
                     </span>
                   </div>
 

@@ -73,6 +73,14 @@ try {
     ");
     echo "Verified/Created 'notifications' table successfully!<br>";
 
+    // 5b. Add type and data columns to 'notifications' table
+    $stmt5b = $pdo->query("SHOW COLUMNS FROM notifications LIKE 'type'");
+    if (!$stmt5b->fetch()) {
+        $pdo->exec("ALTER TABLE notifications ADD COLUMN type VARCHAR(50) NULL DEFAULT NULL AFTER message");
+        $pdo->exec("ALTER TABLE notifications ADD COLUMN data TEXT NULL DEFAULT NULL AFTER type");
+        echo "Successfully added 'type' and 'data' columns to 'notifications' table!<br>";
+    }
+
     // 6. Create 'crop_photos' table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS `crop_photos` (

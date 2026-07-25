@@ -158,13 +158,18 @@ try {
             $farmer_user_id = $paymentInfo['farmer_user_id'];
             $crop_name = $paymentInfo['crop_name'];
             
+            $notif_data = json_encode([
+                "amount" => $amount,
+                "orderId" => $reservation_id
+            ]);
+
             // Notify Buyer
             $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
-            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg);
+            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $notif_data);
             
             // Notify Farmer
             $farmer_msg = "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
-            create_notification($farmer_user_id, "Payment Received", $farmer_msg);
+            create_notification($farmer_user_id, "Payment Received", $farmer_msg, 'paymentReceived', $notif_data);
         }
     } catch (Exception $e) {
         error_log("Notification error in submit_payment.php: " . $e->getMessage());

@@ -103,12 +103,17 @@ try {
                 if ($action === 'accept') {
                     $notif_title = "Reservation Accepted";
                     $notif_msg = "Your order ORD{$order_id} for {$crop_name} has been accepted. Status: confirmed.";
+                    $notif_type = 'orderAccepted';
                 } else {
                     $notif_title = "Reservation Declined";
                     $notif_msg = "Your order ORD{$order_id} for {$crop_name} has been declined. Status: cancelled.";
+                    $notif_type = 'orderDeclined';
                 }
+                $notif_data = json_encode([
+                    "cropName" => $crop_name
+                ]);
                 
-                create_notification($buyer_user_id, $notif_title, $notif_msg);
+                create_notification($buyer_user_id, $notif_title, $notif_msg, $notif_type, $notif_data);
             }
         }
     } catch (Exception $e) {

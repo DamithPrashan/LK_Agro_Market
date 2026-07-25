@@ -2,6 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "../csss/OrderManagement.css";
 
+const statusKeyMap = {
+    "Ready": "orders.status.ready",
+    "ready": "orders.status.ready",
+    "Pending": "orders.status.pending",
+    "pending": "orders.status.pending",
+    "Accepted": "orders.status.accepted",
+    "accepted": "orders.status.accepted",
+    "Declined": "orders.status.declined",
+    "declined": "orders.status.declined",
+    "cancelled": "orders.status.declined",
+    "Completed": "orders.status.completed",
+    "completed": "orders.status.completed"
+};
+
+const tabKeyMap = {
+    "All": "orders.tabAll",
+    "Pending": "orders.status.pending",
+    "Accepted": "orders.status.accepted",
+    "Ready": "orders.status.ready",
+    "Completed": "orders.status.completed"
+};
+
 function OrderManagement() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("All");
@@ -89,7 +111,7 @@ function OrderManagement() {
                         className={`tab-btn ${activeTab === tab ? "active-tab" : ""}`}
                         onClick={() => setActiveTab(tab)}
                     >
-                        {t(`orders.tab${tab}`, tab)}
+                        {t(tabKeyMap[tab] || `orders.tab${tab}`, tab)}
                     </button>
                 ))}
             </div>
@@ -101,7 +123,7 @@ function OrderManagement() {
                         <div className="order-header">
                             <h3>{t("farmer.orderCardTitle", { id: order.id })}</h3>
                             <span className={`status-badge ${order.status.toLowerCase()}`}>
-                                {t(`orders.tab${order.status}`, order.status)}
+                                {t(statusKeyMap[order.status] || `orders.tab${order.status}`, order.status)}
                             </span>
                         </div>
 

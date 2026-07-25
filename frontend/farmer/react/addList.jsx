@@ -348,11 +348,11 @@ function AddListing() {
                         <div className="review-box">
                             <p><strong>{t("farmer.cropLabel")}:</strong> {formData.cropName}</p>
                             <p><strong>{t("farmer.categoryLabel")}:</strong> {formData.category}</p>
-                            <p><strong>{t("farmer.quantityLabel")}:</strong> {formData.quantity} Kg</p>
+                            <p><strong>{t("farmer.quantityLabel")}:</strong> {formData.quantity}{t("farmer.kgSuffix")}</p>
                             <p><strong>{t("forms.location")}:</strong> {formData.location}</p>
                             <p><strong>{t("farmer.growthStageLabel")}:</strong> {formData.growthStage}</p>
                             <p><strong>{t("farmer.harvestDateLabel")}:</strong> {formData.harvestDate}</p>
-                            <p><strong>{t("farmer.priceLabel")}:</strong> Rs. {formData.price}</p>
+                            <p><strong>{t("farmer.priceLabel")}:</strong> {t("farmer.rsPrefix")}{formData.price}</p>
                             <p><strong>{t("farmer.uploadedPhotosLabel")}:</strong> {formData.photos.filter(Boolean).length}</p>
                         </div>
 

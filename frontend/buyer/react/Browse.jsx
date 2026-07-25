@@ -194,29 +194,29 @@ export default function Browse() {
               onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
             >
               <option value="All Crops">{t("forms.selectCategory")}</option>
-              <option>Tomato</option>
-              <option>Carrot</option>
-              <option>Leeks</option>
-              <option>Capsicum</option>
-              <option>Potato</option>
-              <option>Green Beans</option>
-              <option>Cucumber</option>
-              <option>Beetroot</option>
-              <option>Radish</option>
-              <option>Cabbage</option>
-              <option>Beans</option>
-              <option>Brinjal</option>
-              <option>Avocado</option>
-              <option>Grapes</option>
-              <option>Pineapple</option>
-              <option>Pumpkin</option>
-              <option>Banana</option>
-              <option>Ladies Finger</option>
-              <option>Lemon</option>
-              <option>Mango</option>
-              <option>Onion</option>
-              <option>Watermelon</option>
-              <option>Corn</option>
+              <option value="Tomato">{t("crops.tomato")}</option>
+              <option value="Carrot">{t("crops.carrot")}</option>
+              <option value="Leeks">{t("crops.leeks")}</option>
+              <option value="Capsicum">{t("crops.capsicum")}</option>
+              <option value="Potato">{t("crops.potato")}</option>
+              <option value="Green Beans">{t("crops.greenBeans")}</option>
+              <option value="Cucumber">{t("crops.cucumber")}</option>
+              <option value="Beetroot">{t("crops.beetroot")}</option>
+              <option value="Radish">{t("crops.radish")}</option>
+              <option value="Cabbage">{t("crops.cabbage")}</option>
+              <option value="Beans">{t("crops.beans")}</option>
+              <option value="Brinjal">{t("crops.brinjal")}</option>
+              <option value="Avocado">{t("crops.avocado")}</option>
+              <option value="Grapes">{t("crops.grapes")}</option>
+              <option value="Pineapple">{t("crops.pineapple")}</option>
+              <option value="Pumpkin">{t("crops.pumpkin")}</option>
+              <option value="Banana">{t("crops.banana")}</option>
+              <option value="Ladies Finger">{t("crops.ladiesFinger")}</option>
+              <option value="Lemon">{t("crops.lemon")}</option>
+              <option value="Mango">{t("crops.mango")}</option>
+              <option value="Onion">{t("crops.onion")}</option>
+              <option value="Watermelon">{t("crops.watermelon")}</option>
+              <option value="Corn">{t("crops.corn")}</option>
             </select>
           </div>
 
@@ -256,7 +256,7 @@ export default function Browse() {
                   className="date-input"
                   placeholder={t("forms.min")}
                 />
-                <span className="date-sep">to</span>
+                <span className="date-sep">{t("browse.dateSeparator")}</span>
                 <input
                   type="date"
                   value={filters.harvestTo}
@@ -305,7 +305,7 @@ export default function Browse() {
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? "All of Sri Lanka" : filters.district })}. <a href="#">{t("browse.useMapSearch")}</a>
+            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? t("browse.allSriLanka") : filters.district })}. <a href="#">{t("browse.useMapSearch")}</a>
           </div>
 
           {/* STATS */}
@@ -326,7 +326,7 @@ export default function Browse() {
 
           {/* CROP GRID */}
           {loading ? (
-            <div className="loading-state">{t("loadingStates.loadingCrops", "Loading fresh crops...")}</div>
+            <div className="loading-state">{t("loadingStates.loadingCrops")}</div>
           ) : crops.length === 0 ? (
             <div className="empty-state">{t("emptyStates.noCropsMatching")}</div>
           ) : (
@@ -379,14 +379,14 @@ export default function Browse() {
                       {crop.farmer_name} {parseInt(crop.is_verified) === 1 && <span className="verified-tick">✓</span>}
                     </p>
                     <p className="price">
-                      <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>/kg
+                      <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>{t("browse.perKg")}
                     </p>
                     <p className="meta-info">
-                      Available: {parseFloat(crop.qty) <= 0 ? (
+                      {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
                         <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
                       ) : (
                         `${parseFloat(crop.qty).toFixed(0)} kg`
-                      )} • Harvest {crop.harvest}
+                      )} • {t("browse.harvestLabel")} {crop.harvest}
                     </p>
                     <div className="rating">
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}

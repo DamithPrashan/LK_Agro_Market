@@ -289,11 +289,11 @@ function EditList() {
             <div className="review-box">
               <p><b>{t("farmer.cropLabel")}:</b> {formData.cropName}</p>
               <p><b>{t("farmer.categoryLabel")}:</b> {formData.category}</p>
-              <p><b>{t("farmer.quantityLabel")}:</b> {formData.quantity} kg</p>
+              <p><b>{t("farmer.quantityLabel")}:</b> {formData.quantity}{t("farmer.kgSuffix")}</p>
               <p><b>{t("forms.location")}:</b> {formData.location}</p>
               <p><b>{t("farmer.growthStageLabel")}:</b> {formData.stage}</p>
               <p><b>{t("farmer.harvestDateLabel")}:</b> {formData.harvestDate}</p>
-              <p><b>{t("farmer.priceLabel")}:</b> Rs. {formData.price}</p>
+              <p><b>{t("farmer.priceLabel")}:</b> {t("farmer.rsPrefix")}{formData.price}</p>
             </div>
 
             <div className="btn-group">

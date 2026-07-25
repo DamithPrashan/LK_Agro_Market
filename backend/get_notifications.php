@@ -11,7 +11,7 @@ require_login();
 $user_id = $_SESSION['user']['id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT id, title, message as `desc`, (is_read = 0) as unread, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50");
+    $stmt = $pdo->prepare("SELECT id, title, message as `desc`, type, data, (is_read = 0) as unread, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50");
     $stmt->execute([$user_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -33,7 +33,9 @@ try {
             "desc" => $row['desc'],
             "unread" => intval($row['unread']) === 1,
             "created_at" => $row['created_at'],
-            "type" => $type
+            "type" => $type,
+            "notif_type" => $row['type'],
+            "notif_data" => $row['data'] ? json_decode($row['data'], true) : null
         ];
     }
 

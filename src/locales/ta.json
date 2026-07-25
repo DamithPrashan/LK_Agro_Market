@@ -84,7 +84,12 @@
     "subtitle": "உறுதிப்படுத்தப்பட்ட இலங்கை விவசாயிகளிடமிருந்து புதிய விளைபொருட்கள்",
     "searchPlaceholder": "பயிர்கள், விவசாயிகள், மாவட்டங்களைத் தேடுங்கள்...",
     "showingCropsNear": "{{district}} அருகிலுள்ள பயிர்களைக் காட்டுகிறது",
-    "useMapSearch": "வரைபடத் தேடலைப் பயன்படுத்தவும்"
+    "useMapSearch": "வரைபடத் தேடலைப் பயன்படுத்தவும்",
+    "allSriLanka": "இலங்கை முழுவதும்",
+    "dateSeparator": "வரை",
+    "perKg": "/கிலோ",
+    "harvestLabel": "அறுவடை",
+    "available": "கிடைக்கக்கூடியது:"
   },
   "complaints": {
     "title": "புகார் மற்றும் தகராறு தீர்வு",
@@ -129,13 +134,21 @@
     "payment": "கட்டணம்: {{status}}",
     "cancelErrorTime": "இந்த ஆர்டரை சேகரிக்கும் தேதிக்கு 48 மணிநேரத்திற்கு முன்பே ரத்து செய்ய முடியும். ஏதேனும் பிரச்சனை இருந்தால், தயவுசெய்து புகார் அளிக்கவும்.",
     "cancellationSuccessful": "ரத்துசெய்தல் வெற்றிகரமாக முடிந்தது.",
-    "cancellationFailed": "ரத்துசெய்தல் தோல்வியடைந்தது."
+    "cancellationFailed": "ரத்துசெய்தல் தோல்வியடைந்தது.",
+    "status": {
+      "pending": "காத்திருப்பில்",
+      "accepted": "ஏற்கப்பட்டது",
+      "ready": "தயார்",
+      "completed": "நிறைவடைந்தது",
+      "declined": "நிராகரிக்கப்பட்டது"
+    }
   },
   "farmerDashboard": {
     "welcomeBack": "மீண்டும் வரவேற்கிறோம், {{name}} 👋",
     "welcomeNew": "வரவேற்கிறோம், {{name}} 👋",
     "subtitle": "உங்கள் பண்ணை பற்றிய இன்றைய நிகழ்வுகள் இங்கே.",
-    "incomingOrders": "பெறப்பட்ட ஆர்டர்கள்"
+    "incomingOrders": "பெறப்பட்ட ஆர்டர்கள்",
+    "noIncomingOrders": "இப்போது புதிய ஆர்டர்கள் எதுவும் இல்லை."
   },
   "stats": {
     "pendingReservations": "காத்திருப்பில் உள்ள முன்பதிவுகள்",
@@ -218,7 +231,8 @@
     "nicUploadPlaceholder": "அடையாள அட்டை புகைப்படத்தைப் பதிவேற்றவும் (JPG, PNG — அதிகபட்சம் 5 MB)",
     "evidenceUploadPlaceholder": "பயிர் புகைப்படத்தைப் பதிவேற்றவும் (JPG, PNG — அதிகபட்சம் 5 MB)",
     "min": "குறைந்தபட்சம்",
-    "max": "அதிகபட்சம்"
+    "max": "அதிகபட்சம்",
+    "district": "மாவட்டம்"
   },
   "emptyStates": {
     "noListings": "நீங்கள் இன்னும் எந்த பயிர்களையும் பட்டியலிடவில்லை.",
@@ -232,7 +246,8 @@
     "noRatings": "இதுவரை மதிப்பீடுகள் இல்லை.",
     "noPendingVerifications": "சரிபார்ப்பிற்காகக் காத்திருக்கும் விவசாயிகள் இல்லை",
     "noComplaints": "புகார்கள் எதுவும் இல்லை",
-    "noCropsMatching": "உங்கள் வடிகட்டிகளுக்குப் பொருந்தும் பயிர்கள் எதுவும் இல்லை."
+    "noCropsMatching": "உங்கள் வடிகட்டிகளுக்குப் பொருந்தும் பயிர்கள் எதுவும் இல்லை.",
+    "outOfStock": "இருப்பு இல்லை"
   },
   "errors": {
     "genericError": "ஏதோ தவறு நடந்துவிட்டது",
@@ -269,9 +284,22 @@
     "orderAccepted": "{{cropName}} இற்கான உங்களது முன்பதிவு விவசாயியால் ஏற்றுக்கொள்ளப்பட்டது.",
     "orderDeclined": "{{cropName}} க்கான உங்களது முன்பதிவு விவசாயியால் நிராகரிக்கப்பட்டது.",
     "paymentConfirmed": "ஆர்டர் #{{orderId}} க்கான கட்டணம் ரூ. {{amount}} உறுதிப்படுத்தப்பட்டது.",
+    "paymentReceived": "ஆர்டர் #{{orderId}} க்கான கட்டணம் ரூ. {{amount}} பெறப்பட்டது.",
     "complaintSubmitted": "ஆர்டர் #{{orderId}} தொடர்பாக தகராறு எழுப்பப்பட்டுள்ளது.",
     "complaintResolved": "புகார் #{{complaintId}} நிர்வாகியால் தீர்க்கப்பட்டதாகக் குறிக்கப்பட்டுள்ளது.",
-    "verifiedBadge": "விவசாயி சரிபார்ப்பு வெற்றிகரமாக முடிந்தது. உங்களுக்கு உறுதிப்படுத்தப்பட்ட விவசாயி சலுகை வழங்கப்பட்டுள்ளது."
+    "verifiedBadge": "விவசாயி சரிபார்ப்பு வெற்றிகரமாக முடிந்தது. உங்களுக்கு உறுதிப்படுத்தப்பட்ட விவசாயி சலுகை வழங்கப்பட்டுள்ளது.",
+    "preorderCancelled": "ஆர்டர் #{{orderId}} க்கான முன்பதிவு ரத்து செய்யப்பட்டுள்ளது.",
+    "title": {
+      "orderSubmitted": "புதிய ஆர்டர் பெறப்பட்டது",
+      "orderAccepted": "முன்பதிவு ஏற்றுக்கொள்ளப்பட்டது",
+      "orderDeclined": "முன்பதிவு நிராகரிக்கப்பட்டது",
+      "paymentConfirmed": "கட்டணம் உறுதிப்படுத்தப்பட்டது",
+      "paymentReceived": "கட்டணம் பெறப்பட்டது",
+      "complaintSubmitted": "தகராறு திறக்கப்பட்டது",
+      "complaintResolved": "தகராறு தீர்க்கப்பட்டது",
+      "verifiedBadge": "சரிபார்ப்பு முடிந்தது",
+      "preorderCancelled": "முன்பதிவு ரத்து செய்யப்பட்டது"
+    }
   },
   "confirmations": {
     "deleteListing": "இந்த பட்டியலை அழிக்க விரும்புகிறீர்களா?",
@@ -294,6 +322,36 @@
     "reviewPhotos": "பதிவேற்றப்பட்ட புகைப்படங்கள்: {{count}}",
     "cropSubmitted": "பயிர் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
     "listingUpdated": "பட்டியல் வெற்றிகரமாக புதுப்பிக்கப்பட்டது!",
+    "addNewCropTitle": "புதிய பயிரைச் சேர்க்கவும்",
+    "cropNamePlaceholder": "பயிரின் பெயர்",
+    "selectCategory": "வகையைத் தேர்ந்தெடுக்கவும்",
+    "categoryVegetable": "காய்கறிகள்",
+    "categoryFruit": "பழங்கள்",
+    "categoryGrain": "தானியங்கள்",
+    "categoryOther": "மற்றவை",
+    "quantityPlaceholder": "அளவு (கிலோ)",
+    "selectGrowthStage": "வளர்ச்சி நிலையைத் தேர்ந்தெடுக்கவும்",
+    "stagePlanted": "நடப்பட்டது",
+    "stageGrowing": "வளர்கிறது",
+    "stageReadyForHarvest": "அறுவடைக்கு தயார்",
+    "stageHarvested": "அறுவடை செய்யப்பட்டது",
+    "harvestDatePlaceholder": "எதிர்பார்க்கப்படும் அறுவடை தேதி",
+    "uploadPhotosLabel": "புகைப்படங்களைப் பதிவேற்றவும் (அதிகபட்சம் 3)",
+    "pricingInfoHeading": "விலை தகவல்",
+    "pricePlaceholder": "ஒரு கிலோவிற்கான விலை",
+    "basedOnNational": "இலங்கை முழுவதும் உள்ள {{count}} ஒத்த பட்டியல்களின் அடிப்படையில்.",
+    "noPricingData": "\"{{cropName}}\" க்கான உள்ளூர் அல்லது தேசிய சராசரி விலை விவரங்கள் எதுவும் இல்லை.",
+    "thisCropLabel": "இந்த பயிர்",
+    "reviewCropDetailsHeading": "பயிர் விவரங்களை மதிப்பாய்வு செய்யவும்",
+    "growthStageLabel": "வளர்ச்சி நிலை",
+    "harvestDateLabel": "அறுவடை தேதி",
+    "priceLabel": "விலை",
+    "uploadedPhotosLabel": "பதிவேற்றப்பட்ட புகைப்படங்கள்",
+    "editListingTitle": "பட்டியலைத் திருத்தவும்",
+    "listingUpdatedSuccess": "பட்டியல் வெற்றிகரமாக புதுப்பிக்கப்பட்டது!",
+    "cropSubmittedSuccess": "பயிர் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+    "rsPrefix": "ரூ. ",
+    "kgSuffix": " கிலோ",
     "addFirstCrop": "உங்கள் முதல் பயிரைச் சேர்க்கவும்",
     "tableCrop": "பயிர்",
     "tableCategory": "வகை",
@@ -308,6 +366,7 @@
     "buyerLabel": "வாங்குபவர்",
     "cropLabel": "பயிர்",
     "quantityLabel": "அளவு",
+    "collectionLabel": "சேகரிப்பு",
     "collectionDateLabel": "சேகரிக்கும் தேதி",
     "paymentLabel": "கட்டணம்",
     "noOrdersCategory": "இந்த பிரிவில் எந்த ஆர்டர்களும் கண்டறியப்படவில்லை.",
@@ -350,5 +409,174 @@
     "acres": "{{area}} ஏக்கர் பயிரிடப்பட்டது",
     "avgLand": "சராசரி நில அளவு: {{size}} ஏக்",
     "avgStock": "விவசாயிக்கு சராசரி இருப்பு: {{qty}} கிலோ"
+  },
+  "login": {
+    "logoTitle": "🌿 எல்கே அக்ரோ மார்க்கெட்",
+    "header": "மீண்டும் வரவேற்கிறோம்",
+    "subtitle": "தொடர உங்கள் கணக்கில் உள்நுழையவும்",
+    "emailPlaceholder": "you@email.com",
+    "hidePassword": "கடவுச்சொல்லை மறைக்கவும்",
+    "showPassword": "கடவுச்சொல்லைக் காட்டவும்",
+    "forgotPassword": "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
+    "btnSignIn": "உள்நுழைக",
+    "btnSigningIn": "உள்நுழைகிறது...",
+    "footText": "எல்கே அக்ரோ மார்க்கெட்டிற்கு புதியவரா?",
+    "footLink": "இலவச கணக்கை உருவாக்குங்கள்"
+  },
+  "ratings": {
+    "loading": "மதிப்பீடுகள் ஏற்றப்படுகின்றன…",
+    "title": "மதிப்பீடுகள் & விமர்சனங்கள்",
+    "yourRating": "உங்கள் மதிப்பீடு",
+    "noRatings": "இதுவரை மதிப்பீடுகள் இல்லை.",
+    "rateCompleted": "நிறைவடைந்த ஆர்டரை மதிப்பிடவும்",
+    "chooseOrder": "— ஆர்டரைத் தேர்ந்தெடுக்கவும் —",
+    "reviewOptional": "விமர்சனம் (விருப்பத்திற்குரியது)",
+    "reviewPlaceholder": "உங்கள் அனுபவத்தை விவரிக்கவும்…",
+    "btnSubmit": "மதிப்பீட்டைச் சமர்ப்பிக்கவும்",
+    "btnSubmitting": "சமர்ப்பிக்கப்படுகிறது…",
+    "reviewsReceived": "பெறப்பட்ட விமர்சனங்கள் ({{count}})",
+    "successAlert": "மதிப்பீடு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+    "review": "மதிப்புரை",
+    "reviews": "மதிப்புரைகள்",
+    "selectOrder": "ஆர்டரைத் தேர்ந்தெடுக்கவும்"
+  },
+  "auth": {
+    "minPasswordHint": "குறைந்தது 8 எழுத்துக்கள்"
+  },
+  "register": {
+    "header": "உங்கள் கணக்கை உருவாக்குங்கள்",
+    "subtitle": "இலங்கையின் நேரடி பண்ணை-வாங்குபவர் தளத்தில் இணையுங்கள்",
+    "roleFarmer": "விவசாயி",
+    "roleFarmerSub": "பயிர்களைப் பட்டியலிட்டு விற்கவும்",
+    "roleBuyer": "வாங்குபவர்",
+    "roleBuyerSub": "பயிர்களைத் தேடி ஆர்டர் செய்யவும்",
+    "sectionPersonal": "தனிப்பட்ட தகவல்",
+    "btnCreating": "கணக்கு உருவாக்கப்படுகிறது…",
+    "btnCreate": "கணக்கை உருவாக்குங்கள்",
+    "footText": "ஏற்கனவே கணக்கு உள்ளதா?",
+    "footLink": "இங்கே உள்நுழையவும்"
+  },
+  "verification": {
+    "title": "விவசாயி சரிபார்ப்பு",
+    "requiredBadge": "சரிபார்க்கப்பட்ட பேட்ஜிற்கு தேவைப்படும்",
+    "infoGreen": "🛡 சரிபார்ப்பை நிறைவு செய்வது உங்களுக்கு சரிபார்க்கப்பட்ட விவசாயி பேட்ஜை வழங்கும். வாங்குபவர்கள் சரிபார்க்கப்பட்ட விவசாயிகளை அதிகம் நம்புகிறார்கள்.",
+    "nic": "அடையாள அட்டை எண் (NIC)",
+    "farmLocation": "பண்ணை அமைவிடம் / GPS ஒருங்கிணைப்புகள்",
+    "btnLocate": "📍 இருப்பிடத்தைக் கண்டறி",
+    "nicImage": "அடையாள அட்டை புகைப்படம்",
+    "nicPlaceholder": "அடையாள அட்டை புகைப்படத்தைப் பதிவேற்ற கிளிக் செய்யவும் (JPG, PNG — அதிகபட்சம் 5 MB)",
+    "evidence": "பயிர் / உற்பத்தி ஆதார புகைப்படம்",
+    "evidencePlaceholder": "பண்ணை அல்லது பயிர் புகைப்படத்தைப் பதிவேற்ற கிளிக் செய்யவும் (JPG, PNG — அதிகபட்சம் 5 MB)",
+    "farmLocationPlaceholder": "எல்லா, பதுளை (அல்லது GPS: 6.8742, 81.0457)"
+  },
+  "loadingStates": {
+    "loadingCrops": "பயிர்கள் ஏற்றப்படுகின்றன..."
+  },
+  "crops": {
+    "tomato": "தக்காளி",
+    "carrot": "கேரட்",
+    "leeks": "லீக்ஸ்",
+    "capsicum": "குடைமிளகாய்",
+    "potato": "உருளைக்கிழங்கு",
+    "greenBeans": "பச்சை பீன்ஸ்",
+    "cucumber": "வெள்ளரிக்காய்",
+    "beetroot": "பீட்ரூட்",
+    "radish": "முள்ளங்கி",
+    "cabbage": "முட்டைக்கோஸ்",
+    "beans": "பீன்ஸ்",
+    "brinjal": "கத்தரிக்காய்",
+    "avocado": "வெண்ணெய் பழம்",
+    "grapes": "திராட்சை",
+    "pineapple": "அன்னாசி",
+    "pumpkin": "பூசணிக்காய்",
+    "banana": "வாழைப்பழம்",
+    "ladiesFinger": "வெண்டைக்காய்",
+    "lemon": "எலுமிச்சை",
+    "mango": "மாம்பழம்",
+    "onion": "வெங்காயம்",
+    "watermelon": "தர்பூசணி",
+    "corn": "சோளம்"
+  },
+  "admin": {
+    "dashboard": {
+      "welcomeBack": "மீண்டும் வருக {{name}} 👋",
+      "welcome": "வருக {{name}} 👋",
+      "monitorActivity": "LK Agro Market செயல்பாடுகளைக் கண்காணிக்கவும்",
+      "stats": {
+        "farmers": "விவசாயிகள்",
+        "buyers": "வாங்குபவர்கள்",
+        "orders": "ஆர்டர்கள்",
+        "complaints": "புகார்கள்",
+        "farmerRatings": "விவசாயி மதிப்பீடுகள்",
+        "buyerRatings": "வாங்குபவர் மதிப்பீடுகள்",
+        "averageUserRating": "சராசரி பயனர் மதிப்பீடு"
+      },
+      "schedule": "அட்டவணை",
+      "thisWeekSummary": "இந்த வார சுருக்கம்",
+      "newFarmers": "புதிய விவசாயிகள்",
+      "newBuyers": "புதிய வாங்குபவர்கள்",
+      "transactions": "பரிவர்த்தனைகள்",
+      "complaintsSummary": "புகார்கள்",
+      "pendingVerifications": "சரிபார்ப்பிற்காகக் காத்திருக்கும் விவசாயிகள்",
+      "openComplaints": "திறந்த புகார்கள்",
+      "preordersByDistrict": "மாவட்டம் வாரியாக முன்பதிவுகள்",
+      "userManagement": "பயனர் மேலாண்மை"
+    },
+    "verifications": {
+      "tableFarmer": "விவசாயி",
+      "tableAction": "நடவடிக்கை"
+    },
+    "complaints": {
+      "tableId": "ஐடி",
+      "tableBuyer": "வாங்குபவர்",
+      "tableReason": "காரணம்",
+      "tableStatus": "நிலை",
+      "panelTitle": "தகராறு தீர்வு கட்டுப்பாட்டு குழு",
+      "panelSub": "பரிவர்த்தனை சிக்கல்களை மதிப்பாய்வு செய்து தீர்க்கவும்",
+      "flowTitle": "தகராறு தீர்வு ஓட்டம்",
+      "flowBuyerSubmits": "வாங்குபவர் சமர்ப்பிக்கிறார்",
+      "flowAdminNotified": "நிர்வாகிக்கு அறிவிக்கப்பட்டது",
+      "flowFarmerResponds": "விவசாயி பதிலளிக்கிறார்",
+      "flowAdminReviews": "நிர்வாகி மதிப்பாய்வு செய்கிறார்",
+      "flowResolved": "தீர்வு காணப்பட்டது",
+      "resolveComplaintTitle": "புகாருக்கு தீர்வு காண்க #{{id}}",
+      "statusLabel": "நிலை: {{status}}",
+      "orderIdLabel": "ஆர்டர் ஐடி:",
+      "cropItemLabel": "பயிர் உருப்படி:",
+      "filingDateLabel": "தாக்கல் செய்த தேதி:",
+      "buyerNameLabel": "வாங்குபவர் பெயர்:",
+      "farmerNameLabel": "விவசாயி பெயர்:",
+      "disputeReasonLabel": "தகராறுக்கான காரணம்:",
+      "statementsHeader": "அறிக்கைகள் & விளக்கம்",
+      "buyerStatementLabel": "வாங்குபவர் அறிக்கை:",
+      "farmerStatementLabel": "விவசாயி அறிக்கை:",
+      "awaitingFarmerResponse": "விவசாயியின் பதிலுக்காக காத்திருக்கிறது...",
+      "evidenceFileLabel": "ஆதார கோப்பு:",
+      "viewEvidenceLink": "பதிவேற்றப்பட்ட புகைப்பட ஆதாரத்தைக் காண்க",
+      "noFilesUploaded": "கோப்புகள் எதுவும் பதிவேற்றப்படவில்லை",
+      "adminNotesLabel": "நிர்வாகக் குறிப்புகள்",
+      "adminNotesPlaceholder": "தீர்வு விவரங்கள், பணத்தைத் திரும்பப் பெறுவதற்கான விதிமுறைகள் அல்லது இந்தத் தகராறு நிராகரிக்கப்பட்டதற்கான காரணங்களை ஆவணப்படுத்தவும்.",
+      "complaintResolvedVia": "புகார் தீர்க்கப்பட்ட வழி: {{action}}",
+      "btnRefund": "தீர்வு - பணத்தைத் திரும்பப் பெறுதல்",
+      "btnRedelivery": "தீர்வு - மீண்டும் விநியோகம்",
+      "btnDismiss": "புகாரை நிராகரிக்கவும்"
+    },
+    "users": {
+      "role": "பங்கு",
+      "status": "நிலை",
+      "action": "நடவடிக்கை",
+      "statusActive": "செயலில் உள்ளது"
+    },
+    "buttons": {
+      "verify": "சரிபார்க்கவும்",
+      "view": "காண்க"
+    },
+    "errors": {
+      "failedLoadComplaint": "புகார் விவரங்களை ஏற்றுவதில் தோல்வி.",
+      "networkErrorComplaint": "புகார் விவரங்களை ஏற்றுவதில் பிணைய பிழை.",
+      "unauthorizedAdmin": "அங்கீகரிக்கப்படாத அணுகல். நிர்வாகி பங்கு தேவை.",
+      "resolutionFailed": "தீர்வு நடவடிக்கை தோல்வியடைந்தது.",
+      "networkErrorSubmit": "தீர்வை சமர்ப்பிப்பதில் பிணைய பிழை."
+    }
   }
 }

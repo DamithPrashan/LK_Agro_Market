@@ -93,28 +93,22 @@ try {
     $complaint_id = $pdo->lastInsertId();
 
     // 5. Trigger notifications (inserts into notifications table)
+    require_once 'create_notification.php';
+    $notif_data = json_encode([
+        "orderId" => $reservation_id
+    ]);
+
     // Notify the Farmer
-    $farmerNotifySql = "
-        INSERT INTO notifications (user_id, title, message) 
-        VALUES (?, 'New Dispute Filed', ?)
-    ";
     $farmerMsg = "A buyer has submitted a complaint for Order #{$reservation_id} ({$crop_name}). Reason: {$reason}.";
-    $farmerNotifyStmt = $pdo->prepare($farmerNotifySql);
-    $farmerNotifyStmt->execute([$farmer_user_id, $farmerMsg]);
+    create_notification($farmer_user_id, 'New Dispute Filed', $farmerMsg, 'complaintSubmitted', $notif_data);
 
     // Notify all Admins
     $adminQuery = $pdo->query("SELECT user_id FROM user WHERE role = 'admin'");
     $admins = $adminQuery->fetchAll(PDO::FETCH_COLUMN);
     
-    $adminNotifySql = "
-        INSERT INTO notifications (user_id, title, message) 
-        VALUES (?, 'New Dispute Submitted', ?)
-    ";
     $adminMsg = "Dispute #{$complaint_id} has been opened for Order #{$reservation_id}. Reason: {$reason}.";
-    $adminNotifyStmt = $pdo->prepare($adminNotifySql);
-    
     foreach ($admins as $admin_user_id) {
-        $adminNotifyStmt->execute([$admin_user_id, $adminMsg]);
+        create_notification($admin_user_id, 'New Dispute Submitted', $adminMsg, 'complaintSubmitted', $notif_data);
     }
 
     $pdo->commit();

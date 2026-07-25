@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import Navbar from "../../components/navbar.jsx";
 import Footer from "../../components/footer.jsx";
@@ -13,9 +14,16 @@ import { useAuth } from "../../../src/context/AuthContext";
 
 import "../csss/AdminDashboard/admin.css";
 
+const complaintStatusKeyMap = {
+  "pending": "orders.status.pending",
+  "resolved": "farmer.statusResolved",
+  "dismissed": "buttons.dismiss"
+};
+
 function AdminDashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [welcomeMsg, setWelcomeMsg] = useState("Welcome");
     const [complaints, setComplaints] = useState([]);
 
@@ -23,13 +31,13 @@ function AdminDashboard() {
         if (user) {
             const key = `hasLoggedIn_${user.id}`;
             if (localStorage.getItem(key)) {
-                setWelcomeMsg(`Welcome Back ${user.name} 👋`);
+                setWelcomeMsg(t("admin.dashboard.welcomeBack", { name: user.name }));
             } else {
-                setWelcomeMsg(`Welcome ${user.name} 👋`);
+                setWelcomeMsg(t("admin.dashboard.welcome", { name: user.name }));
                 localStorage.setItem(key, "true");
             }
         }
-    }, [user]);
+    }, [user, t]);
     const [stats, setStats] = useState({
         farmers: "0",
         buyers: "0",
@@ -70,7 +78,7 @@ function AdminDashboard() {
                 <h1>{welcomeMsg}</h1>
 
                 <p>
-                    Monitor LK Agro Market activity
+                    {t("admin.dashboard.monitorActivity")}
                 </p>
 
             </div>
@@ -79,22 +87,22 @@ function AdminDashboard() {
             <div className="stats-container">
 
                 <StatCard
-                    title="Farmers"
+                    title={t("admin.dashboard.stats.farmers")}
                     value={stats.farmers ?? "0"}
                 />
 
                 <StatCard
-                    title="Buyers"
+                    title={t("admin.dashboard.stats.buyers")}
                     value={stats.buyers ?? "0"}
                 />
 
                 <StatCard
-                    title="Orders"
+                    title={t("admin.dashboard.stats.orders")}
                     value={stats.orders ?? "0"}
                 />
 
                 <StatCard
-                    title="Complaints"
+                    title={t("admin.dashboard.stats.complaints")}
                     value={stats.complaints ?? "0"}
                 />
 
@@ -113,12 +121,12 @@ function AdminDashboard() {
             <div className="rating-section">
 
                 <RatingCard
-                    title="Farmer Ratings"
+                    title={t("admin.dashboard.stats.farmerRatings")}
                     rating="4.8"
                 />
 
                 <RatingCard
-                    title="Buyer Ratings"
+                    title={t("admin.dashboard.stats.buyerRatings")}
                     rating="4.6"
                 />
 
@@ -129,7 +137,7 @@ function AdminDashboard() {
             <div className="dashboard-card">
 
                 <h2>
-                    Pending Farmer Verifications
+                    {t("admin.dashboard.pendingVerifications")}
                 </h2>
 
                 <table>
@@ -138,10 +146,10 @@ function AdminDashboard() {
 
                         <tr>
 
-                            <th>Farmer</th>
-                            <th>District</th>
-                            <th>NIC</th>
-                            <th>Action</th>
+                            <th>{t("admin.verifications.tableFarmer")}</th>
+                            <th>{t("forms.district")}</th>
+                            <th>{t("verification.nic")}</th>
+                            <th>{t("admin.verifications.tableAction")}</th>
 
                         </tr>
 
@@ -156,14 +164,14 @@ function AdminDashboard() {
                                     <td>{pv.farm_location || pv.farmer_district}</td>
                                     <td>{pv.nic_number}</td>
                                     <td>
-                                        <button>Verify</button>
+                                        <button>{t("admin.buttons.verify")}</button>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center", color: "#666" }}>
-                                    No pending farmer verifications
+                                    {t("emptyStates.noPendingVerifications")}
                                 </td>
                             </tr>
                         )}
@@ -179,7 +187,7 @@ function AdminDashboard() {
             <div className="dashboard-card">
 
                 <h2>
-                    Open Complaints
+                    {t("admin.dashboard.openComplaints")}
                 </h2>
 
                 <table>
@@ -188,10 +196,10 @@ function AdminDashboard() {
 
                         <tr>
 
-                            <th>ID</th>
-                            <th>Buyer</th>
-                            <th>Reason</th>
-                            <th>Status</th>
+                            <th>{t("admin.complaints.tableId")}</th>
+                            <th>{t("admin.complaints.tableBuyer")}</th>
+                            <th>{t("admin.complaints.tableReason")}</th>
+                            <th>{t("admin.complaints.tableStatus")}</th>
 
                         </tr>
 
@@ -210,7 +218,7 @@ function AdminDashboard() {
                                     <td>{comp.reason} ({comp.crop_name})</td>
                                     <td>
                                         <span className={`status ${comp.status === 'resolved' || comp.status === 'dismissed' ? 'resolved' : 'pending'}`}>
-                                            {comp.status}
+                                            {t(complaintStatusKeyMap[comp.status] || comp.status)}
                                         </span>
                                     </td>
                                 </tr>
@@ -218,7 +226,7 @@ function AdminDashboard() {
                         ) : (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center", color: "#666" }}>
-                                    No complaints found
+                                    {t("emptyStates.noComplaints")}
                                 </td>
                             </tr>
                         )}
@@ -231,7 +239,7 @@ function AdminDashboard() {
             <div className="dashboard-card">
 
                 <h2>
-                    Pre-orders by District
+                    {t("admin.dashboard.preordersByDistrict")}
                 </h2>
 
                 <div className="district">
@@ -306,17 +314,17 @@ function AdminDashboard() {
 
             <div className="dashboard-card">
 
-                <h2>User Management</h2>
+                <h2>{t("admin.dashboard.userManagement")}</h2>
 
                 <table>
 
                     <thead>
 
                         <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>{t("forms.fullName")}</th>
+                            <th>{t("admin.users.role")}</th>
+                            <th>{t("admin.users.status")}</th>
+                            <th>{t("admin.users.action")}</th>
                         </tr>
 
                     </thead>
@@ -326,11 +334,11 @@ function AdminDashboard() {
                         <tr>
 
                             <td>R.M.S.T Randeniya</td>
-                            <td>Farmer</td>
-                            <td>Active</td>
+                            <td>{t("register.roleFarmer")}</td>
+                            <td>{t("admin.users.statusActive")}</td>
                             <td>
 
-                                <button>View</button>
+                                <button>{t("admin.buttons.view")}</button>
 
                             </td>
 
@@ -339,11 +347,11 @@ function AdminDashboard() {
                         <tr>
 
                             <td>Kumari Perera</td>
-                            <td>Buyer</td>
-                            <td>Active</td>
+                            <td>{t("register.roleBuyer")}</td>
+                            <td>{t("admin.users.statusActive")}</td>
                             <td>
 
-                                <button>View</button>
+                                <button>{t("admin.buttons.view")}</button>
 
                             </td>
 
@@ -352,11 +360,11 @@ function AdminDashboard() {
                         <tr>
 
                             <td>Nimal Silva</td>
-                            <td>Farmer</td>
-                            <td>Active</td>
+                            <td>{t("register.roleFarmer")}</td>
+                            <td>{t("admin.users.statusActive")}</td>
                             <td>
 
-                                <button>View</button>
+                                <button>{t("admin.buttons.view")}</button>
 
                             </td>
 

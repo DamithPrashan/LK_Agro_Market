@@ -86,10 +86,56 @@ const Navbar = () => {
     if (!dateStr) return '';
     try {
       const date = new Date(dateStr.replace(/-/g, '/'));
-      return date.toLocaleString();
+      const locale = i18n.language === 'en' ? 'en-US' : (i18n.language === 'si' ? 'si-LK' : 'ta-LK');
+      return date.toLocaleString(locale);
     } catch (e) {
       return dateStr;
     }
+  };
+
+  const getLocalizedCropName = (cropName) => {
+    if (!cropName) return '';
+    const nameMap = {
+      'tomato': 'tomato',
+      'carrot': 'carrot',
+      'leeks': 'leeks',
+      'capsicum': 'capsicum',
+      'potato': 'potato',
+      'green beans': 'greenBeans',
+      'greenbeans': 'greenBeans',
+      'cucumber': 'cucumber',
+      'beetroot': 'beetroot',
+      'radish': 'radish',
+      'cabbage': 'cabbage',
+      'beans': 'beans',
+      'brinjal': 'brinjal',
+      'avocado': 'avocado',
+      'grapes': 'grapes',
+      'pineapple': 'pineapple',
+      'pumpkin': 'pumpkin',
+      'banana': 'banana',
+      'ladies finger': 'ladiesFinger',
+      'ladiesfinger': 'ladiesFinger',
+      'lemon': 'lemon',
+      'mango': 'mango',
+      'onion': 'onion',
+      'watermelon': 'watermelon',
+      'corn': 'corn'
+    };
+    const key = cropName.toLowerCase().trim();
+    const mappedKey = nameMap[key] || key;
+    const lookupKey = `crops.${mappedKey}`;
+    const translated = t(lookupKey);
+    return translated !== lookupKey ? translated : cropName;
+  };
+
+  const getLocalizedData = (data) => {
+    if (!data) return {};
+    const localized = { ...data };
+    if (localized.cropName) {
+      localized.cropName = getLocalizedCropName(localized.cropName);
+    }
+    return localized;
   };
 
   return (
@@ -185,8 +231,8 @@ const Navbar = () => {
                       <div key={notif.id} className="notification-item">
                         <div className={`status-icon ${notif.type}`}></div>
                         <div className="notif-content">
-                          <h4>{notif.title}</h4>
-                          <p>{notif.desc}</p>
+                          <h4>{notif.notif_type ? t('notifications.title.' + notif.notif_type) : notif.title}</h4>
+                          <p>{notif.notif_type ? t('notifications.' + notif.notif_type, getLocalizedData(notif.notif_data)) : notif.desc}</p>
                           <span className="time">{formatTime(notif.created_at)}</span>
                         </div>
                         {notif.unread && <span className={`unread-dot ${notif.type}`}></span>}

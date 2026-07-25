@@ -117,7 +117,12 @@ try {
             $crop_name = $cropInfo['crop_name'];
             $notif_title = "New Order Received";
             $notif_msg = "{$buyer_name} has placed a new order for {$quantity} kg of {$crop_name}.";
-            create_notification($farmer_user_id, $notif_title, $notif_msg);
+            $notif_data = json_encode([
+                "buyerName" => $buyer_name,
+                "cropName" => $crop_name,
+                "quantity" => $quantity
+            ]);
+            create_notification($farmer_user_id, $notif_title, $notif_msg, 'orderSubmitted', $notif_data);
         }
     } catch (Exception $e) {
         error_log("Notification error in place_preorder.php: " . $e->getMessage());
