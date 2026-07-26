@@ -391,7 +391,7 @@ export default function CropDetail() {
               disabled={submitting || !!dateError || isOutOfStock}
               style={{ background: isOutOfStock ? "#7f8c8d" : "#ff9800", cursor: isOutOfStock ? "not-allowed" : "pointer" }}
             >
-              {isOutOfStock ? t("emptyStates.outOfStock") : (submitting ? t("buttons.processing", "Processing...") : t("buttons.placePreOrder"))}
+              {isOutOfStock ? t("emptyStates.outOfStock") : (submitting ? t("buttons.processing", "Processing...") : t("placePreOrder"))}
             </button>
           </form>
 
