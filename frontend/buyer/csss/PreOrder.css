@@ -230,6 +230,12 @@ body,
   opacity: 0.9;
   line-height: 1.5;
 }
+.order-box label {
+  color: #ffffff;      
+  display: block;
+  font-weight: 600;
+  margin-top: 10px;
+}
 
 /* ==========================
    RESPONSIVE DESIGN
