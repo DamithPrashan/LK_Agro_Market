@@ -5,8 +5,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: auto;
-  align-self: stretch;
+  height: calc(100vh - 92px);
+  align-self: flex-start;
+  position: sticky;
+  top: 68px;
+  margin-bottom: 24px;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
   z-index: 900;
@@ -14,14 +17,12 @@
   flex-shrink: 0;
   padding: 10px 0;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 /* Sidebar Nav Group */
 .sidebar-nav-group {
   padding: 15px 0;
-  position: sticky;
-  top: 68px;
-  z-index: 10;
 }
 
 .sidebar-nav-title {
@@ -130,10 +131,20 @@
   text-decoration: underline;
 }
 
+/* Media Queries for wrapped header top offsets */
+@media (max-width: 1450px) {
+  .farmer-sidebar {
+    top: 150px;
+    height: calc(100vh - 174px);
+  }
+}
+
 /* Mobile & Small Screen Responsiveness */
 @media (max-width: 768px) {
   .farmer-sidebar {
     width: 70px;
+    top: 200px;
+    height: calc(100vh - 224px);
   }
 
   .sidebar-nav-title {

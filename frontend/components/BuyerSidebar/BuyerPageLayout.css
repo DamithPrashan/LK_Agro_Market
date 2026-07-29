@@ -15,16 +15,7 @@
   background-color: #f4f6f8;
 }
 
-@media (max-width: 1450px) {
-  .sidebar-nav-group {
-    top: 150px;
-  }
-}
-
 @media (max-width: 768px) {
-  .sidebar-nav-group {
-    top: 200px;
-  }
   .buyer-page-content {
     padding: 16px;
   }

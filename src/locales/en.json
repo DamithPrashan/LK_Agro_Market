@@ -452,7 +452,11 @@
     "badgeComplete": "Complete",
     "badgePending": "Pending",
     "successAlert": "Profile updated successfully.",
-    "failedAlert": "Update failed."
+    "failedAlert": "Update failed.",
+    "changePhoto": "Change Photo",
+    "removePhoto": "Remove Photo",
+    "uploadSuccess": "Profile photo updated successfully!",
+    "uploadFailed": "Failed to upload photo."
   },
   "payment": {
     "loading": "Loading order payment details...",

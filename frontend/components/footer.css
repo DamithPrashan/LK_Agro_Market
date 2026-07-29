@@ -4,6 +4,7 @@
   margin-top: 50px;
   position: relative;
 }
+
 .footer-container {
   max-width: 1400px;
   margin: auto;
@@ -47,7 +48,7 @@
 
 .footer-bottom {
   text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding: 18px;
   font-size: 0.9rem;
   color: #d8e7d8;

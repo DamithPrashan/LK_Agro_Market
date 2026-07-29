@@ -80,8 +80,15 @@ export default function BuyerSidebar() {
         onClick={() => navigate("/profile")}
         title={t("sidebar.profile")}
       >
-        <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`}>
-          {user?.name ? (
+        <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`} style={{ overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {user?.profile_image ? (
+            <img 
+              src={user.profile_image.startsWith("http") || user.profile_image.startsWith("/") ? user.profile_image : "/" + user.profile_image} 
+              alt="Profile" 
+              className="sidebar-avatar-img"
+              style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", display: "block" }}
+            />
+          ) : user?.name ? (
             <span className="avatar-text">{getInitials()}</span>
           ) : (
             <FaUserCircle className="avatar-icon" />

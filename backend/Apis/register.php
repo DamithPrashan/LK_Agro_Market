@@ -128,7 +128,8 @@ try {
         "district" => $district,
         "language" => $language,
         "role" => $role,
-        "verified" => false
+        "verified" => false,
+        "profile_image" => null
     ];
 
     // Start session
