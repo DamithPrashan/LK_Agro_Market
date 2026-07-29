@@ -11,6 +11,19 @@ const Navbar = () => {
   const { user, login, logout } = useAuth();
   const { t, i18n } = useTranslation();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLanguageChange = async (langCode) => {
     i18n.changeLanguage(langCode);
@@ -139,7 +152,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="app-header">
+    <header className={`app-header ${isScrolled ? "scrolled" : ""}`}>
       <div className="app-brand">
         <img src={logo} alt="Logo" />
       </div>
@@ -250,8 +263,29 @@ const Navbar = () => {
 
           <div className="logPerson">
             {user ? (
-              <div style={{ display: "flex", gap: "8px" }}>
-                <button className="log-btn" style={{ fontWeight: 600 }}>{user.name}</button>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                <div 
+                  className="navbar-profile-trigger" 
+                  onClick={() => navigate("/profile")} 
+                  style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
+                >
+                  <div className="navbar-avatar">
+                    {user.profile_image ? (
+                      <img 
+                        src={user.profile_image.startsWith("http") || user.profile_image.startsWith("/") ? user.profile_image : "/" + user.profile_image} 
+                        alt="Profile" 
+                        className="navbar-avatar-img"
+                      />
+                    ) : (
+                      <span className="navbar-avatar-text">
+                        {(user.name || "U").split(" ").map((n) => n[0]).join("").slice(0,2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <span className="navbar-username" style={{ color: "#fff", fontWeight: 600, fontSize: "0.95rem" }}>
+                    {user.name}
+                  </span>
+                </div>
                 <button className="log-btn" onClick={Logout} style={{ background: "var(--r-600)", color: "#fff", borderColor: "var(--r-600)" }}>{t("navbar.logout")}</button>
               </div>
             ) : (

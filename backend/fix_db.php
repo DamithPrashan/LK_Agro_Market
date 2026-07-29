@@ -92,7 +92,18 @@ try {
     ");
     echo "Verified/Created 'crop_photos' table successfully!<br>";
 
+    // 7. Add missing 'profile_image' column to 'user' table
+    $stmt7 = $pdo->query("SHOW COLUMNS FROM user LIKE 'profile_image'");
+    $column7 = $stmt7->fetch();
+    if (!$column7) {
+        $pdo->exec("ALTER TABLE user ADD COLUMN profile_image VARCHAR(255) NULL AFTER language");
+        echo "Successfully added the 'profile_image' column to the 'user' table!<br>";
+    } else {
+        echo "The 'profile_image' column already exists in the 'user' table.<br>";
+    }
+
 } catch (PDOException $e) {
     echo "Error updating database: " . $e->getMessage();
 }
 ?>
+

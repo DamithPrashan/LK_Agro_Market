@@ -18,6 +18,7 @@ export default function Profile() {
   const [district, setDistrict] = useState(user?.district ?? "");
   const [language, setLanguage] = useState(user?.language ?? "sinhala");
   const [saving, setSaving]   = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [msg, setMsg]         = useState({ text:"", ok:false });
 
   const handleSave = async (e) => {
@@ -44,6 +45,63 @@ export default function Profile() {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profile_image", file);
+
+    setUploading(true);
+    setMsg({ text: "", ok: false });
+
+    try {
+      const res = await fetch("/backend/Apis/upload_profile_image.php", {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+      });
+      const data = await res.json();
+      if (data.success) {
+        login({ ...user, profile_image: data.profile_image });
+        setMsg({ text: t("profile.uploadSuccess"), ok: true });
+      } else {
+        setMsg({ text: data.message || t("profile.uploadFailed"), ok: false });
+      }
+    } catch (err) {
+      setMsg({ text: t("errors.networkXamppError"), ok: false });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleImageDelete = async () => {
+    if (!window.confirm(t("confirmations.deletePhoto", "Are you sure you want to remove your profile photo?"))) {
+      return;
+    }
+
+    setUploading(true);
+    setMsg({ text: "", ok: false });
+
+    try {
+      const res = await fetch("/backend/Apis/upload_profile_image.php?action=delete", {
+        method: "POST",
+        credentials: "include"
+      });
+      const data = await res.json();
+      if (data.success) {
+        login({ ...user, profile_image: null });
+        setMsg({ text: t("profile.removeSuccess", "Profile photo removed successfully."), ok: true });
+      } else {
+        setMsg({ text: data.message || t("profile.uploadFailed"), ok: false });
+      }
+    } catch (err) {
+      setMsg({ text: t("errors.networkXamppError"), ok: false });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const initials = (user?.name || "U")
     .split(" ").map((n) => n[0]).join("").slice(0,2).toUpperCase();
 
@@ -54,8 +112,42 @@ export default function Profile() {
         <h1 style={s.heading}>{t("profile.title")}</h1>
 
         {/* Profile header */}
-        <div className="card" style={{ display:"flex", gap:16, alignItems:"center", marginBottom:14, background:"var(--g-50)", borderColor:"var(--g-100)" }}>
-          <div style={s.avatar}>{initials}</div>
+        <div className="card" style={{ display:"flex", gap:20, alignItems:"center", marginBottom:14, background:"var(--g-50)", borderColor:"var(--g-100)" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <div style={{ position: "relative" }}>
+              <div style={s.avatar}>
+                {user?.profile_image ? (
+                  <img
+                    src={user.profile_image.startsWith("http") || user.profile_image.startsWith("/") ? user.profile_image : "/" + user.profile_image}
+                    alt="Profile"
+                    style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  initials
+                )}
+              </div>
+              <label htmlFor="profile-upload" style={s.uploadLabel} title={t("profile.changePhoto")}>
+                📷
+              </label>
+              <input
+                id="profile-upload"
+                type="file"
+                accept="image/png, image/jpeg, image/jpg"
+                style={{ display: "none" }}
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+            </div>
+            {user?.profile_image && (
+              <button
+                onClick={handleImageDelete}
+                disabled={uploading}
+                style={s.removeBtn}
+              >
+                {t("profile.removePhoto")}
+              </button>
+            )}
+          </div>
           <div>
             <div style={{ fontSize:16, fontWeight:700 }}>{user?.name}</div>
             <div style={{ fontSize:12, color:"var(--t-3)", marginTop:2 }}>
@@ -139,6 +231,8 @@ export default function Profile() {
 const s = {
   page:      { flex:1, maxWidth:640, margin:"0 auto", padding:"28px 18px", width:"100%" },
   heading:   { fontSize:20, fontWeight:700, color:"var(--t-1)", marginBottom:18 },
-  avatar:    { width:52, height:52, borderRadius:"50%", background:"var(--g-600)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, fontWeight:700, flexShrink:0 },
+  avatar:    { width:64, height:64, borderRadius:"50%", background:"var(--g-600)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:700, flexShrink:0, position: "relative", overflow: "hidden" },
   verifyRow: { display:"flex", alignItems:"center", gap:10, padding:"9px 0", borderBottom:"1px solid var(--s-100)" },
+  uploadLabel: { position: "absolute", bottom: -2, right: -2, background: "var(--g-600)", color: "#fff", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 11, border: "2px solid #fff", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" },
+  removeBtn: { background: "transparent", border: "none", color: "var(--r-600)", fontSize: 11, fontWeight: 600, cursor: "pointer", padding: "2px 6px", borderRadius: 4, transition: "0.2s" },
 };

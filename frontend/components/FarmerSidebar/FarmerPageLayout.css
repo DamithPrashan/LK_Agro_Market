@@ -15,16 +15,7 @@
   background-color: #f6f8f3;
 }
 
-@media (max-width: 1450px) {
-  .sidebar-nav-group {
-    top: 150px;
-  }
-}
-
 @media (max-width: 768px) {
-  .sidebar-nav-group {
-    top: 200px;
-  }
   .farmer-page-content {
     padding: 16px;
   }
