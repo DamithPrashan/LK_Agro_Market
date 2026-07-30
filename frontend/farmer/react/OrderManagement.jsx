@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "../csss/OrderManagement.css";
+import RatingStars from "../../components/ratingStars";
+import ReviewModal from "../../components/ReviewModal";
 
 const statusKeyMap = {
     "Ready": "orders.status.ready",
@@ -30,6 +32,7 @@ function OrderManagement() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedBuyer, setSelectedBuyer] = useState(null);
 
     const fetchOrders = async () => {
         try {
@@ -156,8 +159,48 @@ function OrderManagement() {
                             </div>
                         </div>
 
+                        {/* Buyer review preview */}
+                        {order.buyer_rating !== null && (
+                            <div style={{ marginTop: "12px", padding: "10px", background: "#f9f9f9", borderRadius: "8px", borderLeft: "4px solid #f1c40f" }}>
+                                <p className="label" style={{ margin: "0 0 4px 0", fontSize: "11px", color: "var(--t-3)" }}>
+                                    {t("ratings.buyerReview", "Buyer Review Received")}
+                                </p>
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                    <RatingStars value={order.buyer_rating} readOnly size={16} />
+                                    {order.buyer_comment && (
+                                        <span style={{ fontSize: "12px", color: "var(--t-2)", fontStyle: "italic" }}>
+                                            "{order.buyer_comment.length > 60 ? order.buyer_comment.slice(0, 60) + "..." : order.buyer_comment}"
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Actions */}
-                        <div className="action-buttons">
+                        <div className="action-buttons" style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                            <button 
+                                className="about-buyer-btn"
+                                style={{
+                                    background: "#f1f2f6",
+                                    border: "1px solid #ced6e0",
+                                    color: "#2f3542",
+                                    padding: "6px 12px",
+                                    borderRadius: "4px",
+                                    fontSize: "12px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    transition: "background 0.2s"
+                                }}
+                                onClick={() => setSelectedBuyer({
+                                    userId: order.buyer_user_id,
+                                    userName: order.buyer,
+                                    userLocation: order.buyer_location,
+                                    userRole: "buyer"
+                                })}
+                            >
+                                👤 {t("buttons.aboutBuyer", "About Buyer")}
+                            </button>
+
                             {order.status === "Pending" && (
                                 <>
                                     <button className="accept-btn" onClick={() => handleAction(order.db_id, 'accept')}>
@@ -187,6 +230,16 @@ function OrderManagement() {
                 <p style={{ color: "#7f8c8d", textAlign: "center", fontStyle: "italic", padding: "20px" }}>
                     {t("farmer.noOrdersCategory")}
                 </p>
+            )}
+
+            {selectedBuyer && (
+                <ReviewModal
+                    userId={selectedBuyer.userId}
+                    userName={selectedBuyer.userName}
+                    userLocation={selectedBuyer.userLocation}
+                    userRole={selectedBuyer.userRole}
+                    onClose={() => setSelectedBuyer(null)}
+                />
             )}
         </div>
     );

@@ -49,7 +49,7 @@ export default function RatingsPage() {
       return;
     }
     Promise.all([
-      fetch(`/backend/ratings/get_rating.php?user_id=${user.id}`, { credentials:"include" }).then(r=>r.json()),
+      fetch(`/backend/Apis/get_ratings.php?user_id=${user.id}`, { credentials:"include" }).then(r=>r.json()),
       fetch("/backend/orders/get_completed_unrated.php",          { credentials:"include" }).then(r=>r.json()),
     ]).then(([rd, od]) => {
       if (rd.success) { setSummary(rd.summary); setReviews(rd.reviews); }
@@ -67,7 +67,7 @@ export default function RatingsPage() {
     if (!selectedOrder) { setSubmitMsg({ text: t("errors.selectOrderRating"), ok:false }); return; }
     setSubmitting(true); setSubmitMsg({ text:"", ok:false });
     try {
-      const res  = await fetch("/backend/ratings/submit_rating.php", {
+      const res  = await fetch("/backend/Apis/submit_rating.php", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({ order_id:selectedOrder, rating:stars, comment }),

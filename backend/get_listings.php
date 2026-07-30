@@ -37,6 +37,7 @@ try {
                 u.email as farmer_email,
                 u.phone as farmer_phone,
                 f.verified_status as is_verified,
+                u.user_id as farmer_user_id,
                 fv.farm_location
             FROM crop c
             JOIN farmer f ON c.farmer_id = f.farmer_id
