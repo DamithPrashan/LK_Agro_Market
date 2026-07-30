@@ -24,7 +24,7 @@ try {
         }
         $buyer_id = $buyer['buyer_id'];
 
-        // Get completed reservations for buyer where reviewer_id has not rated it yet
+        // Get completed/partially paid reservations for buyer where reviewer_id has not rated it yet
         $sql = "
             SELECT 
                 r.reservation_id as id, 
@@ -35,9 +35,10 @@ try {
             JOIN crop c ON rc.crop_id = c.crop_id
             JOIN farmer f ON c.farmer_id = f.farmer_id
             JOIN user u_farmer ON f.user_id = u_farmer.user_id
-            LEFT JOIN ratings_review rr ON c.crop_id = rr.crop_id AND rr.reviewer_id = ?
+            LEFT JOIN ratings_review rr ON r.reservation_id = rr.reservation_id AND rr.reviewer_id = ?
             WHERE rc.buyer_id = ? 
-              AND r.reservation_status = 'completed' 
+              AND r.transaction_status IN ('partially_paid', 'paid') 
+              AND r.reservation_status != 'cancelled' 
               AND rr.review_id IS NULL
         ";
         $stmt = $pdo->prepare($sql);
@@ -55,7 +56,7 @@ try {
         }
         $farmer_id = $farmer['farmer_id'];
 
-        // Get completed reservations for farmer where reviewer_id has not rated it yet
+        // Get completed/partially paid reservations for farmer where reviewer_id has not rated it yet
         $sql = "
             SELECT 
                 r.reservation_id as id, 
@@ -66,9 +67,10 @@ try {
             JOIN crop c ON rc.crop_id = c.crop_id
             JOIN buyer b ON rc.buyer_id = b.buyer_id
             JOIN user u_buyer ON b.user_id = u_buyer.user_id
-            LEFT JOIN ratings_review rr ON c.crop_id = rr.crop_id AND rr.reviewer_id = ?
+            LEFT JOIN ratings_review rr ON r.reservation_id = rr.reservation_id AND rr.reviewer_id = ?
             WHERE c.farmer_id = ? 
-              AND r.reservation_status = 'completed' 
+              AND r.transaction_status IN ('partially_paid', 'paid') 
+              AND r.reservation_status != 'cancelled' 
               AND rr.review_id IS NULL
         ";
         $stmt = $pdo->prepare($sql);

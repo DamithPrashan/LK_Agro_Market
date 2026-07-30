@@ -37,12 +37,17 @@ try {
             DATE_FORMAT(r.collection_date, '%Y-%m-%d') as date,
             r.reservation_status as status,
             r.transaction_status as payment,
-            u_buyer.name as buyer
+            u_buyer.name as buyer,
+            u_buyer.user_id as buyer_user_id,
+            u_buyer.location as buyer_location,
+            rr.rating as buyer_rating,
+            rr.comment as buyer_comment
         FROM reservation r
         JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
         JOIN crop c ON rc.crop_id = c.crop_id
         JOIN buyer b ON rc.buyer_id = b.buyer_id
         JOIN user u_buyer ON b.user_id = u_buyer.user_id
+        LEFT JOIN ratings_review rr ON r.reservation_id = rr.reservation_id AND rr.reviewer_id = u_buyer.user_id AND rr.is_removed = 0
         WHERE c.farmer_id = ?
         ORDER BY r.reservation_id DESC
     ";
@@ -82,7 +87,11 @@ try {
             "date" => $order['date'],
             "status" => $statusUI,
             "payment" => $paymentUI,
-            "db_id" => intval($order['id']) // keep actual numeric ID for requests
+            "db_id" => intval($order['id']), // keep actual numeric ID for requests
+            "buyer_user_id" => intval($order['buyer_user_id']),
+            "buyer_location" => $order['buyer_location'],
+            "buyer_rating" => $order['buyer_rating'] !== null ? intval($order['buyer_rating']) : null,
+            "buyer_comment" => $order['buyer_comment']
         ];
     }
 

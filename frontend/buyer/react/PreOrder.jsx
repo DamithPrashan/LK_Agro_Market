@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "../../buyer/csss/PreOrder.css";
 import { useCrops } from "../../../src/context/CropContext";
 import { useTranslation } from "react-i18next";
+import ReviewModal from "../../components/ReviewModal";
 
 // local images map for fallback rendering
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -67,6 +68,7 @@ export default function CropDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
   const [dateError, setDateError] = useState("");
+  const [showFarmerReviews, setShowFarmerReviews] = useState(false);
 
   const getMinMaxDates = () => {
     if (!cropData || !cropData.harvest) return { minStr: "", maxStr: "" };
@@ -346,6 +348,26 @@ export default function CropDetail() {
           <button className="contact-btn" onClick={() => alert(t("buyerDashboard.contactingFarmer", { name: cropData.farmer_name, channel: cropData.farmer_email || "phone" }))}>
             {t("buttons.contactFarmer")}
           </button>
+
+          <button 
+              className="view-reviews-btn"
+              style={{
+                  background: "#f1f2f6",
+                  border: "1px solid #ced6e0",
+                  color: "#2f3542",
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  width: "100%",
+                  marginTop: "10px",
+                  transition: "background 0.2s"
+              }}
+              onClick={() => setShowFarmerReviews(true)}
+          >
+              👁️ {t("buttons.viewReviews", "View Reviews")}
+          </button>
         </div>
 
         {/* Pre Order Box */}
@@ -416,6 +438,15 @@ export default function CropDetail() {
           </p>
         </div>
       </div>
+      {showFarmerReviews && (
+        <ReviewModal
+          userId={cropData.farmer_user_id}
+          userName={cropData.farmer_name}
+          userLocation={cropData.farm_location || cropData.location}
+          userRole="farmer"
+          onClose={() => setShowFarmerReviews(false)}
+        />
+      )}
     </div>
   );
 }
