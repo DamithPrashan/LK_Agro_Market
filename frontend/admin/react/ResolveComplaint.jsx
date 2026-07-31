@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../../buyer/csss/Complaints.css";
 import { useAuth } from "../../../src/context/AuthContext";
 
@@ -7,6 +8,7 @@ function ResolveComplaint() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,11 +30,11 @@ function ResolveComplaint() {
         setComplaint(data.complaint);
         setAdminNotes(data.complaint.adminNotes || "");
       } else {
-        setError(data.message || "Failed to load complaint details.");
+        setError(data.message || t("admin.errors.failedLoadComplaint"));
       }
     } catch (err) {
       console.error(err);
-      setError("Network error loading complaint details.");
+      setError(t("admin.errors.networkErrorComplaint"));
     } finally {
       setLoading(false);
     }
@@ -42,7 +44,7 @@ function ResolveComplaint() {
     if (user && user.role === "admin") {
       fetchComplaintDetails();
     } else if (user) {
-      setError("Unauthorized access. Admin role required.");
+      setError(t("admin.errors.unauthorizedAdmin"));
       setLoading(false);
     }
   }, [id, user]);
@@ -70,11 +72,11 @@ function ResolveComplaint() {
         setMsg({ text: data.message, ok: true });
         fetchComplaintDetails(); // Refresh to update status and notes
       } else {
-        setMsg({ text: data.message || "Resolution action failed.", ok: false });
+        setMsg({ text: data.message || t("admin.errors.resolutionFailed"), ok: false });
       }
     } catch (err) {
       console.error(err);
-      setMsg({ text: "Network error submitting resolution.", ok: false });
+      setMsg({ text: t("admin.errors.networkErrorSubmit"), ok: false });
     } finally {
       setResolving(false);
     }
@@ -94,7 +96,7 @@ function ResolveComplaint() {
     return (
       <div className="dashboard">
         <div className="content" style={{ textAlign: "center", padding: "50px 0" }}>
-          <h2>Loading complaint details...</h2>
+          <h2>{t("admin.complaints.loadingDetails", "Loading complaint details...")}</h2>
         </div>
       </div>
     );
@@ -104,10 +106,10 @@ function ResolveComplaint() {
     return (
       <div className="dashboard">
         <div className="content" style={{ textAlign: "center", padding: "50px 0", color: "#c0392b" }}>
-          <h2>Error</h2>
+          <h2>{t("admin.errors.error", "Error")}</h2>
           <p>{error}</p>
           <button className="submit-btn" style={{ width: "auto", marginTop: "20px" }} onClick={() => navigate("/admin")}>
-            Back to Dashboard
+            {t("admin.complaints.btnBackDashboard", "Back to Dashboard")}
           </button>
         </div>
       </div>
@@ -122,35 +124,35 @@ function ResolveComplaint() {
         
         {/* Header */}
         <div className="page-header">
-          <h1>Dispute Resolution Control Panel</h1>
-          <p>Review and resolve transaction issues</p>
+          <h1>{t("admin.complaints.panelTitle")}</h1>
+          <p>{t("admin.complaints.panelSub")}</p>
           <button className="tab" style={{ cursor: "pointer", border: "1px solid #ccc", padding: "5px 15px", borderRadius: "5px", background: "#f9f9f9" }} onClick={() => navigate("/admin")}>
-            ← Back to Dashboard
+            ← {t("admin.complaints.btnBackDashboard", "Back to Dashboard")}
           </button>
         </div>
 
         {/* Stepper Flow */}
         <div className="flow-card">
-          <h3>DISPUTE RESOLUTION FLOW</h3>
+          <h3>{t("admin.complaints.flowTitle")}</h3>
           <div className="flow">
-            <div className={getStepClass("submitted")}>Buyer Submits</div>
+            <div className={getStepClass("submitted")}>{t("admin.complaints.flowBuyerSubmits")}</div>
             <span>→</span>
-            <div className={getStepClass("admin_notified")}>Admin Notified</div>
+            <div className={getStepClass("admin_notified")}>{t("admin.complaints.flowAdminNotified")}</div>
             <span>→</span>
-            <div className={getStepClass("farmer_responded")}>Farmer Responds</div>
+            <div className={getStepClass("farmer_responded")}>{t("admin.complaints.flowFarmerResponds")}</div>
             <span>→</span>
-            <div className={getStepClass("under_review")}>Admin Reviews</div>
+            <div className={getStepClass("under_review")}>{t("admin.complaints.flowAdminReviews")}</div>
             <span>→</span>
-            <div className={getStepClass("resolved")}>Resolved</div>
+            <div className={getStepClass("resolved")}>{t("admin.complaints.flowResolved")}</div>
           </div>
         </div>
 
         {/* Complaint Detail Card */}
         <div className="complaint-card">
           <div className="card-top">
-            <h3>RESOLVE COMPLAINT #{complaint.id}</h3>
+            <h3>{t("admin.complaints.resolveComplaintTitle", { id: complaint.id })}</h3>
             <span className="evidence-tag" style={{ background: isResolved ? "#eaf5ec" : "#fff3cd", color: isResolved ? "#2d6a4f" : "#856404", border: isResolved ? "1px solid #cce5d3" : "1px solid #ffeeba" }}>
-              Status: {complaint.dbStatus.toUpperCase()}
+              {t("admin.complaints.statusLabel", { status: complaint.dbStatus.toUpperCase() })}
             </span>
           </div>
 
@@ -172,42 +174,42 @@ function ResolveComplaint() {
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "25px", borderBottom: "1px solid #eee", paddingBottom: "20px" }}>
             <div>
-              <p><strong>Order ID:</strong> {complaint.orderId}</p>
-              <p><strong>Crop Item:</strong> {complaint.cropName}</p>
-              <p><strong>Filing Date:</strong> {new Date(complaint.createdAt).toLocaleDateString()}</p>
+              <p><strong>{t("admin.complaints.orderIdLabel")}</strong> {complaint.orderId}</p>
+              <p><strong>{t("admin.complaints.cropItemLabel")}</strong> {complaint.cropName}</p>
+              <p><strong>{t("admin.complaints.filingDateLabel")}</strong> {new Date(complaint.createdAt).toLocaleDateString()}</p>
             </div>
             <div>
-              <p><strong>Buyer Name:</strong> {complaint.buyerName} ({complaint.buyerEmail})</p>
-              <p><strong>Farmer Name:</strong> {complaint.farmerName} ({complaint.farmerEmail})</p>
-              <p><strong>Dispute Reason:</strong> <span style={{ color: "#c0392b", fontWeight: "600" }}>{complaint.reason}</span></p>
+              <p><strong>{t("admin.complaints.buyerNameLabel")}</strong> {complaint.buyerName} ({complaint.buyerEmail})</p>
+              <p><strong>{t("admin.complaints.farmerNameLabel")}</strong> {complaint.farmerName} ({complaint.farmerEmail})</p>
+              <p><strong>{t("admin.complaints.disputeReasonLabel")}</strong> <span style={{ color: "#c0392b", fontWeight: "600" }}>{complaint.reason}</span></p>
             </div>
           </div>
 
           {/* Core Quotes Panel */}
           <div className="evidence-box" style={{ background: "#f8f9fa", border: "1px solid #e9ecef", borderRadius: "8px", padding: "20px", marginBottom: "25px" }}>
-            <h4 style={{ marginTop: 0, borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>Statements & Description</h4>
-            <p><strong>Buyer Statement:</strong> <span style={{ color: "#495057", fontStyle: "italic" }}>"{complaint.description}"</span></p>
-            <p><strong>Farmer Statement:</strong> {complaint.farmerResponse ? (
+            <h4 style={{ marginTop: 0, borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>{t("admin.complaints.statementsHeader")}</h4>
+            <p><strong>{t("admin.complaints.buyerStatementLabel")}</strong> <span style={{ color: "#495057", fontStyle: "italic" }}>"{complaint.description}"</span></p>
+            <p><strong>{t("admin.complaints.farmerStatementLabel")}</strong> {complaint.farmerResponse ? (
               <span style={{ color: "#495057", fontStyle: "italic" }}>"{complaint.farmerResponse}"</span>
             ) : (
-              <span style={{ color: "#7f8c8d", fontStyle: "italic" }}>Awaiting farmer response...</span>
+              <span style={{ color: "#7f8c8d", fontStyle: "italic" }}>{t("admin.complaints.awaitingFarmerResponse")}</span>
             )}</p>
             
-            <p style={{ marginBottom: 0 }}><strong>Evidence File:</strong> {complaint.evidenceFile ? (
+            <p style={{ marginBottom: 0 }}><strong>{t("admin.complaints.evidenceFileLabel")}</strong> {complaint.evidenceFile ? (
               <a href={complaint.evidenceFile} target="_blank" rel="noopener noreferrer" style={{ color: "#1a5c2d", fontWeight: "600", textDecoration: "underline" }}>
-                View Uploaded Photo Evidence
+                {t("admin.complaints.viewEvidenceLink")}
               </a>
             ) : (
-              <span style={{ color: "#7f8c8d" }}>No files uploaded</span>
+              <span style={{ color: "#7f8c8d" }}>{t("admin.complaints.noFilesUploaded")}</span>
             )}</p>
           </div>
 
           {/* Admin Input Notes */}
-          <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>Admin Notes</label>
+          <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>{t("admin.complaints.adminNotesLabel")}</label>
           <textarea
             className="input-field"
             rows="5"
-            placeholder="Document resolution details, terms of refund, or why this dispute was dismissed."
+            placeholder={t("admin.complaints.adminNotesPlaceholder")}
             value={adminNotes}
             onChange={(e) => setAdminNotes(e.target.value)}
             disabled={isResolved || resolving}
@@ -217,7 +219,7 @@ function ResolveComplaint() {
           {/* Controls */}
           {isResolved ? (
             <div style={{ background: "#e9ecef", color: "#495057", padding: "15px", borderRadius: "6px", textAlign: "center", fontWeight: "600" }}>
-              Complaint Resolved via: {complaint.resolutionAction ? complaint.resolutionAction.toUpperCase() : "N/A"}
+              {t("admin.complaints.complaintResolvedVia", { action: complaint.resolutionAction ? complaint.resolutionAction.toUpperCase() : "N/A" })}
             </div>
           ) : (
             <div className="action-buttons" style={{ display: "flex", gap: "10px" }}>
@@ -227,7 +229,7 @@ function ResolveComplaint() {
                 disabled={resolving}
                 style={{ flex: 1, padding: "12px", background: "#e74c3c", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
-                Resolve - Refund
+                {t("admin.complaints.btnRefund")}
               </button>
               <button 
                 className="delivery-btn" 
@@ -235,7 +237,7 @@ function ResolveComplaint() {
                 disabled={resolving}
                 style={{ flex: 1, padding: "12px", background: "#f39c12", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
-                Resolve - Re-delivery
+                {t("admin.complaints.btnRedelivery")}
               </button>
               <button 
                 className="dismiss-btn" 
@@ -243,7 +245,7 @@ function ResolveComplaint() {
                 disabled={resolving}
                 style={{ flex: 1, padding: "12px", background: "#7f8c8d", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
-                Dismiss Complaint
+                {t("admin.complaints.btnDismiss")}
               </button>
             </div>
           )}

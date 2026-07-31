@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../csss/EditList.css";
 import { useAuth } from "../../../src/context/AuthContext";
 
@@ -7,6 +8,7 @@ function EditList() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
+  const { t } = useTranslation();
 
   const [step, setStep] = useState(1);
 
@@ -86,14 +88,14 @@ function EditList() {
       const result = await response.json();
 
       if (result.success) {
-        alert("Listing Updated Successfully!");
+        alert(t("farmer.listingUpdatedSuccess", "Listing Updated Successfully!"));
         navigate("/");
       } else {
         alert(result.message);
       }
     } catch (error) {
       console.error(error);
-      alert("Update failed.");
+      alert(t("errors.submissionFailed"));
     }
   };
 
@@ -101,33 +103,33 @@ function EditList() {
     <div className="add-listing-container">
 
       <div className="listing-card">
-        <h2>Edit Listing</h2>
+        <h2>{t("farmer.editListingTitle", "Edit Listing")}</h2>
 
         {/* STEP CIRCLES + LABELS PAIRED TOGETHER */}
         <div className="edit-steps">
           <div className={`edit-step ${step === 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
             <div className="edit-circle">1</div>
-            <span>Crop Details</span>
+            <span>{t("farmer.cropDetailsTab")}</span>
           </div>
           <div className={`edit-step ${step === 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
             <div className="edit-circle">2</div>
-            <span>Pricing</span>
+            <span>{t("farmer.pricingTab")}</span>
           </div>
           <div className={`edit-step ${step === 3 ? "active" : ""}`}>
             <div className="edit-circle">3</div>
-            <span>Review</span>
+            <span>{t("farmer.reviewTab")}</span>
           </div>
         </div>
 
         {/* STEP 1 */}
         {step === 1 && (
           <div className="form-section">
-            <h3>Crop Details</h3>
+            <h3>{t("farmer.cropDetailsTab")}</h3>
 
             <input
               type="text"
               name="cropName"
-              placeholder="Crop Name"
+              placeholder={t("farmer.cropNamePlaceholder")}
               value={formData.cropName}
               onChange={handleChange}
             />
@@ -135,7 +137,7 @@ function EditList() {
             <input
               type="text"
               name="stage"
-              placeholder="Growth Stage"
+              placeholder={t("farmer.growthStageLabel")}
               value={formData.stage}
               onChange={handleChange}
             />
@@ -145,10 +147,10 @@ function EditList() {
               value={formData.category}
               onChange={handleChange}
             >
-              <option value="">Select Category</option>
-              <option value="Vegetable">Vegetable</option>
-              <option value="Fruit">Fruit</option>
-              <option value="Grain">Grain</option>
+              <option value="">{t("farmer.selectCategory")}</option>
+              <option value="Vegetable">{t("farmer.categoryVegetable")}</option>
+              <option value="Fruit">{t("farmer.categoryFruit")}</option>
+              <option value="Grain">{t("farmer.categoryGrain")}</option>
             </select>
 
             <select
@@ -156,7 +158,7 @@ function EditList() {
               value={formData.location}
               onChange={handleChange}
             >
-              <option value="">Select District</option>
+              <option value="">{t("forms.selectDistrict")}</option>
               <option value="Ampara">Ampara</option>
               <option value="Anuradhapura">Anuradhapura</option>
               <option value="Badulla">Badulla</option>
@@ -194,18 +196,18 @@ function EditList() {
             <input
               type="number"
               name="quantity"
-              placeholder="Quantity (kg)"
+              placeholder={t("farmer.quantityPlaceholder")}
               value={formData.quantity}
               onChange={handleChange}
             />
 
             <div className="btn-group">
               <button className="back-btn" onClick={() => navigate(-1)}>
-                Cancel
+                {t("buttons.cancel")}
               </button>
 
               <button className="next-btn" onClick={nextStep}>
-                Next
+                {t("buttons.next")}
               </button>
             </div>
           </div>
@@ -214,36 +216,36 @@ function EditList() {
         {/* STEP 2 */}
         {step === 2 && (
           <div className="form-section">
-            <h3>Pricing</h3>
+            <h3>{t("farmer.pricingTab")}</h3>
 
             <input
               type="number"
               name="price"
-              placeholder="Price Per Kg"
+              placeholder={t("farmer.pricePlaceholder")}
               value={formData.price}
               onChange={handleChange}
             />
 
-            {loadingSuggestion && <p className="suggestion-loading">Loading price suggestion...</p>}
+            {loadingSuggestion && <p className="suggestion-loading">{t("farmer.loadingPriceSuggestion")}</p>}
 
             {!loadingSuggestion && suggestion && suggestion.suggested_price !== null && (
               <div className="price-suggestion-box">
                 {suggestion.basis === 'district' ? (
                   <>
                     <p className="suggestion-info">
-                      ℹ Suggested price: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                      ℹ {t("farmer.suggestedPriceLabel")}: <strong>Rs. {suggestion.suggested_price} / kg</strong>
                     </p>
                     <p className="suggestion-subtext">
-                      Based on {suggestion.sample_count} similar listings in your district.
+                      {t("farmer.basedOnDistrict", { count: suggestion.sample_count })}
                     </p>
                   </>
                 ) : (
                   <>
                     <p className="suggestion-info">
-                      No local data yet. National average for this crop: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                      {t("farmer.nationalAverage", { price: suggestion.suggested_price })}
                     </p>
                     <p className="suggestion-subtext">
-                      Based on {suggestion.sample_count} listings across Sri Lanka.
+                      {t("farmer.basedOnNational", { count: suggestion.sample_count })}
                     </p>
                   </>
                 )}
@@ -253,7 +255,7 @@ function EditList() {
                     className="use-suggestion-btn"
                     onClick={() => setFormData(prev => ({ ...prev, price: suggestion.suggested_price }))}
                   >
-                    Use Suggested Price
+                    {t("farmer.btnUseAveragePrice", "Use Suggested Price")}
                   </button>
                 </div>
               </div>
@@ -262,18 +264,18 @@ function EditList() {
             {!loadingSuggestion && (!suggestion || suggestion.suggested_price === null) && (
               <div className="price-suggestion-box" style={{ background: '#f5f5f5', borderColor: '#ddd' }}>
                 <p className="suggestion-info" style={{ color: '#666' }}>
-                  ℹ No historical pricing data available for "{formData.cropName || 'this crop'}".
+                  ℹ {t("farmer.noPricingData", { cropName: formData.cropName || t("farmer.thisCropLabel", "this crop") })}
                 </p>
               </div>
             )}
 
             <div className="btn-group">
               <button className="back-btn" onClick={prevStep}>
-                Back
+                {t("buttons.back")}
               </button>
 
               <button className="next-btn" onClick={nextStep}>
-                Next
+                {t("buttons.next")}
               </button>
             </div>
           </div>
@@ -282,25 +284,25 @@ function EditList() {
         {/* STEP 3 */}
         {step === 3 && (
           <div className="form-section">
-            <h3>Review Listing</h3>
+            <h3>{t("farmer.reviewCropDetailsHeading")}</h3>
 
             <div className="review-box">
-              <p><b>Crop:</b> {formData.cropName}</p>
-              <p><b>Category:</b> {formData.category}</p>
-              <p><b>Quantity:</b> {formData.quantity} kg</p>
-              <p><b>Location:</b> {formData.location}</p>
-              <p><b>Growth Stage:</b> {formData.stage}</p>
-              <p><b>Harvest Date:</b> {formData.harvestDate}</p>
-              <p><b>Price:</b> Rs. {formData.price}</p>
+              <p><b>{t("farmer.cropLabel")}:</b> {formData.cropName}</p>
+              <p><b>{t("farmer.categoryLabel")}:</b> {formData.category}</p>
+              <p><b>{t("farmer.quantityLabel")}:</b> {formData.quantity}{t("farmer.kgSuffix")}</p>
+              <p><b>{t("forms.location")}:</b> {formData.location}</p>
+              <p><b>{t("farmer.growthStageLabel")}:</b> {formData.stage}</p>
+              <p><b>{t("farmer.harvestDateLabel")}:</b> {formData.harvestDate}</p>
+              <p><b>{t("farmer.priceLabel")}:</b> {t("farmer.rsPrefix")}{formData.price}</p>
             </div>
 
             <div className="btn-group">
               <button className="back-btn" onClick={prevStep}>
-                Back
+                {t("buttons.back")}
               </button>
 
               <button className="submit-btn" onClick={updateListing}>
-                Update Listing
+                {t("buttons.updateListing", "Update Listing")}
               </button>
             </div>
           </div>
@@ -312,3 +314,4 @@ function EditList() {
 }
 
 export default EditList;
+

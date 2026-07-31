@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../csss/BuyerOrderHistory.css";
+
+const statusKeyMap = {
+  "ready": "orders.status.ready",
+  "pending": "orders.status.pending",
+  "accepted": "orders.status.accepted",
+  "declined": "orders.status.declined",
+  "cancelled": "orders.status.declined",
+  "completed": "orders.status.completed"
+};
 
 export default function BuyerOrderHistory() {
   const [activeTab, setActiveTab] = useState("all");
@@ -11,6 +21,7 @@ export default function BuyerOrderHistory() {
   const [cancelErrorMsg, setCancelErrorMsg] = useState("");
   const [cancelSuccessMsg, setCancelSuccessMsg] = useState("");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -23,11 +34,11 @@ export default function BuyerOrderHistory() {
       if (data.success && data.orders) {
         setOrders(data.orders);
       } else {
-        setError(data.message || "Failed to load orders.");
+        setError(data.message || t("errors.failedFetchOrders"));
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch orders from server.");
+      setError(t("errors.failedFetchOrders"));
     } finally {
       setLoading(false);
     }
@@ -41,7 +52,7 @@ export default function BuyerOrderHistory() {
     const status = order.orderStatus.toLowerCase();
     
     if (status === "pending") {
-      const confirmCancel = window.confirm("Are you sure you want to cancel this reservation request? This action cannot be undone.");
+      const confirmCancel = window.confirm(t("confirmations.cancelPendingOrder"));
       if (!confirmCancel) return;
       
       await executeCancellation(order.orderId);
@@ -56,11 +67,11 @@ export default function BuyerOrderHistory() {
       const hoursRemaining = diffMs / (1000 * 60 * 60);
       
       if (hoursRemaining <= 48) {
-        setCancelErrorMsg("This order can only be cancelled more than 48 hours before the collection date. If there's a genuine issue, please raise a complaint instead.");
+        setCancelErrorMsg(t("orders.cancelErrorTime"));
         return;
       }
       
-      const confirmCancel = window.confirm("Cancelling this order forfeits your 1/3 pre-payment, as it confirms your commitment to the farmer. Are you sure you want to proceed?");
+      const confirmCancel = window.confirm(t("confirmations.cancelAcceptedOrder"));
       if (!confirmCancel) return;
       
       await executeCancellation(order.orderId);
@@ -79,26 +90,26 @@ export default function BuyerOrderHistory() {
       });
       const data = await response.json();
       if (data.success) {
-        setCancelSuccessMsg(data.message || "Cancellation successful.");
+        setCancelSuccessMsg(data.message || t("orders.cancellationSuccessful"));
         fetchOrders(); // Refresh order listing
       } else {
-        setCancelErrorMsg(data.message || "Cancellation failed.");
+        setCancelErrorMsg(data.message || t("orders.cancellationFailed"));
       }
     } catch (err) {
       console.error(err);
-      setCancelErrorMsg("Network error trying to cancel order.");
+      setCancelErrorMsg(t("errors.networkXamppError"));
     }
   };
 
   return (
     <div className="container">
-      <h1>Order History</h1>
+      <h1>{t("orders.historyTitle")}</h1>
 
           {/* Cancellation Success/Error Modals */}
           {cancelErrorMsg && (
             <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
               <div style={{ background: "white", padding: "24px", borderRadius: "8px", maxWidth: "400px", width: "90%", textAlign: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
-                <h3 style={{ color: "#c0392b", marginTop: 0, marginBottom: "12px" }}>Cancellation Blocked</h3>
+                <h3 style={{ color: "#c0392b", marginTop: 0, marginBottom: "12px" }}>{t("orders.cancelBlockedTitle")}</h3>
                 <p style={{ fontSize: "14px", color: "#555", lineHeight: "1.6", marginBottom: "20px" }}>{cancelErrorMsg}</p>
                 <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
                   <button 
@@ -108,13 +119,13 @@ export default function BuyerOrderHistory() {
                     }}
                     style={{ padding: "8px 16px", background: "#1a5c2d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}
                   >
-                    Go to Complaints
+                    {t("buttons.submitComplaint")}
                   </button>
                   <button 
                     onClick={() => setCancelErrorMsg("")}
                     style={{ padding: "8px 16px", background: "#fff", color: "#333", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer" }}
                   >
-                    Close
+                    {t("buttons.cancel")}
                   </button>
                 </div>
               </div>
@@ -124,7 +135,7 @@ export default function BuyerOrderHistory() {
           {cancelSuccessMsg && (
             <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
               <div style={{ background: "white", padding: "24px", borderRadius: "8px", maxWidth: "400px", width: "90%", textAlign: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
-                <h3 style={{ color: "#27ae60", marginTop: 0, marginBottom: "12px" }}>Success</h3>
+                <h3 style={{ color: "#27ae60", marginTop: 0, marginBottom: "12px" }}>{t("profile.badgeComplete", "Success")}</h3>
                 <p style={{ fontSize: "14px", color: "#555", lineHeight: "1.6", marginBottom: "20px" }}>{cancelSuccessMsg}</p>
                 <button 
                   onClick={() => setCancelSuccessMsg("")}
@@ -139,10 +150,10 @@ export default function BuyerOrderHistory() {
           {/* Tabs */}
           <div className="tabs">
             {[
-              { id: "all", label: "All" },
-              { id: "pending", label: "Pending" },
-              { id: "accepted", label: "Accepted" },
-              { id: "completed", label: "Completed" }
+              { id: "all", label: t("orders.tabAll") },
+              { id: "pending", label: t("orders.tabPending") },
+              { id: "accepted", label: t("orders.tabAccepted") },
+              { id: "completed", label: t("orders.tabCompleted") }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -158,7 +169,7 @@ export default function BuyerOrderHistory() {
           <div className="orders">
             {loading ? (
               <div style={{ textAlign: "center", padding: "40px", width: "100%", color: "#666" }}>
-                Loading your orders...
+                {t("orders.loadingOrders")}
               </div>
             ) : error ? (
               <div style={{ textAlign: "center", padding: "40px", width: "100%", color: "#e74c3c" }}>
@@ -166,7 +177,7 @@ export default function BuyerOrderHistory() {
               </div>
             ) : orders.length === 0 ? (
               <div style={{ textAlign: "center", padding: "40px", width: "100%", color: "#7f8c8d" }}>
-                No orders found for this status.
+                {t("orders.noOrders")}
               </div>
             ) : (
               orders.map((order) => (
@@ -175,35 +186,35 @@ export default function BuyerOrderHistory() {
                   <div className="order-header">
                     <h3>{order.cropName}</h3>
                     <span className={`status ${order.orderStatus}`}>
-                      {order.orderStatus.toUpperCase()}
+                      {t(statusKeyMap[order.orderStatus.toLowerCase()] || order.orderStatus).toUpperCase()}
                     </span>
                   </div>
 
                   <div className="order-body">
-                    <p><b>Order ID:</b> {order.orderId}</p>
-                    <p><b>Quantity:</b> {order.quantity} {order.unit}</p>
-                    <p><b>Date:</b> {order.date}</p>
-                    <p><b>Total:</b> Rs. {order.total.toLocaleString()}</p>
+                    <p>{t("orders.orderId", { id: order.orderId })}</p>
+                    <p>{t("orders.quantity", { qty: order.quantity, unit: order.unit })}</p>
+                    <p>{t("orders.date", { date: order.date })}</p>
+                    <p>{t("orders.total", { total: order.total.toLocaleString() })}</p>
                   </div>
 
                   {/* Conditional Footer Layout */}
                   {order.orderStatus.toLowerCase() === "pending" ? (
                     <div className="order-footer" style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between", marginTop: "15px" }}>
                       <span className={`payment ${order.paymentStatus}`}>
-                        Payment: {order.paymentStatus.toUpperCase()}
+                        {t("orders.payment", { status: order.paymentStatus.toUpperCase() })}
                       </span>
                       <button 
                         className="view-btn" 
                         onClick={() => handleCancelClick(order)}
                         style={{ background: "#e74c3c", color: "white", cursor: "pointer" }}
                       >
-                        Cancel Order
+                        {t("buttons.cancelOrder", "Cancel Order")}
                       </button>
                     </div>
                   ) : (
                     <div className="order-footer" style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between", marginTop: "15px", flexWrap: "wrap" }}>
                       <span className={`payment ${order.paymentStatus}`}>
-                        Payment: {order.paymentStatus.toUpperCase()}
+                        {t("orders.payment", { status: order.paymentStatus.toUpperCase() })}
                       </span>
                       
                       {/* Action buttons grouped on the right */}
@@ -214,7 +225,7 @@ export default function BuyerOrderHistory() {
                             className="cancel-order-action-btn"
                             onClick={() => handleCancelClick(order)}
                           >
-                            Cancel Order
+                            {t("buttons.cancelOrder", "Cancel Order")}
                           </button>
                         )}
 
@@ -225,10 +236,10 @@ export default function BuyerOrderHistory() {
                             onClick={() => navigate(`/payment/${order.orderId}`)}
                             style={{ background: "#27ae60", color: "white", cursor: "pointer" }}
                           >
-                            {order.paymentStatus.toLowerCase() === "partial" ? "Complete Payment" : "Pay Now"}
+                            {order.paymentStatus.toLowerCase() === "partial" ? t("buttons.completePayment") : t("buttons.payNow")}
                           </button>
                         ) : (
-                          <button className="view-btn">View</button>
+                          <button className="view-btn">{t("buttons.view")}</button>
                         )}
                       </div>
                     </div>

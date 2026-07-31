@@ -1,0 +1,22 @@
+.farmer-page-layout {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  background-color: #f6f8f3;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.farmer-page-content {
+  flex-grow: 1;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: #f6f8f3;
+}
+
+@media (max-width: 768px) {
+  .farmer-page-content {
+    padding: 16px;
+  }
+}

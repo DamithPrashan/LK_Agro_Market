@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
+import { CropProvider } from "./context/CropContext";
 
 
 import Home from "./pages/Home";
@@ -24,6 +25,8 @@ import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
+import FarmerLayout from "./pages/FarmerLayout.jsx";
+import MyListings from "../frontend/farmer/react/MyListings.jsx";
 
 
 
@@ -33,48 +36,83 @@ import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 // import BuyerDashboard  from "../frontend/buyer/react/dashBoard";
 // import AdminDashboard  from "../frontend/admin/react/dashBoard";
 
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "./context/AuthContext";
+
 function App() {
+  const { user } = useAuth();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (user && user.language) {
+      let mappedLang = "en";
+      const userLang = user.language.toLowerCase();
+      if (userLang === "sinhala" || userLang === "si") {
+        mappedLang = "si";
+      } else if (userLang === "tamil" || userLang === "ta") {
+        mappedLang = "ta";
+      } else if (userLang === "english" || userLang === "en") {
+        mappedLang = "en";
+      }
+
+      if (i18n.language !== mappedLang) {
+        i18n.changeLanguage(mappedLang);
+        localStorage.setItem("preferredLanguage", mappedLang);
+      }
+    }
+  }, [user, i18n]);
+
   return (
-    <div className="app-shell">
-      <Navbar />
 
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/farmer" element={<Farmer />} />
-          <Route path="/browse" element={<Browse />} />
-          <Route path="/preorder" element={<PreOrder />} />
-          <Route path="/pre-order" element={<PreOrder />} />
-          <Route path="/crop/:id" element={<PreOrder />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/payment/:orderId" element={<Payment />} />
-          <Route path="/buyer" element={<BuyerLayout />}>
-            <Route index element={<BuyerDashboard />} />
-            <Route path="dashboard" element={<BuyerDashboard />} />
-            <Route path="preorder" element={<PreOrder />} />
-            <Route path="complaints" element={<Complaints />} />
-            <Route path="ratings" element={<Ratings />} />
-            <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
-          </Route>
-          <Route path="/complaints" element={<Complaints />} />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/complaint/:id" element={<ResolveComplaint />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/farmer/add-listing" element={<AddListing />} />
-          <Route path="/farmer/edit-listing" element={<EditList />} />
-          <Route path="/farmer/orders" element={<OrderManagement />}
-          />
-          <Route path="/farmer-response" element={<FarmerResponse />} />
-        </Routes>
-      </main>
+    <CropProvider>
+      <div className="app-shell">
+        <Navbar />
 
-      <Footer />
-    </div>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/farmer" element={<FarmerLayout />}>
+              <Route index element={<Farmer />} />
+              <Route path="dashboard" element={<Farmer />} />
+              <Route path="add-listing" element={<AddListing />} />
+              <Route path="edit-listing" element={<EditList />} />
+              <Route path="orders" element={<OrderManagement />} />
+              <Route path="listings" element={<MyListings />} />
+              <Route path="complaints" element={<Complaints />} />
+              <Route path="ratings" element={<Ratings />} />
+            </Route>
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/preorder" element={<PreOrder />} />
+            <Route path="/pre-order" element={<PreOrder />} />
+            <Route path="/crop/:id" element={<PreOrder />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment/:orderId" element={<Payment />} />
+            <Route path="/buyer" element={<BuyerLayout />}>
+              <Route index element={<BuyerDashboard />} />
+              <Route path="dashboard" element={<BuyerDashboard />} />
+              <Route path="preorder" element={<PreOrder />} />
+              <Route path="complaints" element={<Complaints />} />
+              <Route path="ratings" element={<Ratings />} />
+              <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
+            </Route>
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/ratings" element={<Ratings />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/complaint/:id" element={<ResolveComplaint />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/ratings" element={<Ratings />} />
+
+            <Route path="/farmer-response" element={<FarmerResponse />} />
+          </Routes>
+        </main>
+
+        <Footer />
+      </div>
+    </CropProvider>
   );
 }
 

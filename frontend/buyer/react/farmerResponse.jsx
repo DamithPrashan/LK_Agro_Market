@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../../buyer/csss/farmerResponse.css";
-
-// Maps your real complaint_status enum values to farmer-friendly labels
-const STATUS_LABELS = {
-    pending: "Under Review",
-    under_review: "Awaiting Admin Decision",
-    resolved: "Resolved",
-    rejected: "Rejected",
-};
 
 function FarmerResponse() {
     const params = useParams();
     const location = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    // Maps your real complaint_status enum values to farmer-friendly labels
+    const STATUS_LABELS = {
+        pending: t("farmer.statusUnderReview"),
+        under_review: t("farmer.statusAwaitingAdmin"),
+        resolved: t("farmer.statusResolved"),
+        rejected: t("farmer.statusRejected"),
+    };
 
     // Support the complaint ID coming from a route param (/farmer/complaints/:complaintId)
     // or from navigation state, same pattern used elsewhere in this app (see CropDetail.jsx).
@@ -29,7 +31,7 @@ function FarmerResponse() {
 
     const fetchComplaint = () => {
         if (!complaintId) {
-            setLoadError("No complaint specified.");
+            setLoadError(t("errors.failedLoadDetails"));
             setLoading(false);
             return;
         }
@@ -45,12 +47,12 @@ function FarmerResponse() {
                 if (data.success && data.complaints && data.complaints.length > 0) {
                     setComplaint(data.complaints[0]);
                 } else {
-                    setLoadError(data.message || "Complaint not found.");
+                    setLoadError(data.message || t("errors.failedLoadDetails"));
                 }
             })
             .catch((err) => {
                 console.error("Error fetching complaint:", err);
-                setLoadError("Failed to load complaint details.");
+                setLoadError(t("errors.failedLoadDetails"));
             })
             .finally(() => setLoading(false));
     };
@@ -64,7 +66,7 @@ function FarmerResponse() {
         e.preventDefault();
 
         if (!response.trim()) {
-            setSubmitMsg("Please write a response before submitting.");
+            setSubmitMsg(t("farmer.writeResponseAlert"));
             return;
         }
 
@@ -87,14 +89,14 @@ function FarmerResponse() {
             const data = await res.json();
 
             if (data.success) {
-                setSubmitMsg("Response submitted successfully.");
+                setSubmitMsg(t("farmer.responseSubmittedAlert"));
                 fetchComplaint(); // refresh so status/response reflect what was just saved
             } else {
-                setSubmitMsg(data.message || "Failed to submit response.");
+                setSubmitMsg(data.message || t("errors.submissionFailed"));
             }
         } catch (err) {
             console.error("Error submitting response:", err);
-            setSubmitMsg("Failed to connect to the server.");
+            setSubmitMsg(t("errors.connectionFailed"));
         } finally {
             setSubmitting(false);
         }
@@ -104,7 +106,7 @@ function FarmerResponse() {
         return (
             <div className="farmer-dashboard">
                 <div className="response-card">
-                    <p>Loading complaint details...</p>
+                    <p>{t("loadingStates.loadingDetails")}</p>
                 </div>
             </div>
         );
@@ -114,9 +116,9 @@ function FarmerResponse() {
         return (
             <div className="farmer-dashboard">
                 <div className="response-card">
-                    <p>{loadError || "Complaint could not be found."}</p>
+                    <p>{loadError || t("errors.failedLoadDetails")}</p>
                     <button className="submit-btn" onClick={() => navigate("/farmer")}>
-                        Back to Dashboard
+                        {t("buttons.back")}
                     </button>
                 </div>
             </div>
@@ -135,13 +137,11 @@ function FarmerResponse() {
                 <div className="response-header">
                     <div>
                         <h2>
-                            OPEN COMPLAINT #C{complaint.complaint_id}
-                            {complaint.crop_name ? ` — ${complaint.crop_name}` : ""} — FARMER
-                            RESPONSE
+                            {t("farmer.openComplaintTitle", { id: complaint.complaint_id, crop: complaint.crop_name ? ` — ${complaint.crop_name}` : "" })}
                         </h2>
 
                         <p>
-                            {complaint.submitted_by_name || "Buyer"} says:
+                            {t("farmer.buyerSays", { buyer: complaint.submitted_by_name || "Buyer" })}
                             <span className="buyer-text">"{complaint.description}"</span>
                         </p>
                     </div>
@@ -151,33 +151,33 @@ function FarmerResponse() {
 
                 {alreadyResponded ? (
                     <div>
-                        <label>Your Response</label>
+                        <label>{t("farmer.yourResponse")}</label>
                         <p className="buyer-text">
                             {complaint.farmer_response || "—"}
                         </p>
 
                         {complaint.resolution && (
                             <>
-                                <label>Admin Resolution</label>
+                                <label>{t("farmer.adminResolution")}</label>
                                 <p className="buyer-text">{complaint.resolution}</p>
                             </>
                         )}
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
-                        <label>Your Response</label>
+                        <label>{t("farmer.yourResponse")}</label>
 
                         <textarea
                             className="response-textarea"
                             rows="4"
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
-                            placeholder="Explain your response..."
+                            placeholder={t("farmer.explainResponsePlaceholder")}
                             disabled={submitting}
                         />
 
                         <button type="submit" className="submit-btn" disabled={submitting}>
-                            {submitting ? "Submitting..." : "Submit Response"}
+                            {submitting ? t("btnSubmitting", "Submitting...") : t("buttons.submitResponse")}
                         </button>
 
                         {submitMsg && <p>{submitMsg}</p>}
@@ -189,3 +189,4 @@ function FarmerResponse() {
 }
 
 export default FarmerResponse;
+

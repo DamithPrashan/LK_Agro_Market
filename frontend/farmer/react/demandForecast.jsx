@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "../csss/dashBoard.css";
 import { FaSearch, FaSeedling, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 
 export default function ForecastDashboard() {
+    const { t } = useTranslation();
     // Full list of Sri Lankan districts, so the farmer can check demand
     // forecasts for any district — not just the ones they happen to have
     // crops listed in.
@@ -91,34 +93,34 @@ export default function ForecastDashboard() {
     return (
         <div className="section forecast-section">
             <div className="section-header">
-                <h3>Demand Forecast &amp; Analysis</h3>
+                <h3>{t("forecast.title")}</h3>
             </div>
 
             {/* Search panel */}
             <form className="forecast-search-panel" onSubmit={handleSubmit}>
                 <div className="search-field">
                     <label htmlFor="forecast-crop">
-                        <FaSeedling /> Crop
+                        <FaSeedling /> {t("forecast.cropLabel")}
                     </label>
                     <input
                         id="forecast-crop"
                         type="text"
                         value={cropName}
                         onChange={(e) => setCropName(e.target.value)}
-                        placeholder="e.g. carrot"
+                        placeholder={t("forecast.cropPlaceholder")}
                     />
                 </div>
 
                 <div className="search-field">
                     <label htmlFor="forecast-location">
-                        <FaMapMarkerAlt /> Location
+                        <FaMapMarkerAlt /> {t("forms.location")}
                     </label>
                     <select
                         id="forecast-location"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                     >
-                        <option value="">Select District</option>
+                        <option value="">{t("forms.selectDistrict")}</option>
                         {allDistricts.map((loc) => (
                             <option key={loc} value={loc}>
                                 {loc}
@@ -129,32 +131,33 @@ export default function ForecastDashboard() {
 
                 <div className="search-field search-field-narrow">
                     <label htmlFor="forecast-days">
-                        <FaCalendarAlt /> Timeframe
+                        <FaCalendarAlt /> {t("forecast.timeframeLabel")}
                     </label>
                     <select
                         id="forecast-days"
                         value={days}
                         onChange={(e) => setDays(e.target.value)}
                     >
-                        <option value="7">Last 7 Days</option>
-                        <option value="14">Last 14 Days</option>
-                        <option value="30">Last 30 Days</option>
+                        <option value="7">{t("forecast.timeframe7")}</option>
+                        <option value="14">{t("forecast.timeframe14")}</option>
+                        <option value="30">{t("forecast.timeframe30")}</option>
                     </select>
                 </div>
 
                 <button type="submit" className="search-btn" disabled={loading || !cropName || !location}>
                     <FaSearch />
-                    {loading ? "Analyzing..." : "Search"}
+                    {loading ? t("forecast.btnAnalyzing") : t("forecast.btnSearch")}
                 </button>
             </form>
 
             {/* --- YOUR LIVE FORECAST VIEW INSERTED HERE --- */}
             {forecastData && (
                 <div className="forecast-meta">
-                    Showing data for{" "}
-                    <strong>{forecastData.meta.crop_name}</strong> in{" "}
-                    <strong>{forecastData.meta.location}</strong> over the last{" "}
-                    {forecastData.meta.lookback_period_days} days.
+                    {t("forecast.showingData", {
+                        cropName: forecastData.meta.crop_name,
+                        location: forecastData.meta.location,
+                        days: forecastData.meta.lookback_period_days
+                    })}
                 </div>
             )}
 
@@ -164,7 +167,7 @@ export default function ForecastDashboard() {
                         {/* 1. Demand Volume Card */}
                         <div className="forecast-card">
                             <div className="crop-icon">{cropEmoji}</div>
-                            <h4>{forecastData.meta.crop_name} Volume</h4>
+                            <h4>{t("forecast.volumeHeader", { cropName: forecastData.meta.crop_name })}</h4>
                             <p
                                 className={
                                     forecastData.demand_metrics.total_quantity_demanded > 150
@@ -172,26 +175,24 @@ export default function ForecastDashboard() {
                                         : "medium"
                                 }
                             >
-                                Demand:{" "}
-                                {forecastData.demand_metrics.total_quantity_demanded > 150
-                                    ? "High"
-                                    : "Medium"}
+                                {t("forecast.demandLabel", {
+                                    level: forecastData.demand_metrics.total_quantity_demanded > 150
+                                        ? t("forecast.demandHigh", "High")
+                                        : t("forecast.demandMedium", "Medium")
+                                })}
                             </p>
                             <small>
-                                {forecastData.demand_metrics.total_quantity_demanded} kg Requested
+                                {t("forecast.requestedQty", { qty: forecastData.demand_metrics.total_quantity_demanded })}
                             </small>
                             <div className="forecast-detail-list">
                                 <div>
-                                    Total Pre-Orders:{" "}
-                                    {forecastData.demand_metrics.total_pre_orders_placed}
+                                    {t("forecast.totalPreOrders", { count: forecastData.demand_metrics.total_pre_orders_placed })}
                                 </div>
                                 <div>
-                                    Unique Buyers:{" "}
-                                    {forecastData.demand_metrics.unique_buyers_count}
+                                    {t("forecast.uniqueBuyers", { count: forecastData.demand_metrics.unique_buyers_count })}
                                 </div>
                                 <div>
-                                    Avg. Order Size:{" "}
-                                    {forecastData.demand_metrics.average_quantity_per_order} kg
+                                    {t("forecast.avgOrderSize", { qty: forecastData.demand_metrics.average_quantity_per_order })}
                                 </div>
                             </div>
                         </div>
@@ -199,19 +200,17 @@ export default function ForecastDashboard() {
                         {/* 2. Pricing Insights Card */}
                         <div className="forecast-card">
                             <div className="crop-icon">💰</div>
-                            <h4>Market Pricing</h4>
+                            <h4>{t("forecast.marketPricing")}</h4>
                             <p className="price-highlight">
-                                Avg: LKR {forecastData.pricing_insights.avg_pre_order_price}/kg
+                                {t("forecast.avgPrice", { price: forecastData.pricing_insights.avg_pre_order_price })}
                             </p>
-                            <small>Valuation Range</small>
+                            <small>{t("forecast.valuationRange")}</small>
                             <div className="forecast-detail-list">
                                 <div>
-                                    Min Price: LKR{" "}
-                                    {forecastData.pricing_insights.min_pre_order_price}
+                                    {t("forecast.minPrice", { price: forecastData.pricing_insights.min_pre_order_price })}
                                 </div>
                                 <div>
-                                    Max Price: LKR{" "}
-                                    {forecastData.pricing_insights.max_pre_order_price}
+                                    {t("forecast.maxPrice", { price: forecastData.pricing_insights.max_pre_order_price })}
                                 </div>
                             </div>
                         </div>
@@ -219,42 +218,38 @@ export default function ForecastDashboard() {
                         {/* 3. Supply & Cultivation Card */}
                         <div className="forecast-card">
                             <div className="crop-icon">🧑‍🌾</div>
-                            <h4>Local Supply Profile</h4>
+                            <h4>{t("forecast.supplyProfile")}</h4>
                             <p className="low">
-                                Farmers:{" "}
-                                {forecastData.supply_cultivation_insights.active_farmers_count}{" "}
-                                Active
+                                {t("forecast.activeFarmers", {
+                                    count: forecastData.supply_cultivation_insights.active_farmers_count
+                                })}
                             </p>
                             <small>
-                                {forecastData.supply_cultivation_insights.total_cultivated_area}{" "}
-                                Acres Cultivated
+                                {t("forecast.acres", {
+                                    area: forecastData.supply_cultivation_insights.total_cultivated_area
+                                })}
                             </small>
                             <div className="forecast-detail-list">
                                 <div>
-                                    Avg Land Size:{" "}
-                                    {
-                                        forecastData.supply_cultivation_insights
-                                            .average_cultivated_area_per_farmer
-                                    }{" "}
-                                    Ac
+                                    {t("forecast.avgLand", {
+                                        size: forecastData.supply_cultivation_insights.average_cultivated_area_per_farmer
+                                    })}
                                 </div>
                                 <div>
-                                    Avg Stock / Farmer:{" "}
-                                    {
-                                        forecastData.supply_cultivation_insights
-                                            .average_available_quantity_per_farmer
-                                    }{" "}
-                                    kg
+                                    {t("forecast.avgStock", {
+                                        qty: forecastData.supply_cultivation_insights.average_available_quantity_per_farmer
+                                    })}
                                 </div>
                             </div>
                         </div>
                     </>
                 ) : (
                     <div className="forecast-empty">
-                        <p>No forecast data available for this search.</p>
+                        <p>{t("emptyStates.noForecastData")}</p>
                     </div>
                 )}
             </div>
         </div>
     );
 }
+

@@ -5,15 +5,22 @@ import buyer3 from "../../assests/png/buyer3.jpg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./HeroCarousel.css";
 
-export default function HeroCarousel({ children }) {
+export default function HeroCarousel({ children, images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const slides = [
+  const defaultSlides = [
     { image: buyer1, alt: "Fresh Vegetables in LK Agro Market" },
     { image: buyer2, alt: "Fresh Fruits and Direct Sourcing" },
     { image: buyer3, alt: "Direct Connection with Farmers" }
   ];
+
+  const slides = images && images.length > 0
+    ? images.map((img, idx) => ({
+        image: img,
+        alt: `Agri Image ${idx + 1}`
+      }))
+    : defaultSlides;
 
   useEffect(() => {
     if (isPaused) return;

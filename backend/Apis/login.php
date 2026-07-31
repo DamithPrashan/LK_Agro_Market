@@ -41,7 +41,8 @@ try {
             "district" => $user['location'],
             "language" => $user['language'] ?? 'sinhala',
             "role" => $user['role'],
-            "verified" => (isset($user['verified_status']) && intval($user['verified_status']) === 1)
+            "verified" => (isset($user['verified_status']) && intval($user['verified_status']) === 1),
+            "profile_image" => $user['profile_image']
         ];
 
         // Start session

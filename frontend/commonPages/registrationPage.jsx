@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import { useForm } from "../../src/hooks/useForm";
 import FarmerVerificationForm from "../components/FarmerVerificationForm";
 import Navbar from "../components/navbar";
@@ -15,32 +16,33 @@ const DISTRICTS = [
 
 function validate(v) {
   const e = {};
-  if (!v.name.trim()) e.name = "Full name is required.";
+  if (!v.name.trim()) e.name = "errors.fullNameReq";
   
   // Clean contact number and validate
   const cleanContact = v.contact.trim().replace(/[\s-]/g, "");
   if (!cleanContact) {
-    e.contact = "Contact number is required.";
+    e.contact = "errors.contactNumReq";
   } else if (!/^\+94\d{9}$/.test(cleanContact)) {
-    e.contact = "Contact number must start with +94 followed by 9 digits (e.g. +94771234567).";
+    e.contact = "errors.contactNumFormat";
   }
 
   // Validate Gmail
   if (!v.email.trim()) {
-    e.email = "Email address is required.";
+    e.email = "errors.emailAddressReq";
   } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(v.email)) {
-    e.email = "Please enter a valid Gmail address (ending in @gmail.com).";
+    e.email = "errors.emailAddressGmail";
   }
 
-  if (!v.district) e.district = "Please select your district.";
-  if (v.password.length < 8) e.password = "Password must be at least 8 characters.";
-  if (v.password !== v.confirm) e.confirm = "Passwords do not match.";
+  if (!v.district) e.district = "errors.selectDistrictReq";
+  if (v.password.length < 8) e.password = "errors.passwordMinLen";
+  if (v.password !== v.confirm) e.confirm = "errors.passwordsDoNotMatch";
   return e;
 }
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTranslation();
   const [role, setRole] = useState("farmer");
   const [apiErr, setApiErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -78,10 +80,10 @@ export default function RegistrationPage() {
         login(data.user);
         navigate(role === "farmer" ? "/farmer" : "/buyer");
       } else {
-        setApiErr(data.message || "Registration failed. Please try again.");
+        setApiErr(data.message || t("errors.submissionFailed"));
       }
     } catch {
-      setApiErr("Network error. Make sure XAMPP is running.");
+      setApiErr(t("errors.networkXamppError"));
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ export default function RegistrationPage() {
         value={values[name]} onChange={handleChange} onBlur={handleBlur}
         className={touched[name] && errors[name] ? "error" : ""}
       />
-      {touched[name] && errors[name] && <p className="err-msg">{errors[name]}</p>}
+      {touched[name] && errors[name] && <p className="err-msg">{t(errors[name])}</p>}
       {hint && <p className="hint">{hint}</p>}
     </div>
   );
@@ -107,9 +109,9 @@ export default function RegistrationPage() {
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
-            <div style={s.logo}>🌿 LK Agro Market</div>
-            <h1 style={s.title}>Create your account</h1>
-            <p style={s.sub}>Join Sri Lanka's direct farm-to-buyer platform</p>
+            <div style={s.logo}>{t("login.logoTitle")}</div>
+            <h1 style={s.title}>{t("register.header")}</h1>
+            <p style={s.sub}>{t("register.subtitle")}</p>
           </div>
 
           {/* Role selector */}
@@ -121,36 +123,36 @@ export default function RegistrationPage() {
                 style={{ ...s.roleBtn, ...(role === r ? s.roleActive : {}) }}
               >
                 <span style={{ fontSize: 28 }}>{r === "farmer" ? "🌾" : "🛒"}</span>
-                <span style={{ fontWeight: 700, fontSize: 14 }}>{r === "farmer" ? "Farmer" : "Buyer"}</span>
+                <span style={{ fontWeight: 700, fontSize: 14 }}>{r === "farmer" ? t("register.roleFarmer") : t("register.roleBuyer")}</span>
                 <span style={{ fontSize: 11, color: "var(--t-3)" }}>
-                  {r === "farmer" ? "List and sell crops" : "Browse and order crops"}
+                  {r === "farmer" ? t("register.roleFarmerSub") : t("register.roleBuyerSub")}
                 </span>
               </button>
             ))}
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-            <p className="section-label">Personal information</p>
+            <p className="section-label">{t("register.sectionPersonal")}</p>
             <div className="grid-2">
-              {renderField("Full Name", "name", "text", "R.M.S.T. Randeniya")}
-              {renderField("Contact Number", "contact", "text", "+94 71 234 5678")}
+              {renderField(t("forms.fullName"), "name", "text", "R.M.S.T. Randeniya")}
+              {renderField(t("forms.contactNumber"), "contact", "text", "+94 71 234 5678")}
             </div>
-            {renderField("Email Address", "email", "email", "you@email.com")}
+            {renderField(t("forms.emailAddress"), "email", "email", t("login.emailPlaceholder"))}
             <div className="grid-2">
               <div className="field">
-                <label htmlFor="district">District</label>
+                <label htmlFor="district">{t("forms.district")}</label>
                 <select
                   id="district" name="district" value={values.district}
                   onChange={handleChange} onBlur={handleBlur}
                   className={touched.district && errors.district ? "error" : ""}
                 >
-                  <option value="">Select district</option>
+                  <option value="">{t("forms.selectDistrict")}</option>
                   {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
                 </select>
-                {touched.district && errors.district && <p className="err-msg">{errors.district}</p>}
+                {touched.district && errors.district && <p className="err-msg">{t(errors.district)}</p>}
               </div>
               <div className="field">
-                <label htmlFor="language">Preferred Language</label>
+                <label htmlFor="language">{t("forms.preferredLanguage")}</label>
                 <select id="language" name="language" value={values.language} onChange={handleChange}>
                   <option value="sinhala">සිංහල (Sinhala)</option>
                   <option value="tamil">தமிழ் (Tamil)</option>
@@ -159,8 +161,8 @@ export default function RegistrationPage() {
               </div>
             </div>
             <div className="grid-2">
-              {renderField("Password", "password", "password", "", "Min 8 characters")}
-              {renderField("Confirm Password", "confirm", "password")}
+              {renderField(t("forms.password"), "password", "password", "", t("auth.minPasswordHint"))}
+              {renderField(t("forms.confirmPassword"), "confirm", "password")}
             </div>
 
             {/* Farmer verification — rendered from its own component */}
@@ -180,13 +182,13 @@ export default function RegistrationPage() {
             {apiErr && <div className="info-red">{apiErr}</div>}
 
             <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? "Creating account…" : "Create Account"}
+              {loading ? t("register.btnCreating") : t("register.btnCreate")}
             </button>
           </form>
 
           <p style={s.foot}>
-            Already have an account?{" "}
-            <Link to="/login" style={{ fontWeight: 600 }}>Sign in here</Link>
+            {t("register.footText")}{" "}
+            <Link to="/login" style={{ fontWeight: 600 }}>{t("register.footLink")}</Link>
           </p>
         </div>
       </main>
@@ -206,4 +208,4 @@ const s = {
   roleBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "14px 10px", borderRadius: "var(--r-lg)", border: "2px solid var(--s-200)", background: "var(--white)", cursor: "pointer", transition: "all .15s" },
   roleActive: { borderColor: "var(--g-600)", background: "var(--g-50)" },
   foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)", marginTop: 16 },
-};
+};

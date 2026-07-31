@@ -73,6 +73,14 @@ try {
     ");
     echo "Verified/Created 'notifications' table successfully!<br>";
 
+    // 5b. Add type and data columns to 'notifications' table
+    $stmt5b = $pdo->query("SHOW COLUMNS FROM notifications LIKE 'type'");
+    if (!$stmt5b->fetch()) {
+        $pdo->exec("ALTER TABLE notifications ADD COLUMN type VARCHAR(50) NULL DEFAULT NULL AFTER message");
+        $pdo->exec("ALTER TABLE notifications ADD COLUMN data TEXT NULL DEFAULT NULL AFTER type");
+        echo "Successfully added 'type' and 'data' columns to 'notifications' table!<br>";
+    }
+
     // 6. Create 'crop_photos' table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS `crop_photos` (
@@ -84,7 +92,18 @@ try {
     ");
     echo "Verified/Created 'crop_photos' table successfully!<br>";
 
+    // 7. Add missing 'profile_image' column to 'user' table
+    $stmt7 = $pdo->query("SHOW COLUMNS FROM user LIKE 'profile_image'");
+    $column7 = $stmt7->fetch();
+    if (!$column7) {
+        $pdo->exec("ALTER TABLE user ADD COLUMN profile_image VARCHAR(255) NULL AFTER language");
+        echo "Successfully added the 'profile_image' column to the 'user' table!<br>";
+    } else {
+        echo "The 'profile_image' column already exists in the 'user' table.<br>";
+    }
+
 } catch (PDOException $e) {
     echo "Error updating database: " . $e->getMessage();
 }
 ?>
+

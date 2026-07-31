@@ -1,17 +1,24 @@
 .app-header {
-
   color: white;
   background: #0f5c25;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 14px 30px;
   flex-wrap: wrap;
-
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-header.scrolled {
+  background: #0f5c25;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-bottom-color: transparent;
 }
 
 .app-brand {
@@ -97,6 +104,12 @@
   cursor: pointer;
   transition: .3s;
 }
+
+.language-buttons button.active {
+  background: #1a5c2d;
+  font-weight: bold;
+}
+
 
 
 .language-buttons button:hover {
@@ -421,3 +434,41 @@
     width: 90% !important;
   }
 }
+
+/* Navbar Avatar Styling */
+.navbar-profile-trigger {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.navbar-profile-trigger:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2ba84a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.navbar-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.navbar-avatar-text {
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}

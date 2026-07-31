@@ -145,9 +145,13 @@ try {
         $updateStmt->execute([$orderId]);
 
         // Insert notification to farmer
-        $farmer_msg = "Buyer has cancelled the accepted pre-order ORD{$orderId} for {$order['crop_name']}. The 1/3 pre-payment has been forfeited to you.";
-        $notifyStmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message) VALUES (?, 'Pre-Order Cancelled', ?)");
-        $notifyStmt->execute([$order['farmer_user_id'], $farmer_msg]);
+        require_once 'create_notification.php';
+        $buyerName = $_SESSION['user']['name'] ?? 'A buyer';
+        $notifMsg = "Buyer {$buyerName} has cancelled order ORD{$orderId} ({$order['crop_name']}).";
+        $notif_data = json_encode([
+            "orderId" => $orderId
+        ]);
+        create_notification($order['farmer_user_id'], 'Pre-Order Cancelled', $notifMsg, 'preorderCancelled', $notif_data);
 
         $pdo->commit();
 

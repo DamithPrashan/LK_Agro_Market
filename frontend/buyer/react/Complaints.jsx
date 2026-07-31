@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../csss/Complaints.css";
 
 function ComplaintPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [reason, setReason] = useState("Crop quality does not match listing");
@@ -48,11 +50,11 @@ function ComplaintPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedOrderId) {
-      setMsg({ text: "Please select an order to file a complaint against.", ok: false });
+      setMsg({ text: t("errors.selectOrderComplaint"), ok: false });
       return;
     }
     if (!description.trim()) {
-      setMsg({ text: "Please describe the issue in detail.", ok: false });
+      setMsg({ text: t("errors.describeIssueDetail"), ok: false });
       return;
     }
 
@@ -79,10 +81,10 @@ function ComplaintPage() {
         setEvidenceFile(null);
         setUploadMsg("");
       } else {
-        setMsg({ text: data.message || "Submission failed. Please try again.", ok: false });
+        setMsg({ text: data.message || t("errors.submissionFailed"), ok: false });
       }
     } catch (err) {
-      setMsg({ text: "Network error. Make sure XAMPP is running.", ok: false });
+      setMsg({ text: t("errors.networkXamppError"), ok: false });
     } finally {
       setLoading(false);
     }
@@ -94,18 +96,18 @@ function ComplaintPage() {
 
         {/* Header */}
         <div className="page-header">
-          <h1>Complaint & Dispute Resolution</h1>
-          <p>Fair resolution for every transaction</p>
+          <h1>{t("complaints.title")}</h1>
+          <p>{t("complaints.subtitle")}</p>
         </div>
 
         {/* Tabs */}
         <div className="tabs">
-          <button className="tab active">Submit Complaint</button>
+          <button className="tab active">{t("complaints.submitComplaintTab")}</button>
           <button
             className="tab"
             onClick={() => navigate("/farmer-response")}
           >
-            Farmer Response
+            {t("complaints.farmerResponseTab")}
           </button>
         </div>
 
@@ -113,8 +115,8 @@ function ComplaintPage() {
         <div className="complaint-card">
           <form onSubmit={handleSubmit}>
             <div className="card-top">
-              <h3>SUBMIT A COMPLAINT</h3>
-              <span className="buyer-tag">Buyer View</span>
+              <h3>{t("complaints.submitHeading")}</h3>
+              <span className="buyer-tag">{t("complaints.buyerView")}</span>
             </div>
 
             {msg.text && (
@@ -132,9 +134,9 @@ function ComplaintPage() {
               </div>
             )}
 
-            <label>Select Your Order</label>
+            <label>{t("complaints.selectOrderLabel")}</label>
             {fetchLoading ? (
-              <div style={{ padding: "10px 0", fontSize: "14px", color: "#666" }}>Loading your orders...</div>
+              <div style={{ padding: "10px 0", fontSize: "14px", color: "#666" }}>{t("orders.loadingOrders")}</div>
             ) : (
               <select
                 className="input-field"
@@ -142,9 +144,9 @@ function ComplaintPage() {
                 onChange={(e) => setSelectedOrderId(e.target.value)}
                 required
               >
-                <option value="">-- Select Order --</option>
+                <option value="">{t("forms.selectOrderPlaceholder")}</option>
                 {orders.length === 0 ? (
-                  <option value="" disabled>No eligible orders found</option>
+                  <option value="" disabled>{t("emptyStates.noEligibleOrders")}</option>
                 ) : (
                   orders.map((ord) => (
                     <option key={ord.id} value={ord.id}>
@@ -155,32 +157,32 @@ function ComplaintPage() {
               </select>
             )}
 
-            <label>Complaint Reason</label>
+            <label>{t("complaints.reasonLabel")}</label>
             <select
               className="input-field"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             >
-              <option>Crop quality does not match listing</option>
-              <option>Late Delivery</option>
-              <option>Wrong Quantity</option>
-              <option>Damaged Product</option>
+              <option value="Crop quality does not match listing">{t("complaints.reasonOption1")}</option>
+              <option value="Late Delivery">{t("complaints.reasonOption2")}</option>
+              <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
+              <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
             </select>
 
-            <label>Description</label>
+            <label>{t("forms.description")}</label>
             <textarea
               className="input-field"
               rows="5"
-              placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+              placeholder={t("complaints.descriptionPlaceholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
             />
 
-            <label>Evidence Photo (Optional)</label>
+            <label>{t("complaints.evidenceLabel")}</label>
             <div className="upload-box">
               <label htmlFor="photo-upload" className="upload-area" style={{ cursor: "pointer" }}>
-                {uploadMsg ? `Selected File: ${uploadMsg}` : "Click here to upload photo evidence"}
+                {uploadMsg ? t("forms.selectedFile", { filename: uploadMsg }) : t("complaints.evidenceClick")}
               </label>
 
               <input
@@ -193,34 +195,34 @@ function ComplaintPage() {
             </div>
 
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "Submitting..." : "Submit Complaint"}
+              {loading ? t("btnSubmitting", "Submitting...") : t("buttons.submitComplaint")}
             </button>
           </form>
         </div>
 
         {/* Flow Section */}
         <div className="flow-card">
-          <h3>DISPUTE RESOLUTION FLOW</h3>
+          <h3>{t("complaints.flowHeading")}</h3>
 
           <div className="flow">
             <div className="flow-step active-step">
-              Buyer Submits
+              {t("complaints.flowStep1")}
             </div>
             <span>→</span>
             <div className="flow-step">
-              Admin Notified
+              {t("complaints.flowStep2")}
             </div>
             <span>→</span>
             <div className="flow-step">
-              Farmer Responds
+              {t("complaints.flowStep3")}
             </div>
             <span>→</span>
             <div className="flow-step">
-              Admin Reviews
+              {t("complaints.flowStep4")}
             </div>
             <span>→</span>
             <div className="flow-step">
-              Resolved
+              {t("complaints.flowStep5")}
             </div>
           </div>
         </div>
@@ -228,9 +230,9 @@ function ComplaintPage() {
         {/* Admin Section Demo View */}
         <div className="admin-card">
           <div className="admin-top">
-            <h3>ADMIN - RESOLVE COMPLAINT #C019</h3>
+            <h3>{t("complaints.adminResolveTitle", { id: "019" })}</h3>
             <span className="evidence-tag">
-              Evidence Received
+              {t("complaints.evidenceReceived")}
             </span>
           </div>
 
@@ -240,23 +242,23 @@ function ComplaintPage() {
             <p><strong>Evidence:</strong> 1 photo uploaded by buyer.</p>
           </div>
 
-          <label>Admin Notes</label>
+          <label>{t("complaints.adminNotes")}</label>
           <textarea
             className="input-field"
             rows="5"
-            placeholder="Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order."
+            placeholder={t("complaints.descriptionPlaceholder")}
             readOnly
-            defaultValue="Admin reviews the uploaded dispute photos and buyer/farmer description to issue refunds or redelivery."
+            defaultValue={t("complaints.adminNotesPlaceholder")}
           />
           <div className="action-buttons">
             <button className="refund-btn" onClick={() => alert("Refund option selected by Admin")}>
-              Resolve - Refund
+              {t("buttons.refund")}
             </button>
             <button className="delivery-btn" onClick={() => alert("Re-delivery option selected by Admin")}>
-              Resolve - Re-delivery
+              {t("buttons.redelivery")}
             </button>
             <button className="dismiss-btn" onClick={() => alert("Dispute dismissed by Admin")}>
-              Dismiss
+              {t("buttons.dismiss")}
             </button>
           </div>
         </div>
@@ -265,4 +267,4 @@ function ComplaintPage() {
   );
 }
 
-export default ComplaintPage;
+export default ComplaintPage;

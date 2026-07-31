@@ -35,19 +35,24 @@ try {
     }
     $buyer_id = $buyer['buyer_id'];
 
-    // 2. Fetch crop details
-    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ?");
+    $pdo->beginTransaction();
+
+    // 2. Fetch crop details inside the transaction and lock the row to avoid race conditions
+    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ? FOR UPDATE");
     $cropQuery->execute([$crop_id]);
     $crop = $cropQuery->fetch();
     if (!$crop) {
+        $pdo->rollBack();
         echo json_encode(["success" => false, "message" => "Crop listing not found."]);
         exit;
     }
     if ($crop['crop_status'] !== 'active') {
+        $pdo->rollBack();
         echo json_encode(["success" => false, "message" => "This crop listing is no longer active."]);
         exit;
     }
     if ($quantity > floatval($crop['quantity'])) {
+        $pdo->rollBack();
         echo json_encode(["success" => false, "message" => "Requested quantity exceeds available quantity."]);
         exit;
     }
@@ -61,6 +66,7 @@ try {
     $collection_dt = new DateTime($collection_date);
     
     if ($collection_dt < $harvest_dt || $collection_dt > $max_dt) {
+        $pdo->rollBack();
         $formatted_max = $max_dt->format('Y-m-d');
         echo json_encode([
             "success" => false, 
@@ -71,8 +77,7 @@ try {
 
     $unit_price = floatval($crop['price_per_unit']);
     $total_amount = $quantity * $unit_price;
-
-    $pdo->beginTransaction();
+    $new_quantity = floatval($crop['quantity']) - $quantity;
 
     // 3. Insert into reserve_crop
     $reserveSql = "INSERT INTO reserve_crop (buyer_id, crop_id, quantity_requested, unit_price, total_amount, status, reserved_date) VALUES (?, ?, ?, ?, ?, 'pending', NOW())";
@@ -85,9 +90,49 @@ try {
     $reservationStmt = $pdo->prepare($reservationSql);
     $reservationStmt->execute([$reserve_crop_id, $collection_date]);
 
+    // 5. Update crop available quantity
+    $updateCropSql = "UPDATE crop SET quantity = ? WHERE crop_id = ?";
+    $updateCropStmt = $pdo->prepare($updateCropSql);
+    $updateCropStmt->execute([$new_quantity, $crop_id]);
+
     $pdo->commit();
 
-    echo json_encode(["success" => true, "message" => "Pre-order placed successfully!"]);
+    // Trigger Notification to Farmer
+    try {
+        require_once 'create_notification.php';
+        $buyer_name = $_SESSION['user']['name'] ?? 'A buyer';
+        
+        $cropInfoStmt = $pdo->prepare("
+            SELECT c.crop_name, u.user_id as farmer_user_id
+            FROM crop c
+            JOIN farmer f ON c.farmer_id = f.farmer_id
+            JOIN user u ON f.user_id = u.user_id
+            WHERE c.crop_id = ?
+        ");
+        $cropInfoStmt->execute([$crop_id]);
+        $cropInfo = $cropInfoStmt->fetch();
+        
+        if ($cropInfo) {
+            $farmer_user_id = $cropInfo['farmer_user_id'];
+            $crop_name = $cropInfo['crop_name'];
+            $notif_title = "New Order Received";
+            $notif_msg = "{$buyer_name} has placed a new order for {$quantity} kg of {$crop_name}.";
+            $notif_data = json_encode([
+                "buyerName" => $buyer_name,
+                "cropName" => $crop_name,
+                "quantity" => $quantity
+            ]);
+            create_notification($farmer_user_id, $notif_title, $notif_msg, 'orderSubmitted', $notif_data);
+        }
+    } catch (Exception $e) {
+        error_log("Notification error in place_preorder.php: " . $e->getMessage());
+    }
+
+    echo json_encode([
+        "success" => true, 
+        "message" => "Pre-order placed successfully!",
+        "updated_quantity" => $new_quantity
+    ]);
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

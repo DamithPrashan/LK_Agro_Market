@@ -11,7 +11,7 @@ body,
   min-height: 100vh;
   font-family: Arial, sans-serif;
   background: #f4f6f8;
-  overflow-x: hidden;
+  overflow-x: clip;
   box-sizing: border-box;
 }
 
@@ -229,6 +229,12 @@ body,
   font-size: 13px;
   opacity: 0.9;
   line-height: 1.5;
+}
+.order-box label {
+  color: #ffffff;      
+  display: block;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 /* ==========================

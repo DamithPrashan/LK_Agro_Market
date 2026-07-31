@@ -223,6 +223,19 @@
   /* //when modify the buyer sidebar this page added below 2 parts */
   display: flex;
   flex-direction: column;
+  margin-top: 68px; /* space for fixed navbar */
+}
+
+@media (max-width: 1450px) {
+  .main-content {
+    margin-top: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-top: 200px;
+  }
 }
 
 .page-subtitle {

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -15,7 +17,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) { setError("Please enter your email and password."); return; }
+    if (!email || !password) { setError(t("errors.enterEmailPassword")); return; }
     setLoading(true);
     setError("");
     try {
@@ -32,11 +34,11 @@ export default function LoginPage() {
         else if (data.user.role === "buyer") navigate("/buyer");
         else if (data.user.role === "admin") navigate("/admin");
       } else {
-        setError(data.message || "Invalid email or password.");
+        setError(data.message || t("errors.invalidEmailPassword"));
       }
     } catch (error) {
       console.log(error);
-      setError("Network error. Make sure XAMPP is running.");
+      setError(t("errors.networkXamppError"));
     } finally {
       setLoading(false);
     }
@@ -48,23 +50,23 @@ export default function LoginPage() {
       <main style={s.page}>
         <div className="card" style={s.card}>
           <div style={s.header}>
-            <div style={s.logo}>🌿 LK Agro Market</div>
-            <h1 style={s.title}>Welcome back</h1>
-            <p style={s.sub}>Sign in to your account to continue</p>
+            <div style={s.logo}>{t("login.logoTitle")}</div>
+            <h1 style={s.title}>{t("login.header")}</h1>
+            <p style={s.sub}>{t("login.subtitle")}</p>
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="field">
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="email">{t("forms.emailAddress")}</label>
               <input
                 id="email" type="email" value={email} autoComplete="email"
-                placeholder="you@email.com"
+                placeholder={t("login.emailPlaceholder")}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t("forms.password")}</label>
               <div style={s.pwWrap}>
                 <input
                   id="password"
@@ -79,27 +81,27 @@ export default function LoginPage() {
                   type="button"
                   style={s.eyeBtn}
                   onClick={() => setShowPw((p) => !p)}
-                  aria-label={showPw ? "Hide password" : "Show password"}
+                  aria-label={showPw ? t("login.hidePassword") : t("login.showPassword")}
                 >
                   {showPw ? "🙈" : "👁"}
                 </button>
               </div>
               <div style={{ textAlign: "right", marginTop: 4 }}>
-                <Link to="/forgot-password" style={{ fontSize: 11 }}>Forgot password?</Link>
+                <Link to="/forgot-password" style={{ fontSize: 11 }}>{t("login.forgotPassword")}</Link>
               </div>
             </div>
 
             {error && <div className="info-red" style={{ marginBottom: 14 }}>{error}</div>}
 
             <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? "Signing in…" : "Sign in"}
+              {loading ? t("login.btnSigningIn") : t("login.btnSignIn")}
             </button>
           </form>
 
           <hr className="divider" />
           <p style={s.foot}>
-            New to LK Agro Market?{" "}
-            <Link to="/register" style={{ fontWeight: 600 }}>Create a free account</Link>
+            {t("login.footText")}{" "}
+            <Link to="/register" style={{ fontWeight: 600 }}>{t("login.footLink")}</Link>
           </p>
         </div>
       </main>
@@ -119,3 +121,4 @@ const s = {
   eyeBtn: { position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, padding: 0, color: "var(--t-3)" },
   foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)" },
 };
+

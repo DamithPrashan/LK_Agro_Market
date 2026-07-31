@@ -24,9 +24,11 @@ if ($reservation_id === 0 || empty($payment_type_raw) || $amount <= 0 || empty($
     exit;
 }
 
-if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(["success" => false, "message" => "Please upload a valid payment proof."]);
-    exit;
+if ($method === 'bank') {
+    if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(["success" => false, "message" => "Please upload a valid payment proof."]);
+        exit;
+    }
 }
 
 // Map payment type: prepayment -> advance, balance -> final
@@ -98,20 +100,22 @@ try {
     exit;
 }
 
-$upload_dir = '../uploads/';
-if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0755, true);
-}
-
 try {
-    // Process proof file
-    $ext = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
-    $filename = 'pay_' . time() . '_' . uniqid() . '.' . $ext;
-    $proof_file_path = 'backend/uploads/' . $filename;
+    $proof_file_path = 'online';
+    if ($method === 'bank') {
+        $upload_dir = '../uploads/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        // Process proof file
+        $ext = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
+        $filename = 'pay_' . time() . '_' . uniqid() . '.' . $ext;
+        $proof_file_path = 'backend/uploads/' . $filename;
 
-    if (!move_uploaded_file($_FILES['proof']['tmp_name'], $upload_dir . $filename)) {
-        echo json_encode(["success" => false, "message" => "Failed to save uploaded proof file."]);
-        exit;
+        if (!move_uploaded_file($_FILES['proof']['tmp_name'], $upload_dir . $filename)) {
+            echo json_encode(["success" => false, "message" => "Failed to save uploaded proof file."]);
+            exit;
+        }
     }
 
     // Begin Transaction
@@ -128,6 +132,48 @@ try {
     $updateReservation->execute([$new_status, $reservation_id]);
 
     $pdo->commit();
+
+    // Trigger Notification to Buyer and Farmer
+    try {
+        require_once __DIR__ . '/../create_notification.php';
+        
+        $paymentInfoStmt = $pdo->prepare("
+            SELECT 
+                b.user_id as buyer_user_id,
+                u_farmer.user_id as farmer_user_id,
+                c.crop_name
+            FROM reservation r
+            JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+            JOIN crop c ON rc.crop_id = c.crop_id
+            JOIN farmer f ON c.farmer_id = f.farmer_id
+            JOIN user u_farmer ON f.user_id = u_farmer.user_id
+            JOIN buyer b ON rc.buyer_id = b.buyer_id
+            WHERE r.reservation_id = ?
+        ");
+        $paymentInfoStmt->execute([$reservation_id]);
+        $paymentInfo = $paymentInfoStmt->fetch();
+        
+        if ($paymentInfo) {
+            $buyer_user_id = $paymentInfo['buyer_user_id'];
+            $farmer_user_id = $paymentInfo['farmer_user_id'];
+            $crop_name = $paymentInfo['crop_name'];
+            
+            $notif_data = json_encode([
+                "amount" => $amount,
+                "orderId" => $reservation_id
+            ]);
+
+            // Notify Buyer
+            $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
+            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $notif_data);
+            
+            // Notify Farmer
+            $farmer_msg = "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
+            create_notification($farmer_user_id, "Payment Received", $farmer_msg, 'paymentReceived', $notif_data);
+        }
+    } catch (Exception $e) {
+        error_log("Notification error in submit_payment.php: " . $e->getMessage());
+    }
 
     echo json_encode([
         "success" => true,

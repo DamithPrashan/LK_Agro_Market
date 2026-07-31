@@ -1,10 +1,12 @@
 import React from "react";
 import "../../commonPages/csss/HomePage/overview.css";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 
 function Overview() {
+    const { t } = useTranslation();
 
     return (
 
@@ -13,26 +15,25 @@ function Overview() {
             <div className="overview-left">
 
                 <h1>
-                    LK Agro Market — Platform Overview
+                    {t("home.title")}
                 </h1>
 
                 <p className="sub-title">
-                    Sri Lanka's direct farm-to-buyer marketplace
+                    {t("home.subtitle")}
                 </p>
 
                 <div className="overview-buttons">
 
                     <Link to="/login">
                         <button className="signin-btn">
-                            Sign in
-
+                            {t("navbar.signIn")}
                         </button>
                     </Link>
 
 
                     <Link to="/register">
                         <button className="register-btn" >
-                            Register Free
+                            {t("home.registerFree")}
                         </button>
                     </Link>
 
@@ -47,7 +48,7 @@ function Overview() {
 
                     <h2>148</h2>
 
-                    <p>Farmers</p>
+                    <p>{t("home.farmersStat")}</p>
 
                 </div>
 
@@ -55,7 +56,7 @@ function Overview() {
 
                     <h2>62</h2>
 
-                    <p>Listings</p>
+                    <p>{t("home.listingsStat")}</p>
 
                 </div>
 
@@ -63,7 +64,7 @@ function Overview() {
 
                     <h2>1.2K</h2>
 
-                    <p>Orders</p>
+                    <p>{t("home.ordersStat")}</p>
 
                 </div>
 

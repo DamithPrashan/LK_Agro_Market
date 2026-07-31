@@ -3,6 +3,9 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json");
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 require_once 'connection/db.php';
 require_once 'Apis/auth_check.php';
@@ -34,6 +37,7 @@ try {
                 u.email as farmer_email,
                 u.phone as farmer_phone,
                 f.verified_status as is_verified,
+                u.user_id as farmer_user_id,
                 fv.farm_location
             FROM crop c
             JOIN farmer f ON c.farmer_id = f.farmer_id
