@@ -28,7 +28,8 @@
     "addListing": "Add Listing",
     "myListings": "My Listings",
     "profile": "Profile",
-    "browseCrops": "Browse Crops"
+    "browseCrops": "Browse Crops",
+    "mapSearch": "Map Search"
   },
   "home": {
     "title": "LK Agro Market — Platform Overview",
@@ -638,5 +639,30 @@
       "resolutionFailed": "Resolution action failed.",
       "networkErrorSubmit": "Network error submitting resolution."
     }
+  },
+  "mapSearch": {
+    "title": "Farmer Map Discovery",
+    "subtitle": "Find verified farms, check crop availability, and plan pre-orders directly from the map.",
+    "district": "District",
+    "cropType": "Crop Category",
+    "priceRange": "Max Price",
+    "harvestDate": "Harvest Before",
+    "verifiedOnly": "Verified Only",
+    "search": "Apply Filters",
+    "reset": "Reset",
+    "showHeatmap": "Show Crop Heatmap",
+    "verifiedBadge": "Verified",
+    "viewListings": "View Listings",
+    "near": "Near",
+    "moderate": "Moderate",
+    "far": "Far",
+    "noFarmers": "No Farmers Found",
+    "activeCrops": "Active Crops",
+    "activeListings": "active listings",
+    "calendarTitle": "Seasonal Crop Calendar",
+    "calendarSubtitle": "Upcoming harvests in the next 60 days. Secure crop bookings early.",
+    "thisWeek": "This Week",
+    "nextWeek": "Next Week",
+    "thisMonth": "Upcoming"
   }
 }

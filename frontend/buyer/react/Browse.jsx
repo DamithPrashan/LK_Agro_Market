@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
 import { useTranslation } from "react-i18next";
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -50,12 +50,25 @@ const imageMap = {
 
 export default function Browse() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
   const { crops, loading, fetchCrops } = useCrops();
-  const [searchQuery, setSearchQuery] = useState("");
+
+  // Parse initial search query from URL
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const queryParams = new URLSearchParams(location.search);
+    return queryParams.get("search") || location.state?.searchQuery || "";
+  });
+
+  // Keep search query updated if URL parameters or state changes
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const q = queryParams.get("search") || location.state?.searchQuery || "";
+    setSearchQuery(q);
+  }, [location.search, location.state]);
 
   // Consolidated advanced filters state
   const [filters, setFilters] = useState({
@@ -138,6 +151,7 @@ export default function Browse() {
     };
     setFilters(defaultFilters);
     setSearchQuery("");
+    navigate("/browse", { replace: true });
     fetchListings(defaultFilters, "");
   };
 
@@ -305,7 +319,7 @@ export default function Browse() {
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? t("browse.allSriLanka") : filters.district })}. <a href="#">{t("browse.useMapSearch")}</a>
+            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? t("browse.allSriLanka") : filters.district })}. <span style={{ textDecoration: "underline", cursor: "pointer", color: "#1a5c2d", marginLeft: "4px" }} onClick={() => navigate("/buyer/mapsearch")}>{t("browse.useMapSearch")}</span>
           </div>
 
           {/* STATS */}

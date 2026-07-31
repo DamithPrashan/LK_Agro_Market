@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt } from "react-icons/fa";
+import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt, FaMapMarkedAlt } from "react-icons/fa";
 import "./BuyerSidebar.css";
 
 export default function BuyerSidebar() {
@@ -43,6 +43,12 @@ export default function BuyerSidebar() {
       path: "/buyer/buyerorderhistory",
       icon: <FaHistory className="sidebar-icon" />,
       active: currentPath === "/buyer/buyerorderhistory"
+    },
+    {
+      label: t("sidebar.mapSearch"),
+      path: "/buyer/mapsearch",
+      icon: <FaMapMarkedAlt className="sidebar-icon" />,
+      active: currentPath === "/buyer/mapsearch"
     }
   ];
 
