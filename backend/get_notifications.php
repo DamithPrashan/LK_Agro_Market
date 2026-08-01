@@ -1,17 +1,36 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: GET");
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+header("Access-Control-Allow-Origin: $origin");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 require_once 'connection/db.php';
 require_once 'Apis/auth_check.php';
 
 require_login();
-$user_id = $_SESSION['user']['id'];
+$user_id = $_SESSION['user']['id'] ?? null;
+
+if (!$user_id) {
+    http_response_code(401);
+    echo json_encode(["success" => false, "message" => "Missing authenticated user id."]);
+    exit;
+}
 
 try {
-    $stmt = $pdo->prepare("SELECT id, title, message as `desc`, type, data, (is_read = 0) as unread, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50");
+    $stmt = $pdo->prepare(
+        "SELECT id, title, message AS `desc`, type, data, is_read, created_at
+         FROM notifications
+         WHERE user_id = ?
+         ORDER BY created_at DESC
+         LIMIT 50"
+    );
     $stmt->execute([$user_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -26,12 +45,12 @@ try {
         } elseif (stripos($title, 'payment') !== false || stripos($title, 'receive') !== false) {
             $type = 'success';
         }
-        
+
         $notifications[] = [
             "id" => intval($row['id']),
             "title" => $row['title'],
             "desc" => $row['desc'],
-            "unread" => intval($row['unread']) === 1,
+            "unread" => intval($row['is_read']) === 0,
             "created_at" => $row['created_at'],
             "type" => $type,
             "notif_type" => $row['type'],
@@ -42,8 +61,10 @@ try {
     echo json_encode([
         "success" => true,
         "notifications" => $notifications
-    ]);
-} catch (PDOException $e) {
+    ], JSON_UNESCAPED_SLASHES);
+} catch (Throwable $e) {
+    error_log("get_notifications.php failed: " . $e->getMessage());
+    http_response_code(500);
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
 ?>

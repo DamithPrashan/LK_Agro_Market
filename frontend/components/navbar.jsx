@@ -61,12 +61,24 @@ const Navbar = () => {
       return;
     }
     try {
-      const response = await fetch('/backend/get_notifications.php');
+      console.log("Fetching notifications for user:", user.id);
+      const response = await fetch('/backend/get_notifications.php', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Notification fetch failed with status ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success) {
         setNotifications(data.notifications || []);
         const unread = (data.notifications || []).filter(n => n.unread).length;
         setUnreadCount(unread);
+      } else {
+        console.error("Notifications API returned success=false:", data);
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -81,14 +93,23 @@ const Navbar = () => {
 
   const handleMarkAllRead = async () => {
     try {
+      console.log("Marking all notifications as read");
       const response = await fetch('/backend/mark_notifications_read.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
       });
+
+      if (!response.ok) {
+        throw new Error(`Mark-all-read failed with status ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success) {
         setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
         setUnreadCount(0);
+      } else {
+        console.error("Mark all read API returned success=false:", data);
       }
     } catch (error) {
       console.error("Error marking notifications as read:", error);
