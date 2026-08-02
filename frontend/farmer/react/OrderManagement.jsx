@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import "../csss/OrderManagement.css";
 import RatingStars from "../../components/ratingStars";
 import ReviewModal from "../../components/ReviewModal";
+import { useAuth } from "../../../src/context/AuthContext";
+import MessageModal from "../../components/MessageModal";
 
 const statusKeyMap = {
     "Ready": "orders.status.ready",
@@ -27,12 +29,15 @@ const tabKeyMap = {
 };
 
 function OrderManagement() {
+    const { user } = useAuth();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("All");
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedBuyer, setSelectedBuyer] = useState(null);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [activeChatOrder, setActiveChatOrder] = useState(null);
 
     const fetchOrders = async () => {
         try {
@@ -179,6 +184,44 @@ function OrderManagement() {
                         {/* Actions */}
                         <div className="action-buttons" style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
                             <button 
+                                className="message-buyer-btn"
+                                style={{
+                                    background: "#1a5c2d",
+                                    border: "none",
+                                    color: "#ffffff",
+                                    padding: "6px 12px",
+                                    borderRadius: "4px",
+                                    fontSize: "12px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    position: "relative",
+                                    transition: "background 0.2s"
+                                }}
+                                onClick={() => {
+                                    setActiveChatOrder(order);
+                                    setIsChatOpen(true);
+                                }}
+                            >
+                                💬 {t("btn_message_buyer")}
+                                {order.unreadMessages > 0 && (
+                                    <span style={{
+                                        position: "absolute",
+                                        top: "-8px",
+                                        right: "-8px",
+                                        background: "#e74c3c",
+                                        color: "white",
+                                        borderRadius: "50%",
+                                        padding: "2px 6px",
+                                        fontSize: "10px",
+                                        fontWeight: "bold",
+                                        zIndex: 5
+                                    }}>
+                                        {order.unreadMessages}
+                                    </span>
+                                )}
+                            </button>
+
+                            <button 
                                 className="about-buyer-btn"
                                 style={{
                                     background: "#f1f2f6",
@@ -239,6 +282,22 @@ function OrderManagement() {
                     userLocation={selectedBuyer.userLocation}
                     userRole={selectedBuyer.userRole}
                     onClose={() => setSelectedBuyer(null)}
+                />
+            )}
+
+            {isChatOpen && activeChatOrder && (
+                <MessageModal
+                    isOpen={isChatOpen}
+                    onClose={() => {
+                        setIsChatOpen(false);
+                        setActiveChatOrder(null);
+                        fetchOrders();
+                    }}
+                    reservationId={activeChatOrder.db_id}
+                    currentUserId={user?.id}
+                    otherUserName={activeChatOrder.buyer}
+                    otherUserRole="buyer"
+                    cropName={activeChatOrder.crop}
                 />
             )}
         </div>

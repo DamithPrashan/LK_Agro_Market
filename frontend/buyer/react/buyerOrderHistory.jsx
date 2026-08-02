@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/BuyerOrderHistory.css";
+import { useAuth } from "../../../src/context/AuthContext";
+import MessageModal from "../../components/MessageModal";
 
 const statusKeyMap = {
   "ready": "orders.status.ready",
@@ -13,6 +15,7 @@ const statusKeyMap = {
 };
 
 export default function BuyerOrderHistory() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +23,9 @@ export default function BuyerOrderHistory() {
   
   const [cancelErrorMsg, setCancelErrorMsg] = useState("");
   const [cancelSuccessMsg, setCancelSuccessMsg] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeChatOrder, setActiveChatOrder] = useState(null);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -203,13 +209,30 @@ export default function BuyerOrderHistory() {
                       <span className={`payment ${order.paymentStatus}`}>
                         {t("orders.payment", { status: order.paymentStatus.toUpperCase() })}
                       </span>
-                      <button 
-                        className="view-btn" 
-                        onClick={() => handleCancelClick(order)}
-                        style={{ background: "#e74c3c", color: "white", cursor: "pointer" }}
-                      >
-                        {t("buttons.cancelOrder", "Cancel Order")}
-                      </button>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          className="view-btn"
+                          onClick={() => {
+                            setActiveChatOrder(order);
+                            setIsChatOpen(true);
+                          }}
+                          style={{ background: "#1a5c2d", color: "white", cursor: "pointer", position: "relative" }}
+                        >
+                          💬 {t("btn_message_farmer")}
+                          {order.unreadMessages > 0 && (
+                            <span style={{ position: "absolute", top: "-8px", right: "-8px", background: "#e74c3c", color: "white", borderRadius: "50%", padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5 }}>
+                              {order.unreadMessages}
+                            </span>
+                          )}
+                        </button>
+                        <button 
+                          className="view-btn" 
+                          onClick={() => handleCancelClick(order)}
+                          style={{ background: "#e74c3c", color: "white", cursor: "pointer" }}
+                        >
+                          {t("buttons.cancelOrder", "Cancel Order")}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="order-footer" style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between", marginTop: "15px", flexWrap: "wrap" }}>
@@ -219,6 +242,22 @@ export default function BuyerOrderHistory() {
                       
                       {/* Action buttons grouped on the right */}
                       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <button
+                          className="view-btn"
+                          onClick={() => {
+                            setActiveChatOrder(order);
+                            setIsChatOpen(true);
+                          }}
+                          style={{ background: "#1a5c2d", color: "white", cursor: "pointer", position: "relative" }}
+                        >
+                          💬 {t("btn_message_farmer")}
+                          {order.unreadMessages > 0 && (
+                            <span style={{ position: "absolute", top: "-8px", right: "-8px", background: "#e74c3c", color: "white", borderRadius: "50%", padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5 }}>
+                              {order.unreadMessages}
+                            </span>
+                          )}
+                        </button>
+
                         {order.orderStatus.toLowerCase() === "accepted" && 
                          order.paymentStatus.toLowerCase() !== "paid" && (
                           <button 
@@ -249,6 +288,21 @@ export default function BuyerOrderHistory() {
               ))
             )}
           </div>
+          {isChatOpen && activeChatOrder && (
+            <MessageModal
+              isOpen={isChatOpen}
+              onClose={() => {
+                setIsChatOpen(false);
+                setActiveChatOrder(null);
+                fetchOrders();
+              }}
+              reservationId={activeChatOrder.reservationId}
+              currentUserId={user?.id}
+              otherUserName={activeChatOrder.farmerName}
+              otherUserRole="farmer"
+              cropName={activeChatOrder.cropName}
+            />
+          )}
         </div>
   );
 }

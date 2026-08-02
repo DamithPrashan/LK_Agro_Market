@@ -79,6 +79,41 @@ const Navbar = () => {
     return () => clearInterval(interval);
   }, [user]);
 
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
+
+  const fetchUnreadMsgCount = async () => {
+    if (!user) {
+      setUnreadMsgCount(0);
+      return;
+    }
+    try {
+      const response = await fetch('/backend/Apis/get_unread_count.php', {
+        credentials: "include"
+      });
+      const data = await response.json();
+      if (data.success) {
+        setUnreadMsgCount(data.unread_count || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching unread message count:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnreadMsgCount();
+    const interval = setInterval(fetchUnreadMsgCount, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleMessageIconClick = () => {
+    if (!user) return;
+    if (user.role === "buyer") {
+      navigate("/buyer/buyerorderhistory");
+    } else if (user.role === "farmer") {
+      navigate("/farmer/orders");
+    }
+  };
+
   const handleMarkAllRead = async () => {
     try {
       const response = await fetch('/backend/mark_notifications_read.php', {
@@ -218,6 +253,51 @@ const Navbar = () => {
               தமிழ்
             </button>
           </div>
+
+          {/* --- MESSAGE BADGE & ICON --- */}
+          {user && (
+            <button
+              className="notification-btn message-nav-btn"
+              onClick={handleMessageIconClick}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: "1.4rem",
+                cursor: "pointer",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "6px",
+                marginRight: "10px",
+                transition: "transform 0.2s"
+              }}
+              title="Messages"
+            >
+              💬
+              {unreadMsgCount > 0 && (
+                <span 
+                  className="badge" 
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    right: "-4px",
+                    backgroundColor: "#e74c3c",
+                    color: "white",
+                    borderRadius: "50%",
+                    padding: "2px 6px",
+                    fontSize: "0.65rem",
+                    fontWeight: "bold",
+                    lineHeight: 1,
+                    minWidth: "16px",
+                    textAlign: "center"
+                  }}
+                >
+                  {unreadMsgCount}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* --- NOTIFICATION POPUP CONTAINER --- */}
           <div className="notification-container" style={{ display: 'flex', alignItems: 'center' }}>
