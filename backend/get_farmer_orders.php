@@ -41,7 +41,8 @@ try {
             u_buyer.user_id as buyer_user_id,
             u_buyer.location as buyer_location,
             rr.rating as buyer_rating,
-            rr.comment as buyer_comment
+            rr.comment as buyer_comment,
+            (SELECT COUNT(*) FROM message WHERE reservation_id = r.reservation_id AND sender_id = u_buyer.user_id AND is_read = 0) as unread_messages
         FROM reservation r
         JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
         JOIN crop c ON rc.crop_id = c.crop_id
@@ -91,7 +92,8 @@ try {
             "buyer_user_id" => intval($order['buyer_user_id']),
             "buyer_location" => $order['buyer_location'],
             "buyer_rating" => $order['buyer_rating'] !== null ? intval($order['buyer_rating']) : null,
-            "buyer_comment" => $order['buyer_comment']
+            "buyer_comment" => $order['buyer_comment'],
+            "unreadMessages" => intval($order['unread_messages'])
         ];
     }
 

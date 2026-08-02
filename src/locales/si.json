@@ -664,5 +664,21 @@
     "thisWeek": "මේ සතියේ",
     "nextWeek": "ලබන සතියේ",
     "thisMonth": "ඉදිරි කාලයේදී"
-  }
+  },
+  "chat_placeholder": "පණිවිඩයක් ලියන්න...",
+  "chat_header_with": "සමඟ සංවාදය",
+  "chat_crop_label": "භෝගය",
+  "template_order_accepted": "ඇණවුම පිළිගන්නා ලදී",
+  "template_produce_ready": "නිෂ්පාදන එකතු කිරීමට සූදානම්",
+  "template_order_cancelled": "ඇණවුම අවලංගු කරන ලදී",
+  "template_slight_delay": "සුළු ප්‍රමාදයක් බලාපොරොත්තු වන්න",
+  "template_quality_confirmed": "ගුණාත්මකභාවය තහවුරු කරන ලදී",
+  "template_thank_you": "ස්තූතියි",
+  "template_uploading_evidence": "භෝග සාක්ෂි ඡායාරූපය යවමින්",
+  "btn_message_farmer": "ගොවියාට පණිවිඩයක් යවන්න",
+  "btn_message_buyer": "මිලදී ගන්නාට පණිවිඩයක් යවන්න",
+  "label_crop_evidence": "භෝග සාක්ෂි ඡායාරූපය",
+  "label_photo": "ඡායාරූපය",
+  "msg_sent": "යවන ලදී",
+  "msg_read": "කියවන ලදී"
 }

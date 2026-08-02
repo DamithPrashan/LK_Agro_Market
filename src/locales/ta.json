@@ -604,5 +604,21 @@
     "thisWeek": "இந்த வாரம்",
     "nextWeek": "அடுத்த வாரம்",
     "thisMonth": "வரவிருக்கும் நாட்கள்"
-  }
+  },
+  "chat_placeholder": "செய்தியை தட்டச்சு செய்யவும்...",
+  "chat_header_with": "உடனான அரட்டை",
+  "chat_crop_label": "பயிர்",
+  "template_order_accepted": "ஆர்டர் ஏற்றுக்கொள்ளப்பட்டது",
+  "template_produce_ready": "பொருட்கள் சேகரிக்க தயாராக உள்ளன",
+  "template_order_cancelled": "ஆர்டர் ரத்து செய்யப்பட்டது",
+  "template_slight_delay": "சிறிய தாமதம் எதிர்பார்க்கப்படுகிறது",
+  "template_quality_confirmed": "தரம் உறுதி செய்யப்பட்டது",
+  "template_thank_you": "நன்றி",
+  "template_uploading_evidence": "பயிர் ஆதார புகைப்படத்தை அனுப்புகிறது",
+  "btn_message_farmer": "விவசாயிக்கு செய்தி அனுப்பு",
+  "btn_message_buyer": "வாங்குபவருக்கு செய்தி அனுப்பு",
+  "label_crop_evidence": "பயிர் ஆதார புகைப்படம்",
+  "label_photo": "புகைப்படம்",
+  "msg_sent": "அனுப்பப்பட்டது",
+  "msg_read": "படிக்கப்பட்டது"
 }

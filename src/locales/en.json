@@ -664,5 +664,21 @@
     "thisWeek": "This Week",
     "nextWeek": "Next Week",
     "thisMonth": "Upcoming"
-  }
+  },
+  "chat_placeholder": "Type a message...",
+  "chat_header_with": "Chat with",
+  "chat_crop_label": "Crop",
+  "template_order_accepted": "Order Accepted",
+  "template_produce_ready": "Produce is Ready for Collection",
+  "template_order_cancelled": "Order Cancelled",
+  "template_slight_delay": "Slight Delay Expected",
+  "template_quality_confirmed": "Quality Confirmed",
+  "template_thank_you": "Thank You",
+  "template_uploading_evidence": "Sending Crop Evidence Photo",
+  "btn_message_farmer": "Message Farmer",
+  "btn_message_buyer": "Message Buyer",
+  "label_crop_evidence": "Crop Evidence Photo",
+  "label_photo": "Photo",
+  "msg_sent": "Sent",
+  "msg_read": "Read"
 }
