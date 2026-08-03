@@ -512,6 +512,7 @@
   },
   "ratings": {
     "loading": "Loading ratings…",
+    "receivedTitle": "Ratings & Reviews Received",
     "title": "Ratings & Reviews",
     "yourRating": "Your Rating",
     "noRatings": "No ratings yet.",
