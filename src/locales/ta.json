@@ -620,5 +620,44 @@
   "label_crop_evidence": "பயிர் ஆதார புகைப்படம்",
   "label_photo": "புகைப்படம்",
   "msg_sent": "அனுப்பப்பட்டது",
-  "msg_read": "படிக்கப்பட்டது"
+  "msg_read": "படிக்கப்பட்டது",
+  "footer": {
+    "tagline": "நம்பகமான டிஜிட்டல் தளம் மூலம் விவசாயிகளையும் வாங்குபவர்களையும் இணைக்கும் இலங்கையின் நேரடி சந்தை.",
+    "quickLinks": "விரைவான இணைப்புகள்",
+    "support": "ஆதரவு",
+    "contactUs": "எங்களை தொடர்பு கொள்ள",
+    "payments": "கொடுப்பனவுகள்",
+    "emailLabel": "மின்னஞ்சல்:",
+    "phoneLabel": "தொலைபேசி:",
+    "location": "கொழும்பு, இலங்கை",
+    "copyright": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
+  },
+  "districts": {
+    "ampara": "அம்பாறை",
+    "anuradhapura": "அனுராதபுரம்",
+    "badulla": "பதுளை",
+    "batticaloa": "மட்டக்களப்பு",
+    "colombo": "கொழும்பு",
+    "galle": "காலி",
+    "gampaha": "கம்பஹா",
+    "hambantota": "அம்பாந்தோட்டை",
+    "jaffna": "யாழ்ப்பாணம்",
+    "kalutara": "களுத்துறை",
+    "kandy": "கண்டி",
+    "kegalle": "கேகாலை",
+    "kilinochchi": "கிளிநொச்சி",
+    "kurunegala": "குருநாகல்",
+    "mannar": "மன்னார்",
+    "matale": "மாத்தளை",
+    "matara": "மாத்தறை",
+    "monaragala": "மொனராகலை",
+    "mullaitivu": "முல்லைத்தீவு",
+    "nuwaraEliya": "நுவரெலியா",
+    "polonnaruwa": "பொலன்னறுவை",
+    "puttalam": "புத்தளம்",
+    "ratnapura": "இரத்தினபுரி",
+    "trincomalee": "திருகோணமலை",
+    "vavuniya": "வவுனியா"
+  }
 }
+

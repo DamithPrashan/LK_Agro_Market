@@ -680,5 +680,44 @@
   "label_crop_evidence": "භෝග සාක්ෂි ඡායාරූපය",
   "label_photo": "ඡායාරූපය",
   "msg_sent": "යවන ලදී",
-  "msg_read": "කියවන ලදී"
+  "msg_read": "කියවන ලදී",
+  "footer": {
+    "tagline": "ගොවීන් සහ ගැනුම්කරුවන් විශ්වාසනීය ඩිජිටල් වේදිකාවක් හරහා සම්බන්ධ කරන ශ්‍රී ලංකාවේ සෘජු වෙළඳපොළ.",
+    "quickLinks": "ඉක්මන් සබැඳි",
+    "support": "සහාය",
+    "contactUs": "අප අමතන්න",
+    "payments": "ගෙවීම්",
+    "emailLabel": "විද්‍යුත් තැපෑල:",
+    "phoneLabel": "දුරකථන:",
+    "location": "කොළඹ, ශ්‍රී ලංකා",
+    "copyright": "සියලු හිමිකම් ඇවිරිණි."
+  },
+  "districts": {
+    "ampara": "අම්පාර",
+    "anuradhapura": "අනුරාධපුර",
+    "badulla": "බදුල්ල",
+    "batticaloa": "මඩකලපුව",
+    "colombo": "කොළඹ",
+    "galle": "ගාල්ල",
+    "gampaha": "ගම්පහ",
+    "hambantota": "හම්බන්තොට",
+    "jaffna": "යාපනය",
+    "kalutara": "කළුතර",
+    "kandy": "මහනුවර",
+    "kegalle": "කෑගල්ල",
+    "kilinochchi": "කිලිනොච්චි",
+    "kurunegala": "කුරුණෑගල",
+    "mannar": "මන්නාරම",
+    "matale": "මාතලේ",
+    "matara": "මාතර",
+    "monaragala": "මොණරාගල",
+    "mullaitivu": "මුලතිව්",
+    "nuwaraEliya": "නුවරඑළිය",
+    "polonnaruwa": "පොළොන්නරුව",
+    "puttalam": "පුත්තලම",
+    "ratnapura": "රත්නපුර",
+    "trincomalee": "ත්‍රිකුණාමලය",
+    "vavuniya": "වවුනියාව"
+  }
 }
+

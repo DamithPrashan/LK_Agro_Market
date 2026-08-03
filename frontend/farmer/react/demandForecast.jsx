@@ -121,11 +121,16 @@ export default function ForecastDashboard() {
                         onChange={(e) => setLocation(e.target.value)}
                     >
                         <option value="">{t("forms.selectDistrict")}</option>
-                        {allDistricts.map((loc) => (
-                            <option key={loc} value={loc}>
-                                {loc}
-                            </option>
-                        ))}
+                        {allDistricts.map((loc) => {
+                            const translationKey = loc === "Nuwara Eliya" 
+                                ? "nuwaraEliya" 
+                                : loc.toLowerCase();
+                            return (
+                                <option key={loc} value={loc}>
+                                    {t(`districts.${translationKey}`)}
+                                </option>
+                            );
+                        })}
                     </select>
                 </div>
 

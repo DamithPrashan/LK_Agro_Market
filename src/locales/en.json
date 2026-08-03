@@ -680,5 +680,44 @@
   "label_crop_evidence": "Crop Evidence Photo",
   "label_photo": "Photo",
   "msg_sent": "Sent",
-  "msg_read": "Read"
+  "msg_read": "Read",
+  "footer": {
+    "tagline": "Sri Lanka's direct farm-to-buyer marketplace connecting farmers and buyers through a trusted digital platform.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "contactUs": "Contact Us",
+    "payments": "Payments",
+    "emailLabel": "Email:",
+    "phoneLabel": "Phone:",
+    "location": "Colombo, Sri Lanka",
+    "copyright": "All Rights Reserved."
+  },
+  "districts": {
+    "ampara": "Ampara",
+    "anuradhapura": "Anuradhapura",
+    "badulla": "Badulla",
+    "batticaloa": "Batticaloa",
+    "colombo": "Colombo",
+    "galle": "Galle",
+    "gampaha": "Gampaha",
+    "hambantota": "Hambantota",
+    "jaffna": "Jaffna",
+    "kalutara": "Kalutara",
+    "kandy": "Kandy",
+    "kegalle": "Kegalle",
+    "kilinochchi": "Kilinochchi",
+    "kurunegala": "Kurunegala",
+    "mannar": "Mannar",
+    "matale": "Matale",
+    "matara": "Matara",
+    "monaragala": "Monaragala",
+    "mullaitivu": "Mullaitivu",
+    "nuwaraEliya": "Nuwara Eliya",
+    "polonnaruwa": "Polonnaruwa",
+    "puttalam": "Puttalam",
+    "ratnapura": "Ratnapura",
+    "trincomalee": "Trincomalee",
+    "vavuniya": "Vavuniya"
+  }
 }
+
