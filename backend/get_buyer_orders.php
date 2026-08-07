@@ -88,10 +88,15 @@ try {
             r.collection_date,
             rc.total_amount,
             r.reservation_status,
-            r.transaction_status
+            r.transaction_status,
+            u_farmer.name as farmer_name,
+            u_farmer.user_id as farmer_user_id,
+            (SELECT COUNT(*) FROM message WHERE reservation_id = r.reservation_id AND sender_id = u_farmer.user_id AND is_read = 0) as unread_messages
         FROM reservation r
         JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
         JOIN crop c ON rc.crop_id = c.crop_id
+        JOIN farmer f ON c.farmer_id = f.farmer_id
+        JOIN user u_farmer ON f.user_id = u_farmer.user_id
         WHERE rc.buyer_id = :buyer_id
     ";
 
@@ -134,13 +139,17 @@ try {
 
         $orders[] = [
             "orderId" => "ORD" . $row['reservation_id'],
+            "reservationId" => intval($row['reservation_id']),
             "cropName" => $row['crop_name'],
             "quantity" => floatval($row['quantity_requested']),
             "unit" => "kg", // Default unit for crops in this market system
             "date" => $row['collection_date'],
             "total" => floatval($row['total_amount']),
             "orderStatus" => $orderStatus,
-            "paymentStatus" => $paymentStatus
+            "paymentStatus" => $paymentStatus,
+            "farmerName" => $row['farmer_name'],
+            "farmerUserId" => intval($row['farmer_user_id']),
+            "unreadMessages" => intval($row['unread_messages'])
         ];
     }
 

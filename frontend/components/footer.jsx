@@ -1,55 +1,50 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
 import "./Footer.css";
 
 const Footer = () => {
+  const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer">
-
       <div className="footer-container">
-
         <div className="footer-section">
           <h3>LK Agro Market</h3>
-          <p>
-            Sri Lanka's direct farm-to-buyer marketplace connecting
-            farmers and buyers through a trusted digital platform.
-          </p>
+          <p>{t("footer.tagline")}</p>
         </div>
 
         <div className="footer-section">
-          <h3>Quick Links</h3>
-
+          <h3>{t("footer.quickLinks")}</h3>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/browse">Browse Crops</a></li>
-            <li><a href="/preorder">Pre-Order</a></li>
-            <li><a href="/payment">Payments</a></li>
+            <li><a href="/">{t("navbar.home")}</a></li>
+            <li><a href="/browse">{t("sidebar.browseCrops")}</a></li>
+            <li><a href="/preorder">{t("sidebar.preOrder")}</a></li>
+            <li><a href="/payment">{t("footer.payments")}</a></li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h3>Support</h3>
-
+          <h3>{t("footer.support")}</h3>
           <ul>
-            <li><a href="/complaints">Complaints</a></li>
-            <li><a href="/ratings">Ratings</a></li>
-            <li><a href="/admin">Admin</a></li>
-            <li><a href="/register">Register</a></li>
+            <li><a href="/complaints">{t("sidebar.complaints")}</a></li>
+            <li><a href="/ratings">{t("navbar.ratings")}</a></li>
+            <li><a href="/admin">{t("navbar.admin")}</a></li>
+            <li><a href="/register">{t("navbar.register")}</a></li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h3>Contact Us</h3>
-
-          <p>Email: info@lkagromarket.com</p>
-          <p>Phone: +94 77 123 4567</p>
-          <p>Colombo, Sri Lanka</p>
+          <h3>{t("footer.contactUs")}</h3>
+          <p>{t("footer.emailLabel")} info@lkagromarket.com</p>
+          <p>{t("footer.phoneLabel")} +94 77 123 4567</p>
+          <p>{t("footer.location")}</p>
         </div>
-
       </div>
 
       <div className="footer-bottom">
-        © 2026 LK Agro Market. All Rights Reserved.
+        &copy; {currentYear} LK Agro Market. {t("footer.copyright")}
       </div>
-
     </footer>
   );
 };

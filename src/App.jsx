@@ -27,6 +27,7 @@ import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 import MyListings from "../frontend/farmer/react/MyListings.jsx";
+import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
 
 
@@ -95,6 +96,7 @@ function App() {
               <Route path="complaints" element={<Complaints />} />
               <Route path="ratings" element={<Ratings />} />
               <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
+              <Route path="mapsearch" element={<MapSearch />} />
             </Route>
             <Route path="/complaints" element={<Complaints />} />
             <Route path="/ratings" element={<Ratings />} />

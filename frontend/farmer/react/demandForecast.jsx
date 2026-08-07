@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { DISTRICTS } from "../../../src/constants/districts";
 import "../csss/dashBoard.css";
 import { FaSearch, FaSeedling, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 
 export default function ForecastDashboard() {
     const { t } = useTranslation();
-    // Full list of Sri Lankan districts, so the farmer can check demand
-    // forecasts for any district — not just the ones they happen to have
-    // crops listed in.
-    const allDistricts = [
-        "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-        "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-        "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-        "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-        "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
-    ];
 
     // Component Search States
     const [cropName, setCropName] = useState("carrot");
@@ -34,12 +25,12 @@ export default function ForecastDashboard() {
                 const firstCropLocation = Array.isArray(crops)
                     ? crops.find((c) => c.location)?.location
                     : null;
-                setLocation(firstCropLocation || allDistricts[0]);
+                setLocation(firstCropLocation || DISTRICTS[0].value);
                 setOptionsLoaded(true);
             })
             .catch((err) => {
                 console.error("Error loading crop options:", err);
-                setLocation(allDistricts[0]);
+                setLocation(DISTRICTS[0].value);
                 setOptionsLoaded(true);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,9 +112,9 @@ export default function ForecastDashboard() {
                         onChange={(e) => setLocation(e.target.value)}
                     >
                         <option value="">{t("forms.selectDistrict")}</option>
-                        {allDistricts.map((loc) => (
-                            <option key={loc} value={loc}>
-                                {loc}
+                        {DISTRICTS.map((d) => (
+                            <option key={d.key} value={d.value}>
+                                {t(`districts.${d.key}`)}
                             </option>
                         ))}
                     </select>

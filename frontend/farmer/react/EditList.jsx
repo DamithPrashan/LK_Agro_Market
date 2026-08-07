@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/EditList.css";
 import { useAuth } from "../../../src/context/AuthContext";
+import { DISTRICTS } from "../../../src/constants/districts";
 
 function EditList() {
   const { user } = useAuth();
@@ -159,31 +160,11 @@ function EditList() {
               onChange={handleChange}
             >
               <option value="">{t("forms.selectDistrict")}</option>
-              <option value="Ampara">Ampara</option>
-              <option value="Anuradhapura">Anuradhapura</option>
-              <option value="Badulla">Badulla</option>
-              <option value="Batticaloa">Batticaloa</option>
-              <option value="Colombo">Colombo</option>
-              <option value="Galle">Galle</option>
-              <option value="Gampaha">Gampaha</option>
-              <option value="Hambantota">Hambantota</option>
-              <option value="Jaffna">Jaffna</option>
-              <option value="Kalutara">Kalutara</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Kegalle">Kegalle</option>
-              <option value="Kilinochchi">Kilinochchi</option>
-              <option value="Kurunegala">Kurunegala</option>
-              <option value="Mannar">Mannar</option>
-              <option value="Matale">Matale</option>
-              <option value="Matara">Matara</option>
-              <option value="Monaragala">Monaragala</option>
-              <option value="Mullaitivu">Mullaitivu</option>
-              <option value="Nuwara Eliya">Nuwara Eliya</option>
-              <option value="Polonnaruwa">Polonnaruwa</option>
-              <option value="Puttalam">Puttalam</option>
-              <option value="Ratnapura">Ratnapura</option>
-              <option value="Trincomalee">Trincomalee</option>
-              <option value="Vavuniya">Vavuniya</option>
+              {DISTRICTS.map((d) => (
+                <option key={d.key} value={d.value}>
+                  {t(`districts.${d.key}`)}
+                </option>
+              ))}
             </select>
 
             <input

@@ -5,12 +5,7 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import RatingStars from "../components/ratingStars";
 import ReviewList from "../components/reviewList";
-
-const DISTRICTS = [
-  "Ampara","Anuradhapura","Badulla","Batticaloa","Colombo","Galle","Gampaha",
-  "Hambantota","Jaffna","Kalutara","Kandy","Kegalle","Matara",
-  "Nuwara Eliya","Polonnaruwa","Ratnapura","Trincomalee",
-];
+import { DISTRICTS } from "../../src/constants/districts";
 
 export default function Profile() {
   const { user, login }       = useAuth();
@@ -197,7 +192,11 @@ export default function Profile() {
               <div className="field">
                 <label>{t("forms.district", "District")}</label>
                 <select value={district} onChange={(e) => setDistrict(e.target.value)}>
-                  {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
+                  {DISTRICTS.map((d) => (
+                    <option key={d.key} value={d.value}>
+                      {t(`districts.${d.key}`)}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="field">

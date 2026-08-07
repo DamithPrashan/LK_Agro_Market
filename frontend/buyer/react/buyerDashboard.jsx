@@ -165,7 +165,7 @@ export default function BuyerDashboard() {
         <div>
           {t("buyerDashboard.locationBanner", { location: location })}
         </div>
-        <button onClick={() => navigate("")}>{t("buyerDashboard.exploreNearby")}</button>
+        <button onClick={() => navigate("/buyer/mapsearch")}>{t("buyerDashboard.exploreNearby")}</button>
       </section>
 
 

@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import DemandForecast from "./demandForecast";
 import { useAuth } from "../../../src/context/AuthContext";
+import MessageModal from "../../components/MessageModal";
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
 import farmer1 from "../../assests/png/buyer1.jpg";
 import farmer2 from "../../assests/png/buyer2.jpg";
@@ -23,6 +24,8 @@ function DashBoard() {
     const { t } = useTranslation();
     const [myCrops, setCrops] = useState([]);
     const [incomingOrders, setIncomingOrders] = useState([]);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [activeChatOrder, setActiveChatOrder] = useState(null);
 
     const getWelcomeMsg = () => {
         if (!user) return "";
@@ -167,7 +170,46 @@ function DashBoard() {
                                             <b>{t("farmer.collectionLabel")}</b> {order.date}
                                         </p>
 
-                                        <div className="buttons">
+                                        <div className="buttons" style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "12px" }}>
+                                            <button
+                                                className="message-btn"
+                                                onClick={() => {
+                                                    setActiveChatOrder(order);
+                                                    setIsChatOpen(true);
+                                                }}
+                                                style={{
+                                                    background: "#1a5c2d",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    padding: "8px 12px",
+                                                    borderRadius: "4px",
+                                                    fontSize: "13px",
+                                                    fontWeight: "bold",
+                                                    cursor: "pointer",
+                                                    position: "relative",
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "6px"
+                                                }}
+                                            >
+                                                💬 {t("btn_message_buyer")}
+                                                {order.unreadMessages > 0 && (
+                                                    <span style={{
+                                                        position: "absolute",
+                                                        top: "-8px",
+                                                        right: "-8px",
+                                                        background: "#e74c3c",
+                                                        color: "white",
+                                                        borderRadius: "50%",
+                                                        padding: "2px 6px",
+                                                        fontSize: "10px",
+                                                        fontWeight: "bold",
+                                                        zIndex: 5
+                                                    }}>
+                                                        {order.unreadMessages}
+                                                    </span>
+                                                )}
+                                            </button>
                                             <button
                                                 className="accept"
                                                 onClick={() =>
@@ -197,6 +239,21 @@ function DashBoard() {
                     </div>
                 </div>
             </div>
+            {isChatOpen && activeChatOrder && (
+                <MessageModal
+                    isOpen={isChatOpen}
+                    onClose={() => {
+                        setIsChatOpen(false);
+                        setActiveChatOrder(null);
+                        fetchIncomingOrders();
+                    }}
+                    reservationId={activeChatOrder.db_id}
+                    currentUserId={user?.id}
+                    otherUserName={activeChatOrder.buyer}
+                    otherUserRole="buyer"
+                    cropName={activeChatOrder.crop}
+                />
+            )}
         </div>
     );
 }

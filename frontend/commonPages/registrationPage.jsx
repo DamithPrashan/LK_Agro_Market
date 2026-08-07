@@ -7,12 +7,8 @@ import FarmerVerificationForm from "../components/FarmerVerificationForm";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
-const DISTRICTS = [
-  "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha",
-  "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala",
-  "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-  "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
-];
+import { DISTRICTS } from "../../src/constants/districts";
+
 
 function validate(v) {
   const e = {};
@@ -147,7 +143,11 @@ export default function RegistrationPage() {
                   className={touched.district && errors.district ? "error" : ""}
                 >
                   <option value="">{t("forms.selectDistrict")}</option>
-                  {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
+                  {DISTRICTS.map((d) => (
+                    <option key={d.key} value={d.value}>
+                      {t(`districts.${d.key}`)}
+                    </option>
+                  ))}
                 </select>
                 {touched.district && errors.district && <p className="err-msg">{t(errors.district)}</p>}
               </div>
