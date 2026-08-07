@@ -1,0 +1,281 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+.featured-crops {
+  padding: 72px 20px;
+  background: #ffffff;
+}
+
+.featured-container {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.featured-header {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.featured-header h2 {
+  margin: 0;
+
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.25;
+
+  color: #064e3b;
+
+  text-align: left;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.featured-card {
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(6, 78, 59, 0.05);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.featured-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(16, 185, 129, 0.3);
+
+  box-shadow: 0 10px 24px rgba(6, 78, 59, 0.1);
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.featured-image-wrap {
+  position: relative;
+
+  width: 100%;
+  height: 220px;
+
+  overflow: hidden;
+}
+
+.featured-image-wrap img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition: transform 0.35s ease;
+}
+
+.featured-card:hover .featured-image-wrap img {
+  transform: scale(1.03);
+}
+
+/* =========================
+   VERIFIED BADGE
+========================= */
+
+.featured-verified {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 6px 9px;
+
+  background: #10b981;
+
+  color: #ffffff;
+
+  border-radius: 4px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.featured-verified svg {
+  font-size: 11px;
+}
+
+/* =========================
+   CARD BODY
+========================= */
+
+.featured-card-body {
+  padding: 18px;
+
+  text-align: left;
+}
+
+.featured-card-body h3 {
+  margin: 0 0 14px;
+
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  color: #064e3b;
+
+  text-align: left;
+}
+
+/* =========================
+   LOCATION + QTY
+========================= */
+
+.featured-meta {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+
+  text-align: left;
+}
+
+.featured-location {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  color: #64748b;
+
+  text-align: left;
+}
+
+.featured-location svg {
+  flex-shrink: 0;
+
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.featured-quantity {
+  flex-shrink: 0;
+
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #64748b;
+
+  text-align: right;
+}
+
+/* =========================
+   DIVIDER
+========================= */
+
+.featured-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 16px 0;
+
+  background: #e5e7eb;
+}
+
+/* =========================
+   PRICE
+========================= */
+
+.featured-price {
+  display: flex;
+  align-items: baseline;
+
+  text-align: left;
+}
+
+.featured-price-main {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+
+  color: #064e3b;
+}
+
+.featured-price-unit {
+  margin-left: 3px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+
+  color: #64748b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .featured-crops {
+    padding: 60px 18px;
+  }
+
+  .featured-header h2 {
+    font-size: 28px;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-image-wrap {
+    height: 240px;
+  }
+}

@@ -1,0 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+.cta {
+  margin-bottom: 0 !important;
+}
+
+.cta{
+    padding:90px 20px;
+    background:#064E3B;
+}
+
+.cta-container{
+    max-width:900px;
+    margin:auto;
+    text-align:center;
+}
+
+/*=========================
+TITLE
+=========================*/
+
+.cta h2{
+    margin:0 0 18px;
+    font-family:"Hanken Grotesk",sans-serif;
+    font-size:54px;
+    font-weight:700;
+    line-height:1.12;
+    color:white;
+}
+
+/*=========================
+SUB TITLE
+=========================*/
+
+.cta p{
+    max-width:620px;
+    margin:0 auto 40px;
+    font-family:"Inter",sans-serif;
+    font-size:17px;
+    line-height:1.7;
+    color:rgba(255,255,255,.85);
+}
+
+/*=========================
+BUTTONS
+=========================*/
+
+.cta-buttons{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.cta-primary,
+.cta-secondary{
+    width:220px;
+    height:54px;
+    border-radius:6px;
+    font-family:"Inter",sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+/*=========================
+PRIMARY
+=========================*/
+
+.cta-primary{
+    border:none;
+    background:white;
+    color:#064E3B;
+}
+
+.cta-primary:hover{
+    transform:translateY(-3px);
+    background:#F8FAFC;
+}
+
+/*=========================
+SECONDARY
+=========================*/
+
+.cta-secondary{
+    background:transparent;
+    color:white;
+    border:1px solid rgba(255,255,255,.45);
+}
+
+.cta-secondary:hover{
+    background:rgba(255,255,255,.08);
+    transform:translateY(-3px);
+}
+
+/*=========================
+TABLET
+=========================*/
+
+@media(max-width:900px){
+
+.cta h2{
+    font-size:44px;
+}
+
+}
+
+/*=========================
+MOBILE
+=========================*/
+
+@media(max-width:600px){
+
+.cta{
+    padding:70px 20px;
+}
+
+.cta h2{
+    font-size:34px;
+}
+
+.cta p{
+    font-size:15px;
+}
+
+.cta-buttons{
+    flex-direction:column;
+    align-items:center;
+}
+
+.cta-primary,
+.cta-secondary{
+
+width:100%;
+max-width:320px;
+
+}
+
+}

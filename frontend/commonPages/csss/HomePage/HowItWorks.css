@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+.how-it-works {
+  padding: 72px 20px;
+
+  background: #f8f9fa;
+
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.how-container {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+}
+
+/* ===================================
+   HEADER
+=================================== */
+
+.how-header {
+  margin-bottom: 42px;
+
+  text-align: center;
+}
+
+.how-header h2 {
+  margin: 0 0 8px;
+
+  font-family: "Hanken Grotesk", sans-serif;
+
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.25;
+
+  color: #064e3b;
+}
+
+.how-header p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  font-family: "Inter", sans-serif;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+
+  color: #64748b;
+}
+
+/* ===================================
+   STEPS LAYOUT
+=================================== */
+
+.how-steps {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 24px;
+}
+
+/* line connecting the cards */
+
+.how-connector-line {
+  position: absolute;
+
+  top: 52px;
+
+  left: 8%;
+  right: 8%;
+
+  height: 2px;
+
+  background: #dfe5e2;
+
+  z-index: 0;
+}
+
+/* ===================================
+   CARDS
+=================================== */
+
+.how-card {
+  position: relative;
+  z-index: 1;
+
+  min-height: 190px;
+
+  padding: 22px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(6, 78, 59, 0.05);
+
+  text-align: center;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.how-card:hover {
+  transform: translateY(-5px);
+
+  border-color: rgba(16, 185, 129, 0.28);
+
+  box-shadow: 0 10px 24px rgba(6, 78, 59, 0.09);
+}
+
+/* ===================================
+   ICON
+=================================== */
+
+.how-icon {
+  width: 66px;
+  height: 66px;
+
+  margin-bottom: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(6, 78, 59, 0.08);
+
+  color: #064e3b;
+
+  font-size: 25px;
+
+  border: 4px solid #ffffff;
+
+  box-shadow: 0 0 0 1px #e5e7eb;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.how-card:hover .how-icon {
+  background: #064e3b;
+
+  color: #ffffff;
+
+  transform: scale(1.05);
+}
+
+/* ===================================
+   TEXT
+=================================== */
+
+.how-card h3 {
+  margin: 0 0 8px;
+
+  font-family: "Inter", sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #064e3b;
+}
+
+.how-card p {
+  margin: 0;
+
+  max-width: 230px;
+
+  font-family: "Inter", sans-serif;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+
+  color: #64748b;
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+
+@media (max-width: 1000px) {
+
+  .how-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .how-connector-line {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .how-it-works {
+    padding: 60px 18px;
+  }
+
+  .how-header h2 {
+    font-size: 28px;
+  }
+
+  .how-header p {
+    font-size: 14px;
+  }
+
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .how-card {
+    min-height: 175px;
+  }
+}
