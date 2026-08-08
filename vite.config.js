@@ -1,45 +1,21 @@
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react";
-
-// export default defineConfig({
-//   plugins: [react()],
-//   optimizeDeps: {
-//     include: ["react-is"],
-//   },
-//   server: {
-//     watch: {
-//       ignored: ["**/frontend/assests/**"],
-//     },
-//     proxy: {
-//       "/backend": {
-//         //target: "http://localhost:8000",
-//         target: "http://127.0.0.1:80",   // XAMPP Apache port 80
-//         changeOrigin: true,
-//         secure: false,
-//         //rewrite: (path) => "/LK_Agro_Market" + path, // project lives in htdocs/LK_Agro_Market
-//       },
-//     },
-//   },
-// });
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ["react-is"],
-  },
+
   server: {
     watch: {
-      ignored: ["**/frontend/assests/**"],
+      ignored: ["**/frontend/assets/**"],
     },
+
     proxy: {
       "/backend": {
-        // target: "http://localhost:8000",
-        target: "http://127.0.0.1:80",   // XAMPP Apache port 80
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => "/LK_Agro_Market" + path, // project lives in htdocs/LK_Agro_Market
+        // Remove "/backend" before forwarding to PHP server
+        rewrite: (path) => path.replace(/^\/backend/, ""),
       },
     },
   },

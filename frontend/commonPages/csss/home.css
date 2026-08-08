@@ -1,314 +1,183 @@
+/* ==========================================
+   Reduce space between homepage sections
+========================================== */
 
-:root {
-  --page: #eef2ff;
-  --g8: #ffffff;
-  --g9: #f8fafc;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --surface: #ffffff;
-  --border: #e5e7eb;
-  --accent: #2563eb;
-  --accent-soft: rgba(37, 99, 235, 0.1);
-  --shadow: rgba(15, 23, 42, 0.08) 0 10px 15px -3px, rgba(15, 23, 42, 0.05) 0 4px 6px -2px;
+.featured-crops,
+.how-it-works,
+.why-choose-us,
+.testimonials,
+.cta {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
+.market-insights {
+    padding-top: 55px !important;
+    padding-bottom: 55px !important;
+}
+
+/* =========================================
+   LK AGRO MARKET - HOMEPAGE GLOBAL SPACING
+========================================= */
+
+.home-page {
   width: 100%;
-  min-height: 100%;
-  background: var(--page);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  background: #ffffff;
 }
 
-.shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+/* =========================================
+   STANDARD CONTENT WIDTH
+========================================= */
+
+.hero-container,
+.market-container,
+.featured-container,
+.how-container,
+.why-container,
+.testimonials-container {
   width: 100%;
-  background: var(--page);
+  max-width: 1280px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.topnav {
-  background: var(--g8);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  height: 60px;
-  gap: 16px;
-  box-shadow: 0 1px 0 0 rgba(15, 23, 42, 0.06);
+/* =========================================
+   HERO
+========================================= */
+
+.hero-container {
+  padding-left: 48px !important;
+  padding-right: 48px !important;
 }
 
-.logo {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-h);
+/* =========================================
+   MARKET INSIGHTS
+========================================= */
+
+.market-insights {
+  padding-left: 48px !important;
+  padding-right: 48px !important;
 }
 
-.navlinks {
-  display: flex;
-  gap: 16px;
+.insights-grid {
+  gap: 28px !important;
 }
 
-.navlink {
-  color: var(--muted);
-  font-size: 0.95rem;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  transition: background 0.2s ease, color 0.2s ease;
+/* =========================================
+   FEATURED CROPS
+========================================= */
+
+.featured-crops {
+  padding: 85px 48px !important;
 }
 
-.navlink.active,
-.navlink:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
+.featured-grid {
+  gap: 28px !important;
 }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* =========================================
+   HOW IT WORKS
+========================================= */
+
+.how-it-works {
+  padding: 85px 48px !important;
 }
 
-.lang-tog {
-  display: flex;
-  background: var(--g9);
-  border: 1px solid var(--border);
-  border-radius: 9999px;
-  overflow: hidden;
+.how-steps {
+  gap: 28px !important;
 }
 
-.lang-tog span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  color: var(--muted);
+/* =========================================
+   WHY CHOOSE US
+========================================= */
+
+.why-choose-us {
+  padding: 90px 48px !important;
 }
 
-.lang-tog .active {
-  background: var(--accent);
-  color: #fff;
+.why-container {
+  gap: 70px !important;
 }
 
-.user-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  background: var(--g9);
-  font-size: 0.9rem;
-  color: var(--text);
+.why-list {
+  gap: 20px !important;
 }
 
-.layout {
-  display: flex;
-  flex: 1;
-  min-height: calc(100vh - 60px);
-  width: 100%;
+/* =========================================
+   TESTIMONIALS
+========================================= */
+
+.testimonials {
+  padding: 85px 48px !important;
 }
 
-.sidebar {
-  width: 220px;
-  background: var(--g9);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  border-right: 1px solid var(--border);
+.testimonials-grid {
+  gap: 32px !important;
 }
 
-.sb-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
+/* =========================================
+   CTA
+========================================= */
+
+.cta {
+  padding: 90px 48px !important;
+  margin: 0 !important;
 }
 
-.sb-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text);
-  padding: 12px 14px;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+/* =========================================
+   FOOTER - REMOVE UNWANTED GAP
+========================================= */
+
+.footer,
+footer {
+  margin-top: 0 !important;
 }
 
-.sb-item:hover,
-.sb-item.active {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
+/* =========================================
+   TABLET
+========================================= */
 
-.main {
-  flex: 1;
-  overflow-y: auto;
-  background: var(--page);
-  padding: 24px;
-  width: 100%;
-}
+@media (max-width: 1000px) {
 
-.page-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 28px;
-}
-
-.page-title {
-  font-size: 1.65rem;
-  font-weight: 700;
-  color: var(--text-h);
-}
-
-.page-sub {
-  font-size: 0.95rem;
-  color: var(--muted);
-  margin-top: 6px;
-}
-
-.btn {
-  border: none;
-  border-radius: 999px;
-  padding: 12px 20px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-g {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
-}
-
-.page-body {
-  display: grid;
-  gap: 24px;
-}
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.stat-card {
-  padding: 22px;
-  border-radius: 24px;
-  background: var(--g8);
-  box-shadow: var(--shadow);
-}
-
-.stat-val {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-h);
-}
-
-.stat-lbl {
-  margin-top: 10px;
-  color: var(--muted);
-}
-
-.how-section{
-padding:80px;
-margin-top:60px;
-position:relative;
-z-index:1;
-}
-
-.section-title{
-display:block;
-width:100%;
-
-text-align:center;
-font-size:42px;
-font-weight:700;
-
-color:#145a32;
-
-margin-top:-60px;
-margin-bottom:50px;
-
-position:relative;
-z-index:2;
-}
-
-.section-title::after{
-content:"";
-display:block;
-
-width:100px;
-height:4px;
-
-margin:10px auto;
-
-background:#57c84d;
-border-radius:10px;
-}
-
-@media (max-width: 1024px) {
-  .layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .page-head {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .stats-row {
-    grid-template-columns: 1fr;
+  .hero-container,
+  .market-insights,
+  .featured-crops,
+  .how-it-works,
+  .why-choose-us,
+  .testimonials,
+  .cta {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
   }
 }
 
-/* ---------- Tablet ---------- */
+/* =========================================
+   MOBILE
+========================================= */
 
-@media(max-width:992px){
+@media (max-width: 650px) {
 
-.how-section{
+  .hero-container,
+  .market-insights,
+  .featured-crops,
+  .how-it-works,
+  .why-choose-us,
+  .testimonials,
+  .cta {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
 
-padding:50px;
-}
+  .featured-crops,
+  .how-it-works,
+  .why-choose-us,
+  .testimonials {
+    padding-top: 65px !important;
+    padding-bottom: 65px !important;
+  }
 
-.section-title{
-
-font-size:35px;
-}
-
-}
-
-
-/* ---------- Mobile ---------- */
-
-@media(max-width:768px){
-
-.how-section{
-
-padding:25px;
-}
-
-.section-title{
-
-font-size:28px;
-}
-
+  .why-container {
+    gap: 40px !important;
+  }
 }

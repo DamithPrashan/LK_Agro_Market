@@ -1,0 +1,263 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+.why-choose-us {
+  padding: 70px 20px;
+  background: #ffffff;
+}
+
+.why-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+
+  align-items: center;
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+
+.why-left {
+  width: 100%;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.why-header {
+  margin-bottom: 35px;
+
+  text-align: left !important;
+}
+
+.why-header h2 {
+  margin: 0 0 8px;
+
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.25;
+
+  color: #064e3b;
+
+  text-align: left !important;
+}
+
+.why-header p {
+  max-width: 520px;
+
+  margin: 0;
+
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+
+  color: #64748b;
+
+  text-align: left !important;
+}
+
+/* =========================
+   FEATURE LIST
+========================= */
+
+.why-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* =========================
+   FEATURE CARD
+========================= */
+
+.why-card {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(6, 78, 59, 0.05);
+
+  text-align: left !important;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.why-card:hover {
+  transform: translateX(6px);
+
+  border-color: rgba(16, 185, 129, 0.3);
+
+  box-shadow: 0 10px 24px rgba(6, 78, 59, 0.08);
+}
+
+/* =========================
+   ICON
+========================= */
+
+.why-icon {
+  width: 54px;
+  height: 54px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 20px;
+}
+
+.why-icon.green {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.why-icon.orange {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.why-icon.light {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.why-text {
+  width: 100%;
+
+  text-align: left !important;
+}
+
+.why-text h3 {
+  margin: 0 0 6px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #064e3b;
+
+  text-align: left !important;
+}
+
+.why-text p {
+  margin: 0;
+
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+
+  color: #64748b;
+
+  text-align: left !important;
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.why-right {
+  width: 100%;
+  height: 520px;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  box-shadow: 0 10px 24px rgba(6, 78, 59, 0.1);
+}
+
+.why-right img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition: transform 0.4s ease;
+}
+
+.why-right:hover img {
+  transform: scale(1.03);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+  .why-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .why-right {
+    height: 420px;
+  }
+}
+
+@media (max-width: 650px) {
+  .why-choose-us {
+    padding: 60px 18px;
+  }
+
+  .why-header h2 {
+    font-size: 28px;
+  }
+
+  .why-header p {
+    font-size: 14px;
+  }
+
+  .why-card {
+    padding: 18px;
+    gap: 14px;
+  }
+
+  .why-icon {
+    width: 48px;
+    height: 48px;
+
+    font-size: 18px;
+  }
+
+  .why-text h3 {
+    font-size: 15px;
+  }
+
+  .why-text p {
+    font-size: 13px;
+  }
+
+  .why-right {
+    height: 350px;
+  }
+}
