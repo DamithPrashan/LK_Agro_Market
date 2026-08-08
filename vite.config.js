@@ -16,7 +16,7 @@
 //         target: "http://127.0.0.1:80",   // XAMPP Apache port 80
 //         changeOrigin: true,
 //         secure: false,
-//         rewrite: (path) => "/LK_Agro_Market" + path, // project lives in htdocs/LK_Agro_Market
+//         //rewrite: (path) => "/LK_Agro_Market" + path, // project lives in htdocs/LK_Agro_Market
 //       },
 //     },
 //   },
@@ -39,7 +39,7 @@ export default defineConfig({
         target: "http://127.0.0.1:80",   // XAMPP Apache port 80
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => "/lk_agro/LK_Agro_Market" + path, // project lives in htdocs/lk_agro/LK_Agro_Market
+        rewrite: (path) => "/LK_Agro_Market" + path, // project lives in htdocs/LK_Agro_Market
       },
     },
   },
