@@ -395,13 +395,18 @@ export default function Browse() {
                     <p className="price">
                       <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>{t("browse.perKg")}
                     </p>
-                    <p className="meta-info">
-                      {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
-                        <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
-                      ) : (
-                        `${parseFloat(crop.qty).toFixed(0)} kg`
-                      )} • {t("browse.harvestLabel")} {crop.harvest}
-                    </p>
+                    <div className="meta-info" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span>
+                        {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
+                          <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
+                        ) : (
+                          `${parseFloat(crop.qty).toFixed(0)} kg`
+                        )}
+                      </span>
+                      <span>
+                        {t("browse.harvestLabel")} {crop.harvest}
+                      </span>
+                    </div>
                     <div className="rating">
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
