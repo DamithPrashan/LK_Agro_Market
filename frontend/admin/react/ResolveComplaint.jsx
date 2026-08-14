@@ -30,7 +30,7 @@ function ResolveComplaint() {
         setComplaint(data.complaint);
         setAdminNotes(data.complaint.adminNotes || "");
       } else {
-        setError(data.message || t("admin.errors.failedLoadComplaint"));
+        setError(data.message || data.error || t("admin.errors.failedLoadComplaint"));
       }
     } catch (err) {
       console.error(err);
@@ -50,8 +50,18 @@ function ResolveComplaint() {
   }, [id, user]);
 
   const handleResolveAction = async (action) => {
+    if (!adminNotes.trim()) {
+      setMsg({ 
+        text: t("admin.complaints.notesRequired", "Admin notes are required before taking action."), 
+        ok: false 
+      });
+      return;
+    }
+
     setResolving(true);
     setMsg({ text: "", ok: false });
+
+    const resolutionStatus = (action === "dismiss" || action === "dismissed") ? "rejected" : "resolved";
 
     try {
       const response = await fetch("/backend/resolve_complaint.php", {
@@ -63,16 +73,18 @@ function ResolveComplaint() {
         body: JSON.stringify({
           complaint_id: parseInt(id),
           action: action,
+          resolution_action: action,
+          resolution_status: resolutionStatus,
           admin_notes: adminNotes.trim()
         })
       });
       const data = await response.json();
       
       if (data.success) {
-        setMsg({ text: data.message, ok: true });
+        setMsg({ text: data.message || t("admin.complaints.actionSuccess", "Resolution updated successfully."), ok: true });
         fetchComplaintDetails(); // Refresh to update status and notes
       } else {
-        setMsg({ text: data.message || t("admin.errors.resolutionFailed"), ok: false });
+        setMsg({ text: data.message || data.error || t("admin.errors.resolutionFailed"), ok: false });
       }
     } catch (err) {
       console.error(err);
@@ -88,7 +100,7 @@ function ResolveComplaint() {
     const currentIdx = steps.indexOf(complaint.status);
     const stepIdx = steps.indexOf(stepName);
     if (stepIdx === currentIdx) return "flow-step active-step";
-    if (stepIdx < currentIdx) return "flow-step completed-step"; // styled similar to active or completed
+    if (stepIdx < currentIdx) return "flow-step completed-step";
     return "flow-step";
   };
 
@@ -116,7 +128,10 @@ function ResolveComplaint() {
     );
   }
 
-  const isResolved = ["resolved", "dismissed"].includes(complaint.dbStatus.toLowerCase());
+  const statusLower = (complaint.dbStatus || "").toLowerCase();
+  const isResolved = ["resolved", "dismissed", "rejected"].includes(statusLower);
+  const isRejected = ["rejected", "dismissed"].includes(statusLower);
+  const isResolvedStatus = statusLower === "resolved";
 
   return (
     <div className="dashboard">
@@ -151,8 +166,12 @@ function ResolveComplaint() {
         <div className="complaint-card">
           <div className="card-top">
             <h3>{t("admin.complaints.resolveComplaintTitle", { id: complaint.id })}</h3>
-            <span className="evidence-tag" style={{ background: isResolved ? "#eaf5ec" : "#fff3cd", color: isResolved ? "#2d6a4f" : "#856404", border: isResolved ? "1px solid #cce5d3" : "1px solid #ffeeba" }}>
-              {t("admin.complaints.statusLabel", { status: complaint.dbStatus.toUpperCase() })}
+            <span className="evidence-tag" style={{ 
+              background: isResolvedStatus ? "#eaf5ec" : (isRejected ? "#fce4e4" : "#fff3cd"), 
+              color: isResolvedStatus ? "#2d6a4f" : (isRejected ? "#c0392b" : "#856404"), 
+              border: isResolvedStatus ? "1px solid #cce5d3" : (isRejected ? "1px solid #f5c2c2" : "1px solid #ffeeba") 
+            }}>
+              {t("admin.complaints.statusLabel", { status: (complaint.dbStatus || "").toUpperCase() })}
             </span>
           </div>
 
@@ -219,7 +238,7 @@ function ResolveComplaint() {
           {/* Controls */}
           {isResolved ? (
             <div style={{ background: "#e9ecef", color: "#495057", padding: "15px", borderRadius: "6px", textAlign: "center", fontWeight: "600" }}>
-              {t("admin.complaints.complaintResolvedVia", { action: complaint.resolutionAction ? complaint.resolutionAction.toUpperCase() : "N/A" })}
+              {t("admin.complaints.complaintResolvedVia", { action: (complaint.resolutionAction || complaint.dbStatus || "N/A").toUpperCase() })}
             </div>
           ) : (
             <div className="action-buttons" style={{ display: "flex", gap: "10px" }}>

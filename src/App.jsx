@@ -27,6 +27,7 @@ import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 import MyListings from "../frontend/farmer/react/MyListings.jsx";
+import FarmerComplaints from "../frontend/farmer/react/FarmerComplaints.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
 
@@ -80,7 +81,7 @@ function App() {
               <Route path="edit-listing" element={<EditList />} />
               <Route path="orders" element={<OrderManagement />} />
               <Route path="listings" element={<MyListings />} />
-              <Route path="complaints" element={<Complaints />} />
+              <Route path="complaints" element={<FarmerComplaints />} />
               <Route path="ratings" element={<Ratings />} />
             </Route>
             <Route path="/browse" element={<Browse />} />
