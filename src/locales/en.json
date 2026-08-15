@@ -748,6 +748,17 @@
     "ratnapura": "Ratnapura",
     "trincomalee": "Trincomalee",
     "vavuniya": "Vavuniya"
+  },
+  "auth": {
+    "loginRequired": "Login Required",
+    "buyerRegisterPrompt": "You have to register as a buyer to make a pre order.",
+    "accessDenied": "Access Denied",
+    "farmerPreOrderPrompt": "Pre-orders are for buyers only. If you wish to purchase crops, please register a buyer account."
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "registerBuyer": "Register as Buyer",
+    "close": "Close"
   }
 }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
+import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
@@ -56,6 +57,10 @@ export default function Browse() {
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
   const { crops, loading, fetchCrops } = useCrops();
+  const { user } = useAuth();
+  
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalType, setAuthModalType] = useState(null); // 'guest' | 'farmer'
 
   // Parse initial search query from URL
   const [searchQuery, setSearchQuery] = useState(() => {
@@ -433,7 +438,15 @@ export default function Browse() {
                         className="pre-order-btn"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/crop/${crop.id}`);
+                          if (!user) {
+                            setAuthModalType('guest');
+                            setShowAuthModal(true);
+                          } else if (user.role === 'farmer') {
+                            setAuthModalType('farmer');
+                            setShowAuthModal(true);
+                          } else {
+                            navigate(`/crop/${crop.id}`);
+                          }
                         }}
                       >
                         {t("sidebar.preOrder")}
@@ -446,6 +459,81 @@ export default function Browse() {
           )}
         </main>
       </div>
+
+      {/* AUTH MODAL */}
+      {showAuthModal && (
+        <div className="modal-backdrop" style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.6)", display: "flex",
+          alignItems: "center", justifyContent: "center", zIndex: 1000,
+          backdropFilter: "blur(4px)"
+        }}>
+          <style>{`
+            @keyframes modalFadeScale {
+              from { opacity: 0; transform: scale(0.95) translateY(10px); }
+              to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            .modal-animated {
+              animation: modalFadeScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}</style>
+          
+          <div className="card modal-animated" style={{ 
+            maxWidth: "420px", 
+            width: "90%", 
+            textAlign: "center", 
+            position: "relative",
+            padding: "35px 25px",
+            borderRadius: "16px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}>
+            {/* SVG Shopping Basket Icon */}
+            <div style={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
+              <div style={{ background: "var(--g-50)", padding: "16px", borderRadius: "50%", display: "inline-flex" }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--g-800)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </div>
+            </div>
+
+            {authModalType === 'guest' ? (
+              <>
+                <h2 style={{ marginBottom: "12px", color: "var(--t-1)", fontSize: "22px", fontWeight: "700" }}>
+                  {t("auth.loginRequired", "Login Required")}
+                </h2>
+                <p style={{ marginBottom: "28px", color: "var(--t-2)", fontSize: "15px", lineHeight: "1.5" }}>
+                  {t("auth.buyerRegisterPrompt", "You have to register as a buyer to make a pre order.")}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
+                  <button className="btn btn-primary btn-lg btn-full" onClick={() => {
+                    setShowAuthModal(false);
+                    navigate("/register?role=buyer");
+                  }}>
+                    {t("buttons.registerBuyer", "Register as Buyer")}
+                  </button>
+                  <button className="btn btn-ghost" style={{ border: "none", background: "transparent" }} onClick={() => setShowAuthModal(false)}>
+                    {t("buttons.cancel", "Cancel")}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ marginBottom: "12px", color: "var(--t-1)", fontSize: "22px", fontWeight: "700" }}>
+                  {t("auth.accessDenied", "Access Denied")}
+                </h2>
+                <p style={{ marginBottom: "28px", color: "var(--t-2)", fontSize: "15px", lineHeight: "1.5" }}>
+                  {t("auth.farmerPreOrderPrompt", "Pre-orders are for buyers only. If you wish to purchase crops, please register a buyer account.")}
+                </p>
+                <button className="btn btn-primary btn-lg btn-full" onClick={() => setShowAuthModal(false)}>
+                  {t("buttons.close", "Close")}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
