@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { FaMapMarkerAlt, FaFire } from "react-icons/fa";
+import "../../commonPages/csss/HomePage/FeaturedCrops.css";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
 import leeksImg from "../../assests/png/leeks.jpg";
@@ -351,13 +353,13 @@ export default function Browse() {
           ) : (
             <div className="crop-grid">
               {crops.map((crop) => (
-                <div
-                  className="crop-card"
+                <article
+                  className="featured-card"
                   key={crop.id}
                   onClick={() => navigate(`/crop/${crop.id}`)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", display: "flex", flexDirection: "column", height: "100%" }}
                 >
-                  <div className={`crop-image-area ${getBgClass(crop.name)}`} style={{ position: "relative" }}>
+                  <div className="featured-image-wrap">
                     {parseFloat(crop.qty) <= 0 && (
                       <span className="out-of-stock-badge" style={{
                         position: "absolute",
@@ -375,32 +377,50 @@ export default function Browse() {
                         {t("emptyStates.outOfStock")}
                       </span>
                     )}
+                    {parseInt(crop.is_trending) === 1 && (
+                      <div className="featured-verified">
+                        <FaFire />
+                        <span>Trending</span>
+                      </div>
+                    )}
                     {(() => {
                       if (crop.image_url) {
                         let imgUrl = crop.image_url;
                         if (!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
                           imgUrl = "/backend/" + imgUrl;
                         }
-                        return <img src={imgUrl} alt={crop.name} className="crop-image" />;
+                        return <img src={imgUrl} alt={crop.name} />;
                       }
                       const capitalized = crop.name ? crop.name.charAt(0).toUpperCase() + crop.name.slice(1).toLowerCase() : "";
                       const localImg = imageMap[capitalized] || imageMap[crop.name];
                       if (localImg) {
-                        return <img src={localImg} alt={crop.name} className="crop-image" />;
+                        return <img src={localImg} alt={crop.name} />;
                       } else {
-                        return <span className="crop-icon">🌱</span>;
+                        return (
+                          <div className={`crop-image-area ${getBgClass(crop.name)}`} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <span className="crop-icon">🌱</span>
+                          </div>
+                        );
                       }
                     })()}
                   </div>
-                  <div className="crop-details">
+
+                  <div className="featured-card-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
                     <h3>{crop.name}</h3>
-                    <p className="farm-name">
-                      {crop.farmer_name} {parseInt(crop.is_verified) === 1 && <span className="verified-tick">✓</span>}
-                    </p>
-                    <p className="price">
-                      <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>{t("browse.perKg")}
-                    </p>
-                    <div className="meta-info" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+
+                    <div className="featured-meta" style={{ marginBottom: "8px" }}>
+                      <div className="featured-location">
+                        <FaMapMarkerAlt />
+                        <span>{crop.district || "Sri Lanka"}</span>
+                      </div>
+                      
+                      <div className="featured-quantity" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {parseInt(crop.is_verified) === 1 && <span className="verified-tick" style={{ background: '#eaf5ec', color: '#27ae60', borderRadius: '50%', width: '14px', height: '14px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>✓</span>}
+                        <span>{crop.farmer_name}</span>
+                      </div>
+                    </div>
+
+                    <div className="meta-info" style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "8px", fontSize: "12px", color: "#64748b" }}>
                       <span>
                         {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
                           <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
@@ -412,48 +432,64 @@ export default function Browse() {
                         {t("browse.harvestLabel")} {crop.harvest}
                       </span>
                     </div>
-                    <div className="rating">
+
+                    <div className="rating" style={{ color: "#f1c40f", fontSize: "14px", marginTop: "auto" }}>
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
-                      <span className="rating-num">({parseFloat(crop.rating).toFixed(1)})</span>
+                      <span className="rating-num" style={{ fontSize: "11px", color: "#7f8c8d", marginLeft: "5px" }}>({parseFloat(crop.rating).toFixed(1)})</span>
                     </div>
-                    {parseFloat(crop.qty) <= 0 ? (
-                      <button
-                        className="pre-order-btn out-of-stock-btn"
-                        disabled
-                        style={{
-                          background: "#95a5a6",
-                          color: "white",
-                          cursor: "not-allowed",
-                          boxShadow: "none"
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {t("emptyStates.outOfStock")}
-                      </button>
-                    ) : (
-                      <button
-                        className="pre-order-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!user) {
-                            setAuthModalType('guest');
-                            setShowAuthModal(true);
-                          } else if (user.role === 'farmer') {
-                            setAuthModalType('farmer');
-                            setShowAuthModal(true);
-                          } else {
-                            navigate(`/crop/${crop.id}`);
-                          }
-                        }}
-                      >
-                        {t("sidebar.preOrder")}
-                      </button>
-                    )}
+
+                    <div className="featured-divider" style={{ margin: "12px 0" }}></div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+                      <div className="featured-price" style={{ whiteSpace: "nowrap" }}>
+                        <span className="featured-price-main">Rs. {parseFloat(crop.price).toFixed(0)}</span>
+                        <span className="featured-price-unit">/kg</span>
+                      </div>
+                      
+                      <div style={{ minWidth: "110px", textAlign: "right" }}>
+                        {parseFloat(crop.qty) <= 0 ? (
+                          <button
+                            className="pre-order-btn out-of-stock-btn"
+                            disabled
+                            style={{
+                              background: "#95a5a6",
+                              color: "white",
+                              cursor: "not-allowed",
+                              boxShadow: "none",
+                              padding: "8px 12px",
+                              fontSize: "13px"
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {t("emptyStates.outOfStock")}
+                          </button>
+                        ) : (
+                          <button
+                            className="pre-order-btn"
+                            style={{ padding: "8px 12px", fontSize: "13px" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!user) {
+                                setAuthModalType('guest');
+                                setShowAuthModal(true);
+                              } else if (user.role === 'farmer') {
+                                setAuthModalType('farmer');
+                                setShowAuthModal(true);
+                              } else {
+                                navigate(`/crop/${crop.id}`);
+                              }
+                            }}
+                          >
+                            {t("sidebar.preOrder")}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           )}

@@ -303,30 +303,30 @@ body {
 /* CROP GRID */
 .crop-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  max-width: 1000px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 @media (max-width: 1200px) {
   .crop-grid {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 750px;
+    max-width: 900px;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 950px) {
   .crop-grid {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 500px;
+    max-width: 650px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   .crop-grid {
     grid-template-columns: repeat(1, 1fr);
-    max-width: 320px;
+    max-width: 340px;
   }
 }
 
