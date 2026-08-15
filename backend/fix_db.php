@@ -59,6 +59,13 @@ try {
         echo "Successfully added advanced complaint management columns to 'complaints' table!<br>";
     }
 
+    // 4c. Add missing 'farmer_evidence_file' column to 'complaints' table
+    $stmt4c = $pdo->query("SHOW COLUMNS FROM complaints LIKE 'farmer_evidence_file'");
+    if (!$stmt4c->fetch()) {
+        $pdo->exec("ALTER TABLE complaints ADD COLUMN farmer_evidence_file VARCHAR(255) NULL AFTER evidence_file");
+        echo "Successfully added 'farmer_evidence_file' column to 'complaints' table!<br>";
+    }
+
     // 5. Create 'notifications' table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS `notifications` (

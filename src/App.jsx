@@ -27,6 +27,7 @@ import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 import MyListings from "../frontend/farmer/react/MyListings.jsx";
+import FarmerComplaints from "../frontend/farmer/react/FarmerComplaints.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
 
@@ -80,10 +81,18 @@ function App() {
               <Route path="edit-listing" element={<EditList />} />
               <Route path="orders" element={<OrderManagement />} />
               <Route path="listings" element={<MyListings />} />
-              <Route path="complaints" element={<Complaints />} />
+              <Route path="complaints" element={<FarmerComplaints />} />
               <Route path="ratings" element={<Ratings />} />
             </Route>
-            <Route path="/browse" element={<Browse />} />
+            <Route path="/browse" element={
+              user?.role === 'buyer' ? (
+                <BuyerLayout>
+                  <Browse />
+                </BuyerLayout>
+              ) : (
+                <Browse />
+              )
+            } />
             <Route path="/preorder" element={<PreOrder />} />
             <Route path="/pre-order" element={<PreOrder />} />
             <Route path="/crop/:id" element={<PreOrder />} />

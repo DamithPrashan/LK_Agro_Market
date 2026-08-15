@@ -130,6 +130,67 @@ const Navbar = () => {
     }
   };
 
+  const handleNotificationClick = (notif) => {
+    setShowNotifications(false);
+
+    let targetLink = notif.link;
+    if (!targetLink && notif.notif_data && notif.notif_data.link) {
+      targetLink = notif.notif_data.link;
+    }
+
+    const cId = notif.notif_data?.complaint_id || notif.notif_data?.complaintId || notif.notif_data?.id;
+
+    if (user?.role === "buyer") {
+      if (
+        notif.notif_type === "farmerResponded" ||
+        notif.notif_type === "complaintResolved" ||
+        notif.notif_type === "complaintSubmitted" ||
+        (notif.title && (notif.title.toLowerCase().includes("farmer responded") || notif.title.toLowerCase().includes("dispute") || notif.title.toLowerCase().includes("complaint")))
+      ) {
+        targetLink = cId 
+          ? `/buyer/complaints?tab=farmer_response&id=${cId}`
+          : `/buyer/complaints?tab=farmer_response`;
+      }
+    } else if (user?.role === "farmer") {
+      if (
+        notif.notif_type === "complaintSubmitted" ||
+        notif.notif_type === "complaintResolved" ||
+        (notif.title && (notif.title.toLowerCase().includes("dispute") || notif.title.toLowerCase().includes("complaint")))
+      ) {
+        targetLink = "/farmer/complaints";
+      }
+    } else if (user?.role === "admin") {
+      if (cId) {
+        targetLink = `/admin/complaint/${cId}`;
+      }
+    }
+
+    if (!targetLink && cId) {
+      if (user?.role === "buyer") {
+        targetLink = `/buyer/complaints?tab=farmer_response&id=${cId}`;
+      } else if (user?.role === "farmer") {
+        targetLink = `/farmer/complaints`;
+      } else if (user?.role === "admin") {
+        targetLink = `/admin/complaint/${cId}`;
+      }
+    }
+
+    // Safety rewrite if any legacy link points to /farmer-response
+    if (targetLink && targetLink.includes("/farmer-response")) {
+      targetLink = targetLink.replace("/farmer-response", "/buyer/complaints?tab=farmer_response");
+    }
+
+    if (targetLink) {
+      if (targetLink.startsWith("/")) {
+        navigate(targetLink);
+      } else if (targetLink.startsWith("http")) {
+        window.location.href = targetLink;
+      } else {
+        navigate("/" + targetLink);
+      }
+    }
+  };
+
   const formatTime = (dateStr) => {
     if (!dateStr) return '';
     try {
@@ -209,6 +270,7 @@ const Navbar = () => {
           {user?.role === "farmer" && (
             <>
               <NavLink to="/">{t("navbar.home")}</NavLink>
+              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
               <NavLink to="/farmer">{t("navbar.farmer")}</NavLink>
               <NavLink to="/profile">{t("navbar.profile")}</NavLink>
             </>
@@ -218,7 +280,6 @@ const Navbar = () => {
           {user?.role === "buyer" && (
             <>
               <NavLink to="/">{t("navbar.home")}</NavLink>
-              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
               <NavLink to="/buyer">{t("navbar.buyer")}</NavLink>
             </>
           )}
@@ -321,7 +382,12 @@ const Navbar = () => {
                     <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>{t("navbar.noNotifications")}</div>
                   ) : (
                     notifications.map((notif) => (
-                      <div key={notif.id} className="notification-item">
+                      <div 
+                        key={notif.id} 
+                        className="notification-item"
+                        onClick={() => handleNotificationClick(notif)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <div className={`status-icon ${notif.type}`}></div>
                         <div className="notif-content">
                           <h4>{notif.notif_type ? t('notifications.title.' + notif.notif_type) : notif.title}</h4>

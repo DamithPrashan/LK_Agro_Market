@@ -41,6 +41,27 @@ try {
             $ui_type = 'success';
         }
         
+        $notifData = $row['data'] ? json_decode($row['data'], true) : null;
+        $link = null;
+        if (is_array($notifData) && !empty($notifData['link'])) {
+            $link = $notifData['link'];
+        } elseif (is_array($notifData) && (!empty($notifData['complaint_id']) || !empty($notifData['complaintId']))) {
+            $cId = !empty($notifData['complaint_id']) ? $notifData['complaint_id'] : $notifData['complaintId'];
+            $link = "/buyer/complaints?tab=farmer_response&id=" . $cId;
+        }
+
+        // If user is buyer and notification is dispute/complaint related, normalize the link
+        if ($_SESSION['user']['role'] === 'buyer') {
+            if ($row['type'] === 'farmerResponded' || $row['type'] === 'complaintResolved') {
+                $cId = is_array($notifData) ? ($notifData['complaint_id'] ?? $notifData['complaintId'] ?? null) : null;
+                if ($cId) {
+                    $link = "/buyer/complaints?tab=farmer_response&id=" . $cId;
+                } elseif (empty($link) || str_contains($link, '/crop/') || str_contains($link, '/farmer-response')) {
+                    $link = "/buyer/complaints?tab=farmer_response";
+                }
+            }
+        }
+
         $notifications[] = [
             "id" => intval($row['id']),
             "title" => $row['title'],
@@ -51,8 +72,8 @@ try {
             "created_at" => $row['created_at'],
             "type" => $ui_type,
             "notif_type" => $row['type'],
-            "notif_data" => $row['data'] ? json_decode($row['data'], true) : null,
-            "link" => null
+            "notif_data" => $notifData,
+            "link" => $link
         ];
     }
 
