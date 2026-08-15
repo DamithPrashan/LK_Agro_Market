@@ -84,7 +84,15 @@ function App() {
               <Route path="complaints" element={<FarmerComplaints />} />
               <Route path="ratings" element={<Ratings />} />
             </Route>
-            <Route path="/browse" element={<Browse />} />
+            <Route path="/browse" element={
+              user?.role === 'buyer' ? (
+                <BuyerLayout>
+                  <Browse />
+                </BuyerLayout>
+              ) : (
+                <Browse />
+              )
+            } />
             <Route path="/preorder" element={<PreOrder />} />
             <Route path="/pre-order" element={<PreOrder />} />
             <Route path="/crop/:id" element={<PreOrder />} />

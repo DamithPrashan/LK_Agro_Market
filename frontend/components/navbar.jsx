@@ -270,6 +270,7 @@ const Navbar = () => {
           {user?.role === "farmer" && (
             <>
               <NavLink to="/">{t("navbar.home")}</NavLink>
+              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
               <NavLink to="/farmer">{t("navbar.farmer")}</NavLink>
               <NavLink to="/profile">{t("navbar.profile")}</NavLink>
             </>
@@ -279,7 +280,6 @@ const Navbar = () => {
           {user?.role === "buyer" && (
             <>
               <NavLink to="/">{t("navbar.home")}</NavLink>
-              <NavLink to="/browse">{t("navbar.browse")}</NavLink>
               <NavLink to="/buyer">{t("navbar.buyer")}</NavLink>
             </>
           )}
