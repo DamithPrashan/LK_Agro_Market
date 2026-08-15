@@ -6,7 +6,26 @@ import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaMapMarkerAlt, FaFire } from "react-icons/fa";
 import "../../commonPages/csss/HomePage/FeaturedCrops.css";
-
+import tomatoImg from "../../assests/png/tomato.jpg";
+import carrotImg from "../../assests/png/carrot.jpg";
+import leeksImg from "../../assests/png/leeks.jpg";
+import capsicumImg from "../../assests/png/capsicum.jpg";
+import potatoImg from "../../assests/png/potato.jpg";
+import greenBeansImg from "../../assests/png/beans.jpg";
+import avocadoImg from "../../assests/png/avacado.jpg";
+import beetrootImg from "../../assests/png/beatroot.jpg";
+import grapesImg from "../../assests/png/grapes.jpg";
+import pineappleImg from "../../assests/png/pineapple.jpg";
+import pumpkinImg from "../../assests/png/pumpkin.jpg";
+import bananaImg from "../../assests/png/banana.jpg";
+import cabbageImg from "../../assests/png/cabbage.jpg";
+import ladiesFingerImg from "../../assests/png/ladiesfinger.jpg";
+import lemonImg from "../../assests/png/lemon.jpg";
+import mangoImg from "../../assests/png/mango.jpg";
+import onionImg from "../../assests/png/onion.jpg";
+import watermelonImg from "../../assests/png/watermelon.jpg";
+import brinjalImg from "../../assests/png/brinjal.jpg";
+import cornImg from "../../assests/png/corn.jpg";
 
 
 // Static local assets fallback map
