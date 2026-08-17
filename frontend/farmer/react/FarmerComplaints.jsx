@@ -1,350 +1,108 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 import "../../farmer/csss/dashBoard.css";
+import "../../buyer/csss/Complaints.css";
 
-function FarmerComplaints() {
-  const { t } = useTranslation();
+const formatDate = (value) => value ? new Date(value).toLocaleString() : "Not available";
+
+const deadlineText = (deadline, overdue) => {
+  if (!deadline) return "Respond within 48 hours";
+  if (overdue) return "Response overdue";
+  const milliseconds = new Date(deadline).getTime() - Date.now();
+  const hours = Math.max(0, Math.ceil(milliseconds / 3600000));
+  return `${hours} hour${hours === 1 ? "" : "s"} remaining`;
+};
+
+export default function FarmerComplaints() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
-
+  const [error, setError] = useState("");
   const [responses, setResponses] = useState({});
   const [evidenceFiles, setEvidenceFiles] = useState({});
   const [submittingId, setSubmittingId] = useState(null);
-  const [statusMsgs, setStatusMsgs] = useState({});
+  const [messages, setMessages] = useState({});
 
-  const fetchOpenComplaints = async () => {
+  const loadComplaints = async () => {
     setLoading(true);
-    setErrorMsg("");
+    setError("");
     try {
-      const res = await fetch("/backend/farmer_respond.php", {
-        credentials: "include"
-      });
-      const data = await res.json();
-      if (data.success) {
-        setComplaints(data.data || []);
-      } else {
-        setErrorMsg(data.error || data.message || "Failed to load complaints.");
-      }
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Network error. Please try again.");
+      const response = await fetch("/backend/farmer_respond.php", { credentials: "include" });
+      const body = await response.json();
+      if (!response.ok || !body.success) throw new Error(body.error || body.message || "Failed to load complaints.");
+      setComplaints((body.data || []).filter((complaint) => complaint.status === "awaiting_farmer_response"));
+    } catch (requestError) {
+      setError(requestError.message || "Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOpenComplaints();
+    loadComplaints();
   }, []);
 
-  const handleResponseTextChange = (id, text) => {
-    setResponses((prev) => ({ ...prev, [id]: text }));
-  };
-
-  const handleFileChange = (id, file) => {
+  const handleFile = (complaintId, file) => {
     if (file && file.size > 5 * 1024 * 1024) {
-      alert("File size exceeds 5MB limit.");
+      setMessages((current) => ({ ...current, [complaintId]: { ok: false, text: "Evidence must be 5MB or smaller." } }));
       return;
     }
-    setEvidenceFiles((prev) => ({ ...prev, [id]: file }));
+    setEvidenceFiles((current) => ({ ...current, [complaintId]: file }));
   };
 
-  const handleSubmit = async (e, complaintId) => {
-    e.preventDefault();
-    const responseText = responses[complaintId] || "";
-
-    if (!responseText.trim() || responseText.trim().length < 10) {
-      setStatusMsgs((prev) => ({
-        ...prev,
-        [complaintId]: { text: "Response text is required (minimum 10 characters).", ok: false }
-      }));
+  const submitResponse = async (event, complaintId) => {
+    event.preventDefault();
+    const responseText = (responses[complaintId] || "").trim();
+    if (responseText.length < 10) {
+      setMessages((current) => ({ ...current, [complaintId]: { ok: false, text: "Response must contain at least 10 characters." } }));
       return;
     }
-
-    setSubmittingId(complaintId);
-    setStatusMsgs((prev) => ({ ...prev, [complaintId]: { text: "", ok: false } }));
 
     const formData = new FormData();
     formData.append("complaint_id", complaintId);
-    formData.append("response_text", responseText.trim());
-    if (evidenceFiles[complaintId]) {
-      formData.append("evidence", evidenceFiles[complaintId]);
-    }
+    formData.append("response_text", responseText);
+    if (evidenceFiles[complaintId]) formData.append("evidence", evidenceFiles[complaintId]);
+    setSubmittingId(complaintId);
+    setMessages((current) => ({ ...current, [complaintId]: null }));
 
     try {
-      const res = await fetch("/backend/farmer_respond.php", {
-        method: "POST",
-        body: formData,
-        credentials: "include"
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setStatusMsgs((prev) => ({
-          ...prev,
-          [complaintId]: { text: data.message || "Response submitted successfully.", ok: true }
-        }));
-        // Remove complaint from open list after 1 sec
-        setTimeout(() => {
-          setComplaints((prev) => prev.filter((c) => c.complaint_id !== complaintId));
-        }, 1000);
-      } else {
-        setStatusMsgs((prev) => ({
-          ...prev,
-          [complaintId]: { text: data.error || data.message || "Submission failed.", ok: false }
-        }));
-      }
-    } catch (err) {
-      console.error(err);
-      setStatusMsgs((prev) => ({
-        ...prev,
-        [complaintId]: { text: "Network error. Please try again.", ok: false }
-      }));
+      const response = await fetch("/backend/farmer_respond.php", { method: "POST", credentials: "include", body: formData });
+      const body = await response.json();
+      if (!response.ok || !body.success) throw new Error(body.error || body.message || "Submission failed.");
+      setComplaints((current) => current.filter((complaint) => complaint.complaint_id !== complaintId));
+    } catch (requestError) {
+      setMessages((current) => ({ ...current, [complaintId]: { ok: false, text: requestError.message } }));
     } finally {
       setSubmittingId(null);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="dashboard">
-        <div className="content">
-          <div className="page-header">
-            <h1>{t("farmerDashboard.openComplaints", "Open Complaints")}</h1>
-            <p>Loading active disputes...</p>
+  return <div className="dashboard farmer-complaint-page"><div className="content">
+    <div className="page-header"><h1>Complaint Actions</h1><p>Review complaints requiring your response</p></div>
+    {error && <div className="complaint-feedback error">{error}</div>}
+    {loading ? <div className="complaint-empty-calm">Loading complaints requiring action...</div> : complaints.length === 0 ? <div className="complaint-empty-calm"><h3>No complaints require your action right now.</h3></div> : <div className="farmer-action-list">
+      {complaints.map((complaint) => {
+        const submitting = submittingId === complaint.complaint_id;
+        const feedback = messages[complaint.complaint_id];
+        return <article className="farmer-action-card" key={complaint.complaint_id}>
+          <header><div><span className="complaint-card-kicker">Complaint #{complaint.complaint_id}</span><h2>{complaint.reason}</h2></div><span className={`farmer-action-pill ${complaint.is_overdue ? "overdue" : ""}`}>{complaint.is_overdue ? "Response Overdue" : "Action Required"}</span></header>
+          <div className="farmer-action-meta">
+            <span><strong>Crop</strong>{complaint.crop_name}</span>
+            <span><strong>Order</strong>#{complaint.reservation_id}</span>
+            <span><strong>Submitted</strong>{formatDate(complaint.created_at)}</span>
+            <span><strong>Requested</strong>{formatDate(complaint.farmer_response_requested_at)}</span>
+            <span><strong>Deadline</strong>{formatDate(complaint.farmer_response_deadline)}</span>
+            <span><strong>Time remaining</strong>{deadlineText(complaint.farmer_response_deadline, complaint.is_overdue)}</span>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="dashboard">
-      <div className="content">
-        <div className="page-header">
-          <h1>{t("farmerDashboard.openComplaints", "Open Complaints")}</h1>
-          <p>Review and respond to buyer disputes regarding crop reservations.</p>
-        </div>
-
-        {errorMsg && (
-          <div
-            style={{
-              padding: "14px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              background: "#fbeae8",
-              color: "#c0392b",
-              border: "1px solid #f5c2c2",
-              fontWeight: "600"
-            }}
-          >
-            {errorMsg}
-          </div>
-        )}
-
-        {complaints.length === 0 ? (
-          <div
-            className="empty-state"
-            style={{
-              background: "#ffffff",
-              border: "1px dashed #e4e8e1",
-              borderRadius: "16px",
-              padding: "50px 20px"
-            }}
-          >
-            <div style={{ fontSize: "40px", marginBottom: "10px" }}>✅</div>
-            <h3>No open complaints right now.</h3>
-            <p style={{ color: "#5b6b60" }}>All crop disputes have been addressed.</p>
-          </div>
-        ) : (
-          complaints.map((c) => {
-            const isSubmitting = submittingId === c.complaint_id;
-            const statusMsg = statusMsgs[c.complaint_id];
-
-            return (
-              <div
-                key={c.complaint_id}
-                className="section"
-                style={{
-                  marginBottom: "24px",
-                  borderRadius: "16px",
-                  border: "1px solid #e4e8e1",
-                  boxShadow: "0 1px 2px rgba(31, 42, 36, 0.04)"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    borderBottom: "1px dashed #e4e8e1",
-                    paddingBottom: "14px",
-                    marginBottom: "16px"
-                  }}
-                >
-                  <div>
-                    <h3 style={{ margin: 0 }}>
-                      Dispute #{c.complaint_id} — Order #{c.reservation_id} ({c.crop_name})
-                    </h3>
-                  </div>
-                  <span
-                    style={{
-                      background: "#fdf3dd",
-                      color: "#a97300",
-                      fontSize: "12px",
-                      fontWeight: "700",
-                      padding: "4px 12px",
-                      borderRadius: "20px",
-                      textTransform: "uppercase"
-                    }}
-                  >
-                    Submitted
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: "12px",
-                    marginBottom: "16px",
-                    fontSize: "14px"
-                  }}
-                >
-                  <div>
-                    <strong>Buyer Name:</strong> {c.buyer_name}
-                  </div>
-                  <div>
-                    <strong>Buyer Email:</strong> {c.buyer_email}
-                  </div>
-                  <div>
-                    <strong>Submitted On:</strong> {new Date(c.created_at).toLocaleString()}
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: "#f6f8f3",
-                    borderLeft: "4px solid #c0392b",
-                    padding: "14px 16px",
-                    borderRadius: "6px",
-                    marginBottom: "20px"
-                  }}
-                >
-                  <p style={{ margin: "4px 0" }}>
-                    <strong>Reason:</strong>{" "}
-                    <span style={{ color: "#c0392b", fontWeight: "700" }}>{c.reason}</span>
-                  </p>
-                  <p style={{ margin: "4px 0" }}>
-                    <strong>Buyer Description:</strong> "{c.description}"
-                  </p>
-                  {c.evidence_file && (
-                    <a
-                      href={`/${c.evidence_file}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: "inline-block",
-                        marginTop: "8px",
-                        color: "#145a32",
-                        fontWeight: "600",
-                        textDecoration: "underline",
-                        fontSize: "13px"
-                      }}
-                    >
-                      📷 View Buyer Evidence File
-                    </a>
-                  )}
-                </div>
-
-                <form onSubmit={(e) => handleSubmit(e, c.complaint_id)}>
-                  {statusMsg && statusMsg.text && (
-                    <div
-                      style={{
-                        padding: "12px",
-                        borderRadius: "6px",
-                        marginBottom: "14px",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        background: statusMsg.ok ? "#eaf7ec" : "#fbeae8",
-                        color: statusMsg.ok ? "#145a32" : "#c0392b",
-                        border: statusMsg.ok ? "1px solid #cce5d3" : "1px solid #f5c2c2"
-                      }}
-                    >
-                      {statusMsg.text}
-                    </div>
-                  )}
-
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      marginBottom: "6px",
-                      textTransform: "uppercase"
-                    }}
-                  >
-                    Your Response <span style={{ color: "red" }}>*</span>
-                  </label>
-                  <textarea
-                    rows="4"
-                    style={{
-                      width: "100%",
-                      padding: "12px",
-                      borderRadius: "6px",
-                      border: "1px solid #e4e8e1",
-                      fontSize: "14px",
-                      marginBottom: "14px"
-                    }}
-                    value={responses[c.complaint_id] || ""}
-                    onChange={(e) => handleResponseTextChange(c.complaint_id, e.target.value)}
-                    placeholder="Explain your response clearly (min 10 characters)..."
-                    disabled={isSubmitting}
-                    required
-                    minLength={10}
-                  />
-
-                  <div style={{ marginBottom: "16px" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        marginBottom: "6px",
-                        color: "#5b6b60"
-                      }}
-                    >
-                      Attach Supporting Evidence (Optional - JPG, PNG, PDF &le; 5MB)
-                    </label>
-                    <input
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
-                      onChange={(e) => handleFileChange(c.complaint_id, e.target.files[0])}
-                      disabled={isSubmitting}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="add-btn"
-                    disabled={isSubmitting}
-                    style={{
-                      background: "#145a32",
-                      opacity: isSubmitting ? 0.7 : 1,
-                      cursor: isSubmitting ? "not-allowed" : "pointer"
-                    }}
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit Response"}
-                  </button>
-                </form>
-              </div>
-            );
-          })
-        )}
-      </div>
-    </div>
-  );
+          <section className="calm-complaint-description"><h3>Buyer Complaint</h3><p>{complaint.description}</p>{complaint.evidence_file && <a className="evidence-attachment" href={`/${complaint.evidence_file}`} target="_blank" rel="noreferrer">View Buyer Evidence</a>}</section>
+          <section className={`farmer-action-panel ${complaint.is_overdue ? "overdue" : ""}`}><strong>{complaint.is_overdue ? "Response overdue" : "Administrator instruction"}</strong><p>{complaint.admin_notes || "Please review this complaint and respond within the 48-hour period."}</p>{complaint.is_overdue && <span>You may still respond. Further account action is handled manually by an administrator.</span>}</section>
+          <form className="farmer-response-form" onSubmit={(event) => submitResponse(event, complaint.complaint_id)}>
+            {feedback?.text && <div className={`complaint-feedback ${feedback.ok ? "success" : "error"}`}>{feedback.text}</div>}
+            <label>Your Response</label>
+            <textarea rows="4" required minLength="10" disabled={submitting} value={responses[complaint.complaint_id] || ""} onChange={(event) => setResponses((current) => ({ ...current, [complaint.complaint_id]: event.target.value }))} placeholder="Explain your response clearly..." />
+            <label className="farmer-evidence-label">Supporting Evidence (optional, JPG/PNG/PDF, maximum 5MB)<input type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" disabled={submitting} onChange={(event) => handleFile(complaint.complaint_id, event.target.files[0])} /></label>
+            <button type="submit" disabled={submitting}>{submitting ? "Submitting..." : "Submit Response"}</button>
+          </form>
+        </article>;
+      })}
+    </div>}
+  </div></div>;
 }
-
-export default FarmerComplaints;

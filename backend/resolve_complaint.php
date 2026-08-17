@@ -6,6 +6,7 @@ header("Content-Type: application/json");
 
 require_once __DIR__ . '/connection/db.php';
 require_once __DIR__ . '/Apis/auth_check.php';
+require_once __DIR__ . '/Apis/admin/calendar/logAdminActivity.php';
 
 // Security Check: Enforce logged-in admin access
 require_role('admin');
@@ -23,19 +24,15 @@ $admin_notes = isset($_POST['admin_notes']) ? trim($_POST['admin_notes']) : (iss
 if (empty($resolution_status) && !empty($resolution_action)) {
     $action_lower = strtolower($resolution_action);
     if (in_array($action_lower, ['dismiss', 'dismissed', 'reject', 'rejected'], true)) {
-        $resolution_status = 'rejected';
-    } elseif (in_array($action_lower, ['refund', 're-delivery', 'redelivery', 'replace', 'resolved'], true)) {
-        $resolution_status = 'resolved';
+        $resolution_status = 'dismissed';
+    } elseif (in_array($action_lower, ['request_farmer_response', 'inform_farmer'], true)) {
+        $resolution_status = 'awaiting_farmer_response';
     }
 }
 
 // Normalize status
 $resolution_status = strtolower($resolution_status);
-if ($resolution_status === 'dismissed') {
-    $resolution_status = 'rejected';
-}
-
-$allowed_statuses = ['resolved', 'rejected'];
+$allowed_statuses = ['dismissed', 'awaiting_farmer_response'];
 
 // Input Validation
 if ($complaint_id <= 0) {
@@ -62,8 +59,8 @@ if (!in_array($resolution_status, $allowed_statuses, true)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Invalid resolution status. Allowed values: 'resolved', 'rejected'.",
-        "error" => "Invalid resolution_status. Allowed values: 'resolved', 'rejected'."
+        "message" => "Choose either Dismiss Complaint or Request Farmer Response.",
+        "error" => "Invalid complaint action."
     ]);
     exit;
 }
@@ -115,24 +112,42 @@ try {
         exit;
     }
 
+    if ($resolution_status === 'awaiting_farmer_response' && $current_status !== 'submitted') {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "message" => "A farmer response has already been requested for this complaint."
+        ]);
+        exit;
+    }
+
     // Update complaint record
     $updateSql = "
         UPDATE complaints 
-        SET status = ?, 
-            resolution_action = ?, 
-            admin_notes = ?, 
-            resolved_at = NOW() 
+        SET status = ?,
+            resolution_action = ?,
+            admin_notes = ?,
+            resolved_at = CASE WHEN ? = 'dismissed' THEN NOW() ELSE NULL END,
+            farmer_response_requested_at = CASE WHEN ? = 'awaiting_farmer_response' THEN NOW() ELSE NULL END,
+            farmer_response_deadline = CASE WHEN ? = 'awaiting_farmer_response' THEN DATE_ADD(NOW(), INTERVAL 48 HOUR) ELSE NULL END
         WHERE id = ?
     ";
     $updateStmt = $pdo->prepare($updateSql);
-    $updateStmt->execute([$resolution_status, $resolution_action, $admin_notes, $complaint_id]);
+    $isFarmerRequest = $resolution_status === 'awaiting_farmer_response';
+    $updateStmt->execute([$resolution_status, $resolution_action, $admin_notes, $resolution_status, $resolution_status, $resolution_status, $complaint_id]);
+    $deadline = null;
+    if ($isFarmerRequest) {
+        $deadlineStmt = $pdo->prepare("SELECT farmer_response_deadline FROM complaints WHERE id = ?");
+        $deadlineStmt->execute([$complaint_id]);
+        $deadline = $deadlineStmt->fetchColumn();
+    }
 
     // Send notifications to buyer and farmer
     require_once __DIR__ . '/create_notification.php';
     
     $reservation_id = $complaint['reservation_id'];
     $crop_name = $complaint['crop_name'];
-    $notif_title = "Complaint Resolution: Order #{$reservation_id}";
+    $notif_title = $isFarmerRequest ? "Action Required: Complaint for Order #{$reservation_id}" : "Complaint Dismissed: Order #{$reservation_id}";
 
     $buyer_notif_data = json_encode([
         "complaint_id" => $complaint_id, 
@@ -152,21 +167,43 @@ try {
         "cropName" => $crop_name,
         "action" => $resolution_action,
         "notes" => $admin_notes,
+        "deadline" => $deadline,
         "link" => "/farmer/complaints"
     ]);
 
-    $buyer_msg = "Your dispute for Order #{$reservation_id} ({$crop_name}) has been {$resolution_status}. Resolution: {$resolution_action}. Notes: {$admin_notes}";
-    $farmer_msg = "The dispute for Order #{$reservation_id} ({$crop_name}) has been {$resolution_status}. Resolution: {$resolution_action}. Notes: {$admin_notes}";
+    $buyer_msg = $isFarmerRequest
+        ? "The farmer has been asked to respond to your complaint for Order #{$reservation_id} ({$crop_name})."
+        : "Your complaint for Order #{$reservation_id} ({$crop_name}) was dismissed after review. Notes: {$admin_notes}";
+    $farmer_msg = $isFarmerRequest
+        ? "You must respond to the complaint for Order #{$reservation_id} ({$crop_name}) within 48 hours. {$admin_notes} Failure to respond may lead to further account action. Your account will not be changed automatically when the deadline expires."
+        : "The complaint for Order #{$reservation_id} ({$crop_name}) was dismissed. Notes: {$admin_notes}";
 
-    create_notification($complaint['buyer_user_id'], $notif_title, $buyer_msg, 'complaintResolved', $buyer_notif_data);
-    create_notification($complaint['farmer_user_id'], $notif_title, $farmer_msg, 'complaintResolved', $farmer_notif_data);
+    if ($isFarmerRequest) {
+        create_notification($complaint['farmer_user_id'], $notif_title, $farmer_msg, 'farmerResponseRequested', $farmer_notif_data);
+    } else {
+        create_notification($complaint['buyer_user_id'], $notif_title, $buyer_msg, 'complaintDismissed', $buyer_notif_data);
+    }
+
+    $adminStmt = $pdo->prepare("SELECT admin_id FROM admin WHERE user_id = ? LIMIT 1");
+    $adminStmt->execute([$_SESSION['user']['id']]);
+    $adminId = $adminStmt->fetchColumn() ?: null;
+    logAdminActivity(
+        $pdo,
+        $isFarmerRequest ? 'farmer_response_requested' : 'complaint_dismissed',
+        $isFarmerRequest ? 'Farmer response requested' : 'Complaint dismissed',
+        $isFarmerRequest
+            ? "A 48-hour farmer response deadline was set for order #{$reservation_id}."
+            : "Complaint for order #{$reservation_id} was dismissed. {$admin_notes}",
+        $complaint_id,
+        $adminId
+    );
 
     http_response_code(200);
     echo json_encode([
         "success" => true,
         "complaint_id" => $complaint_id,
         "status" => $resolution_status,
-        "message" => "Complaint successfully marked as " . ($resolution_status === 'resolved' ? 'Resolved' : 'Dismissed') . "."
+        "message" => $isFarmerRequest ? "The farmer was notified and asked to respond." : "Complaint dismissed successfully."
     ]);
 
 } catch (PDOException $e) {

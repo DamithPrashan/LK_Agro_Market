@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -7,11 +7,34 @@ import notificationIcon from '../assests/png/notification.png';
 import logo from '../../src/assets/logo.png';
 
 const Navbar = () => {
+  const headerRef = useRef(null);
   const navigate = useNavigate();
   const { user, login, logout } = useAuth();
   const { t, i18n } = useTranslation();
   const [showNotifications, setShowNotifications] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return undefined;
+
+    const updateNavbarHeight = () => {
+      document.documentElement.style.setProperty(
+        "--navbar-height",
+        `${Math.ceil(header.getBoundingClientRect().height)}px`
+      );
+    };
+
+    updateNavbarHeight();
+    const observer = new ResizeObserver(updateNavbarHeight);
+    observer.observe(header);
+    window.addEventListener("resize", updateNavbarHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateNavbarHeight);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -248,7 +271,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className={`app-header ${isScrolled ? "scrolled" : ""}`}>
+    <header ref={headerRef} className={`app-header ${isScrolled ? "scrolled" : ""}`}>
       <div className="app-brand">
         <img src={logo} alt="Logo" />
       </div>
@@ -391,7 +414,7 @@ const Navbar = () => {
                         <div className={`status-icon ${notif.type}`}></div>
                         <div className="notif-content">
                           <h4>{notif.notif_type ? t('notifications.title.' + notif.notif_type) : notif.title}</h4>
-                          <p>{notif.notif_type ? t('notifications.' + notif.notif_type, getLocalizedData(notif.notif_data)) : notif.desc}</p>
+                          <p>{notif.notif_type && notif.notif_type !== 'warningIssued' ? t('notifications.' + notif.notif_type, getLocalizedData(notif.notif_data)) : notif.desc}</p>
                           <span className="time">{formatTime(notif.created_at)}</span>
                         </div>
                         {notif.unread && <span className={`unread-dot ${notif.type}`}></span>}

@@ -69,6 +69,8 @@ try {
             c.farmer_response,
             c.admin_notes,
             c.resolution_action,
+            c.farmer_response_requested_at,
+            c.farmer_response_deadline,
             c.farmer_responded_at,
             c.resolved_at,
             c.created_at,
@@ -100,6 +102,46 @@ try {
 
     $data = [];
     foreach ($rows as $row) {
+        $reasonText = strtolower($row['reason'] . ' ' . $row['description']);
+        if (preg_match('/payment|refund|money|charge|paid/', $reasonText)) {
+            $category = 'payment_issue';
+            $priorityScore = 6;
+        } elseif (preg_match('/short|weight|quantity|incomplete|missing|not.*deliver/', $reasonText)) {
+            $category = 'incomplete_order';
+            $priorityScore = 6;
+        } elseif (preg_match('/fake|fraud|scam|false listing/', $reasonText)) {
+            $category = 'fake_listing';
+            $priorityScore = 5;
+        } elseif (preg_match('/quality|damaged|spoiled|rotten/', $reasonText)) {
+            $category = 'quality_issue';
+            $priorityScore = 4;
+        } elseif (preg_match('/delivery|collection|pickup|late arrival/', $reasonText)) {
+            $category = 'delivery_issue';
+            $priorityScore = 3;
+        } elseif (preg_match('/system|website|app|technical|error/', $reasonText)) {
+            $category = 'system_issue';
+            $priorityScore = 2;
+        } else {
+            $category = 'other';
+            $priorityScore = 1;
+        }
+
+        $ageHours = max(0, (time() - strtotime($row['created_at'])) / 3600);
+        $priorityScore += min(5, (int) floor($ageHours / 24));
+        $rawStatus = strtolower($row['status']);
+        $displayStatus = in_array($rawStatus, ['submitted', 'awaiting_farmer_response'], true) ? 'open' : $rawStatus;
+        $deadlineRemainingHours = null;
+        $isOverdue = false;
+        if ($rawStatus === 'awaiting_farmer_response' && !empty($row['farmer_response_deadline'])) {
+            $deadlineRemainingHours = (strtotime($row['farmer_response_deadline']) - time()) / 3600;
+            $isOverdue = $deadlineRemainingHours < 0;
+            if ($isOverdue) $priorityScore += 5;
+            elseif ($deadlineRemainingHours < 6) $priorityScore += 3;
+            elseif ($deadlineRemainingHours < 12) $priorityScore += 2;
+            elseif ($deadlineRemainingHours <= 24) $priorityScore += 1;
+        }
+        $priority = $priorityScore >= 11 ? 'critical' : ($priorityScore >= 8 ? 'high' : ($priorityScore >= 5 ? 'medium' : 'normal'));
+
         $data[] = [
             "complaint_id" => intval($row['complaint_id']),
             "reservation_id" => intval($row['reservation_id']),
@@ -116,7 +158,16 @@ try {
             "description" => $row['description'],
             "evidence_file" => $row['evidence_file'],
             "farmer_evidence_file" => $row['farmer_evidence_file'],
-            "status" => $row['status'],
+            "status" => $displayStatus,
+            "workflow_status" => $rawStatus,
+            "category" => $category,
+            "priority" => $priority,
+            "priority_score" => $priorityScore,
+            "age_hours" => round($ageHours, 1),
+            "farmer_response_requested_at" => $row['farmer_response_requested_at'],
+            "farmer_response_deadline" => $row['farmer_response_deadline'],
+            "deadline_remaining_hours" => $deadlineRemainingHours === null ? null : round($deadlineRemainingHours, 1),
+            "is_overdue" => $isOverdue,
             "farmer_response" => $row['farmer_response'],
             "admin_notes" => $row['admin_notes'],
             "resolution_action" => $row['resolution_action'],
@@ -126,6 +177,22 @@ try {
         ];
     }
 
+    usort($data, function ($a, $b) {
+        if ($a['status'] === 'open' && $b['status'] !== 'open') return -1;
+        if ($a['status'] !== 'open' && $b['status'] === 'open') return 1;
+        $priorityComparison = $b['priority_score'] <=> $a['priority_score'];
+        return $priorityComparison !== 0 ? $priorityComparison : strtotime($a['created_at']) <=> strtotime($b['created_at']);
+    });
+
+    $weekStart = date('Y-m-d 00:00:00', strtotime('monday this week'));
+    $statsStmt = $pdo->prepare("SELECT
+        SUM(CASE WHEN created_at >= ? AND created_at <= NOW() THEN 1 ELSE 0 END) AS opened,
+        SUM(CASE WHEN resolved_at >= ? AND status = 'resolved' THEN 1 ELSE 0 END) AS resolved,
+        SUM(CASE WHEN resolved_at >= ? AND status = 'dismissed' THEN 1 ELSE 0 END) AS dismissed
+        FROM complaints");
+    $statsStmt->execute([$weekStart, $weekStart, $weekStart]);
+    $weekly = $statsStmt->fetch(PDO::FETCH_ASSOC);
+
     http_response_code(200);
     echo json_encode([
         "success" => true,
@@ -133,6 +200,11 @@ try {
         "total" => $total,
         "page" => $page,
         "limit" => $limit
+        ,"weekly_stats" => [
+            "open" => (int) ($weekly['opened'] ?? 0),
+            "resolved" => (int) ($weekly['resolved'] ?? 0),
+            "dismissed" => (int) ($weekly['dismissed'] ?? 0)
+        ]
     ]);
 
 } catch (PDOException $e) {

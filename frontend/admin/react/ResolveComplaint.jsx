@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../../buyer/csss/Complaints.css";
@@ -42,11 +42,14 @@ function ResolveComplaint() {
 
   useEffect(() => {
     if (user && user.role === "admin") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchComplaintDetails();
     } else if (user) {
       setError(t("admin.errors.unauthorizedAdmin"));
       setLoading(false);
     }
+    // This screen reloads only when the route identity or authenticated user changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
   const handleResolveAction = async (action) => {
@@ -61,7 +64,7 @@ function ResolveComplaint() {
     setResolving(true);
     setMsg({ text: "", ok: false });
 
-    const resolutionStatus = (action === "dismiss" || action === "dismissed") ? "rejected" : "resolved";
+    const resolutionStatus = action === "dismiss" ? "dismissed" : "awaiting_farmer_response";
 
     try {
       const response = await fetch("/backend/resolve_complaint.php", {
@@ -171,7 +174,7 @@ function ResolveComplaint() {
               color: isResolvedStatus ? "#2d6a4f" : (isRejected ? "#c0392b" : "#856404"), 
               border: isResolvedStatus ? "1px solid #cce5d3" : (isRejected ? "1px solid #f5c2c2" : "1px solid #ffeeba") 
             }}>
-              {t("admin.complaints.statusLabel", { status: (complaint.dbStatus || "").toUpperCase() })}
+              {t("admin.complaints.statusLabel", { status: t(`admin.complaints.status.${complaint.dbStatus}`, { defaultValue: complaint.dbStatus }) })}
             </span>
           </div>
 
@@ -242,29 +245,21 @@ function ResolveComplaint() {
             </div>
           ) : (
             <div className="action-buttons" style={{ display: "flex", gap: "10px" }}>
-              <button 
-                className="refund-btn" 
-                onClick={() => handleResolveAction("refund")}
-                disabled={resolving}
-                style={{ flex: 1, padding: "12px", background: "#e74c3c", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
-              >
-                {t("admin.complaints.btnRefund")}
-              </button>
-              <button 
-                className="delivery-btn" 
-                onClick={() => handleResolveAction("re-delivery")}
-                disabled={resolving}
-                style={{ flex: 1, padding: "12px", background: "#f39c12", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
-              >
-                {t("admin.complaints.btnRedelivery")}
-              </button>
-              <button 
-                className="dismiss-btn" 
+              <button
+                className="dismiss-btn"
                 onClick={() => handleResolveAction("dismiss")}
                 disabled={resolving}
                 style={{ flex: 1, padding: "12px", background: "#7f8c8d", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
-                {t("admin.complaints.btnDismiss")}
+                {t("admin.complaints.dismissComplaint")}
+              </button>
+              <button
+                className="delivery-btn"
+                onClick={() => handleResolveAction("request_farmer_response")}
+                disabled={resolving || statusLower !== "submitted"}
+                style={{ flex: 1, padding: "12px", background: "#176b3a", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
+              >
+                {t("admin.complaints.requestFarmerResponse")}
               </button>
             </div>
           )}
