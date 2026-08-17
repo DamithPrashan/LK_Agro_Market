@@ -64,7 +64,8 @@ body {
 .hero {
   /* background: linear-gradient(135deg, #1f7a3a, #2ecc71); */
   color: green;
-  padding: 55px 25px;
+  padding: 0 25px 55px 25px;
+  margin-top: -150px;
   text-align: center;
 }
 
@@ -383,6 +384,10 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .hero {
+    margin-top: -14px;
+  }
+
   .content-grid {
     grid-template-columns: 1fr;
   }

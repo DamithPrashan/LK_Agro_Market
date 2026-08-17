@@ -1,138 +1,144 @@
 <?php
-// get_complaints.php
-//
-// Returns complaint records, joined across your real tables:
-//   complaint → crop → farmer → user   (who the complaint is about)
-//   complaint → reservation → reserve_crop → buyer → user  (who booked it)
-//   complaint → user (submitter, via complaint.user_id)
-//
-// Behavior depends on the logged-in user's role:
-//   - admin  : full list (optionally filtered by ?status= or ?complaint_id=)
-//   - farmer : only complaints about crops that farmer owns
-//              (use ?complaint_id= to fetch a single one, e.g. for the
-//              FarmerResponse page)
-//   - buyer  : only complaints that buyer personally submitted
-//
-// ⚠️ ONE ASSUMPTION LEFT: this assumes your login sets
-// $_SESSION['user_id'] (matching `user`.`user_id`) and
-// $_SESSION['user_role'] (matching `user`.`role`: 'farmer'|'buyer'|'admin').
-// Adjust these two lines if your actual session keys differ.
-//
-// Run migration_add_farmer_response.sql before using this.
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET");
+header("Content-Type: application/json");
 
-header('Content-Type: application/json');
-session_start();
+require_once __DIR__ . '/connection/db.php';
+require_once __DIR__ . '/Apis/auth_check.php';
 
-require_once __DIR__ . '/db_connect.php'; // <-- adjust path to match your actual DB connection file
+// Security Check: Enforce logged-in admin access
+require_role('admin');
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role'])) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Not authenticated."
-    ]);
-    exit;
-}
+// Retrieve query parameters
+$status = isset($_GET['status']) ? trim($_GET['status']) : null;
+$farmer_id = isset($_GET['farmer_id']) ? intval($_GET['farmer_id']) : null;
+$buyer_id = isset($_GET['buyer_id']) ? intval($_GET['buyer_id']) : null;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$limit = isset($_GET['limit']) ? max(1, min(100, intval($_GET['limit']))) : 20;
 
-$sessionUserId = $_SESSION['user_id'];
-$role = $_SESSION['user_role'];
-
-$statusFilter = isset($_GET['status']) ? trim($_GET['status']) : null;
-$complaintIdFilter = isset($_GET['complaint_id']) ? (int) $_GET['complaint_id'] : null;
+$offset = ($page - 1) * $limit;
 
 try {
-    $sql = "SELECT
-                c.complaint_id,
-                c.crop_id,
-                c.reservation_id,
-                c.user_id            AS submitted_by_user_id,
-                submitter.name       AS submitted_by_name,
-                submitter.role       AS submitted_by_role,
-                c.admin_id,
-                c.review_id,
-                c.description,
-                c.evidence,
-                c.complaint_status,
-                c.farmer_response,
-                c.farmer_responded_at,
-                c.resolution,
-                c.complaint_date,
-                crop.crop_name,
-                crop.farmer_id,
-                farmer_user.name     AS farmer_name,
-                rc.buyer_id,
-                buyer_user.name      AS buyer_name
-            FROM complaint c
-            INNER JOIN user submitter   ON c.user_id = submitter.user_id
-            LEFT JOIN crop               ON c.crop_id = crop.crop_id
-            LEFT JOIN farmer             ON crop.farmer_id = farmer.farmer_id
-            LEFT JOIN user farmer_user   ON farmer.user_id = farmer_user.user_id
-            LEFT JOIN reservation res    ON c.reservation_id = res.reservation_id
-            LEFT JOIN reserve_crop rc    ON res.reserve_crop_id = rc.reserve_crop_id
-            LEFT JOIN buyer               ON rc.buyer_id = buyer.buyer_id
-            LEFT JOIN user buyer_user    ON buyer.user_id = buyer_user.user_id
-            WHERE 1=1";
-
+    $where = ["1=1"];
     $params = [];
-    $types = "";
 
-    if ($role === "farmer") {
-        // Only complaints about crops this farmer owns
-        $sql .= " AND crop.farmer_id = (SELECT farmer_id FROM farmer WHERE user_id = ? LIMIT 1)";
-        $params[] = $sessionUserId;
-        $types .= "i";
-    } elseif ($role === "buyer") {
-        // Only complaints this buyer personally submitted
-        $sql .= " AND c.user_id = ?";
-        $params[] = $sessionUserId;
-        $types .= "i";
-    } elseif ($role !== "admin") {
-        echo json_encode(["success" => false, "message" => "Unauthorized role."]);
-        exit;
-    }
-    // admin: no extra ownership filter — sees everything
-
-    if ($statusFilter) {
-        $sql .= " AND c.complaint_status = ?";
-        $params[] = $statusFilter;
-        $types .= "s";
+    if (!empty($status)) {
+        $where[] = "c.status = ?";
+        $params[] = $status;
     }
 
-    if ($complaintIdFilter) {
-        $sql .= " AND c.complaint_id = ?";
-        $params[] = $complaintIdFilter;
-        $types .= "i";
+    if ($farmer_id !== null && $farmer_id > 0) {
+        $where[] = "f.farmer_id = ?";
+        $params[] = $farmer_id;
     }
 
-    $sql .= " ORDER BY c.complaint_date DESC";
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        throw new Exception("Query preparation failed: " . $conn->error);
+    if ($buyer_id !== null && $buyer_id > 0) {
+        $where[] = "b.buyer_id = ?";
+        $params[] = $buyer_id;
     }
 
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
+    $whereSql = implode(" AND ", $where);
+
+    // 1. Get total count for pagination
+    $countSql = "
+        SELECT COUNT(*) AS total
+        FROM complaints c
+        JOIN buyer b ON c.buyer_id = b.buyer_id
+        JOIN reservation r ON c.reservation_id = r.reservation_id
+        JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+        JOIN crop cr ON rc.crop_id = cr.crop_id
+        JOIN farmer f ON cr.farmer_id = f.farmer_id
+        WHERE {$whereSql}
+    ";
+    $countStmt = $pdo->prepare($countSql);
+    $countStmt->execute($params);
+    $total = intval($countStmt->fetchColumn());
+
+    // 2. Fetch paginated records
+    $sql = "
+        SELECT 
+            c.id AS complaint_id,
+            c.reservation_id,
+            c.buyer_id,
+            c.reason,
+            c.description,
+            c.evidence_file,
+            c.farmer_evidence_file,
+            c.status,
+            c.farmer_response,
+            c.admin_notes,
+            c.resolution_action,
+            c.farmer_responded_at,
+            c.resolved_at,
+            c.created_at,
+            b.user_id AS buyer_user_id,
+            u_buyer.name AS buyer_name,
+            u_buyer.email AS buyer_email,
+            f.farmer_id,
+            f.user_id AS farmer_user_id,
+            u_farmer.name AS farmer_name,
+            u_farmer.email AS farmer_email,
+            cr.crop_id,
+            cr.crop_name
+        FROM complaints c
+        JOIN buyer b ON c.buyer_id = b.buyer_id
+        JOIN user u_buyer ON b.user_id = u_buyer.user_id
+        JOIN reservation r ON c.reservation_id = r.reservation_id
+        JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
+        JOIN crop cr ON rc.crop_id = cr.crop_id
+        JOIN farmer f ON cr.farmer_id = f.farmer_id
+        JOIN user u_farmer ON f.user_id = u_farmer.user_id
+        WHERE {$whereSql}
+        ORDER BY c.created_at DESC
+        LIMIT {$limit} OFFSET {$offset}
+    ";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $data = [];
+    foreach ($rows as $row) {
+        $data[] = [
+            "complaint_id" => intval($row['complaint_id']),
+            "reservation_id" => intval($row['reservation_id']),
+            "order_number" => "ORD" . $row['reservation_id'],
+            "buyer_id" => intval($row['buyer_id']),
+            "buyer_name" => $row['buyer_name'],
+            "buyer_email" => $row['buyer_email'],
+            "farmer_id" => intval($row['farmer_id']),
+            "farmer_name" => $row['farmer_name'],
+            "farmer_email" => $row['farmer_email'],
+            "crop_id" => intval($row['crop_id']),
+            "crop_name" => $row['crop_name'],
+            "reason" => $row['reason'],
+            "description" => $row['description'],
+            "evidence_file" => $row['evidence_file'],
+            "farmer_evidence_file" => $row['farmer_evidence_file'],
+            "status" => $row['status'],
+            "farmer_response" => $row['farmer_response'],
+            "admin_notes" => $row['admin_notes'],
+            "resolution_action" => $row['resolution_action'],
+            "farmer_responded_at" => $row['farmer_responded_at'],
+            "resolved_at" => $row['resolved_at'],
+            "created_at" => $row['created_at']
+        ];
     }
 
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $complaints = [];
-    while ($row = $result->fetch_assoc()) {
-        $complaints[] = $row;
-    }
-
+    http_response_code(200);
     echo json_encode([
         "success" => true,
-        "complaints" => $complaints
+        "data" => $data,
+        "total" => $total,
+        "page" => $page,
+        "limit" => $limit
     ]);
 
-    $stmt->close();
-} catch (Exception $e) {
+} catch (PDOException $e) {
+    http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Error fetching complaints: " . $e->getMessage()
+        "error" => "Database error: " . $e->getMessage()
     ]);
 }
-
-$conn->close();

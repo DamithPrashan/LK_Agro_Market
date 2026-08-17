@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
+import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { FaMapMarkerAlt, FaFire } from "react-icons/fa";
+import "../../commonPages/csss/HomePage/FeaturedCrops.css";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
 import leeksImg from "../../assests/png/leeks.jpg";
@@ -23,6 +26,7 @@ import onionImg from "../../assests/png/onion.jpg";
 import watermelonImg from "../../assests/png/watermelon.jpg";
 import brinjalImg from "../../assests/png/brinjal.jpg";
 import cornImg from "../../assests/png/corn.jpg";
+
 
 // Static local assets fallback map
 const imageMap = {
@@ -56,6 +60,10 @@ export default function Browse() {
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
   const { crops, loading, fetchCrops } = useCrops();
+  const { user } = useAuth();
+  
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalType, setAuthModalType] = useState(null); // 'guest' | 'farmer'
 
   // Parse initial search query from URL
   const [searchQuery, setSearchQuery] = useState(() => {
@@ -346,13 +354,13 @@ export default function Browse() {
           ) : (
             <div className="crop-grid">
               {crops.map((crop) => (
-                <div
-                  className="crop-card"
+                <article
+                  className="featured-card"
                   key={crop.id}
                   onClick={() => navigate(`/crop/${crop.id}`)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", display: "flex", flexDirection: "column", height: "100%" }}
                 >
-                  <div className={`crop-image-area ${getBgClass(crop.name)}`} style={{ position: "relative" }}>
+                  <div className="featured-image-wrap">
                     {parseFloat(crop.qty) <= 0 && (
                       <span className="out-of-stock-badge" style={{
                         position: "absolute",
@@ -370,77 +378,199 @@ export default function Browse() {
                         {t("emptyStates.outOfStock")}
                       </span>
                     )}
+                    {parseInt(crop.is_trending) === 1 && (
+                      <div className="featured-verified">
+                        <FaFire />
+                        <span>Trending</span>
+                      </div>
+                    )}
                     {(() => {
                       if (crop.image_url) {
                         let imgUrl = crop.image_url;
                         if (!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
                           imgUrl = "/backend/" + imgUrl;
                         }
-                        return <img src={imgUrl} alt={crop.name} className="crop-image" />;
+                        return <img src={imgUrl} alt={crop.name} />;
                       }
                       const capitalized = crop.name ? crop.name.charAt(0).toUpperCase() + crop.name.slice(1).toLowerCase() : "";
                       const localImg = imageMap[capitalized] || imageMap[crop.name];
                       if (localImg) {
-                        return <img src={localImg} alt={crop.name} className="crop-image" />;
+                        return <img src={localImg} alt={crop.name} />;
                       } else {
-                        return <span className="crop-icon">🌱</span>;
+                        return (
+                          <div className={`crop-image-area ${getBgClass(crop.name)}`} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <span className="crop-icon">🌱</span>
+                          </div>
+                        );
                       }
                     })()}
                   </div>
-                  <div className="crop-details">
+
+                  <div className="featured-card-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
                     <h3>{crop.name}</h3>
-                    <p className="farm-name">
-                      {crop.farmer_name} {parseInt(crop.is_verified) === 1 && <span className="verified-tick">✓</span>}
-                    </p>
-                    <p className="price">
-                      <strong>Rs {parseFloat(crop.price).toFixed(0)}</strong>{t("browse.perKg")}
-                    </p>
-                    <p className="meta-info">
-                      {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
-                        <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
-                      ) : (
-                        `${parseFloat(crop.qty).toFixed(0)} kg`
-                      )} • {t("browse.harvestLabel")} {crop.harvest}
-                    </p>
-                    <div className="rating">
+
+                    <div className="featured-meta" style={{ marginBottom: "8px" }}>
+                      <div className="featured-location">
+                        <FaMapMarkerAlt />
+                        <span>{crop.district || "Sri Lanka"}</span>
+                      </div>
+                      
+                      <div className="featured-quantity" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {parseInt(crop.is_verified) === 1 && <span className="verified-tick" style={{ background: '#eaf5ec', color: '#27ae60', borderRadius: '50%', width: '14px', height: '14px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>✓</span>}
+                        <span>{crop.farmer_name}</span>
+                      </div>
+                    </div>
+
+                    <div className="meta-info" style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "8px", fontSize: "12px", color: "#64748b" }}>
+                      <span>
+                        {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
+                          <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
+                        ) : (
+                          `${parseFloat(crop.qty).toFixed(0)} kg`
+                        )}
+                      </span>
+                      <span>
+                        {t("browse.harvestLabel")} {crop.harvest}
+                      </span>
+                    </div>
+
+                    <div className="rating" style={{ color: "#f1c40f", fontSize: "14px", marginTop: "auto" }}>
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
-                      <span className="rating-num">({parseFloat(crop.rating).toFixed(1)})</span>
+                      <span className="rating-num" style={{ fontSize: "11px", color: "#7f8c8d", marginLeft: "5px" }}>({parseFloat(crop.rating).toFixed(1)})</span>
                     </div>
-                    {parseFloat(crop.qty) <= 0 ? (
-                      <button
-                        className="pre-order-btn out-of-stock-btn"
-                        disabled
-                        style={{
-                          background: "#95a5a6",
-                          color: "white",
-                          cursor: "not-allowed",
-                          boxShadow: "none"
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {t("emptyStates.outOfStock")}
-                      </button>
-                    ) : (
-                      <button
-                        className="pre-order-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/crop/${crop.id}`);
-                        }}
-                      >
-                        {t("sidebar.preOrder")}
-                      </button>
-                    )}
+
+                    <div className="featured-divider" style={{ margin: "12px 0" }}></div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+                      <div className="featured-price" style={{ whiteSpace: "nowrap" }}>
+                        <span className="featured-price-main">Rs. {parseFloat(crop.price).toFixed(0)}</span>
+                        <span className="featured-price-unit">/kg</span>
+                      </div>
+                      
+                      <div style={{ minWidth: "110px", textAlign: "right" }}>
+                        {parseFloat(crop.qty) <= 0 ? (
+                          <button
+                            className="pre-order-btn out-of-stock-btn"
+                            disabled
+                            style={{
+                              background: "#95a5a6",
+                              color: "white",
+                              cursor: "not-allowed",
+                              boxShadow: "none",
+                              padding: "8px 12px",
+                              fontSize: "13px"
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {t("emptyStates.outOfStock")}
+                          </button>
+                        ) : (
+                          <button
+                            className="pre-order-btn"
+                            style={{ padding: "8px 12px", fontSize: "13px" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!user) {
+                                setAuthModalType('guest');
+                                setShowAuthModal(true);
+                              } else if (user.role === 'farmer') {
+                                setAuthModalType('farmer');
+                                setShowAuthModal(true);
+                              } else {
+                                navigate(`/crop/${crop.id}`);
+                              }
+                            }}
+                          >
+                            {t("sidebar.preOrder")}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           )}
         </main>
       </div>
+
+      {/* AUTH MODAL */}
+      {showAuthModal && (
+        <div className="modal-backdrop" style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.6)", display: "flex",
+          alignItems: "center", justifyContent: "center", zIndex: 1000,
+          backdropFilter: "blur(4px)"
+        }}>
+          <style>{`
+            @keyframes modalFadeScale {
+              from { opacity: 0; transform: scale(0.95) translateY(10px); }
+              to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            .modal-animated {
+              animation: modalFadeScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}</style>
+          
+          <div className="card modal-animated" style={{ 
+            maxWidth: "420px", 
+            width: "90%", 
+            textAlign: "center", 
+            position: "relative",
+            padding: "35px 25px",
+            borderRadius: "16px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}>
+            {/* SVG Shopping Basket Icon */}
+            <div style={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
+              <div style={{ background: "var(--g-50)", padding: "16px", borderRadius: "50%", display: "inline-flex" }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--g-800)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </div>
+            </div>
+
+            {authModalType === 'guest' ? (
+              <>
+                <h2 style={{ marginBottom: "12px", color: "var(--t-1)", fontSize: "22px", fontWeight: "700" }}>
+                  {t("auth.loginRequired", "Login Required")}
+                </h2>
+                <p style={{ marginBottom: "28px", color: "var(--t-2)", fontSize: "15px", lineHeight: "1.5" }}>
+                  {t("auth.buyerRegisterPrompt", "You have to register as a buyer to make a pre order.")}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
+                  <button className="btn btn-primary btn-lg btn-full" onClick={() => {
+                    setShowAuthModal(false);
+                    navigate("/register?role=buyer");
+                  }}>
+                    {t("buttons.registerBuyer", "Register as Buyer")}
+                  </button>
+                  <button className="btn btn-ghost" style={{ border: "none", background: "transparent" }} onClick={() => setShowAuthModal(false)}>
+                    {t("buttons.cancel", "Cancel")}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ marginBottom: "12px", color: "var(--t-1)", fontSize: "22px", fontWeight: "700" }}>
+                  {t("auth.accessDenied", "Access Denied")}
+                </h2>
+                <p style={{ marginBottom: "28px", color: "var(--t-2)", fontSize: "15px", lineHeight: "1.5" }}>
+                  {t("auth.farmerPreOrderPrompt", "Pre-orders are for buyers only. If you wish to purchase crops, please register a buyer account.")}
+                </p>
+                <button className="btn btn-primary btn-lg btn-full" onClick={() => setShowAuthModal(false)}>
+                  {t("buttons.close", "Close")}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+}

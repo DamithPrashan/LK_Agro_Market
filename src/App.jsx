@@ -42,6 +42,8 @@ import MyListings from "../frontend/farmer/react/MyListings.jsx";
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
+import FarmerLayout from "./pages/FarmerLayout.jsx";
+import MyListings from "../frontend/farmer/react/MyListings.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
 function App() {
@@ -138,16 +140,15 @@ function App() {
               <Route path="orders" element={<OrderManagement />} />
 
               <Route path="listings" element={<MyListings />} />
-
               <Route path="complaints" element={<Complaints />} />
-
               <Route path="ratings" element={<Ratings />} />
             </Route>
-
-            {/* ============================
-                BUYER ROUTES
-            ============================ */}
-
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/preorder" element={<PreOrder />} />
+            <Route path="/pre-order" element={<PreOrder />} />
+            <Route path="/crop/:id" element={<PreOrder />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment/:orderId" element={<Payment />} />
             <Route path="/buyer" element={<BuyerLayout />}>
               <Route index element={<BuyerDashboard />} />
 
