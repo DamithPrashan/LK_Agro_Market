@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -92,7 +91,7 @@ export default function DashboardCharts({ weekSummary }) {
           <div className="admin-donut-center">
 
             <span>
-              Total
+              {t("admin.dashboard.total")}
             </span>
 
             <strong>

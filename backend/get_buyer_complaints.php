@@ -74,6 +74,8 @@ try {
             c.farmer_response,
             c.admin_notes,
             c.resolution_action,
+            c.farmer_response_requested_at,
+            c.farmer_response_deadline,
             c.farmer_responded_at,
             c.resolved_at,
             c.created_at,
@@ -137,6 +139,9 @@ try {
             "farmer_responded_at" => $row['farmer_responded_at'],
             "admin_notes" => $row['admin_notes'],
             "resolution_action" => $row['resolution_action'],
+            "farmer_response_requested_at" => $row['farmer_response_requested_at'],
+            "farmer_response_deadline" => $row['farmer_response_deadline'],
+            "is_overdue" => $row['status'] === 'awaiting_farmer_response' && !empty($row['farmer_response_deadline']) && strtotime($row['farmer_response_deadline']) < time(),
             "resolved_at" => $row['resolved_at'],
             "created_at" => $row['created_at']
         ];

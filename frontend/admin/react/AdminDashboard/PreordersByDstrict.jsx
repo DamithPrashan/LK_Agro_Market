@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 export default function PreordersByDistrict({
@@ -62,9 +61,7 @@ export default function PreordersByDistrict({
 
                     <span>
                       {orders}{" "}
-                      {orders === 1
-                        ? "Order"
-                        : "Orders"}
+                      {t("admin.dashboard.orderCount", { count: orders })}
                     </span>
 
                   </div>
@@ -91,7 +88,7 @@ export default function PreordersByDistrict({
         ) : (
 
           <div className="admin-district-empty">
-            No pre-order data available.
+            {t("admin.dashboard.noPreorderData")}
           </div>
 
         )}

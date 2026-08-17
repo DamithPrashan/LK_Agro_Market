@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/Complaints.css";
@@ -18,6 +18,7 @@ function ComplaintPage() {
   // Sync tab state from URL params
   useEffect(() => {
     if (urlTab === "farmer_response" || urlTab === "responses") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveTab("farmer_response");
     } else if (urlTab === "submit") {
       setActiveTab("submit");
@@ -88,7 +89,10 @@ function ComplaintPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchComplaints();
+    // The initial complaint history load intentionally runs once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle deep-link scrolling to a specific complaint card
@@ -162,7 +166,7 @@ function ComplaintPage() {
       } else {
         setMsg({ text: data.message || t("errors.submissionFailed"), ok: false });
       }
-    } catch (err) {
+    } catch {
       setMsg({ text: t("errors.networkXamppError"), ok: false });
     } finally {
       setLoading(false);
@@ -175,13 +179,17 @@ function ComplaintPage() {
       const d = new Date(dateStr.replace(/-/g, "/"));
       const locale = i18n.language === "en" ? "en-US" : (i18n.language === "si" ? "si-LK" : "ta-LK");
       return d.toLocaleString(locale);
-    } catch (e) {
+    } catch {
       return dateStr;
     }
   };
 
   const getStatusBadge = (status) => {
     const s = (status || "").toLowerCase();
+    if (s === "submitted") return <span className="status-badge submitted">Pending Admin Review</span>;
+    if (s === "awaiting_farmer_response") return <span className="status-badge awaiting-farmer">Farmer Action Requested</span>;
+    if (s === "resolved") return <span className="status-badge resolved">Resolved</span>;
+    if (s === "dismissed") return <span className="status-badge dismissed">Dismissed</span>;
     if (s === "submitted" || s === "pending") {
       return <span className="status-badge submitted">⏳ {t("complaints.statusSubmitted")}</span>;
     } else if (s === "farmer_responded" || s === "under_review") {
@@ -430,8 +438,15 @@ function ComplaintPage() {
                       )}
                     </div>
 
-                    {/* Farmer's Response or Waiting Notice */}
-                    {c.farmer_response ? (
+                    {c.status === "submitted" && (
+                      <div className="buyer-complaint-state pending-review-state">
+                        <strong>Pending Admin Review</strong>
+                        <p>Your complaint has been submitted and is waiting for administrator review.</p>
+                      </div>
+                    )}
+
+                    {/* Farmer response is shown only after resolution. */}
+                    {c.status === "resolved" && c.farmer_response ? (
                       <div className="dispute-section-box farmer-response-box">
                         <div className="box-header">
                           <span>{t("complaints.farmerResponseHeading")}</span>
@@ -453,36 +468,36 @@ function ComplaintPage() {
                           </a>
                         )}
                       </div>
-                    ) : (
+                    ) : c.status === "awaiting_farmer_response" ? (
                       <div className="waiting-response-box">
                         <span className="waiting-icon">⏳</span>
                         <div>
-                          <strong>{t("complaints.waitingFarmerResponse")}</strong>
-                          <p>{t("complaints.waitingFarmerResponseDesc")}</p>
+                          <strong>Farmer Action Requested</strong>
+                          <p>The administrator has requested a response from the farmer. You will be notified when the farmer responds.</p>
+                          {c.farmer_response_deadline && <span>Farmer response due by: {formatDate(c.farmer_response_deadline)}</span>}
                         </div>
                       </div>
-                    )}
+                    ) : null}
 
                     {/* Admin Resolution (if resolved or rejected) */}
-                    {(c.status === "resolved" || c.status === "rejected" || c.resolution_action || c.admin_notes) && (
+                    {(c.status === "resolved" || c.status === "dismissed") && (
                       <div className="dispute-section-box admin-resolution-box">
                         <div className="box-header">
-                          <span>{t("complaints.adminResolutionHeading")}</span>
+                          <span>{c.status === "dismissed" ? "Dismissed" : "Resolved"}</span>
                           {c.resolution_action && (
                             <span className="admin-action-tag">
                               {t("complaints.resolutionActionLabel")}: {c.resolution_action}
                             </span>
                           )}
                         </div>
+                        {c.status === "dismissed" && <p>This complaint was reviewed and closed by the administrator.</p>}
                         {c.admin_notes && (
                           <div className="admin-notes-text">
                             <strong>{t("complaints.adminNotesLabel")}:</strong> {c.admin_notes}
                           </div>
                         )}
                         {c.resolved_at && (
-                          <div style={{ fontSize: "12px", color: "#6d28d9", marginTop: "6px" }}>
-                            {t("complaints.resolvedOn", { date: formatDate(c.resolved_at) })}
-                          </div>
+                          <div className="resolution-date">{c.status === "dismissed" ? "Dismissed" : "Resolved"} on {formatDate(c.resolved_at)}</div>
                         )}
                       </div>
                     )}

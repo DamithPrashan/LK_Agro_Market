@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import Calendar from "react-calendar";
 
@@ -21,6 +22,7 @@ export default function CalendarSection({
   activities = [],
   onRefresh,
 }) {
+  const { t, i18n } = useTranslation();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [today, setToday] = useState(() => new Date());
@@ -180,7 +182,7 @@ export default function CalendarSection({
 
     timeDate.setHours(Number(hour), Number(minute), 0);
 
-    return timeDate.toLocaleTimeString([], {
+    return timeDate.toLocaleTimeString(dateLocale, {
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -190,7 +192,8 @@ export default function CalendarSection({
      SELECTED DATE TITLE
   ========================================= */
 
-  const formattedSelectedDate = selectedDate.toLocaleDateString("en-US", {
+  const dateLocale = i18n.language === "si" ? "si-LK" : i18n.language === "ta" ? "ta-LK" : "en-US";
+  const formattedSelectedDate = selectedDate.toLocaleDateString(dateLocale, {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -272,7 +275,7 @@ export default function CalendarSection({
     event.preventDefault();
 
     if (!noteTitle.trim()) {
-      setNoteError("Please enter a note title.");
+      setNoteError(t("admin.calendar.noteTitleRequired"));
 
       return;
     }
@@ -308,7 +311,7 @@ export default function CalendarSection({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to save note.");
+        throw new Error(t("admin.calendar.saveFailed", { defaultValue: data.message }));
       }
 
       setShowNoteModal(false);
@@ -325,7 +328,7 @@ export default function CalendarSection({
     } catch (error) {
       console.error("Save admin note error:", error);
 
-      setNoteError(error.message || "Failed to save note.");
+      setNoteError(error.message || t("admin.calendar.saveFailed"));
     } finally {
       setNoteSaving(false);
     }
@@ -336,7 +339,7 @@ export default function CalendarSection({
   ========================================= */
 
   const handleDeleteNote = async (activity) => {
-    const confirmed = window.confirm(`Delete note "${activity.title}"?`);
+    const confirmed = window.confirm(t("admin.calendar.deleteConfirm", { title: activity.title }));
 
     if (!confirmed) {
       return;
@@ -358,14 +361,14 @@ export default function CalendarSection({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to delete note.");
+        throw new Error(t("admin.calendar.deleteFailed", { defaultValue: data.message }));
       }
 
       await refreshActivities();
     } catch (error) {
       console.error("Delete admin note error:", error);
 
-      alert(error.message || "Failed to delete note.");
+      alert(error.message || t("admin.calendar.deleteFailed"));
     }
   };
 
@@ -376,7 +379,7 @@ export default function CalendarSection({
       ===================================== */}
 
       <div className="admin-calendar-side">
-        <h2>Schedule</h2>
+        <h2>{t("admin.calendar.schedule")}</h2>
 
         <div className="admin-calendar-wrapper">
           <Calendar
@@ -427,7 +430,7 @@ export default function CalendarSection({
 
         <div className="admin-activity-header">
           <div>
-            <h2>Admin Activity</h2>
+            <h2>{t("admin.calendar.adminActivity")}</h2>
 
             <p>{formattedSelectedDate}</p>
           </div>
@@ -435,7 +438,7 @@ export default function CalendarSection({
           <div className="admin-activity-header-actions">
             <span className="admin-activity-count">
               {selectedActivities.length}{" "}
-              {selectedActivities.length === 1 ? "Activity" : "Activities"}
+              {t("admin.calendar.activityCount", { count: selectedActivities.length })}
             </span>
 
             <button
@@ -444,7 +447,7 @@ export default function CalendarSection({
               onClick={handleOpenAddNote}
             >
               <FiPlus />
-              Add Note
+              {t("admin.calendar.addNote")}
             </button>
           </div>
         </div>
@@ -470,7 +473,7 @@ export default function CalendarSection({
                 {/* CONTENT */}
 
                 <div className="admin-activity-content">
-                  <h3>{activity.title}</h3>
+                  <h3>{activity.type === "manual_note" ? activity.title : t(`admin.calendar.activities.${activity.type}`, { defaultValue: activity.title })}</h3>
 
                   <p>{activity.description}</p>
                 </div>
@@ -488,7 +491,7 @@ export default function CalendarSection({
 
                       <button
                         type="button"
-                        title="Edit Note"
+                        title={t("admin.calendar.editNote")}
                         className="admin-note-edit-btn"
                         onClick={() => handleOpenEditNote(activity)}
                       >
@@ -499,7 +502,7 @@ export default function CalendarSection({
 
                       <button
                         type="button"
-                        title="Delete Note"
+                        title={t("admin.calendar.deleteNote")}
                         className="admin-note-delete-btn"
                         onClick={() => handleDeleteNote(activity)}
                       >
@@ -514,9 +517,9 @@ export default function CalendarSection({
             <div className="admin-activity-empty">
               <FiInfo />
 
-              <h3>No activity recorded</h3>
+              <h3>{t("admin.calendar.noActivity")}</h3>
 
-              <p>There are no admin activities recorded for this date.</p>
+              <p>{t("admin.calendar.noActivityDescription")}</p>
             </div>
           )}
         </div>
@@ -533,7 +536,7 @@ export default function CalendarSection({
 
             <div className="admin-note-modal-header">
               <div>
-                <h2>{editingNote ? "Edit Note" : "Add Note"}</h2>
+                <h2>{editingNote ? t("admin.calendar.editNote") : t("admin.calendar.addNote")}</h2>
 
                 <p>{formattedSelectedDate}</p>
               </div>
@@ -553,13 +556,13 @@ export default function CalendarSection({
               {/* TITLE */}
 
               <div className="admin-note-field">
-                <label>Title</label>
+                <label>{t("admin.calendar.title")}</label>
 
                 <input
                   type="text"
                   value={noteTitle}
                   maxLength={150}
-                  placeholder="Enter note title"
+                  placeholder={t("admin.calendar.titlePlaceholder")}
                   onChange={(event) => setNoteTitle(event.target.value)}
                 />
               </div>
@@ -567,13 +570,13 @@ export default function CalendarSection({
               {/* DESCRIPTION */}
 
               <div className="admin-note-field">
-                <label>Description</label>
+                <label>{t("admin.calendar.description")}</label>
 
                 <textarea
                   value={noteDescription}
                   maxLength={255}
                   rows={4}
-                  placeholder="Add details about this task..."
+                  placeholder={t("admin.calendar.descriptionPlaceholder")}
                   onChange={(event) => setNoteDescription(event.target.value)}
                 />
               </div>
@@ -584,7 +587,7 @@ export default function CalendarSection({
                 {/* DATE */}
 
                 <div className="admin-note-field">
-                  <label>Date</label>
+                  <label>{t("admin.calendar.date")}</label>
 
                   <input type="date" value={selectedDateKey} readOnly />
                 </div>
@@ -592,7 +595,7 @@ export default function CalendarSection({
                 {/* TIME */}
 
                 <div className="admin-note-field">
-                  <label>Time</label>
+                  <label>{t("admin.calendar.time")}</label>
 
                   <input
                     type="time"
@@ -617,7 +620,7 @@ export default function CalendarSection({
                   onClick={handleCloseNoteModal}
                   disabled={noteSaving}
                 >
-                  Cancel
+                  {t("admin.common.cancel")}
                 </button>
 
                 {/* SAVE / UPDATE */}
@@ -630,10 +633,10 @@ export default function CalendarSection({
                   <FiSave />
 
                   {noteSaving
-                    ? "Saving..."
+                    ? t("admin.calendar.saving")
                     : editingNote
-                      ? "Update Note"
-                      : "Save Note"}
+                      ? t("admin.calendar.updateNote")
+                      : t("admin.calendar.saveNote")}
                 </button>
               </div>
             </form>

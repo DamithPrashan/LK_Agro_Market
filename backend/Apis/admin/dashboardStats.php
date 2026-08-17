@@ -62,8 +62,8 @@ try {
 
     $stmt = $pdo->query("
         SELECT COUNT(*) AS total
-        FROM complaint
-        WHERE complaint_status = 'pending'
+        FROM complaints
+        WHERE status IN ('submitted', 'awaiting_farmer_response')
     ");
 
     $response["complaints"] =
@@ -144,14 +144,14 @@ try {
 
     $stmt = $pdo->query("
         SELECT COUNT(*) AS total
-        FROM complaint
+        FROM complaints
 
-        WHERE complaint_date >= DATE_SUB(
+        WHERE created_at >= DATE_SUB(
             CURDATE(),
             INTERVAL WEEKDAY(CURDATE()) DAY
         )
 
-        AND complaint_date <= NOW()
+        AND created_at <= NOW()
     ");
 
     $weeklyComplaints =

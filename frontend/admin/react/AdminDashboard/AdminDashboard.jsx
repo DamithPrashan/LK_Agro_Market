@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useState,
 } from "react";
@@ -112,6 +112,7 @@ export default function AdminDashboard() {
 
     if (localStorage.getItem(key)) {
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWelcomeMsg(
         t(
           "admin.dashboard.welcomeBack",
@@ -341,6 +342,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDashboardData();
 
   }, []);
@@ -392,7 +394,7 @@ export default function AdminDashboard() {
             <FiUser />
           }
           iconType="farmer"
-          footer="+2 this week"
+          footer={t("admin.dashboard.thisWeekIncrease", { count: 2 })}
           positive
         />
 
@@ -412,7 +414,7 @@ export default function AdminDashboard() {
             <FiShoppingCart />
           }
           iconType="buyer"
-          footer="Stable"
+          footer={t("admin.dashboard.stable")}
         />
 
 
@@ -431,7 +433,7 @@ export default function AdminDashboard() {
             <FiPackage />
           }
           iconType="order"
-          footer="+12% vs last month"
+          footer={t("admin.dashboard.vsLastMonth", { percent: 12 })}
           positive
         />
 
@@ -455,8 +457,8 @@ export default function AdminDashboard() {
             Number(
               stats.complaints
             ) === 0
-              ? "No active issues"
-              : "Needs attention"
+              ? t("admin.dashboard.noActiveIssues")
+              : t("admin.dashboard.needsAttention")
           }
         />
 

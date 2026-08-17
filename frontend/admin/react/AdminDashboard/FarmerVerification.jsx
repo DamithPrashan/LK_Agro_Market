@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   FiFilter,
@@ -16,22 +17,23 @@ import "../../csss/AdminDashboard/admin.css";
 import "../../csss/AdminDashboard/farmerVerification.css";
 
 const positiveCriteria = [
-  "Identity and NIC information are valid.",
-  "Farm location information is clear and consistent.",
-  "Submitted farming/crop evidence is sufficient.",
-  "Registration information is complete and accurate.",
-  "Overall submitted information is trustworthy.",
+  "identity_valid",
+  "farm_location_valid",
+  "evidence_sufficient",
+  "registration_complete",
+  "information_trustworthy",
 ];
 
 const negativeCriteria = [
-  "Identity/NIC information could not be verified.",
-  "Farm location information is unclear or inconsistent.",
-  "Farming/crop evidence is insufficient.",
-  "Registration information is incomplete or inaccurate.",
-  "Submitted information is not sufficiently trustworthy.",
+  "identity_invalid",
+  "farm_location_unclear",
+  "evidence_insufficient",
+  "registration_incomplete",
+  "information_untrustworthy",
 ];
 
 export default function FarmerVerification() {
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -80,7 +82,7 @@ export default function FarmerVerification() {
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.message || "Unable to load verification requests.",
+          t("admin.verifications.errors.loadRequests", { defaultValue: data.message }),
         );
       }
 
@@ -93,7 +95,9 @@ export default function FarmerVerification() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* =========================================
@@ -173,7 +177,7 @@ export default function FarmerVerification() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to load verification details.");
+        throw new Error(t("admin.verifications.errors.loadDetails", { defaultValue: data.message }));
       }
 
       setSelectedFarmer(data.verification);
@@ -186,7 +190,7 @@ export default function FarmerVerification() {
     } catch (error) {
       console.error("Verification detail error:", error);
 
-      alert(error.message || "Unable to load verification details.");
+      alert(error.message || t("admin.verifications.errors.loadDetails"));
     } finally {
       setDetailsLoading(false);
     }
@@ -254,7 +258,7 @@ export default function FarmerVerification() {
     }
 
     if (!decision) {
-      setSubmitError("Select Accept or Reject.");
+      setSubmitError(t("admin.verifications.errors.selectDecision"));
 
       return;
     }
@@ -262,15 +266,15 @@ export default function FarmerVerification() {
     if (selectedCriteria.length === 0) {
       setSubmitError(
         decision === "accept"
-          ? "Select at least one verification criterion."
-          : "Select at least one rejection reason.",
+          ? t("admin.verifications.errors.selectCriterion")
+          : t("admin.verifications.errors.selectReason"),
       );
 
       return;
     }
 
     if (!feedback.trim()) {
-      setSubmitError("Please provide feedback to the farmer.");
+      setSubmitError(t("admin.verifications.errors.feedbackRequired"));
 
       return;
     }
@@ -304,10 +308,10 @@ export default function FarmerVerification() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Verification submission failed.");
+        throw new Error(t("admin.verifications.errors.submitFailed", { defaultValue: data.message }));
       }
 
-      alert(data.message);
+      alert(t(decision === "accept" ? "admin.verifications.approvedSuccess" : "admin.verifications.rejectedSuccess"));
 
       closeModal();
 
@@ -315,7 +319,7 @@ export default function FarmerVerification() {
     } catch (error) {
       console.error("Submit verification error:", error);
 
-      setSubmitError(error.message || "Verification submission failed.");
+      setSubmitError(error.message || t("admin.verifications.errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -344,9 +348,9 @@ export default function FarmerVerification() {
       ===================================== */}
 
       <section className="verification-header">
-        <h1>Farmer Verification</h1>
+        <h1>{t("admin.verifications.title")}</h1>
 
-        <p>Manage and review farmer verification requests.</p>
+        <p>{t("admin.verifications.subtitle")}</p>
       </section>
 
       {/* =====================================
@@ -360,7 +364,7 @@ export default function FarmerVerification() {
             className={activeTab === "pending" ? "active" : ""}
             onClick={() => handleTabChange("pending")}
           >
-            Pending ({counts.pending})
+            {t("admin.verifications.pending")} ({counts.pending})
           </button>
 
           <button
@@ -368,7 +372,7 @@ export default function FarmerVerification() {
             className={activeTab === "approved" ? "active" : ""}
             onClick={() => handleTabChange("approved")}
           >
-            Accepted ({counts.approved})
+            {t("admin.verifications.accepted")} ({counts.approved})
           </button>
 
           <button
@@ -376,7 +380,7 @@ export default function FarmerVerification() {
             className={activeTab === "rejected" ? "active" : ""}
             onClick={() => handleTabChange("rejected")}
           >
-            Rejected ({counts.rejected})
+            {t("admin.verifications.rejected")} ({counts.rejected})
           </button>
         </div>
 
@@ -387,12 +391,12 @@ export default function FarmerVerification() {
             onClick={() => setShowFilter((value) => !value)}
           >
             <FiFilter />
-            Filter
+            {t("admin.common.filter")}
           </button>
 
           {showFilter && (
             <div className="verification-filter-menu">
-              <label>District</label>
+              <label>{t("admin.common.district")}</label>
 
               <select
                 value={districtFilter}
@@ -402,7 +406,7 @@ export default function FarmerVerification() {
                   setCurrentPage(1);
                 }}
               >
-                <option value="all">All Districts</option>
+                <option value="all">{t("admin.verifications.allDistricts")}</option>
 
                 {districts.map((district) => (
                   <option value={district} key={district}>
@@ -424,17 +428,17 @@ export default function FarmerVerification() {
           <table className="verification-table">
             <thead>
               <tr>
-                <th>Farmer</th>
+                <th>{t("admin.verifications.farmer")}</th>
 
-                <th>District</th>
+                <th>{t("admin.common.district")}</th>
 
-                <th>NIC Number</th>
+                <th>{t("admin.verifications.nicNumber")}</th>
 
-                <th>Submitted Date</th>
+                <th>{t("admin.verifications.submittedDate")}</th>
 
-                <th>Status</th>
+                <th>{t("admin.common.status")}</th>
 
-                <th className="action-column">Action</th>
+                <th className="action-column">{t("admin.common.action")}</th>
               </tr>
             </thead>
 
@@ -442,7 +446,7 @@ export default function FarmerVerification() {
               {loading ? (
                 <tr>
                   <td colSpan="6" className="verification-empty">
-                    Loading verification requests...
+                    {t("admin.verifications.loadingRequests")}
                   </td>
                 </tr>
               ) : currentItems.length > 0 ? (
@@ -482,9 +486,8 @@ export default function FarmerVerification() {
                     <td>
                       <span className={`verification-status ${farmer.status}`}>
                         {farmer.status === "approved"
-                          ? "Accepted"
-                          : farmer.status.charAt(0).toUpperCase() +
-                            farmer.status.slice(1)}
+                          ? t("admin.verifications.accepted")
+                          : t(`admin.verifications.${farmer.status}`, { defaultValue: farmer.status })}
                       </span>
                     </td>
 
@@ -496,7 +499,7 @@ export default function FarmerVerification() {
                         className="verification-view-btn"
                         onClick={() => handleView(farmer.id)}
                       >
-                        View
+                        {t("admin.common.view")}
                       </button>
                     </td>
                   </tr>
@@ -504,7 +507,7 @@ export default function FarmerVerification() {
               ) : (
                 <tr>
                   <td colSpan="6" className="verification-empty">
-                    No {activeTab} verification requests found.
+                    {t("admin.verifications.empty", { status: t(`admin.verifications.${activeTab === "approved" ? "accepted" : activeTab}`) })}
                   </td>
                 </tr>
               )}
@@ -571,7 +574,7 @@ export default function FarmerVerification() {
       {detailsLoading && (
         <div className="verification-modal-backdrop">
           <div className="verification-loading-modal">
-            Loading farmer details...
+            {t("admin.verifications.loadingDetails")}
           </div>
         </div>
       )}
@@ -587,9 +590,9 @@ export default function FarmerVerification() {
 
             <div className="verification-modal-header">
               <div>
-                <h2>Farmer Verification</h2>
+                <h2>{t("admin.verifications.title")}</h2>
 
-                <p>Review submitted farmer details and evidence.</p>
+                <p>{t("admin.verifications.reviewSubtitle")}</p>
               </div>
 
               <button type="button" onClick={closeModal}>
@@ -603,53 +606,53 @@ export default function FarmerVerification() {
               ================================= */}
 
               <section className="verification-detail-section">
-                <h3>Registration Details</h3>
+                <h3>{t("admin.verifications.registrationDetails")}</h3>
 
                 <div className="verification-detail-grid">
                   <div>
-                    <span>Full Name</span>
+                    <span>{t("admin.verifications.fullName")}</span>
 
                     <strong>{selectedFarmer.name}</strong>
                   </div>
 
                   <div>
-                    <span>Email</span>
+                    <span>{t("admin.verifications.email")}</span>
 
                     <strong>{selectedFarmer.email}</strong>
                   </div>
 
                   <div>
-                    <span>Phone</span>
+                    <span>{t("admin.verifications.phone")}</span>
 
                     <strong>{selectedFarmer.phone}</strong>
                   </div>
 
                   <div>
-                    <span>District</span>
+                    <span>{t("admin.common.district")}</span>
 
                     <strong>{selectedFarmer.district}</strong>
                   </div>
 
                   <div>
-                    <span>Language</span>
+                    <span>{t("admin.verifications.language")}</span>
 
                     <strong>{selectedFarmer.language}</strong>
                   </div>
 
                   <div>
-                    <span>NIC Number</span>
+                    <span>{t("admin.verifications.nicNumber")}</span>
 
                     <strong>{selectedFarmer.nic}</strong>
                   </div>
 
                   <div>
-                    <span>Farm Location</span>
+                    <span>{t("admin.verifications.farmLocation")}</span>
 
                     <strong>{selectedFarmer.farmLocation}</strong>
                   </div>
 
                   <div>
-                    <span>Registered Date</span>
+                    <span>{t("admin.verifications.registeredDate")}</span>
 
                     <strong>{selectedFarmer.registeredDate}</strong>
                   </div>
@@ -661,7 +664,7 @@ export default function FarmerVerification() {
               ================================= */}
 
               <section className="verification-detail-section">
-                <h3>Verification Documents</h3>
+                <h3>{t("admin.verifications.documents")}</h3>
 
                 <div className="verification-document-grid">
                   {/* NIC IMAGE */}
@@ -670,9 +673,9 @@ export default function FarmerVerification() {
                     <FiImage />
 
                     <div>
-                      <strong>NIC Image</strong>
+                      <strong>{t("admin.verifications.nicImage")}</strong>
 
-                      <span>Identity document</span>
+                      <span>{t("admin.verifications.identityDocument")}</span>
                     </div>
 
                     {selectedFarmer.nicImage ? (
@@ -681,10 +684,10 @@ export default function FarmerVerification() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        View
+                        {t("admin.common.view")}
                       </a>
                     ) : (
-                      <span>Not available</span>
+                      <span>{t("admin.common.notAvailable")}</span>
                     )}
                   </div>
 
@@ -694,9 +697,9 @@ export default function FarmerVerification() {
                     <FiFileText />
 
                     <div>
-                      <strong>Farm Evidence</strong>
+                      <strong>{t("admin.verifications.farmEvidence")}</strong>
 
-                      <span>Submitted farming evidence</span>
+                      <span>{t("admin.verifications.submittedEvidence")}</span>
                     </div>
 
                     {selectedFarmer.evidenceFile ? (
@@ -705,10 +708,10 @@ export default function FarmerVerification() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        View
+                        {t("admin.common.view")}
                       </a>
                     ) : (
-                      <span>Not available</span>
+                      <span>{t("admin.common.notAvailable")}</span>
                     )}
                   </div>
                 </div>
@@ -721,7 +724,7 @@ export default function FarmerVerification() {
               {selectedFarmer.status === "pending" && (
                 <>
                   <section className="verification-detail-section">
-                    <h3>Verification Decision</h3>
+                    <h3>{t("admin.verifications.decision")}</h3>
 
                     <div className="verification-decision-buttons">
                       <button
@@ -732,7 +735,7 @@ export default function FarmerVerification() {
                         onClick={() => chooseDecision("accept")}
                       >
                         <FiCheckCircle />
-                        Accept
+                        {t("admin.verifications.accept")}
                       </button>
 
                       <button
@@ -743,7 +746,7 @@ export default function FarmerVerification() {
                         onClick={() => chooseDecision("reject")}
                       >
                         <FiXCircle />
-                        Reject
+                        {t("admin.verifications.reject")}
                       </button>
                     </div>
                   </section>
@@ -756,8 +759,8 @@ export default function FarmerVerification() {
                     <section className="verification-detail-section">
                       <h3>
                         {decision === "accept"
-                          ? "Trust Rating Criteria"
-                          : "Rejection Reasons"}
+                          ? t("admin.verifications.trustCriteria")
+                          : t("admin.verifications.rejectionReasons")}
                       </h3>
 
                       {decision === "accept" && (
@@ -794,7 +797,7 @@ export default function FarmerVerification() {
                                 : index + 1}
                             </span>
 
-                            <span>{criterion}</span>
+                            <span>{t(`admin.verifications.criteria.${decision === "accept" ? "positive" : "negative"}.${criterion}`)}</span>
                           </label>
                         ))}
                       </div>
@@ -807,12 +810,12 @@ export default function FarmerVerification() {
 
                   {decision && (
                     <section className="verification-detail-section">
-                      <h3>Feedback to Farmer</h3>
+                      <h3>{t("admin.verifications.feedback")}</h3>
 
                       <textarea
                         className="verification-feedback"
                         value={feedback}
-                        placeholder="Enter feedback that will be shown to the farmer..."
+                        placeholder={t("admin.verifications.feedbackPlaceholder")}
                         maxLength={500}
                         rows={4}
                         onChange={(event) => setFeedback(event.target.value)}
@@ -837,7 +840,7 @@ export default function FarmerVerification() {
                       onClick={closeModal}
                       disabled={submitting}
                     >
-                      Cancel
+                      {t("admin.common.cancel")}
                     </button>
 
                     <button
@@ -846,7 +849,7 @@ export default function FarmerVerification() {
                       onClick={handleSubmit}
                       disabled={submitting || !decision}
                     >
-                      {submitting ? "Submitting..." : "Submit Decision"}
+                      {submitting ? t("admin.common.submitting") : t("admin.verifications.submitDecision")}
                     </button>
                   </div>
                 </>
@@ -858,14 +861,14 @@ export default function FarmerVerification() {
 
               {selectedFarmer.status !== "pending" && (
                 <section className="verification-detail-section">
-                  <h3>Verification Result</h3>
+                  <h3>{t("admin.verifications.result")}</h3>
 
                   <p>
-                    Status:{" "}
+                    {t("admin.common.status")}:{" "}
                     <strong>
                       {selectedFarmer.status === "approved"
-                        ? "Accepted"
-                        : "Rejected"}
+                        ? t("admin.verifications.accepted")
+                        : t("admin.verifications.rejected")}
                     </strong>
                   </p>
 
@@ -887,8 +890,8 @@ export default function FarmerVerification() {
                   )}
 
                   <p>
-                    Feedback:{" "}
-                    {selectedFarmer.feedback || "No feedback provided."}
+                    {t("admin.verifications.feedback")}:{" "}
+                    {selectedFarmer.feedback || t("admin.verifications.noFeedback")}
                   </p>
                 </section>
               )}

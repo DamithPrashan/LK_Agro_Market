@@ -414,7 +414,7 @@ const Navbar = () => {
                         <div className={`status-icon ${notif.type}`}></div>
                         <div className="notif-content">
                           <h4>{notif.notif_type ? t('notifications.title.' + notif.notif_type) : notif.title}</h4>
-                          <p>{notif.notif_type ? t('notifications.' + notif.notif_type, getLocalizedData(notif.notif_data)) : notif.desc}</p>
+                          <p>{notif.notif_type && notif.notif_type !== 'warningIssued' ? t('notifications.' + notif.notif_type, getLocalizedData(notif.notif_data)) : notif.desc}</p>
                           <span className="time">{formatTime(notif.created_at)}</span>
                         </div>
                         {notif.unread && <span className={`unread-dot ${notif.type}`}></span>}

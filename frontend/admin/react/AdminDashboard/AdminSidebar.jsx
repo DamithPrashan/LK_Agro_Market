@@ -1,5 +1,5 @@
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   FiGrid,
@@ -7,7 +7,6 @@ import {
   FiAlertTriangle,
   FiUsers,
   FiDownload,
-  FiSettings,
   FiLogOut,
   FiTruck,
 } from "react-icons/fi";
@@ -16,29 +15,30 @@ export default function AdminSidebar() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
 
   const menuItems = [
     {
-      label: "Admin Dashboard",
+      label: t("admin.sidebar.dashboard"),
       icon: <FiGrid />,
       path: "/admin",
     },
 
     {
-      label: "Farmer Verification",
+      label: t("admin.sidebar.verification"),
       icon: <FiShield />,
       path: "/admin/farmer-verification",
     },
 
     {
-      label: "Complaint Management",
+      label: t("admin.sidebar.complaints"),
       icon: <FiAlertTriangle />,
       path: "/admin/complaints",
     },
 
     {
-      label: "User Management",
+      label: t("admin.sidebar.users"),
       icon: <FiUsers />,
       path: "/admin/users",
     },
@@ -81,11 +81,11 @@ export default function AdminSidebar() {
         <div>
 
           <h2>
-            LK Agro Market
+            {t("admin.sidebar.brand")}
           </h2>
 
           <p>
-            Enterprise Admin
+            {t("admin.sidebar.enterpriseAdmin")}
           </p>
 
         </div>
@@ -144,27 +144,13 @@ export default function AdminSidebar() {
           <FiDownload />
 
           <span>
-            Export Reports
+            {t("admin.sidebar.exportReports")}
           </span>
 
         </button>
 
 
         <div className="admin-sidebar-divider" />
-
-
-        <button
-          type="button"
-          className="admin-bottom-link"
-        >
-
-          <FiSettings />
-
-          <span>
-            Settings
-          </span>
-
-        </button>
 
 
         <button
@@ -176,7 +162,7 @@ export default function AdminSidebar() {
           <FiLogOut />
 
           <span>
-            Logout
+            {t("admin.sidebar.logout")}
           </span>
 
         </button>

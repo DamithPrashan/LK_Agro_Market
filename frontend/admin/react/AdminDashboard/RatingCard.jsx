@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -39,7 +38,7 @@ export default function RatingCard({
         </p>
 
         <span>
-          Based on {reviews} reviews
+          {t("admin.dashboard.reviewCount", { count: reviews })}
         </span>
       </div>
 

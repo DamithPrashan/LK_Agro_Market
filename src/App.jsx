@@ -38,12 +38,11 @@ import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import MyListings from "../frontend/farmer/react/MyListings.jsx";
+import FarmerComplaints from "../frontend/farmer/react/FarmerComplaints.jsx";
 
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
-import FarmerLayout from "./pages/FarmerLayout.jsx";
-import MyListings from "../frontend/farmer/react/MyListings.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
 function App() {
@@ -140,15 +139,16 @@ function App() {
               <Route path="orders" element={<OrderManagement />} />
 
               <Route path="listings" element={<MyListings />} />
-              <Route path="complaints" element={<Complaints />} />
+
+              <Route path="complaints" element={<FarmerComplaints />} />
+
               <Route path="ratings" element={<Ratings />} />
             </Route>
-            <Route path="/browse" element={<Browse />} />
-            <Route path="/preorder" element={<PreOrder />} />
-            <Route path="/pre-order" element={<PreOrder />} />
-            <Route path="/crop/:id" element={<PreOrder />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/payment/:orderId" element={<Payment />} />
+
+            {/* ============================
+                BUYER ROUTES
+            ============================ */}
+
             <Route path="/buyer" element={<BuyerLayout />}>
               <Route index element={<BuyerDashboard />} />
 
