@@ -1,28 +1,73 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
-import "../../csss/AdminDashboard/rating.css";
 
-function RatingCard({title,rating}){
+import {
+  FaStar,
+  FaStarHalfAlt,
+} from "react-icons/fa";
+
+export default function RatingCard({
+  title,
+  rating,
+  reviews,
+  distribution,
+  type = "farmer",
+}) {
   const { t } = useTranslation();
 
-  return(
-    <div className="rating-card">
-      <h3 className="rating-title">
-        {title}
-      </h3>
+  return (
+    <article className="admin-panel admin-rating-card">
+      <div className="admin-rating-main">
+        <h3>{title}</h3>
 
-      <h1 className="rating-value">
-        {rating}
-      </h1>
+        <strong>
+          {Number(rating).toFixed(1)}
+        </strong>
 
-      <div className="stars">
-        ★★★★★
+        <div className="admin-rating-stars">
+          <FaStar />
+          <FaStar />
+          <FaStar />
+          <FaStar />
+          <FaStarHalfAlt />
+        </div>
+
+        <p>
+          {t(
+            "admin.dashboard.stats.averageUserRating"
+          )}
+        </p>
+
+        <span>
+          Based on {reviews} reviews
+        </span>
       </div>
 
-      <p className="rating-text">
-        {t("admin.dashboard.stats.averageUserRating")}
-      </p>
-    </div>
-  )
-}
+      <div className="admin-rating-bars">
+        {[5, 4, 3, 2, 1].map(
+          (star, index) => (
+            <div
+              className="admin-rating-row"
+              key={star}
+            >
+              <span>{star}</span>
 
-export default RatingCard;
+              <FaStar />
+
+              <div className="admin-rating-track">
+                <div
+                  className={`admin-rating-fill ${type}`}
+                  style={{
+                    width: `${
+                      distribution[index] || 0
+                    }%`,
+                  }}
+                />
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </article>
+  );
+}

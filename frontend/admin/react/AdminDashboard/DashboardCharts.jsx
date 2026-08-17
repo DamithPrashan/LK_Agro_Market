@@ -1,73 +1,149 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
+
 import {
   PieChart,
   Pie,
   Cell,
+  ResponsiveContainer,
   Tooltip,
-  Legend
 } from "recharts";
 
-import "../../csss/AdminDashboard/charts.css";
-
-function DashboardCharts(){
+export default function DashboardCharts({ weekSummary }) {
   const { t } = useTranslation();
 
-  const data=[
+  const data = [
     {
       name: t("admin.dashboard.newFarmers"),
-      value: 7
+      value: Number(weekSummary?.newFarmers ?? 0),
+      color: "#006c49",
     },
     {
       name: t("admin.dashboard.newBuyers"),
-      value: 12
+      value: Number(weekSummary?.newBuyers ?? 0),
+      color: "#8dd892",
     },
     {
       name: t("admin.dashboard.transactions"),
-      value: 34
+      value: Number(weekSummary?.transactions ?? 0),
+      color: "#003527",
     },
     {
       name: t("admin.dashboard.complaintsSummary"),
-      value: 5
-    }
+      value: Number(weekSummary?.complaints ?? 0),
+      color: "#ef5350",
+    },
   ];
 
-  const colors=[
-    "#4caf50",
-    "#8bc34a",
-    "#ffb74d",
-    "#ef5350"
-  ];
+  const total = data.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
 
-  return(
-    <div className="chart-box">
-      <h2>{t("admin.dashboard.thisWeekSummary")}</h2>
+  return (
+    <article className="admin-panel admin-summary-card">
 
-      <PieChart
-        width={400}
-        height={300}
-      >
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          outerRadius={90}
-          dataKey="value"
-          label
-        >
-          {
-            data.map((entry,index)=>(
-              <Cell
-                key={index}
-                fill={colors[index]}
-              />
-            ))
-          }
-        </Pie>
-        <Tooltip/>
-        <Legend/>
-      </PieChart>
-    </div>
-  )
+      <h2>
+        {t("admin.dashboard.thisWeekSummary")}
+      </h2>
+
+      <div className="admin-donut-area">
+
+        {/* =========================
+            DONUT CHART
+        ========================= */}
+
+        <div className="admin-donut-wrapper">
+
+          <ResponsiveContainer
+            width="100%"
+            height={210}
+          >
+            <PieChart>
+
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                innerRadius={58}
+                outerRadius={83}
+                stroke="none"
+              >
+
+                {data.map((entry) => (
+                  <Cell
+                    key={entry.name}
+                    fill={entry.color}
+                  />
+                ))}
+
+              </Pie>
+
+              <Tooltip />
+
+            </PieChart>
+          </ResponsiveContainer>
+
+
+          {/* CENTER TOTAL */}
+
+          <div className="admin-donut-center">
+
+            <span>
+              Total
+            </span>
+
+            <strong>
+              {total}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        {/* =========================
+            LEGEND
+        ========================= */}
+
+        <div className="admin-summary-legend">
+
+          {data.map((item) => (
+
+            <div
+              className="admin-summary-legend-row"
+              key={item.name}
+            >
+
+              <div>
+
+                <span
+                  className="admin-legend-dot"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                />
+
+                <span>
+                  {item.name}
+                </span>
+
+              </div>
+
+              <strong>
+                {item.value}
+              </strong>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+    </article>
+  );
 }
-
-export default DashboardCharts;

@@ -10,6 +10,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
     exit;
 }
+function phpSizeToBytes($value) {
+    $value = trim($value);
+    $unit = strtolower(substr($value, -1));
+    $bytes = (int) $value;
+
+    if ($unit === 'g') $bytes *= 1024;
+    if ($unit === 'm' || $unit === 'g') $bytes *= 1024;
+    if ($unit === 'k' || $unit === 'm' || $unit === 'g') $bytes *= 1024;
+
+    return $bytes;
+}
+
+$contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+$postMaxBytes = phpSizeToBytes(ini_get('post_max_size'));
+
+if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
+    echo json_encode([
+        "success" => false,
+        "message" => "The uploaded images are too large. Please use smaller images and try again."
+    ]);
+    exit;
+}
 
 $name = isset($_POST['name']) ? trim($_POST['name']) : '';
 $contact = isset($_POST['contact']) ? trim($_POST['contact']) : '';
@@ -23,8 +45,23 @@ $role = isset($_POST['role']) ? trim($_POST['role']) : 'buyer';
 $nic = isset($_POST['nic']) ? trim($_POST['nic']) : null;
 $farm_location = isset($_POST['farm_location']) ? trim($_POST['farm_location']) : null;
 
-if (empty($name) || empty($contact) || empty($email) || empty($district) || empty($password)) {
-    echo json_encode(["success" => false, "message" => "Please fill in all required fields."]);
+$requiredFields = [
+    "name" => $name,
+    "contact number" => $contact,
+    "email" => $email,
+    "district" => $district,
+    "password" => $password
+];
+$missingFields = array_keys(array_filter(
+    $requiredFields,
+    static fn($value) => trim((string) $value) === ''
+));
+
+if ($missingFields) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Please fill in the following required fields: " . implode(", ", $missingFields) . "."
+    ]);
     exit;
 }
 
@@ -133,12 +170,26 @@ try {
     ];
 
     // Start session
-    $_SESSION['user'] = $userResponse;
+    if ($role === 'farmer') {
 
-    echo json_encode([
-        "success" => true,
-        "user" => $userResponse
-    ]);
+        echo json_encode([
+            "success" => true,
+            "verification_required" => true,
+            "verification_status" => "pending",
+            "message" => "Registration successful. Your farmer verification request is now under review. You can log in after admin approval.",
+            "user" => $userResponse
+        ]);
+
+    } else {
+
+        // Buyer can login immediately
+        $_SESSION['user'] = $userResponse;
+
+        echo json_encode([
+            "success" => true,
+            "user" => $userResponse
+        ]);
+    }
 
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
@@ -146,3 +197,4 @@ try {
     }
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
+

@@ -5,10 +5,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100vh - 92px);
+  height: calc(100dvh - var(--navbar-height, 92px));
   align-self: flex-start;
   position: sticky;
-  top: 68px;
+  top: var(--navbar-height, 92px);
   margin-bottom: 24px;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
@@ -131,20 +131,12 @@
   text-decoration: underline;
 }
 
-/* Media Queries for wrapped header top offsets */
-@media (max-width: 1450px) {
-  .farmer-sidebar {
-    top: 150px;
-    height: calc(100vh - 174px);
-  }
-}
-
 /* Mobile & Small Screen Responsiveness */
 @media (max-width: 768px) {
   .farmer-sidebar {
     width: 70px;
-    top: 200px;
-    height: calc(100vh - 224px);
+    top: var(--navbar-height, 92px);
+    height: calc(100dvh - var(--navbar-height, 92px));
   }
 
   .sidebar-nav-title {

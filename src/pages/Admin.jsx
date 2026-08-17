@@ -1,4 +1,4 @@
-import AdminDashboard from "../../frontend/admin/react/AdminDashboard.jsx";
+import AdminDashboard from "../../frontend/admin/react/AdminDashboard/AdminDashboard.jsx";
 
 const Admin = () => {
   return (

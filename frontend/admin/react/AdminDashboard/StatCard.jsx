@@ -1,19 +1,44 @@
-import "../../csss/AdminDashboard/statcard.css";
+import React from "react";
 
-function StatCard({title,value}){
+import { FiArrowUp } from "react-icons/fi";
 
-return(
+export default function StatCard({
+  title,
+  value,
+  icon,
+  iconType,
+  footer,
+  positive = false,
+}) {
+  return (
+    <article className="admin-stat-card">
+      <div className="admin-stat-card-top">
+        <span className="admin-stat-label">
+          {title}
+        </span>
 
-<div className="stat-card">
+        <div
+          className={`admin-stat-icon ${iconType}`}
+        >
+          {icon}
+        </div>
+      </div>
 
-<h2>{value}</h2>
+      <div className="admin-stat-card-bottom">
+        <strong className="admin-stat-value">
+          {value}
+        </strong>
 
-<p>{title}</p>
+        <span
+          className={`admin-stat-footer ${
+            positive ? "positive" : ""
+          }`}
+        >
+          {positive && <FiArrowUp />}
 
-</div>
-
-)
-
+          {footer}
+        </span>
+      </div>
+    </article>
+  );
 }
-
-export default StatCard
