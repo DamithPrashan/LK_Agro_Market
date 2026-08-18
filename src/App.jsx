@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -45,15 +45,22 @@ import FarmerLayout from "./pages/FarmerLayout.jsx";
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
 
+
 function App() {
   const { user } = useAuth();
   const { i18n } = useTranslation();
 
-  // Get the current URL path
-  const location = useLocation();
 
-  // Hide footer on /admin and every admin sub-page
-  const isAdminPage = location.pathname.startsWith("/admin");
+  /* =========================================
+     HIDE FOOTER FOR LOGGED-IN USERS
+  ========================================= */
+
+  const hideFooter =
+    user &&
+    ["farmer", "buyer", "admin"].includes(
+      user.role?.toLowerCase()
+    );
+
 
   /* =========================================
      LANGUAGE
@@ -63,144 +70,300 @@ function App() {
     if (user && user.language) {
       let mappedLang = "en";
 
-      const userLang = user.language.toLowerCase();
+      const userLang =
+        user.language.toLowerCase();
 
-      if (userLang === "sinhala" || userLang === "si") {
+      if (
+        userLang === "sinhala" ||
+        userLang === "si"
+      ) {
         mappedLang = "si";
-      } else if (userLang === "tamil" || userLang === "ta") {
+
+      } else if (
+        userLang === "tamil" ||
+        userLang === "ta"
+      ) {
         mappedLang = "ta";
-      } else if (userLang === "english" || userLang === "en") {
+
+      } else if (
+        userLang === "english" ||
+        userLang === "en"
+      ) {
         mappedLang = "en";
       }
 
+
       if (i18n.language !== mappedLang) {
         i18n.changeLanguage(mappedLang);
-        localStorage.setItem("preferredLanguage", mappedLang);
+
+        localStorage.setItem(
+          "preferredLanguage",
+          mappedLang
+        );
       }
     }
+
   }, [user, i18n]);
+
 
   return (
     <CropProvider>
+
       <div className="app-shell">
+
+
         {/* ================================
             NAVBAR
         ================================= */}
+
         <Navbar />
+
 
         {/* ================================
             MAIN CONTENT
         ================================= */}
+
         <main className="main-content">
+
           <Routes>
+
+
             {/* ============================
                 PUBLIC ROUTES
             ============================ */}
 
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={<Home />}
+            />
 
-            <Route path="/browse" element={<Browse />} />
+            <Route
+              path="/browse"
+              element={<Browse />}
+            />
 
-            <Route path="/preorder" element={<PreOrder />} />
+            <Route
+              path="/preorder"
+              element={<PreOrder />}
+            />
 
-            <Route path="/pre-order" element={<PreOrder />} />
+            <Route
+              path="/pre-order"
+              element={<PreOrder />}
+            />
 
-            <Route path="/crop/:id" element={<PreOrder />} />
+            <Route
+              path="/crop/:id"
+              element={<PreOrder />}
+            />
 
-            <Route path="/payment" element={<Payment />} />
+            <Route
+              path="/payment"
+              element={<Payment />}
+            />
 
-            <Route path="/payment/:orderId" element={<Payment />} />
+            <Route
+              path="/payment/:orderId"
+              element={<Payment />}
+            />
 
-            <Route path="/complaints" element={<Complaints />} />
+            <Route
+              path="/complaints"
+              element={<Complaints />}
+            />
 
-            <Route path="/ratings" element={<Ratings />} />
+            <Route
+              path="/ratings"
+              element={<Ratings />}
+            />
 
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/register"
+              element={<Register />}
+            />
 
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login />}
+            />
 
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/forgot-password"
+              element={<ForgotPassword />}
+            />
 
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="/profile"
+              element={<ProfilePage />}
+            />
+
 
             {/* ============================
                 FARMER ROUTES
             ============================ */}
 
-            <Route path="/farmer" element={<FarmerLayout />}>
-              <Route index element={<Farmer />} />
+            <Route
+              path="/farmer"
+              element={<FarmerLayout />}
+            >
 
-              <Route path="dashboard" element={<Farmer />} />
+              <Route
+                index
+                element={<Farmer />}
+              />
 
-              <Route path="add-listing" element={<AddListing />} />
+              <Route
+                path="dashboard"
+                element={<Farmer />}
+              />
 
-              <Route path="edit-listing" element={<EditList />} />
+              <Route
+                path="add-listing"
+                element={<AddListing />}
+              />
 
-              <Route path="orders" element={<OrderManagement />} />
+              <Route
+                path="edit-listing"
+                element={<EditList />}
+              />
 
-              <Route path="listings" element={<MyListings />} />
+              <Route
+                path="orders"
+                element={<OrderManagement />}
+              />
 
-              <Route path="complaints" element={<FarmerComplaints />} />
+              <Route
+                path="listings"
+                element={<MyListings />}
+              />
 
-              <Route path="ratings" element={<Ratings />} />
+              <Route
+                path="complaints"
+                element={<FarmerComplaints />}
+              />
+
+              <Route
+                path="ratings"
+                element={<Ratings />}
+              />
+
             </Route>
+
 
             {/* ============================
                 BUYER ROUTES
             ============================ */}
 
-            <Route path="/buyer" element={<BuyerLayout />}>
-              <Route index element={<BuyerDashboard />} />
+            <Route
+              path="/buyer"
+              element={<BuyerLayout />}
+            >
 
-              <Route path="dashboard" element={<BuyerDashboard />} />
+              <Route
+                index
+                element={<BuyerDashboard />}
+              />
 
-              <Route path="preorder" element={<PreOrder />} />
+              <Route
+                path="dashboard"
+                element={<BuyerDashboard />}
+              />
 
-              <Route path="complaints" element={<Complaints />} />
+              <Route
+                path="preorder"
+                element={<PreOrder />}
+              />
 
-              <Route path="ratings" element={<Ratings />} />
+              <Route
+                path="complaints"
+                element={<Complaints />}
+              />
 
-              <Route path="buyerorderhistory" element={<BuyerOrderHistory />} />
+              <Route
+                path="ratings"
+                element={<Ratings />}
+              />
 
-              <Route path="mapsearch" element={<MapSearch />} />
+              <Route
+                path="buyerorderhistory"
+                element={<BuyerOrderHistory />}
+              />
+
+              <Route
+                path="mapsearch"
+                element={<MapSearch />}
+              />
+
             </Route>
+
 
             {/* ============================
                 ADMIN ROUTES
             ============================ */}
 
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
+            <Route
+              path="/admin"
+              element={<AdminLayout />}
+            >
+
+              <Route
+                index
+                element={<AdminDashboard />}
+              />
 
               <Route
                 path="farmer-verification"
                 element={<FarmerVerification />}
               />
 
-              <Route path="complaints" element={<ComplaintManagement />} />
+              <Route
+                path="complaints"
+                element={<ComplaintManagement />}
+              />
 
-              <Route path="complaint/:id" element={<ResolveComplaint />} />
+              <Route
+                path="complaint/:id"
+                element={<ResolveComplaint />}
+              />
 
-              <Route path="users" element={<UserManagement />} />
+              <Route
+                path="users"
+                element={<UserManagement />}
+              />
+
             </Route>
+
 
             {/* ============================
                 OTHER ROUTES
             ============================ */}
 
-            <Route path="/farmer-response" element={<FarmerResponse />} />
+            <Route
+              path="/farmer-response"
+              element={<FarmerResponse />}
+            />
+
+
           </Routes>
+
         </main>
+
 
         {/* ================================
             FOOTER
-            Hidden on all admin pages
+
+            Show only when there is no
+            logged-in Farmer, Buyer or Admin
         ================================= */}
 
-        {!isAdminPage && <Footer />}
+        {!hideFooter && <Footer />}
+
+
       </div>
+
     </CropProvider>
   );
 }
+
 
 export default App;
