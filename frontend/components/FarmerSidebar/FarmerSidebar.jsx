@@ -1,8 +1,7 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaClipboardList, FaPlus, FaSeedling, FaUserCircle, FaTachometerAlt, FaExclamationTriangle, FaStar } from "react-icons/fa";
+import { FaClipboardList, FaPlus, FaSeedling, FaUserCircle, FaTachometerAlt, FaExclamationTriangle, FaStar, FaLeaf } from "react-icons/fa";
 import "./FarmerSidebar.css";
 
 export default function FarmerSidebar() {
@@ -37,6 +36,18 @@ export default function FarmerSidebar() {
       path: "/farmer/listings",
       icon: <FaSeedling className="sidebar-icon" />,
       active: currentPath === "/farmer/listings"
+    },
+    {
+      label: t("sidebar.addCultivationAd"),
+      path: "/farmer/add-cultivation-ad",
+      icon: <FaPlus className="sidebar-icon" />,
+      active: currentPath === "/farmer/add-cultivation-ad"
+    },
+    {
+      label: t("sidebar.cultivationOpportunities"),
+      path: "/farmer/cultivation-opportunities",
+      icon: <FaLeaf className="sidebar-icon" />,
+      active: currentPath === "/farmer/cultivation-opportunities" || currentPath.startsWith("/farmer/edit-cultivation-ad/")
     },
     {
       label: t("sidebar.complaints"),

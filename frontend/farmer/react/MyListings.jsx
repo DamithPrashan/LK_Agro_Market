@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaPlus, FaPen, FaTrashAlt, FaBoxOpen } from "react-icons/fa";
@@ -80,6 +80,7 @@ export default function MyListings() {
                                 <th>{t("farmer.tableGrowthStage")}</th>
                                 <th>{t("farmer.tablePrice")}</th>
                                 <th>{t("farmer.tableHarvestDate")}</th>
+                                <th>{t("farmer.tableStatus", "Status")}</th>
                                 <th>{t("farmer.tableAction")}</th>
                             </tr>
                         </thead>
@@ -93,6 +94,9 @@ export default function MyListings() {
                                     <td data-label={t("farmer.tableGrowthStage")}>{crop.growth_stage}</td>
                                     <td data-label={t("farmer.tablePrice")}>Rs.{crop.price_per_unit}</td>
                                     <td data-label={t("farmer.tableHarvestDate")}>{crop.harvest_date}</td>
+                                    <td data-label={t("farmer.tableStatus", "Status")}>
+                                        <span className={`status-badge ${crop.crop_status}`}>{crop.crop_status}</span>
+                                    </td>
                                     <td data-label={t("farmer.tableAction")}>
                                         <div className="row-actions">
                                             <button

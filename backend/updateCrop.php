@@ -40,7 +40,7 @@ try {
     $growthStage = isset($input['growthStage']) ? strtolower(trim($input['growthStage'])) : 'planted';
     $harvestDate = isset($input['harvestDate']) ? trim($input['harvestDate']) : '';
 
-    if ($crop_id <= 0 || empty($cropName) || empty($category) || $quantity <= 0 || $price <= 0 || empty($harvestDate) || empty($location)) {
+    if ($crop_id <= 0 || empty($cropName) || empty($category) || $quantity < 0 || $price <= 0 || empty($harvestDate) || empty($location)) {
         echo json_encode([
             "success" => false,
             "message" => "Please fill in all crop details correctly."
@@ -63,8 +63,13 @@ try {
                 location = ?,
                 price_per_unit = ?,
                 growth_stage = ?,
-                harvest_date = ?
-            WHERE crop_id = ? AND farmer_id = ?";
+                harvest_date = ?,
+                crop_status = CASE
+                    WHEN ? = 0 THEN 'fulfilled'
+                    WHEN crop_status = 'fulfilled' AND ? > 0 THEN 'active'
+                    ELSE crop_status
+                END
+            WHERE crop_id = ? AND farmer_id = ? AND crop_status <> 'removed'";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -75,6 +80,8 @@ try {
         $price,
         $growthStage,
         $harvestDate,
+        $quantity,
+        $quantity,
         $crop_id,
         $farmer_id
     ]);

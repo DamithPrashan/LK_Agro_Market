@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
@@ -26,6 +27,8 @@ import onionImg from "../../assests/png/onion.jpg";
 import watermelonImg from "../../assests/png/watermelon.jpg";
 import brinjalImg from "../../assests/png/brinjal.jpg";
 import cornImg from "../../assests/png/corn.jpg";
+import CultivationBrowse from "./CultivationBrowse.jsx";
+import "../csss/CultivationMarketplace.css";
 
 
 // Static local assets fallback map
@@ -56,6 +59,7 @@ export default function Browse() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const [marketTab, setMarketTab] = useState(() => new URLSearchParams(location.search).get("tab") === "cultivation" ? "cultivation" : "crops");
 
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
@@ -139,7 +143,6 @@ export default function Browse() {
     return () => {
       window.removeEventListener("focus", handleFocus);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, searchQuery, fetchCrops]);
 
   const handleApplyFilters = () => {
@@ -173,6 +176,13 @@ export default function Browse() {
             <h1>{t("sidebar.browseCrops")}</h1>
             <p>{t("browse.subtitle")}</p>
           </div>
+
+          <div className="marketplace-tabs" role="tablist" aria-label={t("buyer.cultivation.marketplaceTabs")}>
+            <button className={marketTab === "crops" ? "active" : ""} onClick={() => setMarketTab("crops")}>{t("buyer.cultivation.availableCrops")}</button>
+            <button className={marketTab === "cultivation" ? "active" : ""} onClick={() => setMarketTab("cultivation")}>{t("buyer.cultivation.opportunities")}</button>
+          </div>
+
+          {marketTab === "cultivation" ? <CultivationBrowse /> : <>
 
           {/* SEARCH BAR */}
           <div className="search-section">
@@ -494,6 +504,7 @@ export default function Browse() {
               ))}
             </div>
           )}
+          </>}
         </main>
       </div>
 

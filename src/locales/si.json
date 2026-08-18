@@ -27,6 +27,8 @@
     "myOrders": "මගේ ඇණවුම්",
     "addListing": "භෝගයක් එක් කරන්න",
     "myListings": "මගේ ලැයිස්තුගත කිරීම්",
+    "addCultivationAd": "වගා දැන්වීමක් එක් කරන්න",
+    "cultivationOpportunities": "වගා අවස්ථා",
     "profile": "මගේ විස්තර",
     "browseCrops": "භෝග පිරික්සන්න",
     "mapSearch": "සිතියම් සෙවුම"
@@ -315,7 +317,7 @@
     "farmerResponded": "ඇණවුම් අංක #{{reservation_id}} ({{cropName}}) සඳහා වූ ආරවුලට ගොවි මහතා ප්‍රතිචාර දක්වා ඇත.",
     "complaintResolved": "පැමිණිලි අංක #{{complaintId}} පරිපාලක විසින් විසඳන ලද ලෙස සලකුණු කර ඇත.",
     "verifiedBadge": "ගොවි තහවුරු කිරීම සාර්ථකයි. ඔබට තහවුරු කළ ගොවි සලකුණ (Verified Badge) හිමි වී ඇත.",
-    "preorderCancelled": "ඇණවුම් අංක #{{orderId}} සඳහා වූ පූර්ව ඇණවුම අවලංගු කර ඇත.", "farmerResponseRequested": "ඇණවුම් අංක #{{orderId}} සඳහා පැය 48ක් ඇතුළත ප්‍රතිචාරයක් අවශ්‍යයි.", "complaintDismissed": "ඇණවුම් අංක #{{orderId}} සඳහා ඔබගේ පැමිණිල්ල සමාලෝචනයෙන් පසු ප්‍රතික්ෂේප කරන ලදී.", "farmer_response_reminder": "පැමිණිලි අංක #{{complaintId}} සඳහා ප්‍රතිචාර දැක්වීමට පැය 24කට අඩු කාලයක් ඉතිරියි.", "farmer_response_overdue": "පැමිණිලි අංක #{{complaintId}} සඳහා ප්‍රතිචාර කාලසීමාව ඉක්මවා ඇත.", "warningIssued": "පරිපාලකයෙකු ඔබගේ ගිණුමට අවවාදයක් නිකුත් කර ඇත.",
+    "preorderCancelled": "ඇණවුම් අංක #{{orderId}} සඳහා වූ පූර්ව ඇණවුම අවලංගු කර ඇත.", "farmerResponseRequested": "ඇණවුම් අංක #{{orderId}} සඳහා පැය 48ක් ඇතුළත ප්‍රතිචාරයක් අවශ්‍යයි.", "complaintDismissed": "ඇණවුම් අංක #{{orderId}} සඳහා ඔබගේ පැමිණිල්ල සමාලෝචනයෙන් පසු ප්‍රතික්ෂේප කරන ලදී.", "farmer_response_reminder": "පැමිණිලි අංක #{{complaintId}} සඳහා ප්‍රතිචාර දැක්වීමට පැය 24කට අඩු කාලයක් ඉතිරියි.", "farmer_response_overdue": "පැමිණිලි අංක #{{complaintId}} සඳහා ප්‍රතිචාර කාලසීමාව ඉක්මවා ඇත.", "warningIssued": "පරිපාලකයෙකු ඔබගේ ගිණුමට අවවාදයක් නිකුත් කර ඇත.", "cultivationRequestSubmitted": "{{cropName}} සඳහා {{quantity}} {{unit}} නව වගා ඉල්ලීමක් ලැබී ඇත.", "cultivationRequestAccepted": "{{cropName}} සඳහා ඔබගේ වගා ඉල්ලීම පිළිගෙන ඇත.", "cultivationRequestRejected": "{{cropName}} සඳහා ඔබගේ වගා ඉල්ලීම ප්‍රතික්ෂේප කර ඇත.", "cultivationRequestCancelled": "{{cropName}} සඳහා පොරොත්තු වගා ඉල්ලීමක් අවලංගු කර ඇත.",
     "title": {
       "orderSubmitted": "නව ඇණවුමක් ලැබුණි",
       "orderAccepted": "ඇණවුම පිළිගන්නා ලදී",
@@ -326,7 +328,7 @@
       "farmerResponded": "ගොවියා ප්‍රතිචාර දක්වා ඇත",
       "complaintResolved": "ආරවුල විසඳන ලදී",
       "verifiedBadge": "තහවුරු කිරීම සම්පූර්ණයි",
-      "preorderCancelled": "පූර්ව ඇණවුම අවලංගු කරන ලදී", "farmerResponseRequested": "පැමිණිලි ප්‍රතිචාරය අවශ්‍යයි", "complaintDismissed": "පැමිණිල්ල ප්‍රතික්ෂේප කරන ලදී", "farmer_response_reminder": "පැමිණිලි ප්‍රතිචාර සිහිගැන්වීම", "farmer_response_overdue": "පැමිණිලි ප්‍රතිචාර කාලය ඉක්මවා ඇත", "warningIssued": "පරිපාලන අවවාදය"
+      "preorderCancelled": "පූර්ව ඇණවුම අවලංගු කරන ලදී", "farmerResponseRequested": "පැමිණිලි ප්‍රතිචාරය අවශ්‍යයි", "complaintDismissed": "පැමිණිල්ල ප්‍රතික්ෂේප කරන ලදී", "farmer_response_reminder": "පැමිණිලි ප්‍රතිචාර සිහිගැන්වීම", "farmer_response_overdue": "පැමිණිලි ප්‍රතිචාර කාලය ඉක්මවා ඇත", "warningIssued": "පරිපාලන අවවාදය", "cultivationRequestSubmitted": "නව වගා ඉල්ලීම", "cultivationRequestAccepted": "වගා ඉල්ලීම පිළිගෙන ඇත", "cultivationRequestRejected": "වගා ඉල්ලීම ප්‍රතික්ෂේප කර ඇත", "cultivationRequestCancelled": "වගා ඉල්ලීම අවලංගු කර ඇත"
     }
   },
   "confirmations": {
@@ -334,6 +336,10 @@
     "cancelPendingOrder": "මෙම වෙන්කිරීමේ ඉල්ලීම අවලංගු කිරීමට ඔබට විශ්වාසද? මෙම ක්‍රියාව ආපසු හැරවිය නොහැක.",
     "cancelAcceptedOrder": "මෙම ඇණවුම අවලංගු කිරීමෙන් ඔබේ 1/3 ක පූර්ව ගෙවීම අහිමි වනු ඇත. ඉදිරියට යාමට ඔබට විශ්වාසද?"
   },
+  "buyer": { "cultivation": { "marketplaceTabs": "වෙළඳපොළ කොටස්", "availableCrops": "ලබාගත හැකි බෝග", "opportunities": "වගා අවස්ථා", "futureOpportunity": "අනාගත වගා අවස්ථාව", "viewPreorder": "බලා පෙර ඇණවුම් කරන්න", "capacity": "වගා ධාරිතාව", "committed": "කැප කළ", "remaining": "ඉතිරි", "estimatedPrice": "ඇස්තමේන්තු මිල", "expectedHarvest": "අපේක්ෂිත අස්වැන්න", "loading": "පූරණය වෙමින්...", "empty": "දැනට වගා අවස්ථා නොමැත.", "back": "අවස්ථා වෙත ආපසු", "area": "වගා ප්‍රදේශය", "noDescription": "විස්තරයක් සපයා නැත.", "paymentNote": "මෙය අනාගත වගා අවස්ථාවකි. ගොවියා ඔබගේ ඉල්ලීම පිළිගන්නා තෙක් ගෙවීමක් අවශ්‍ය නොවේ.", "requestedQuantity": "ඉල්ලූ ප්‍රමාණය", "collectionDate": "කැමති එකතු කිරීමේ දිනය", "submitRequest": "ඉල්ලීම යවන්න", "buyerOnly": "වගා ඉල්ලීම් යැවිය හැක්කේ ගැනුම්කරුවන්ට පමණි.", "invalidQuantity": "ඉතිරි ධාරිතාව තුළ ප්‍රමාණයක් ඇතුළත් කරන්න.", "invalidCollectionDate": "එකතු කිරීමේ දිනය අපේක්ෂිත අස්වැන්නට පෙර විය නොහැක.", "requestsTitle": "වගා ඉල්ලීම්", "requestsSubtitle": "අනාගත වගාව සඳහා ගොවීන්ට යැවූ ඉල්ලීම් නිරීක්ෂණය කරන්න.", "noRequests": "තවම වගා ඉල්ලීම් නොමැත.", "requestedDate": "ඉල්ලූ දිනය", "agreedTotal": "එකඟ වූ මුළු මුදල", "awaitingActivation": "පිළිගෙන ඇත – ඇණවුම්/ගෙවීම් සක්‍රිය කිරීම බලාපොරොත්තුවෙන්", "cancelRequest": "ඉල්ලීම අවලංගු කරන්න", "cancelConfirm": "මෙම පොරොත්තු ඉල්ලීම අවලංගු කරන්නද?", "statuses": { "pendingReview": "ගොවි සමාලෝචනය බලාපොරොත්තුවෙන්", "accepted": "පිළිගෙන ඇත", "rejected": "ප්‍රතික්ෂේප කර ඇත", "cancelled": "අවලංගු කර ඇත" } } },
+  "cultivationAudit": { "searchPlaceholder": "බෝගය, ගොවියා හෝ දිස්ත්‍රික්කය සොයන්න", "allDistricts": "සියලු දිස්ත්‍රික්ක", "sortHarvest": "ළඟම අස්වැන්න", "sortPrice": "අඩුම ඇස්තමේන්තු මිල", "previous": "පෙර", "next": "ඊළඟ", "page": "පිටුව {{page}} / {{pages}}", "unavailable": "මෙම වගා අවස්ථාව තවදුරටත් ලබාගත නොහැක." },
+  "buyer.cultivation.previous": "පෙර", "buyer.cultivation.next": "ඊළඟ", "buyer.cultivation.page": "පිටුව {{page}} / {{pages}}",
+  "farmer.cultivationRequests.previous": "පෙර", "farmer.cultivationRequests.next": "ඊළඟ", "farmer.cultivationRequests.page": "පිටුව {{page}} / {{pages}}",
   "farmer": {
     "addCropHeading": "නව භෝගයක් එක් කරන්න",
     "editCropHeading": "ලැයිස්තුගත කිරීම සංස්කරණය කරන්න",
@@ -408,7 +414,15 @@
     "adminResolution": "පරිපාලක විසඳුම",
     "explainResponsePlaceholder": "ඔබේ ප්‍රතිචාරය පැහැදිලි කරන්න...",
     "writeResponseAlert": "කරුණාකර ඉදිරිපත් කිරීමට පෙර ප්‍රතිචාරයක් ලියන්න.",
-    "responseSubmittedAlert": "ප්‍රතිචාරය සාර්ථකව ඉදිරිපත් කරන ලදී."
+    "responseSubmittedAlert": "ප්‍රතිචාරය සාර්ථකව ඉදිරිපත් කරන ලදී.",
+    "cultivationRequests": { "title": "ගැනුම්කරු ඉල්ලීම්", "loading": "ඉල්ලීම් පූරණය වෙමින්...", "empty": "වගා ඉල්ලීම් නොමැත.", "requestedQuantity": "ඉල්ලූ ප්‍රමාණය", "collectionDate": "එකතු කිරීමේ දිනය", "requestDate": "ඉල්ලූ දිනය", "remaining": "වත්මන් ඉතිරි ධාරිතාව", "accept": "පිළිගන්න", "reject": "ප්‍රතික්ෂේප කරන්න", "acceptConfirm": "මෙම ඉල්ලීමේ සම්පූර්ණ ප්‍රමාණය කැප කර පිළිගන්නද?", "rejectConfirm": "මෙම වගා ඉල්ලීම ප්‍රතික්ෂේප කරන්නද?", "statuses": { "pending": "පොරොත්තුවෙන්", "accepted": "පිළිගෙන ඇත", "rejected": "ප්‍රතික්ෂේප කර ඇත", "cancelled": "අවලංගු කර ඇත" } },
+    "cultivationAds": {
+      "addTitle": "වගා දැන්වීමක් එක් කරන්න", "editTitle": "වගා දැන්වීම සංස්කරණය කරන්න", "opportunitiesTitle": "වගා අවස්ථා", "futureLabel": "අනාගත වගා අවස්ථාව", "explanation": "අනාගත ගැනුම්කරුවන්ගේ ඉල්ලුම අනුව ඔබට වගා කළ හැකි බෝගයක් ප්‍රචාරය කරන්න.", "manageSubtitle": "වත්මන් බෝග තොගයෙන් වෙන්ව අනාගත වගා හැකියාව කළමනාකරණය කරන්න.",
+      "cropName": "බෝගයේ නම", "category": "වර්ගය", "district": "දිස්ත්‍රික්කය", "capacity": "වගා ධාරිතාව", "committed": "කැපවී ඇත", "available": "ලබා ගත හැක", "remainingCapacity": "ඉතිරි ධාරිතාව", "unit": "ඒකකය", "estimatedPrice": "ඇස්තමේන්තු ඒකක මිල", "expectedHarvest": "අපේක්ෂිත අස්වනු දිනය", "cultivationArea": "වගා භූමි ප්‍රමාණය (විකල්ප)", "areaUnit": "භූමි ඒකකය (විකල්ප)", "description": "විස්තරය", "photos": "ඡායාරූප", "photoHint": "JPG, PNG හෝ WebP ඡායාරූප 5ක් දක්වා; එකක් උපරිම 2 MB.", "selectedCount": "{{count}}ක් තෝරා ඇත", "existingPhotos": "පවතින ඡායාරූප", "newPhotos": "අලුතින් තෝරාගත් ඡායාරූප", "select": "තෝරන්න", "capacityCommitment": "ධාරිතා කැපවීම", "created": "නිර්මාණය කළේ", "edit": "සංස්කරණය", "closeOpportunity": "අවස්ථාව වසන්න", "closeConfirm": "මෙම වගා අවස්ථාව වසන්නද? වාර්තාව ඉතිහාසයේ පවතී.", "save": "සුරකින්න", "cancel": "අවලංගු කරන්න", "saving": "සුරකිමින්...", "loading": "පූරණය වෙමින්...", "empty": "තවම වගා අවස්ථා නොමැත", "updated": "වගා අවස්ථාව සාර්ථකව යාවත්කාලීන කරන ලදී.", "saveFailed": "වගා අවස්ථාව සුරැකිය නොහැක.",
+      "categories": { "vegetable": "එළවළු", "fruit": "පලතුරු", "grain": "ධාන්‍ය", "other": "වෙනත්" }, "areaUnits": { "acres": "අක්කර", "hectares": "හෙක්ටයාර්", "perches": "පර්චස්" },
+      "createdSuccess": "වගා අවස්ථාව සාර්ථකව නිර්මාණය කරන ලදී.", "statuses": { "draft": "කෙටුම්පත", "open": "විවෘත", "fullyCommitted": "සම්පූර්ණයෙන් කැපවී ඇත", "cultivating": "වගා කරමින්", "harvested": "අස්වනු නෙළා ඇත", "cancelled": "අවලංගු කළ", "closed": "වසා ඇත" },
+      "validation": { "required": "අවශ්‍ය සියලු ක්ෂේත්‍ර සම්පූර්ණ කරන්න.", "capacity": "ධාරිතාව බිංදුවට වඩා වැඩි විය යුතුය.", "price": "ඇස්තමේන්තු මිල බිංදුවට වඩා වැඩි විය යුතුය.", "date": "අපේක්ෂිත අස්වනු දිනය අනාගත දිනයක් විය යුතුය.", "area": "වගා භූමි ප්‍රමාණය බිංදුවට වඩා වැඩි විය යුතුය.", "areaUnit": "වගා භූමි ප්‍රමාණය ඇතුළත් කළ විට භූමි ඒකකයක් තෝරන්න.", "description": "විස්තරය අක්ෂර 2000 නොඉක්මවිය යුතුය.", "photos": "උපරිම ඡායාරූප 5ක් පමණි.", "photoType": "JPG, PNG හෝ WebP ඡායාරූප පමණක් භාවිත කරන්න; එකක් 2 MB නොඉක්මවිය යුතුය." }
+    }
   },
   "forecast": {
     "title": "ඉල්ලුම පුරෝකථනය සහ විශ්ලේෂණය",
@@ -716,6 +730,25 @@
   "label_photo": "ඡායාරූපය",
   "msg_sent": "යවන ලදී",
   "msg_read": "කියවන ලදී",
+  "orderPresentation": {
+    "availableCrop": "පවතින බෝගය",
+    "unitPrice": "ඒකක මිල",
+    "cultivationOrder": "වගා ඇණවුම",
+    "awaitingAdvance": "අත්තිකාරම් ගෙවීම බලාපොරොත්තුවෙන්",
+    "inPreparation": "සූදානම් කරමින්",
+    "finalPaymentRequired": "සූදානම් – අවසන් ගෙවීම අවශ්‍යයි",
+    "awaitingCompletion": "සම්පූර්ණයෙන් ගෙවා ඇත – සම්පූර්ණ කිරීම බලාපොරොත්තුවෙන්",
+    "waitingBuyerAdvance": "ගැනුම්කරුගේ අත්තිකාරම බලාපොරොත්තුවෙන්",
+    "advancePaid": "අත්තිකාරම ගෙවා ඇත / සූදානම් කරමින්",
+    "waitingFinalPayment": "සූදානම් / අවසන් ගෙවීම බලාපොරොත්තුවෙන්",
+    "readyToComplete": "සම්පූර්ණයෙන් ගෙවා ඇත / සම්පූර්ණ කිරීමට සූදානම්",
+    "viewOrder": "ඇණවුම බලන්න",
+    "orderCreated": "ඇණවුම නිර්මාණය කර ඇත",
+    "payAdvance": "අත්තිකාරම ගෙවන්න",
+    "payRemaining": "ඉතිරි මුදල ගෙවන්න",
+    "complete": "සම්පූර්ණ කරන්න",
+    "cancelled": "අවලංගු කර ඇත"
+  },
   "footer": {
     "tagline": "ගොවීන් සහ ගැනුම්කරුවන් විශ්වාසනීය ඩිජිටල් වේදිකාවක් හරහා සම්බන්ධ කරන ශ්‍රී ලංකාවේ සෘජු වෙළඳපොළ.",
     "quickLinks": "ඉක්මන් සබැඳි",

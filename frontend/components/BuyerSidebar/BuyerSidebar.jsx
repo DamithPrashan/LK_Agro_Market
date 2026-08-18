@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -43,6 +42,12 @@ export default function BuyerSidebar() {
       path: "/buyer/buyerorderhistory",
       icon: <FaHistory className="sidebar-icon" />,
       active: currentPath === "/buyer/buyerorderhistory"
+    },
+    {
+      label: t("buyer.cultivation.requestsTitle"),
+      path: "/buyer/cultivation-requests",
+      icon: <FaClipboardList className="sidebar-icon" />,
+      active: currentPath === "/buyer/cultivation-requests"
     },
     {
       label: t("sidebar.mapSearch"),

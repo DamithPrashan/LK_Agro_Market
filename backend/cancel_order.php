@@ -44,14 +44,22 @@ try {
 
     $buyer_id = intval($buyer['buyer_id']);
 
-    // 2. Fetch reservation details along with crop and farmer information
+    $pdo->beginTransaction();
+
+    // Lock the order and crop so cancellation can restore accepted stock once.
     $sql = "
         SELECT 
             r.reservation_id,
             r.reservation_status,
             r.transaction_status,
             r.collection_date,
+            rc.reserve_crop_id,
+            rc.status AS reserve_status,
+            rc.quantity_requested,
             rc.buyer_id,
+            cr.crop_id,
+            cr.quantity AS available_quantity,
+            cr.crop_status,
             cr.crop_name,
             f.user_id as farmer_user_id
         FROM reservation r
@@ -59,6 +67,7 @@ try {
         JOIN crop cr ON rc.crop_id = cr.crop_id
         JOIN farmer f ON cr.farmer_id = f.farmer_id
         WHERE r.reservation_id = ? AND rc.buyer_id = ?
+        FOR UPDATE
     ";
 
     $stmt = $pdo->prepare($sql);
@@ -66,6 +75,7 @@ try {
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$order) {
+        $pdo->rollBack();
         http_response_code(404);
         echo json_encode([
             "success" => false,
@@ -78,6 +88,7 @@ try {
     
     // Check if order is already completed or cancelled
     if ($status === 'completed') {
+        $pdo->rollBack();
         http_response_code(400);
         echo json_encode([
             "success" => false,
@@ -87,6 +98,7 @@ try {
     }
     
     if ($status === 'cancelled') {
+        $pdo->rollBack();
         http_response_code(400);
         echo json_encode([
             "success" => false,
@@ -98,11 +110,10 @@ try {
     // Process cancellation rules based on order status (pending vs accepted)
     if ($status === 'pending') {
         // Pending orders can be cancelled freely
-        $pdo->beginTransaction();
-        
-        // Update reservation status to cancelled
         $updateStmt = $pdo->prepare("UPDATE reservation SET reservation_status = 'cancelled' WHERE reservation_id = ?");
         $updateStmt->execute([$orderId]);
+        $pdo->prepare("UPDATE reserve_crop SET status = 'cancelled' WHERE reserve_crop_id = ?")
+            ->execute([$order['reserve_crop_id']]);
 
         $pdo->commit();
         
@@ -129,6 +140,7 @@ try {
         }
 
         if ($hours_remaining <= 48) {
+            $pdo->rollBack();
             http_response_code(400);
             echo json_encode([
                 "success" => false,
@@ -138,11 +150,24 @@ try {
         }
 
         // More than 48 hours: allow cancellation, payment is non-refundable (forfeited)
-        $pdo->beginTransaction();
+        if ($order['reserve_status'] !== $status) {
+            $pdo->rollBack();
+            http_response_code(409);
+            echo json_encode(["success" => false, "message" => "Order status is inconsistent and cannot be cancelled safely."]);
+            exit;
+        }
 
-        // Update reservation status to cancelled
+        $restoredQuantity = floatval($order['available_quantity']) + floatval($order['quantity_requested']);
+        $restoredStatus = ($order['crop_status'] === 'fulfilled' && $restoredQuantity > 0)
+            ? 'active'
+            : $order['crop_status'];
+
+        $pdo->prepare("UPDATE crop SET quantity = ?, crop_status = ? WHERE crop_id = ?")
+            ->execute([$restoredQuantity, $restoredStatus, $order['crop_id']]);
         $updateStmt = $pdo->prepare("UPDATE reservation SET reservation_status = 'cancelled' WHERE reservation_id = ?");
         $updateStmt->execute([$orderId]);
+        $pdo->prepare("UPDATE reserve_crop SET status = 'cancelled' WHERE reserve_crop_id = ?")
+            ->execute([$order['reserve_crop_id']]);
 
         // Insert notification to farmer
         require_once 'create_notification.php';
@@ -161,6 +186,10 @@ try {
         ]);
         exit;
     }
+
+    $pdo->rollBack();
+    http_response_code(409);
+    echo json_encode(["success" => false, "message" => "This order cannot be cancelled in its current state."]);
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {

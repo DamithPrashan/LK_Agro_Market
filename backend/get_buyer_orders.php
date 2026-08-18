@@ -83,21 +83,27 @@ try {
     $sql = "
         SELECT 
             r.reservation_id,
-            c.crop_name,
-            rc.quantity_requested,
+            r.reservation_source,
+            CASE WHEN r.reservation_source = 'cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name,
+            CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_quantity ELSE rc.quantity_requested END AS quantity_requested,
+            CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_unit_price ELSE rc.unit_price END AS unit_price,
+            CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_total_amount ELSE rc.total_amount END AS total_amount,
+            CASE WHEN r.reservation_source = 'cultivation' THEN ca.unit ELSE 'kg' END AS unit,
             r.collection_date,
-            rc.total_amount,
             r.reservation_status,
             r.transaction_status,
             u_farmer.name as farmer_name,
             u_farmer.user_id as farmer_user_id,
             (SELECT COUNT(*) FROM message WHERE reservation_id = r.reservation_id AND sender_id = u_farmer.user_id AND is_read = 0) as unread_messages
         FROM reservation r
-        JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
-        JOIN crop c ON rc.crop_id = c.crop_id
-        JOIN farmer f ON c.farmer_id = f.farmer_id
+        LEFT JOIN reserve_crop rc ON r.reservation_source = 'crop' AND r.reserve_crop_id = rc.reserve_crop_id
+        LEFT JOIN crop c ON rc.crop_id = c.crop_id
+        LEFT JOIN cultivation_request cr ON r.reservation_source = 'cultivation' AND r.cultivation_request_id = cr.cultivation_request_id
+        LEFT JOIN cultivation_ad ca ON cr.cultivation_ad_id = ca.cultivation_ad_id
+        JOIN farmer f ON f.farmer_id = CASE WHEN r.reservation_source = 'cultivation' THEN ca.farmer_id ELSE c.farmer_id END
         JOIN user u_farmer ON f.user_id = u_farmer.user_id
-        WHERE rc.buyer_id = :buyer_id
+        WHERE ((r.reservation_source = 'crop' AND rc.buyer_id = :buyer_id)
+            OR (r.reservation_source = 'cultivation' AND cr.buyer_id = :cultivation_buyer_id AND cr.request_status = 'accepted'))
     ";
 
     // Append filtering conditions based on status parameter
@@ -113,7 +119,7 @@ try {
 
     // Prepare and execute statement
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['buyer_id' => $buyer_id]);
+    $stmt->execute(['buyer_id' => $buyer_id, 'cultivation_buyer_id' => $buyer_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Map rows to exact output format requested
@@ -121,8 +127,10 @@ try {
     foreach ($rows as $row) {
         // Map database reservation_status to required: pending | accepted | completed
         $orderStatus = 'pending';
-        if (in_array($row['reservation_status'], ['confirmed', 'ready'], true)) {
+        if ($row['reservation_status'] === 'confirmed') {
             $orderStatus = 'accepted';
+        } elseif ($row['reservation_status'] === 'ready') {
+            $orderStatus = 'ready';
         } elseif ($row['reservation_status'] === 'completed') {
             $orderStatus = 'completed';
         } elseif ($row['reservation_status'] === 'cancelled') {
@@ -137,16 +145,34 @@ try {
             $paymentStatus = 'paid';
         }
 
+        $lifecycleStatus = 'pending';
+        if ($row['reservation_status'] === 'cancelled') {
+            $lifecycleStatus = 'cancelled';
+        } elseif ($row['reservation_status'] === 'completed' && $row['transaction_status'] === 'paid') {
+            $lifecycleStatus = 'completed';
+        } elseif ($row['reservation_status'] === 'confirmed' && $row['transaction_status'] === 'unpaid') {
+            $lifecycleStatus = 'awaiting_advance';
+        } elseif ($row['reservation_status'] === 'confirmed' && $row['transaction_status'] === 'partially_paid') {
+            $lifecycleStatus = 'in_preparation';
+        } elseif ($row['reservation_status'] === 'ready' && $row['transaction_status'] === 'partially_paid') {
+            $lifecycleStatus = 'final_payment_required';
+        } elseif ($row['reservation_status'] === 'ready' && $row['transaction_status'] === 'paid') {
+            $lifecycleStatus = 'awaiting_completion';
+        }
+
         $orders[] = [
             "orderId" => "ORD" . $row['reservation_id'],
             "reservationId" => intval($row['reservation_id']),
+            "reservationSource" => $row['reservation_source'],
             "cropName" => $row['crop_name'],
             "quantity" => floatval($row['quantity_requested']),
-            "unit" => "kg", // Default unit for crops in this market system
+            "unit" => $row['unit'],
+            "unitPrice" => floatval($row['unit_price']),
             "date" => $row['collection_date'],
             "total" => floatval($row['total_amount']),
             "orderStatus" => $orderStatus,
             "paymentStatus" => $paymentStatus,
+            "lifecycleStatus" => $lifecycleStatus,
             "farmerName" => $row['farmer_name'],
             "farmerUserId" => intval($row['farmer_user_id']),
             "unreadMessages" => intval($row['unread_messages'])

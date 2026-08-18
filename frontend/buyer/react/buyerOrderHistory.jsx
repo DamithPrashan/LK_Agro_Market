@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/BuyerOrderHistory.css";
@@ -12,6 +12,16 @@ const statusKeyMap = {
   "declined": "orders.status.declined",
   "cancelled": "orders.status.declined",
   "completed": "orders.status.completed"
+};
+
+const lifecycleKeyMap = {
+  pending: "orders.status.pending",
+  awaiting_advance: "orderPresentation.awaitingAdvance",
+  in_preparation: "orderPresentation.inPreparation",
+  final_payment_required: "orderPresentation.finalPaymentRequired",
+  awaiting_completion: "orderPresentation.awaitingCompletion",
+  completed: "orders.status.completed",
+  cancelled: "orderPresentation.cancelled"
 };
 
 export default function BuyerOrderHistory() {
@@ -50,8 +60,11 @@ export default function BuyerOrderHistory() {
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
+    useEffect(() => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchOrders();
+      // fetchOrders reads activeTab, which is the explicit refresh trigger here.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const handleCancelClick = async (order) => {
@@ -63,7 +76,7 @@ export default function BuyerOrderHistory() {
       
       await executeCancellation(order.orderId);
       
-    } else if (status === "accepted") {
+    } else if (status === "accepted" || status === "ready") {
       // Calculate hours remaining before collection date
       const collectionDate = order.date; // format YYYY-MM-DD
       const now = new Date();
@@ -190,9 +203,16 @@ export default function BuyerOrderHistory() {
                 <div key={order.orderId} className={`order-card ${order.orderStatus}`}>
                   
                   <div className="order-header">
-                    <h3>{order.cropName}</h3>
+                    <h3>
+                      {order.cropName}
+                      <span style={{ marginLeft: "8px", fontSize: "11px", fontWeight: 600, color: "var(--g-600)" }}>
+                        {order.reservationSource === "cultivation"
+                          ? t("orderPresentation.cultivationOrder")
+                          : t("orderPresentation.availableCrop")}
+                      </span>
+                    </h3>
                     <span className={`status ${order.orderStatus}`}>
-                      {t(statusKeyMap[order.orderStatus.toLowerCase()] || order.orderStatus).toUpperCase()}
+                      {t(lifecycleKeyMap[order.lifecycleStatus] || statusKeyMap[order.orderStatus.toLowerCase()] || order.orderStatus).toUpperCase()}
                     </span>
                   </div>
 
@@ -258,7 +278,7 @@ export default function BuyerOrderHistory() {
                           )}
                         </button>
 
-                        {order.orderStatus.toLowerCase() === "accepted" && 
+                        {order.reservationSource === "crop" && (order.orderStatus.toLowerCase() === "accepted" || order.orderStatus.toLowerCase() === "ready") &&
                          order.paymentStatus.toLowerCase() !== "paid" && (
                           <button 
                             className="cancel-order-action-btn"
@@ -268,14 +288,16 @@ export default function BuyerOrderHistory() {
                           </button>
                         )}
 
-                        {(order.orderStatus.toLowerCase() === "accepted" && 
-                         (order.paymentStatus.toLowerCase() === "unpaid" || order.paymentStatus.toLowerCase() === "partial")) ? (
+                        {((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid") ||
+                         (order.orderStatus.toLowerCase() === "ready" && order.paymentStatus.toLowerCase() === "partial")) ? (
                           <button 
                             className="view-btn" 
                             onClick={() => navigate(`/payment/${order.orderId}`)}
                             style={{ background: "#27ae60", color: "white", cursor: "pointer" }}
                           >
-                            {order.paymentStatus.toLowerCase() === "partial" ? t("buttons.completePayment") : t("buttons.payNow")}
+                            {order.paymentStatus.toLowerCase() === "partial"
+                              ? t("orderPresentation.payRemaining")
+                              : t("orderPresentation.payAdvance")}
                           </button>
                         ) : (
                           <button className="view-btn">{t("buttons.view")}</button>

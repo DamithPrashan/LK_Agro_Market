@@ -39,11 +39,16 @@ import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
 import MyListings from "../frontend/farmer/react/MyListings.jsx";
 import FarmerComplaints from "../frontend/farmer/react/FarmerComplaints.jsx";
+import AddCultivationAd from "../frontend/farmer/react/AddCultivationAd.jsx";
+import CultivationOpportunities from "../frontend/farmer/react/CultivationOpportunities.jsx";
+import EditCultivationAd from "../frontend/farmer/react/EditCultivationAd.jsx";
 
 import FarmerLayout from "./pages/FarmerLayout.jsx";
 
 import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
 import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
+import CultivationOpportunityDetails from "../frontend/buyer/react/CultivationOpportunityDetails.jsx";
+import CultivationRequests from "../frontend/buyer/react/CultivationRequests.jsx";
 
 
 function App() {
@@ -158,6 +163,11 @@ function App() {
             />
 
             <Route
+              path="/cultivation-opportunity/:id"
+              element={<CultivationOpportunityDetails />}
+            />
+
+            <Route
               path="/payment"
               element={<Payment />}
             />
@@ -238,6 +248,21 @@ function App() {
               />
 
               <Route
+                path="add-cultivation-ad"
+                element={<AddCultivationAd />}
+              />
+
+              <Route
+                path="cultivation-opportunities"
+                element={<CultivationOpportunities />}
+              />
+
+              <Route
+                path="edit-cultivation-ad/:id"
+                element={<EditCultivationAd />}
+              />
+
+              <Route
                 path="complaints"
                 element={<FarmerComplaints />}
               />
@@ -287,6 +312,11 @@ function App() {
               <Route
                 path="buyerorderhistory"
                 element={<BuyerOrderHistory />}
+              />
+
+              <Route
+                path="cultivation-requests"
+                element={<CultivationRequests />}
               />
 
               <Route
