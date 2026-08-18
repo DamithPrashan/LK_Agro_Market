@@ -118,7 +118,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
           <div><small>{t("admin.complaints.farmer")}</small><strong>{details.farmerName}</strong><span>{details.farmerEmail}</span></div>
         </section>
 
-        <section className="complaint-related-order"><h3>{t("admin.complaints.relatedOrder")}</h3><span><strong>{details.orderId}</strong> · {details.cropName} · {details.quantityRequested} kg · {niceText(details.transactionStatus)}</span></section>
+        <section className="complaint-related-order"><h3>{t("admin.complaints.relatedOrder")}</h3><span><strong>{details.orderId}</strong> · {t(details.reservationSource === "cultivation" ? "complaints.cultivationOrder" : "complaints.availableCrop")} · {details.cropName} · {details.quantityRequested} {details.unit} · Rs. {Number(details.unitPrice).toFixed(2)} / {details.unit} · Rs. {Number(details.totalAmount).toFixed(2)} · {niceText(details.transactionStatus)}</span></section>
         <section className="complaint-admin-decision">
           <h3>{t("admin.complaints.adminDecision")}</h3>
           <label className="complaint-notes"><span>{t("admin.complaints.adminNote")}</span><textarea rows="4" value={notes} onChange={(event) => setNotes(event.target.value)} disabled={!isOpen || busy} placeholder={t("admin.complaints.adminNotePlaceholder")} /></label>

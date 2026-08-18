@@ -5666,3 +5666,4 @@
   .user-management-page .user-pagination { min-width: 520px; }
   .user-warning-summary { grid-template-columns: 1fr; }
 }
+.complaint-related-order span{overflow-wrap:anywhere}

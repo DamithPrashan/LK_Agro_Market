@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
 import { useAuth } from "../../src/context/AuthContext";
+import { readJsonResponse } from "../utils/readJsonResponse";
 
 const fmt = (n) => "Rs " + Number(n).toLocaleString("en-LK");
 
@@ -37,7 +36,7 @@ export default function Payment() {
             credentials: "include",
           },
         );
-        const data = await res.json();
+        const data = await readJsonResponse(res, t("errors.networkXamppError"));
         if (data.success && data.order) {
           setOrder(data.order);
         } else {
@@ -52,10 +51,11 @@ export default function Payment() {
     };
 
     fetchOrderDetails();
-  }, [orderId]);
+  }, [orderId, t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     if (method === "bank" && !proof) {
       setError(t("payment.errorNoProof"));
       return;
@@ -64,7 +64,6 @@ export default function Payment() {
     setError("");
 
     const isPrePayment = order.paymentStatus === "pending";
-    const total = order.subtotal;
     const amountDue = isPrePayment
       ? order.prePaymentDue
       : order.balanceOnCollection;
@@ -82,7 +81,7 @@ export default function Payment() {
         body,
         credentials: "include",
       });
-      const data = await res.json();
+      const data = await readJsonResponse(res, t("errors.submissionFailed"));
       if (data.success) {
         setDone(true);
       } else {
@@ -181,7 +180,7 @@ export default function Payment() {
         cancel_url: window.location.href,
         notify_url: window.location.origin + "/backend/Apis/payhere_notify.php",
         order_id: order.orderId,
-        items: `${order.cropName} x ${order.quantity}kg`,
+        items: `${order.cropName} x ${order.quantity}${order.unit}`,
         amount: Number(amountDue).toFixed(2),
         currency: "LKR",
         hash: hashData.hash,
@@ -307,7 +306,7 @@ export default function Payment() {
             <div style={s.sumBox}>
               {[
                 [t("payment.summaryOrder"), `#${order.id}`],
-                [t("payment.summaryCrop"), `${order.cropName} · ${order.quantity} kg`],
+                [t("payment.summaryCrop"), `${order.cropName} · ${order.quantity} ${order.unit}`],
                 [t("payment.summaryAmountPaid"), fmt(amountDue)],
                 ...(isPrePayment
                   ? [[t("payment.summaryBalance"), fmt(balance)]]
@@ -377,8 +376,13 @@ export default function Payment() {
               <div
                 style={{ fontSize: 15, fontWeight: 700, color: "var(--g-800)" }}
               >
-                {order.cropName} — {fmt(order.pricePerUnit)}/kg
+                {order.cropName} — {fmt(order.pricePerUnit)}/{order.unit}
               </div>
+              {order.source === "cultivation" && (
+                <div style={{ fontSize: 11, color: "var(--g-600)", fontWeight: 600 }}>
+                  Cultivation Agreement
+                </div>
+              )}
               <div
                 style={{
                   fontSize: 12,
@@ -397,7 +401,7 @@ export default function Payment() {
                 )}
               </div>
               <div style={{ fontSize: 11, color: "var(--t-2)" }}>
-                {order.quantity} kg · Collection {order.collectionDate}
+                {order.quantity} {order.unit} · Collection {order.collectionDate}
               </div>
             </div>
           </div>
@@ -408,7 +412,7 @@ export default function Payment() {
             </p>
             <div style={s.payRow}>
               <span>
-                {order.quantity} kg × {fmt(order.pricePerUnit)}
+                {order.quantity} {order.unit} × {fmt(order.pricePerUnit)}
               </span>
               <span style={s.payTotal}>{fmt(total)}</span>
             </div>

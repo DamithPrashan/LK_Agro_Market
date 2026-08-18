@@ -27,6 +27,8 @@
     "myOrders": "My Orders",
     "addListing": "Add Listing",
     "myListings": "My Listings",
+    "addCultivationAd": "Add Cultivation Ad",
+    "cultivationOpportunities": "Cultivation Opportunities",
     "profile": "Profile",
     "browseCrops": "Browse Crops",
     "mapSearch": "Map Search"
@@ -105,6 +107,12 @@
     "reasonOption2": "Late Delivery",
     "reasonOption3": "Wrong Quantity",
     "reasonOption4": "Damaged Product",
+    "harvestDelay": "Harvest Delay",
+    "availableCrop": "Available Crop",
+    "cultivationOrder": "Cultivation Order",
+    "agreedQuantity": "Agreed Quantity",
+    "agreedUnitPrice": "Agreed Unit Price",
+    "agreedTotal": "Agreed Total",
     "descriptionPlaceholder": "Please describe the issue in detail, including any quality problems, quantity differences, delivery issues, or other concerns related to your order.",
     "evidenceLabel": "Evidence Photo (Optional)",
     "evidenceClick": "Click here to upload photo evidence",
@@ -142,7 +150,20 @@
     "statusResolved": "Resolved",
     "statusRejected": "Dismissed",
     "loadingComplaints": "Loading your complaints...",
-    "failedLoadComplaints": "Failed to load complaints."
+    "failedLoadComplaints": "Failed to load complaints.",
+    "pendingAdminReview": "Pending Admin Review",
+    "pendingAdminReviewDescription": "Your complaint is waiting for administrator review.",
+    "farmerActionRequested": "Farmer Action Requested",
+    "farmerResponseDue": "Farmer response due by: {{date}}",
+    "farmerFallback": "Farmer"
+  },
+  "farmerComplaints": {
+    "title": "Complaint Actions", "subtitle": "Review complaints requiring your response", "loading": "Loading complaints requiring action...", "empty": "No complaints require your action right now.",
+    "loadFailed": "Failed to load complaints.", "networkError": "Network error. Please try again.", "evidenceSize": "Evidence must be 5 MB or smaller.", "responseLength": "Response must contain at least 10 characters.", "submitFailed": "Submission failed.",
+    "complaintNumber": "Complaint #{{id}}", "actionRequired": "Action Required", "responseOverdue": "Response Overdue", "respondWithin48": "Respond within 48 hours", "hoursRemaining_one": "{{count}} hour remaining", "hoursRemaining_other": "{{count}} hours remaining",
+    "crop": "Crop", "source": "Source", "order": "Order", "submitted": "Submitted", "requested": "Requested", "deadline": "Deadline", "timeRemaining": "Time Remaining", "notAvailable": "Not available",
+    "buyerComplaint": "Buyer Complaint", "viewBuyerEvidence": "View Buyer Evidence", "adminInstruction": "Administrator Instruction", "defaultInstruction": "Please review this complaint and respond within the 48-hour period.", "overdueGuidance": "You may still respond. Further account action is handled manually by an administrator.",
+    "yourResponse": "Your Response", "responsePlaceholder": "Explain your response clearly...", "supportingEvidence": "Supporting Evidence (optional, JPG/PNG/PDF, maximum 5 MB)", "submitting": "Submitting...", "submitResponse": "Submit Response"
   },
   "orders": {
     "historyTitle": "Order History",
@@ -320,7 +341,7 @@
     "complaintDismissed": "Your complaint for Order #{{orderId}} was dismissed after review.",
     "farmer_response_reminder": "Less than 24 hours remain to respond to complaint #{{complaintId}}.",
     "farmer_response_overdue": "The response deadline for complaint #{{complaintId}} has passed.",
-    "warningIssued": "An administrator has issued a warning for your account.",
+    "warningIssued": "An administrator has issued a warning for your account.", "cultivationRequestSubmitted": "New request for {{quantity}} {{unit}} of {{cropName}}.", "cultivationRequestAccepted": "Your request for {{quantity}} {{unit}} of {{cropName}} was accepted.", "cultivationRequestRejected": "Your cultivation request for {{cropName}} was rejected.", "cultivationRequestCancelled": "A pending cultivation request for {{cropName}} was cancelled.", "cultivationOrderReady": "Your cultivation order for {{cropName}} is ready.", "cultivationFinalPaymentReceived": "Final payment was received for the {{cropName}} cultivation order.", "cultivationOrderCompleted": "Your cultivation order for {{cropName}} has been completed.",
     "title": {
       "orderSubmitted": "New Order Received",
       "orderAccepted": "Reservation Accepted",
@@ -332,7 +353,7 @@
       "complaintResolved": "Dispute Resolved",
       "verifiedBadge": "Verification Completed",
       "preorderCancelled": "Pre-Order Cancelled",
-      "farmerResponseRequested": "Complaint Response Required", "complaintDismissed": "Complaint Dismissed", "farmer_response_reminder": "Complaint Response Reminder", "farmer_response_overdue": "Complaint Response Overdue", "warningIssued": "Administrative Warning"
+      "farmerResponseRequested": "Complaint Response Required", "complaintDismissed": "Complaint Dismissed", "farmer_response_reminder": "Complaint Response Reminder", "farmer_response_overdue": "Complaint Response Overdue", "warningIssued": "Administrative Warning", "cultivationRequestSubmitted": "New Cultivation Request", "cultivationRequestAccepted": "Cultivation Request Accepted", "cultivationRequestRejected": "Cultivation Request Rejected", "cultivationRequestCancelled": "Cultivation Request Cancelled", "cultivationOrderReady": "Cultivation Order Ready", "cultivationFinalPaymentReceived": "Cultivation Final Payment Received", "cultivationOrderCompleted": "Cultivation Order Completed"
     }
   },
   "confirmations": {
@@ -340,6 +361,14 @@
     "cancelPendingOrder": "Are you sure you want to cancel this reservation request? This action cannot be undone.",
     "cancelAcceptedOrder": "Cancelling this order forfeits your 1/3 pre-payment, as it confirms your commitment to the farmer. Are you sure you want to proceed?"
   },
+  "buyer": {
+    "cultivation": {
+      "marketplaceTabs": "Marketplace sections", "availableCrops": "Available Crops", "opportunities": "Cultivation Opportunities", "futureOpportunity": "Future Cultivation Opportunity", "viewPreorder": "View & Pre-order", "capacity": "Cultivation Capacity", "committed": "Committed", "remaining": "Remaining", "estimatedPrice": "Estimated Price", "expectedHarvest": "Expected Harvest", "loading": "Loading...", "empty": "No cultivation opportunities are currently available.", "back": "Back to opportunities", "area": "Cultivation Area", "noDescription": "No description provided.", "paymentNote": "This is a future cultivation opportunity. Payment is not required until the farmer accepts your request.", "requestedQuantity": "Requested Quantity", "collectionDate": "Preferred Collection Date", "submitRequest": "Submit Request", "buyerOnly": "Only buyers can submit cultivation requests.", "invalidQuantity": "Enter a quantity within the remaining capacity.", "invalidCollectionDate": "Collection date cannot be before the expected harvest date.", "requestsTitle": "Cultivation Requests", "requestsSubtitle": "Track requests sent to farmers for future cultivation.", "noRequests": "No cultivation requests yet.", "requestedDate": "Requested Date", "agreedTotal": "Agreed Total", "awaitingActivation": "Accepted – Awaiting order/payment activation", "cancelRequest": "Cancel Request", "cancelConfirm": "Cancel this pending cultivation request?", "statuses": { "pendingReview": "Pending Farmer Review", "accepted": "Accepted", "rejected": "Rejected", "cancelled": "Cancelled" }
+    }
+  },
+  "cultivationAudit": { "searchPlaceholder": "Search crop, farmer, or district", "districtFilter": "Filter by district", "sortLabel": "Sort cultivation opportunities", "allDistricts": "All Districts", "sortHarvest": "Soonest Harvest", "sortPrice": "Lowest Estimated Price", "previous": "Previous", "next": "Next", "page": "Page {{page}} of {{pages}}", "unavailable": "This cultivation opportunity is no longer available." },
+  "buyer.cultivation.previous": "Previous", "buyer.cultivation.next": "Next", "buyer.cultivation.page": "Page {{page}} of {{pages}}",
+  "farmer.cultivationRequests.previous": "Previous", "farmer.cultivationRequests.next": "Next", "farmer.cultivationRequests.page": "Page {{page}} of {{pages}}",
   "farmer": {
     "addCropHeading": "Add New Crop",
     "editCropHeading": "Edit Listing",
@@ -414,7 +443,15 @@
     "adminResolution": "Admin Resolution",
     "explainResponsePlaceholder": "Explain your response...",
     "writeResponseAlert": "Please write a response before submitting.",
-    "responseSubmittedAlert": "Response submitted successfully."
+    "responseSubmittedAlert": "Response submitted successfully.",
+    "cultivationRequests": { "title": "Buyer Requests", "loading": "Loading requests...", "empty": "No cultivation requests yet.", "requestedQuantity": "Requested Quantity", "collectionDate": "Collection Date", "requestDate": "Request Date", "remaining": "Current Remaining Capacity", "accept": "Accept", "reject": "Reject", "acceptConfirm": "Accept this request and commit its full quantity?", "rejectConfirm": "Reject this cultivation request?", "statuses": { "pending": "Pending", "accepted": "Accepted", "rejected": "Rejected", "cancelled": "Cancelled" } },
+    "cultivationAds": {
+      "addTitle": "Add Cultivation Ad", "editTitle": "Edit Cultivation Ad", "opportunitiesTitle": "Cultivation Opportunities", "futureLabel": "Future Cultivation Opportunity", "explanation": "Advertise a crop you are willing and able to cultivate based on future buyer demand.", "manageSubtitle": "Manage future cultivation capability separately from current crop stock.",
+      "cropName": "Crop Name", "category": "Category", "district": "District", "capacity": "Cultivation Capacity", "committed": "committed", "available": "available", "remainingCapacity": "Remaining Capacity", "unit": "Unit", "estimatedPrice": "Estimated Price Per Unit", "expectedHarvest": "Expected Harvest Date", "cultivationArea": "Cultivation Area (optional)", "areaUnit": "Area Unit (optional)", "description": "Description", "photos": "Photos", "photoHint": "Up to 5 JPG, PNG, or WebP images; maximum 2 MB each.", "selectedCount": "{{count}} selected", "existingPhotos": "Existing photos", "newPhotos": "Newly selected photos", "select": "Select", "capacityCommitment": "Capacity Commitment", "created": "Created", "edit": "Edit", "closeOpportunity": "Close Opportunity", "closeConfirm": "Close this cultivation opportunity? The record will remain in history.", "save": "Save", "cancel": "Cancel", "saving": "Saving...", "loading": "Loading...", "empty": "No cultivation opportunities yet", "updated": "Cultivation opportunity updated successfully.", "saveFailed": "Unable to save cultivation opportunity.",
+      "categories": { "vegetable": "Vegetable", "fruit": "Fruit", "grain": "Grain", "other": "Other" }, "areaUnits": { "acres": "Acres", "hectares": "Hectares", "perches": "Perches" },
+      "createdSuccess": "Cultivation opportunity created successfully.", "statuses": { "draft": "Draft", "open": "Open", "fullyCommitted": "Fully Committed", "cultivating": "Cultivating", "harvested": "Harvested", "cancelled": "Cancelled", "closed": "Closed" },
+      "validation": { "required": "Complete all required fields.", "capacity": "Capacity must be greater than zero.", "price": "Estimated price must be greater than zero.", "date": "Expected harvest date must be in the future.", "area": "Cultivation area must be greater than zero.", "areaUnit": "Select an area unit when cultivation area is entered.", "description": "Description must not exceed 2000 characters.", "photos": "A maximum of 5 photos is allowed.", "photoType": "Photos must be JPG, PNG, or WebP and no larger than 2 MB each." }
+    }
   },
   "forecast": {
     "title": "Demand Forecast & Analysis",
@@ -560,6 +597,9 @@
     "review": "review",
     "reviews": "reviews",
     "selectOrder": "Select Order",
+    "completed": "Completed",
+    "rateFarmer": "Rate Farmer",
+    "rateBuyer": "Rate Buyer",
     "registerBuyer": "Register as Buyer",
     "close": "Close"
   },
@@ -759,6 +799,25 @@
   "label_photo": "Photo",
   "msg_sent": "Sent",
   "msg_read": "Read",
+  "orderPresentation": {
+    "availableCrop": "Available Crop",
+    "unitPrice": "Unit Price",
+    "cultivationOrder": "Cultivation Order",
+    "awaitingAdvance": "Awaiting Advance Payment",
+    "inPreparation": "In Preparation",
+    "finalPaymentRequired": "Ready – Final Payment Required",
+    "awaitingCompletion": "Fully Paid – Awaiting Completion",
+    "waitingBuyerAdvance": "Waiting for Buyer Advance",
+    "advancePaid": "Advance Paid / In Preparation",
+    "waitingFinalPayment": "Ready / Waiting for Final Payment",
+    "readyToComplete": "Fully Paid / Ready to Complete",
+    "viewOrder": "View Order",
+    "orderCreated": "Order Created",
+    "payAdvance": "Pay Advance",
+    "payRemaining": "Pay Remaining Amount",
+    "complete": "Complete",
+    "cancelled": "Cancelled"
+  },
   "footer": {
     "tagline": "Sri Lanka's direct farm-to-buyer marketplace connecting farmers and buyers through a trusted digital platform.",
     "quickLinks": "Quick Links",

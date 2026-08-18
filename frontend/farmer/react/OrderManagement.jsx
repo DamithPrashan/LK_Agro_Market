@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "../csss/OrderManagement.css";
 import RatingStars from "../../components/ratingStars";
 import ReviewModal from "../../components/ReviewModal";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
+import { readJsonResponse } from "../../utils/readJsonResponse";
 
 const statusKeyMap = {
     "Ready": "orders.status.ready",
@@ -28,6 +29,16 @@ const tabKeyMap = {
     "Completed": "orders.status.completed"
 };
 
+const lifecycleKeyMap = {
+    pending: "orders.status.pending",
+    waiting_advance: "orderPresentation.waitingBuyerAdvance",
+    advance_paid: "orderPresentation.advancePaid",
+    waiting_final: "orderPresentation.waitingFinalPayment",
+    ready_to_complete: "orderPresentation.readyToComplete",
+    completed: "orders.status.completed",
+    cancelled: "orderPresentation.cancelled"
+};
+
 function OrderManagement() {
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -38,19 +49,20 @@ function OrderManagement() {
     const [selectedBuyer, setSelectedBuyer] = useState(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [activeChatOrder, setActiveChatOrder] = useState(null);
+    const [updatingOrderId, setUpdatingOrderId] = useState(null);
 
     const fetchOrders = async () => {
         try {
             const res = await fetch("/backend/get_farmer_orders.php", {
                 credentials: "include"
             });
-            const data = await res.json();
+            const data = await readJsonResponse(res, t("errors.failedFetchOrders"));
             if (data.success) {
                 setOrders(data.orders);
             } else {
                 setError(data.message);
             }
-        } catch (err) {
+        } catch {
             setError(t("errors.failedFetchOrders"));
         } finally {
             setLoading(false);
@@ -58,10 +70,15 @@ function OrderManagement() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchOrders();
+        // fetchOrders intentionally reloads only on mount; action handlers refresh explicitly.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleAction = async (orderId, action) => {
+        if (updatingOrderId !== null) return;
+        setUpdatingOrderId(orderId);
         try {
             const res = await fetch("/backend/update_order_status.php", {
                 method: "POST",
@@ -74,15 +91,17 @@ function OrderManagement() {
                 }),
                 credentials: "include"
             });
-            const data = await res.json();
+            const data = await readJsonResponse(res, t("errors.submissionFailed"));
             if (data.success) {
                 alert(data.message);
                 fetchOrders();
             } else {
                 alert(data.message);
             }
-        } catch (err) {
+        } catch {
             alert(t("errors.submissionFailed"));
+        } finally {
+            setUpdatingOrderId(null);
         }
     };
 
@@ -129,9 +148,16 @@ function OrderManagement() {
                 filteredOrders.map((order) => (
                     <div className="order-card" key={order.id}>
                         <div className="order-header">
-                            <h3>{t("farmer.orderCardTitle", { id: order.id })}</h3>
+                            <h3>
+                                {t("farmer.orderCardTitle", { id: order.id })}
+                                <span style={{ marginLeft: "8px", fontSize: "11px", fontWeight: 600, color: "var(--g-600)" }}>
+                                    {order.reservation_source === "cultivation"
+                                        ? t("orderPresentation.cultivationOrder")
+                                        : t("orderPresentation.availableCrop")}
+                                </span>
+                            </h3>
                             <span className={`status-badge ${order.status.toLowerCase()}`}>
-                                {t(statusKeyMap[order.status] || `orders.tab${order.status}`, order.status)}
+                                {t(lifecycleKeyMap[order.lifecycle_status] || statusKeyMap[order.status] || `orders.tab${order.status}`, order.status)}
                             </span>
                         </div>
 
@@ -149,6 +175,15 @@ function OrderManagement() {
                             <div>
                                 <p className="label">{t("farmer.quantityLabel")}</p>
                                 <p>{order.quantity}</p>
+                            </div>
+
+                            <div>
+                                <p className="label">{t("orderPresentation.unitPrice")}</p>
+                                <p>Rs. {Number(order.unit_price).toLocaleString()}</p>
+                            </div>
+
+                            <div>
+                                <p className="label">{t("orders.total", { total: Number(order.total_amount).toLocaleString() })}</p>
                             </div>
 
                             <div>
@@ -183,7 +218,7 @@ function OrderManagement() {
 
                         {/* Actions */}
                         <div className="action-buttons" style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
-                            <button 
+                            <button
                                 className="message-buyer-btn"
                                 style={{
                                     background: "#1a5c2d",
@@ -221,7 +256,7 @@ function OrderManagement() {
                                 )}
                             </button>
 
-                            <button 
+                            <button
                                 className="about-buyer-btn"
                                 style={{
                                     background: "#f1f2f6",
@@ -246,24 +281,32 @@ function OrderManagement() {
 
                             {order.status === "Pending" && (
                                 <>
-                                    <button className="accept-btn" onClick={() => handleAction(order.db_id, 'accept')}>
+                                    <button className="accept-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'accept')}>
                                         {t("buttons.accept")}
                                     </button>
-                                    <button className="decline-btn" onClick={() => handleAction(order.db_id, 'decline')}>
+                                    <button className="decline-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'decline')}>
                                         {t("buttons.decline")}
                                     </button>
                                 </>
                             )}
 
-                            {order.status === "Accepted" && (
-                                <button className="ready-btn" onClick={() => handleAction(order.db_id, 'ready')}>
+                            {order.status === "Accepted" && order.payment === "Paid (1/3)" && (
+                                <button className="ready-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'ready')}>
                                     {t("buttons.markReady")}
                                 </button>
                             )}
 
-                            {order.status === "Ready" && (
-                                <button className="complete-btn" onClick={() => handleAction(order.db_id, 'complete')}>
-                                    {t("buttons.completePayment", "Completed")}
+                            {order.status === "Accepted" && order.payment === "Unpaid" && (
+                                <span className="payment-badge">{t("orderPresentation.waitingBuyerAdvance")}</span>
+                            )}
+
+                            {order.status === "Ready" && order.payment === "Paid (1/3)" && (
+                                <span className="payment-badge">{t("orderPresentation.waitingFinalPayment")}</span>
+                            )}
+
+                            {order.status === "Ready" && order.payment === "Paid (Full)" && (
+                                <button className="complete-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'complete')}>
+                                    {t("orderPresentation.complete")}
                                 </button>
                             )}
                         </div>
@@ -304,4 +347,4 @@ function OrderManagement() {
     );
 }
 
-export default OrderManagement;
+export default OrderManagement;

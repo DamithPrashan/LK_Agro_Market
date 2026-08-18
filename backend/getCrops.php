@@ -14,7 +14,7 @@ $role = $_SESSION['user']['role'];
 try {
     if ($role === 'farmer') {
         // Fetch only crops belonging to the logged in farmer
-        $sql = "SELECT c.* FROM crop c JOIN farmer f ON c.farmer_id = f.farmer_id WHERE f.user_id = ?";
+        $sql = "SELECT c.* FROM crop c JOIN farmer f ON c.farmer_id = f.farmer_id WHERE f.user_id = ? AND c.crop_status <> 'removed'";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$user_id]);
         $crops = $stmt->fetchAll(PDO::FETCH_ASSOC);

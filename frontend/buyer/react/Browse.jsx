@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect } from "react";
 import "../../buyer/csss/Browse.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCrops } from "../../../src/context/CropContext";
@@ -26,6 +27,8 @@ import onionImg from "../../assests/png/onion.jpg";
 import watermelonImg from "../../assests/png/watermelon.jpg";
 import brinjalImg from "../../assests/png/brinjal.jpg";
 import cornImg from "../../assests/png/corn.jpg";
+import CultivationBrowse from "./CultivationBrowse.jsx";
+import "../csss/CultivationMarketplace.css";
 
 
 // Static local assets fallback map
@@ -56,6 +59,7 @@ export default function Browse() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const [marketTab, setMarketTab] = useState(() => new URLSearchParams(location.search).get("tab") === "cultivation" ? "cultivation" : "crops");
 
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0 });
 
@@ -139,7 +143,6 @@ export default function Browse() {
     return () => {
       window.removeEventListener("focus", handleFocus);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, searchQuery, fetchCrops]);
 
   const handleApplyFilters = () => {
@@ -173,6 +176,13 @@ export default function Browse() {
             <h1>{t("sidebar.browseCrops")}</h1>
             <p>{t("browse.subtitle")}</p>
           </div>
+
+          <div className="marketplace-tabs" role="tablist" aria-label={t("buyer.cultivation.marketplaceTabs")}>
+            <button className={marketTab === "crops" ? "active" : ""} onClick={() => setMarketTab("crops")}>{t("buyer.cultivation.availableCrops")}</button>
+            <button className={marketTab === "cultivation" ? "active" : ""} onClick={() => setMarketTab("cultivation")}>{t("buyer.cultivation.opportunities")}</button>
+          </div>
+
+          {marketTab === "cultivation" ? <CultivationBrowse /> : <>
 
           {/* SEARCH BAR */}
           <div className="search-section">
@@ -409,19 +419,19 @@ export default function Browse() {
                   <div className="featured-card-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
                     <h3>{crop.name}</h3>
 
-                    <div className="featured-meta" style={{ marginBottom: "8px" }}>
+                    <div className="featured-meta crop-card-meta">
                       <div className="featured-location">
                         <FaMapMarkerAlt />
                         <span>{crop.district || "Sri Lanka"}</span>
                       </div>
                       
-                      <div className="featured-quantity" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div className="featured-quantity crop-card-farmer">
                         {parseInt(crop.is_verified) === 1 && <span className="verified-tick" style={{ background: '#eaf5ec', color: '#27ae60', borderRadius: '50%', width: '14px', height: '14px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>✓</span>}
                         <span>{crop.farmer_name}</span>
                       </div>
                     </div>
 
-                    <div className="meta-info" style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "8px", fontSize: "12px", color: "#64748b" }}>
+                    <div className="meta-info crop-card-details">
                       <span>
                         {t("browse.available")} {parseFloat(crop.qty) <= 0 ? (
                           <span style={{ color: "#e74c3c", fontWeight: "bold" }}>{t("emptyStates.outOfStock")}</span>
@@ -434,21 +444,21 @@ export default function Browse() {
                       </span>
                     </div>
 
-                    <div className="rating" style={{ color: "#f1c40f", fontSize: "14px", marginTop: "auto" }}>
+                    <div className="rating crop-card-rating">
                       {"★".repeat(Math.round(parseFloat(crop.rating) || 5))}
                       {"☆".repeat(5 - Math.round(parseFloat(crop.rating) || 5))}
                       <span className="rating-num" style={{ fontSize: "11px", color: "#7f8c8d", marginLeft: "5px" }}>({parseFloat(crop.rating).toFixed(1)})</span>
                     </div>
 
-                    <div className="featured-divider" style={{ margin: "12px 0" }}></div>
+                    <div className="featured-divider crop-card-divider"></div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
-                      <div className="featured-price" style={{ whiteSpace: "nowrap" }}>
+                    <div className="crop-card-footer">
+                      <div className="featured-price">
                         <span className="featured-price-main">Rs. {parseFloat(crop.price).toFixed(0)}</span>
                         <span className="featured-price-unit">/kg</span>
                       </div>
                       
-                      <div style={{ minWidth: "110px", textAlign: "right" }}>
+                      <div className="crop-card-action">
                         {parseFloat(crop.qty) <= 0 ? (
                           <button
                             className="pre-order-btn out-of-stock-btn"
@@ -494,6 +504,7 @@ export default function Browse() {
               ))}
             </div>
           )}
+          </>}
         </main>
       </div>
 

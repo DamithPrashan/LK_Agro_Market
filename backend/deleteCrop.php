@@ -45,11 +45,12 @@ try {
         exit;
     }
 
-    // Delete only own crop
+    // Soft-remove only the farmer's own crop so order/payment history remains.
     $stmt = $pdo->prepare("
-        DELETE FROM crop
+        UPDATE crop SET crop_status='removed'
         WHERE crop_id=?
         AND farmer_id=?
+        AND crop_status <> 'removed'
     ");
 
     $stmt->execute([
@@ -61,7 +62,7 @@ try {
 
         echo json_encode([
             "success"=>true,
-            "message"=>"Crop deleted successfully."
+            "message"=>"Crop listing removed successfully."
         ]);
 
     }else{

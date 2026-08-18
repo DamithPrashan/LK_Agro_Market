@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../services/order_resolver.php';
+
 class RatingModel {
     private $pdo;
 
@@ -30,11 +32,18 @@ class RatingModel {
      * Fetch list of reviews for a reviewee user.
      */
     public function getReviewsByReviewee($revieweeId) {
-        $sql = "SELECT r.review_id as id, r.rating, r.comment, DATE_FORMAT(r.review_date, '%b %d, %Y') as created_at, u.name as reviewer_name 
-                FROM ratings_review r
-                JOIN user u ON r.reviewer_id = u.user_id
-                WHERE r.reviewee_id = ? AND r.is_removed = 0
-                ORDER BY r.review_date DESC";
+        $sql = "SELECT rr.review_id AS id, rr.rating, rr.comment, DATE_FORMAT(rr.review_date, '%b %d, %Y') AS created_at,
+                       u.name AS reviewer_name, r.reservation_source,
+                       CASE WHEN r.reservation_source='cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name
+                FROM ratings_review rr
+                JOIN user u ON rr.reviewer_id = u.user_id
+                JOIN reservation r ON rr.reservation_id = r.reservation_id
+                LEFT JOIN reserve_crop rc ON r.reservation_source='crop' AND r.reserve_crop_id=rc.reserve_crop_id
+                LEFT JOIN crop c ON rc.crop_id=c.crop_id
+                LEFT JOIN cultivation_request cr ON r.reservation_source='cultivation' AND r.cultivation_request_id=cr.cultivation_request_id
+                LEFT JOIN cultivation_ad ca ON cr.cultivation_ad_id=ca.cultivation_ad_id
+                WHERE rr.reviewee_id = ? AND rr.is_removed = 0
+                ORDER BY rr.review_date DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$revieweeId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -45,10 +54,17 @@ class RatingModel {
      */
     public function getReviewDetails($reviewId) {
         $stmt = $this->pdo->prepare("
-            SELECT r.review_id as id, r.rating, r.comment, DATE_FORMAT(r.review_date, '%b %d, %Y') as created_at, u.name as reviewer_name 
-            FROM ratings_review r 
-            JOIN user u ON r.reviewer_id = u.user_id 
-            WHERE r.review_id = ?
+            SELECT rr.review_id AS id, rr.rating, rr.comment, DATE_FORMAT(rr.review_date, '%b %d, %Y') AS created_at,
+                   u.name AS reviewer_name, r.reservation_source,
+                   CASE WHEN r.reservation_source='cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name
+            FROM ratings_review rr
+            JOIN user u ON rr.reviewer_id = u.user_id
+            JOIN reservation r ON rr.reservation_id = r.reservation_id
+            LEFT JOIN reserve_crop rc ON r.reservation_source='crop' AND r.reserve_crop_id=rc.reserve_crop_id
+            LEFT JOIN crop c ON rc.crop_id=c.crop_id
+            LEFT JOIN cultivation_request cr ON r.reservation_source='cultivation' AND r.cultivation_request_id=cr.cultivation_request_id
+            LEFT JOIN cultivation_ad ca ON cr.cultivation_ad_id=ca.cultivation_ad_id
+            WHERE rr.review_id = ?
         ");
         $stmt->execute([$reviewId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -57,26 +73,8 @@ class RatingModel {
     /**
      * Get reservation, crop, buyer, and farmer details for a reservation.
      */
-    public function getReservationDetails($reservationId) {
-        $sql = "
-            SELECT 
-                rc.crop_id, 
-                u_buyer.user_id as buyer_user_id, 
-                u_farmer.user_id as farmer_user_id,
-                r.transaction_status,
-                r.reservation_status
-            FROM reservation r
-            JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
-            JOIN crop c ON rc.crop_id = c.crop_id
-            JOIN buyer b ON rc.buyer_id = b.buyer_id
-            JOIN user u_buyer ON b.user_id = u_buyer.user_id
-            JOIN farmer f ON c.farmer_id = f.farmer_id
-            JOIN user u_farmer ON f.user_id = u_farmer.user_id
-            WHERE r.reservation_id = ?
-        ";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$reservationId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public function getReservationDetails($reservationId, $forUpdate = false) {
+        return resolve_order_snapshot($this->pdo, (int)$reservationId, (bool)$forUpdate);
     }
 
     /**
@@ -86,4 +84,8 @@ class RatingModel {
         $stmt = $this->pdo->prepare("UPDATE user SET average_rating = ? WHERE user_id = ?");
         return $stmt->execute([$averageRating, $userId]);
     }
+
+    public function beginTransaction() { return $this->pdo->beginTransaction(); }
+    public function commit() { return $this->pdo->commit(); }
+    public function rollBack() { return $this->pdo->inTransaction() ? $this->pdo->rollBack() : true; }
 }

@@ -3,9 +3,8 @@ import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import RatingStars from "../components/ratingStars";
 import ReviewList  from "../components/reviewList";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
 import "./ratingPage.css";
+import { readJsonResponse } from "../utils/readJsonResponse";
 
 function RatingBar({ star, count, total }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
@@ -17,18 +16,6 @@ function RatingBar({ star, count, total }) {
     </div>
   );
 }
-
-// Demo data shown when backend is offline
-const DEMO_SUMMARY  = { average:4.8, total:24, breakdown:{5:18,4:4,3:2,2:0,1:0} };
-const DEMO_REVIEWS  = [
-  { id:1, reviewer_name:"Hotel Ella Inn",     rating:5, comment:"Excellent tomatoes. Very fresh, correct weight.", created_at:"May 28, 2026" },
-  { id:2, reviewer_name:"Perera Supermart",   rating:4, comment:"Good carrots. Slight delay but resolved well.",  created_at:"May 15, 2026" },
-  { id:3, reviewer_name:"Colombo Fresh Mart", rating:5, comment:"Best leeks I have purchased online.",            created_at:"Apr 30, 2026" },
-];
-const DEMO_PENDING  = [
-  { id:2041, crop_name:"Tomato", other_party_name:"Hotel Ella Inn" },
-  { id:2040, crop_name:"Carrot", other_party_name:"Perera Supermart" },
-];
 
 export default function RatingsPage() {
   const { user }                       = useAuth();
@@ -42,27 +29,29 @@ export default function RatingsPage() {
   const [submitting, setSubmitting]    = useState(false);
   const [submitMsg, setSubmitMsg]      = useState({ text:"", ok:false });
   const [loadingData, setLoadingData]  = useState(true);
+  const sourceLabel = (source) => t(source === "cultivation" ? "complaints.cultivationOrder" : "complaints.availableCrop");
 
   useEffect(() => {
     if (!user) {
-      setLoadingData(false);
+      Promise.resolve().then(() => setLoadingData(false));
       return;
     }
     Promise.all([
-      fetch(`/backend/Apis/get_ratings.php?user_id=${user.id}`, { credentials:"include" }).then(r=>r.json()),
-      fetch("/backend/orders/get_completed_unrated.php",          { credentials:"include" }).then(r=>r.json()),
+      fetch(`/backend/Apis/get_ratings.php?user_id=${user.id}`, { credentials:"include" }).then((r) => readJsonResponse(r)),
+      fetch("/backend/orders/get_completed_unrated.php",          { credentials:"include" }).then((r) => readJsonResponse(r)),
     ]).then(([rd, od]) => {
       if (rd.success) { setSummary(rd.summary); setReviews(rd.reviews); }
-      else            { setSummary(DEMO_SUMMARY); setReviews(DEMO_REVIEWS); }
+      else            { setSummary(null); setReviews([]); }
       if (od.success) setPending(od.orders);
-      else            setPending(DEMO_PENDING);
+      else            setPending([]);
     }).catch(() => {
-      setSummary(DEMO_SUMMARY); setReviews(DEMO_REVIEWS); setPending(DEMO_PENDING);
+      setSummary(null); setReviews([]); setPending([]);
     }).finally(() => setLoadingData(false));
   }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     if (stars === 0)    { setSubmitMsg({ text: t("errors.selectStars"), ok:false }); return; }
     if (!selectedOrder) { setSubmitMsg({ text: t("errors.selectOrderRating"), ok:false }); return; }
     setSubmitting(true); setSubmitMsg({ text:"", ok:false });
@@ -73,7 +62,7 @@ export default function RatingsPage() {
         body: JSON.stringify({ order_id:selectedOrder, rating:stars, comment }),
         credentials:"include",
       });
-      const data = await res.json();
+      const data = await readJsonResponse(res, t("errors.submissionFailed"));
       if (data.success) {
         setSubmitMsg({ text: "✅ " + t("ratings.successAlert"), ok:true });
         setStars(0); setComment(""); setSelected("");
@@ -122,7 +111,7 @@ export default function RatingsPage() {
 
           {/* Submit rating card */}
           <div className="card">
-            <p className="section-label">{t("ratings.rateCompleted")}</p>
+            <p className="section-label">{t(user?.role === "buyer" ? "ratings.rateFarmer" : "ratings.rateBuyer")}</p>
             <form onSubmit={handleSubmit}>
               <div className="field">
                 <label htmlFor="order-sel">{t("ratings.selectOrder")}</label>
@@ -130,7 +119,7 @@ export default function RatingsPage() {
                   <option value="">{t("ratings.chooseOrder")}</option>
                   {pendingOrders.map((o) => (
                     <option key={o.id} value={o.id}>
-                      #{o.id} · {o.crop_name} · {o.other_party_name}
+                      {sourceLabel(o.reservation_source)} · #{o.id} · {o.crop_name} · {o.quantity} {o.unit} · {o.other_party_name} · {t("ratings.completed")} {o.completion_date}
                     </option>
                   ))}
                 </select>

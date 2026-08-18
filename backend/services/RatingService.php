@@ -18,44 +18,41 @@ class RatingService {
             return ["success" => false, "message" => "Rating must be between 1 and 5 stars."];
         }
 
-        // Fetch reservation details
-        $order = $this->ratingModel->getReservationDetails($reservationId);
-        if (!$order) {
-            return ["success" => false, "message" => "Reservation/order not found."];
-        }
+        $this->ratingModel->beginTransaction();
+        try {
+            $order = $this->ratingModel->getReservationDetails($reservationId, true);
+            if (!$order) {
+                $this->ratingModel->rollBack();
+                return ["success" => false, "message" => "Reservation/order not found."];
+            }
 
-        $cropId = intval($order['crop_id']);
-        $buyerUserId = intval($order['buyer_user_id']);
-        $farmerUserId = intval($order['farmer_user_id']);
-        $transactionStatus = $order['transaction_status'];
-        $reservationStatus = $order['reservation_status'];
+            $cropId = $order['crop_id'];
+            $buyerUserId = intval($order['buyer_user_id']);
+            $farmerUserId = intval($order['farmer_user_id']);
 
         // Verify the reviewer is authorized
-        if ($reviewerId === $buyerUserId) {
-            $revieweeId = $farmerUserId;
-        } else if ($reviewerId === $farmerUserId) {
-            $revieweeId = $buyerUserId;
-        } else {
-            return ["success" => false, "message" => "You are not authorized to rate this transaction."];
-        }
+            if ($reviewerId === $buyerUserId) {
+                $revieweeId = $farmerUserId;
+            } else if ($reviewerId === $farmerUserId) {
+                $revieweeId = $buyerUserId;
+            } else {
+                $this->ratingModel->rollBack();
+                return ["success" => false, "message" => "You are not authorized to rate this transaction."];
+            }
 
-        // Verify reservation status is not cancelled
-        if ($reservationStatus === 'cancelled') {
-            return ["success" => false, "message" => "You cannot rate a cancelled transaction."];
-        }
-
-        // Verify advance payment exists (partially_paid or paid)
-        if (!in_array($transactionStatus, ['partially_paid', 'paid'])) {
-            return ["success" => false, "message" => "Rating is locked until the advance payment is confirmed."];
-        }
+            if ($order['reservation_status'] !== 'completed' || $order['transaction_status'] !== 'paid') {
+                $this->ratingModel->rollBack();
+                return ["success" => false, "message" => "Ratings are available only after an order is completed and fully paid."];
+            }
 
         // Verify duplicate rating does not exist
-        if ($this->ratingModel->hasRatedReservation($reservationId, $reviewerId)) {
-            return ["success" => false, "message" => "You have already submitted a rating for this reservation."];
-        }
+            if ($this->ratingModel->hasRatedReservation($reservationId, $reviewerId)) {
+                $this->ratingModel->rollBack();
+                return ["success" => false, "message" => "You have already submitted a rating for this reservation."];
+            }
 
         // Insert review
-        $reviewId = $this->ratingModel->insertReview(
+            $reviewId = $this->ratingModel->insertReview(
             $reservationId,
             $cropId,
             $reviewerId,
@@ -64,15 +61,15 @@ class RatingService {
             $comment
         );
 
-        if (!$reviewId) {
-            return ["success" => false, "message" => "Failed to submit rating."];
-        }
+            if (!$reviewId) {
+                throw new RuntimeException('Failed to submit rating.');
+            }
 
         // Fetch the newly created review details
-        $newReview = $this->ratingModel->getReviewDetails($reviewId);
+            $newReview = $this->ratingModel->getReviewDetails($reviewId);
 
         // Recalculate stats for the reviewee user
-        $allReviews = $this->ratingModel->getReviewsByReviewee($revieweeId);
+            $allReviews = $this->ratingModel->getReviewsByReviewee($revieweeId);
         $total = count($allReviews);
         $sum = 0;
         $breakdown = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
@@ -88,9 +85,10 @@ class RatingService {
         $average = ($total > 0) ? round($sum / $total, 1) : 0.0;
 
         // Store the average rating in user table
-        $this->ratingModel->updateUserAverageRating($revieweeId, $average);
+            $this->ratingModel->updateUserAverageRating($revieweeId, $average);
+            $this->ratingModel->commit();
 
-        return [
+            return [
             "success" => true,
             "message" => "Rating submitted successfully.",
             "new_review" => $newReview,
@@ -99,7 +97,17 @@ class RatingService {
                 "total" => $total,
                 "breakdown" => $breakdown
             ]
-        ];
+            ];
+        } catch (PDOException $error) {
+            $this->ratingModel->rollBack();
+            if ($error->getCode() === '23000') {
+                return ["success" => false, "message" => "You have already submitted a rating for this reservation."];
+            }
+            return ["success" => false, "message" => "Unable to submit rating."];
+        } catch (Throwable $error) {
+            $this->ratingModel->rollBack();
+            return ["success" => false, "message" => "Unable to submit rating."];
+        }
     }
 
     /**

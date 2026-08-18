@@ -664,3 +664,23 @@ textarea {
 @media (max-width: 480px) {
   .farmer-action-meta { grid-template-columns: 1fr; }
 }
+/* Phase 7A: keep translated complaint controls inside narrow cards. */
+.farmer-response-form input[type="file"]{max-width:100%}@media(max-width:480px){.farmer-response-form button{width:100%}}
+
+/* Keep long Sinhala/Tamil complaint labels and actions inside the page. */
+.complaint-card,.complaint-card form,.complaint-item-card,.farmer-action-card{min-width:0;text-align:left}
+.complaint-card .input-field,.complaint-card textarea,.complaint-card select,.upload-box,.upload-area{width:100%;max-width:100%;min-width:0;box-sizing:border-box;text-align:left}
+.complaint-card .tabs,.complaint-item-header,.farmer-action-card>header{min-width:0;flex-wrap:wrap}.complaint-card button,.tabs button,.farmer-response-form button{max-width:100%;white-space:normal;overflow-wrap:break-word}
+.complaint-meta-info,.farmer-action-meta,.dispute-section-box{min-width:0;text-align:left}.status-badge,.farmer-action-pill{max-width:100%;white-space:normal;text-align:left;overflow-wrap:break-word}
+
+/* Farmer complaint cards: calm source row and original compact metadata. */
+.farmer-complaint-source{display:inline-flex;width:fit-content;max-width:100%;align-items:center;padding:4px 9px;border-radius:999px;background:#edf3ef;color:#385647;font-size:11px;font-weight:700;line-height:1.3;text-align:left;white-space:normal;overflow-wrap:break-word}.farmer-complaint-source.cultivation{background:#e6f3e9;color:#1c6234}.farmer-complaint-source.crop{background:#eef2ef;color:#43574a}
+.farmer-action-card>header{margin-top:-2px}.farmer-action-card>header h2{min-width:0;margin:0;text-align:left;overflow-wrap:break-word}.farmer-action-meta{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px 24px;padding-bottom:2px}.farmer-action-meta span{flex:0 1 auto;min-width:150px;text-align:left;overflow-wrap:break-word}.farmer-action-meta strong{display:inline;margin:0 5px 0 0}
+.farmer-complaint-deadline{display:flex;align-items:flex-start;flex-wrap:wrap;gap:5px 18px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(111,83,29,.16);min-width:0}.farmer-complaint-deadline span{min-width:0;font-size:12px;text-align:left;overflow-wrap:break-word}.farmer-complaint-deadline b{display:block;color:inherit;font-size:10px;text-transform:uppercase;letter-spacing:.03em}
+@media(max-width:480px){.farmer-action-meta{display:grid;grid-template-columns:1fr;gap:7px}.farmer-action-meta span{min-width:0}.farmer-complaint-deadline{display:grid;grid-template-columns:1fr}}
+
+/* Buyer Farmer Response history only. Do not share these rules with farmer cards. */
+.buyer-complaint-card{min-width:0;text-align:left}.buyer-complaint-topline{display:flex;justify-content:space-between;align-items:flex-start;gap:10px 16px;flex-wrap:wrap;min-width:0;text-align:left}.buyer-complaint-source{display:inline-flex;width:fit-content;max-width:100%;align-items:center;padding:4px 9px;border-radius:999px;background:#eef2ef;color:#43574a;font-size:11px;font-weight:700;line-height:1.3;text-align:left;white-space:normal;overflow-wrap:break-word}.buyer-complaint-source.cultivation{background:#e6f3e9;color:#1c6234}.buyer-complaint-source.crop{background:#eef2ef;color:#43574a}
+.buyer-complaint-heading{display:flex;align-items:flex-start;gap:8px 12px;flex-wrap:wrap;min-width:0}.buyer-complaint-heading h3{min-width:0;margin:0;color:#1d3025;font-size:17px;text-align:left;overflow-wrap:break-word}.buyer-complaint-heading .highlight-badge{flex:0 1 auto;max-width:100%;white-space:normal;text-align:left;overflow-wrap:break-word}
+.buyer-complaint-meta{display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 22px;min-width:0;color:#65736b;font-size:12px;text-align:left}.buyer-complaint-meta span{min-width:0;overflow-wrap:break-word}.buyer-complaint-status{display:flex;justify-content:flex-start;min-width:0;text-align:left}.buyer-complaint-status .status-badge{max-width:100%;white-space:normal;text-align:left;overflow-wrap:break-word}
+@media(max-width:480px){.buyer-complaint-topline{align-items:flex-start}.buyer-complaint-status{margin-left:auto}.buyer-complaint-meta{display:grid;grid-template-columns:1fr;gap:6px}.buyer-complaint-heading{display:grid;grid-template-columns:1fr}}

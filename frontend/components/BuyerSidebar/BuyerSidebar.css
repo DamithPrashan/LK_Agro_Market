@@ -169,3 +169,4 @@
     padding: 15px 0;
   }
 }
+.sidebar-menu-item:focus-visible,.sidebar-profile-footer:focus-visible{outline:3px solid rgba(63,145,84,.45);outline-offset:2px}

@@ -12,3 +12,4 @@
 @media (max-width:560px) {
   .rp-top-grid { grid-template-columns:1fr; }
 }
+.rp-page select,.rp-page textarea{max-width:100%;min-width:0}

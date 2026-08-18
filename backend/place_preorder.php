@@ -37,7 +37,8 @@ try {
 
     $pdo->beginTransaction();
 
-    // 2. Fetch crop details inside the transaction and lock the row to avoid race conditions
+    // 2. Fetch the listing. Pending requests do not consume stock; stock is
+    // locked and deducted only if the farmer later accepts the request.
     $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ? FOR UPDATE");
     $cropQuery->execute([$crop_id]);
     $crop = $cropQuery->fetch();
@@ -77,7 +78,6 @@ try {
 
     $unit_price = floatval($crop['price_per_unit']);
     $total_amount = $quantity * $unit_price;
-    $new_quantity = floatval($crop['quantity']) - $quantity;
 
     // 3. Insert into reserve_crop
     $reserveSql = "INSERT INTO reserve_crop (buyer_id, crop_id, quantity_requested, unit_price, total_amount, status, reserved_date) VALUES (?, ?, ?, ?, ?, 'pending', NOW())";
@@ -89,11 +89,6 @@ try {
     $reservationSql = "INSERT INTO reservation (reserve_crop_id, collection_date, reservation_status, transaction_status) VALUES (?, ?, 'pending', 'unpaid')";
     $reservationStmt = $pdo->prepare($reservationSql);
     $reservationStmt->execute([$reserve_crop_id, $collection_date]);
-
-    // 5. Update crop available quantity
-    $updateCropSql = "UPDATE crop SET quantity = ? WHERE crop_id = ?";
-    $updateCropStmt = $pdo->prepare($updateCropSql);
-    $updateCropStmt->execute([$new_quantity, $crop_id]);
 
     $pdo->commit();
 
@@ -131,7 +126,7 @@ try {
     echo json_encode([
         "success" => true, 
         "message" => "Pre-order placed successfully!",
-        "updated_quantity" => $new_quantity
+        "updated_quantity" => floatval($crop['quantity'])
     ]);
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {

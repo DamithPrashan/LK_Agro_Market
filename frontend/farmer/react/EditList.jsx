@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../csss/EditList.css";
@@ -29,6 +29,7 @@ function EditList() {
 
   useEffect(() => {
     if (step === 2 && formData.cropName) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingSuggestion(true);
       const userDistrict = user?.district || "";
       fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
@@ -90,7 +91,7 @@ function EditList() {
 
       if (result.success) {
         alert(t("farmer.listingUpdatedSuccess", "Listing Updated Successfully!"));
-        navigate("/");
+        navigate("/farmer/listings");
       } else {
         alert(result.message);
       }

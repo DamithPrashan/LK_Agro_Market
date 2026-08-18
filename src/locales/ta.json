@@ -27,6 +27,8 @@
     "myOrders": "எனது ஆர்டர்கள்",
     "addListing": "பயிரைச் சேர்க்கவும்",
     "myListings": "எனது பட்டியல்கள்",
+    "addCultivationAd": "சாகுபடி விளம்பரம் சேர்க்கவும்",
+    "cultivationOpportunities": "சாகுபடி வாய்ப்புகள்",
     "profile": "சுயவிவரம்",
     "browseCrops": "பயிர்களைத் தேடுக",
     "mapSearch": "வரைபடத் தேடல்"
@@ -105,6 +107,12 @@
     "reasonOption2": "தாமதமான விநியோகம்",
     "reasonOption3": "தவறான அளவு",
     "reasonOption4": "சேதமடைந்த தயாரிப்பு",
+    "harvestDelay": "அறுவடை தாமதம்",
+    "availableCrop": "கிடைக்கும் பயிர்",
+    "cultivationOrder": "சாகுபடி ஆர்டர்",
+    "agreedQuantity": "ஒப்புக்கொண்ட அளவு",
+    "agreedUnitPrice": "ஒப்புக்கொண்ட அலகு விலை",
+    "agreedTotal": "ஒப்புக்கொண்ட மொத்தம்",
     "descriptionPlaceholder": "பிரச்சனையை விரிவாக விவரிக்கவும், தரம் சார்ந்த சிக்கல்கள், அளவுகளில் உள்ள வேறுபாடுகள், விநியோகச் சிக்கல்கள் அல்லது உங்கள் ஆர்டருடன் தொடர்புடைய பிற கவலைகள் ஆகியவற்றை உள்ளடக்கவும்.",
     "evidenceLabel": "புகைப்பட சான்று (விருப்பத்திற்குரியது)",
     "evidenceClick": "புகைப்பட ஆதாரத்தைப் பதிவேற்ற இங்கே கிளிக் செய்யவும்",
@@ -142,7 +150,20 @@
     "statusResolved": "தீர்க்கப்பட்டது",
     "statusRejected": "நிராகரிக்கப்பட்டது",
     "loadingComplaints": "புகார்கள் ஏற்றப்படுகின்றன...",
-    "failedLoadComplaints": "புகார்களை ஏற்றுவதில் தோல்வி."
+    "failedLoadComplaints": "புகார்களை ஏற்றுவதில் தோல்வி.",
+    "pendingAdminReview": "நிர்வாகி மதிப்பாய்வுக்காக காத்திருக்கிறது",
+    "pendingAdminReviewDescription": "உங்கள் புகார் நிர்வாகி மதிப்பாய்வுக்காக காத்திருக்கிறது.",
+    "farmerActionRequested": "விவசாயியின் நடவடிக்கை தேவை",
+    "farmerResponseDue": "விவசாயி பதிலளிக்க வேண்டிய நேரம்: {{date}}",
+    "farmerFallback": "விவசாயி"
+  },
+  "farmerComplaints": {
+    "title": "புகார் நடவடிக்கைகள்", "subtitle": "உங்கள் பதில் தேவைப்படும் புகார்களை மதிப்பாய்வு செய்யவும்", "loading": "நடவடிக்கை தேவைப்படும் புகார்கள் ஏற்றப்படுகின்றன...", "empty": "தற்போது உங்கள் நடவடிக்கை தேவைப்படும் புகார்கள் இல்லை.",
+    "loadFailed": "புகார்களை ஏற்ற முடியவில்லை.", "networkError": "பிணையப் பிழை. மீண்டும் முயற்சிக்கவும்.", "evidenceSize": "ஆதாரக் கோப்பு 5 MB அல்லது அதற்குக் குறைவாக இருக்க வேண்டும்.", "responseLength": "பதில் குறைந்தது 10 எழுத்துகளைக் கொண்டிருக்க வேண்டும்.", "submitFailed": "சமர்ப்பித்தல் தோல்வியடைந்தது.",
+    "complaintNumber": "புகார் #{{id}}", "actionRequired": "நடவடிக்கை தேவை", "responseOverdue": "பதில் காலக்கெடு கடந்தது", "respondWithin48": "48 மணிநேரத்திற்குள் பதிலளிக்கவும்", "hoursRemaining_one": "{{count}} மணி நேரம் மீதமுள்ளது", "hoursRemaining_other": "{{count}} மணி நேரம் மீதமுள்ளது",
+    "crop": "பயிர்", "source": "மூலம்", "order": "ஆர்டர்", "submitted": "சமர்ப்பிக்கப்பட்டது", "requested": "கோரப்பட்டது", "deadline": "காலக்கெடு", "timeRemaining": "மீதமுள்ள நேரம்", "notAvailable": "கிடைக்கவில்லை",
+    "buyerComplaint": "வாங்குபவரின் புகார்", "viewBuyerEvidence": "வாங்குபவரின் ஆதாரத்தைப் பார்க்கவும்", "adminInstruction": "நிர்வாகி அறிவுறுத்தல்", "defaultInstruction": "இந்தப் புகாரை மதிப்பாய்வு செய்து 48 மணிநேரத்திற்குள் பதிலளிக்கவும்.", "overdueGuidance": "நீங்கள் இன்னும் பதிலளிக்கலாம். அடுத்த கணக்கு நடவடிக்கையை நிர்வாகி கைமுறையாகக் கையாளுவார்.",
+    "yourResponse": "உங்கள் பதில்", "responsePlaceholder": "உங்கள் பதிலைத் தெளிவாக விளக்கவும்...", "supportingEvidence": "துணை ஆதாரம் (விருப்பம், JPG/PNG/PDF, அதிகபட்சம் 5 MB)", "submitting": "சமர்ப்பிக்கப்படுகிறது...", "submitResponse": "பதிலைச் சமர்ப்பிக்கவும்"
   },
   "orders": {
     "historyTitle": "ஆர்டர் வரலாறு",
@@ -315,7 +336,7 @@
     "farmerResponded": "ஆர்டர் #{{reservation_id}} ({{cropName}}) தொடர்பான உங்கள் தகராறுக்கு விவசாயி பதிலளித்துள்ளார்.",
     "complaintResolved": "புகார் #{{complaintId}} நிர்வாகியால் தீர்க்கப்பட்டதாகக் குறிக்கப்பட்டுள்ளது.",
     "verifiedBadge": "விவசாயி சரிபார்ப்பு வெற்றிகரமாக முடிந்தது. உங்களுக்கு உறுதிப்படுத்தப்பட்ட விவசாயி சலுகை வழங்கப்பட்டுள்ளது.",
-    "preorderCancelled": "ஆர்டர் #{{orderId}} க்கான முன்பதிவு ரத்து செய்யப்பட்டுள்ளது.", "farmerResponseRequested": "ஆர்டர் #{{orderId}}க்கு 48 மணி நேரத்திற்குள் பதில் தேவை.", "complaintDismissed": "ஆர்டர் #{{orderId}}க்கான உங்கள் புகார் மதிப்பாய்வுக்குப் பிறகு நிராகரிக்கப்பட்டது.", "farmer_response_reminder": "புகார் #{{complaintId}}க்கு பதிலளிக்க 24 மணி நேரத்திற்கும் குறைவாக உள்ளது.", "farmer_response_overdue": "புகார் #{{complaintId}}க்கான பதில் காலக்கெடு முடிந்துவிட்டது.", "warningIssued": "நிர்வாகி உங்கள் கணக்கிற்கு எச்சரிக்கை வழங்கியுள்ளார்.",
+    "preorderCancelled": "ஆர்டர் #{{orderId}} க்கான முன்பதிவு ரத்து செய்யப்பட்டுள்ளது.", "farmerResponseRequested": "ஆர்டர் #{{orderId}}க்கு 48 மணி நேரத்திற்குள் பதில் தேவை.", "complaintDismissed": "ஆர்டர் #{{orderId}}க்கான உங்கள் புகார் மதிப்பாய்வுக்குப் பிறகு நிராகரிக்கப்பட்டது.", "farmer_response_reminder": "புகார் #{{complaintId}}க்கு பதிலளிக்க 24 மணி நேரத்திற்கும் குறைவாக உள்ளது.", "farmer_response_overdue": "புகார் #{{complaintId}}க்கான பதில் காலக்கெடு முடிந்துவிட்டது.", "warningIssued": "நிர்வாகி உங்கள் கணக்கிற்கு எச்சரிக்கை வழங்கியுள்ளார்.", "cultivationRequestSubmitted": "{{cropName}} பயிருக்கு {{quantity}} {{unit}} புதிய கோரிக்கை வந்துள்ளது.", "cultivationRequestAccepted": "{{cropName}} பயிருக்கான உங்கள் கோரிக்கை ஏற்கப்பட்டது.", "cultivationRequestRejected": "{{cropName}} பயிருக்கான உங்கள் கோரிக்கை நிராகரிக்கப்பட்டது.", "cultivationRequestCancelled": "{{cropName}} பயிருக்கான நிலுவைக் கோரிக்கை ரத்துசெய்யப்பட்டது.", "cultivationOrderReady": "{{cropName}} பயிருக்கான உங்கள் சாகுபடி ஆர்டர் தயாராக உள்ளது.", "cultivationFinalPaymentReceived": "{{cropName}} சாகுபடி ஆர்டருக்கான இறுதி கட்டணம் பெறப்பட்டது.", "cultivationOrderCompleted": "{{cropName}} பயிருக்கான உங்கள் சாகுபடி ஆர்டர் நிறைவடைந்தது.",
     "title": {
       "orderSubmitted": "புதிய ஆர்டர் பெறப்பட்டது",
       "orderAccepted": "முன்பதிவு ஏற்றுக்கொள்ளப்பட்டது",
@@ -326,7 +347,7 @@
       "farmerResponded": "விவசாயி பதிலளித்துள்ளார்",
       "complaintResolved": "தகராறு தீர்க்கப்பட்டது",
       "verifiedBadge": "சரிபார்ப்பு முடிந்தது",
-      "preorderCancelled": "முன்பதிவு ரத்து செய்யப்பட்டது", "farmerResponseRequested": "புகார் பதில் தேவை", "complaintDismissed": "புகார் நிராகரிக்கப்பட்டது", "farmer_response_reminder": "புகார் பதில் நினைவூட்டல்", "farmer_response_overdue": "புகார் பதில் காலக்கெடு கடந்தது", "warningIssued": "நிர்வாக எச்சரிக்கை"
+      "preorderCancelled": "முன்பதிவு ரத்து செய்யப்பட்டது", "farmerResponseRequested": "புகார் பதில் தேவை", "complaintDismissed": "புகார் நிராகரிக்கப்பட்டது", "farmer_response_reminder": "புகார் பதில் நினைவூட்டல்", "farmer_response_overdue": "புகார் பதில் காலக்கெடு கடந்தது", "warningIssued": "நிர்வாக எச்சரிக்கை", "cultivationRequestSubmitted": "புதிய சாகுபடி கோரிக்கை", "cultivationRequestAccepted": "சாகுபடி கோரிக்கை ஏற்கப்பட்டது", "cultivationRequestRejected": "சாகுபடி கோரிக்கை நிராகரிக்கப்பட்டது", "cultivationRequestCancelled": "சாகுபடி கோரிக்கை ரத்துசெய்யப்பட்டது", "cultivationOrderReady": "சாகுபடி ஆர்டர் தயார்", "cultivationFinalPaymentReceived": "சாகுபடி இறுதி கட்டணம் பெறப்பட்டது", "cultivationOrderCompleted": "சாகுபடி ஆர்டர் நிறைவடைந்தது"
     }
   },
   "confirmations": {
@@ -334,6 +355,10 @@
     "cancelPendingOrder": "இந்த முன்பதிவு கோரிக்கையை ரத்து செய்ய விரும்புகிறீர்களா? இதை மாற்றியமைக்க முடியாது.",
     "cancelAcceptedOrder": "இந்த ஆர்டரை ரத்து செய்வதன் மூலம் உங்களது 1/3 முன்பணம் இழக்கப்படும். தொடர விரும்புகிறீர்களா?"
   },
+  "buyer": { "cultivation": { "marketplaceTabs": "சந்தைப் பகுதிகள்", "availableCrops": "கிடைக்கும் பயிர்கள்", "opportunities": "சாகுபடி வாய்ப்புகள்", "futureOpportunity": "எதிர்கால சாகுபடி வாய்ப்பு", "viewPreorder": "பார்த்து முன்பதிவு செய்க", "capacity": "சாகுபடி கொள்ளளவு", "committed": "உறுதியளிக்கப்பட்டது", "remaining": "மீதம்", "estimatedPrice": "மதிப்பிடப்பட்ட விலை", "expectedHarvest": "எதிர்பார்க்கப்படும் அறுவடை", "loading": "ஏற்றப்படுகிறது...", "empty": "தற்போது சாகுபடி வாய்ப்புகள் இல்லை.", "back": "வாய்ப்புகளுக்குத் திரும்பு", "area": "சாகுபடி பரப்பு", "noDescription": "விளக்கம் வழங்கப்படவில்லை.", "paymentNote": "இது எதிர்கால சாகுபடி வாய்ப்பு. விவசாயி உங்கள் கோரிக்கையை ஏற்கும் வரை பணம் செலுத்த தேவையில்லை.", "requestedQuantity": "கோரிய அளவு", "collectionDate": "விருப்பமான சேகரிப்பு தேதி", "submitRequest": "கோரிக்கையைச் சமர்ப்பிக்கவும்", "buyerOnly": "வாங்குபவர்கள் மட்டுமே சாகுபடி கோரிக்கைகளை சமர்ப்பிக்கலாம்.", "invalidQuantity": "மீதமுள்ள கொள்ளளவிற்குள் அளவை உள்ளிடவும்.", "invalidCollectionDate": "சேகரிப்பு தேதி எதிர்பார்க்கப்படும் அறுவடைக்கு முன் இருக்கக்கூடாது.", "requestsTitle": "சாகுபடி கோரிக்கைகள்", "requestsSubtitle": "எதிர்கால சாகுபடிக்காக விவசாயிகளுக்கு அனுப்பிய கோரிக்கைகளைக் கண்காணிக்கவும்.", "noRequests": "சாகுபடி கோரிக்கைகள் இன்னும் இல்லை.", "requestedDate": "கோரிய தேதி", "agreedTotal": "ஒப்புக்கொண்ட மொத்தம்", "awaitingActivation": "ஏற்கப்பட்டது – ஆர்டர்/கட்டண செயல்படுத்தலுக்காக காத்திருக்கிறது", "cancelRequest": "கோரிக்கையை ரத்துசெய்", "cancelConfirm": "இந்த நிலுவைக் கோரிக்கையை ரத்துசெய்யவா?", "statuses": { "pendingReview": "விவசாயி பரிசீலனை நிலுவையில்", "accepted": "ஏற்கப்பட்டது", "rejected": "நிராகரிக்கப்பட்டது", "cancelled": "ரத்துசெய்யப்பட்டது" } } },
+  "cultivationAudit": { "searchPlaceholder": "பயிர், விவசாயி அல்லது மாவட்டத்தைத் தேடுக", "districtFilter": "மாவட்டத்தின் அடிப்படையில் வடிகட்டவும்", "sortLabel": "சாகுபடி வாய்ப்புகளை வரிசைப்படுத்தவும்", "allDistricts": "அனைத்து மாவட்டங்கள்", "sortHarvest": "விரைவான அறுவடை", "sortPrice": "குறைந்த மதிப்பிடப்பட்ட விலை", "previous": "முந்தைய", "next": "அடுத்தது", "page": "பக்கம் {{page}} / {{pages}}", "unavailable": "இந்த சாகுபடி வாய்ப்பு இனி கிடைக்காது." },
+  "buyer.cultivation.previous": "முந்தைய", "buyer.cultivation.next": "அடுத்தது", "buyer.cultivation.page": "பக்கம் {{page}} / {{pages}}",
+  "farmer.cultivationRequests.previous": "முந்தைய", "farmer.cultivationRequests.next": "அடுத்தது", "farmer.cultivationRequests.page": "பக்கம் {{page}} / {{pages}}",
   "farmer": {
     "addCropHeading": "புதிய பயிரைச் சேர்க்கவும்",
     "editCropHeading": "பட்டியலைத் திருத்தவும்",
@@ -408,7 +433,15 @@
     "adminResolution": "நிர்வாகியின் தீர்வு",
     "explainResponsePlaceholder": "உங்கள் பதிலை விளக்கவும்...",
     "writeResponseAlert": "சமர்ப்பிக்கும் முன் தயவுசெய்து ஒரு பதிலை எழுதவும்.",
-    "responseSubmittedAlert": "பதில் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது."
+    "responseSubmittedAlert": "பதில் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",
+    "cultivationRequests": { "title": "வாங்குபவர் கோரிக்கைகள்", "loading": "கோரிக்கைகள் ஏற்றப்படுகின்றன...", "empty": "சாகுபடி கோரிக்கைகள் இல்லை.", "requestedQuantity": "கோரிய அளவு", "collectionDate": "சேகரிப்பு தேதி", "requestDate": "கோரிக்கை தேதி", "remaining": "தற்போதைய மீதமுள்ள கொள்ளளவு", "accept": "ஏற்கவும்", "reject": "நிராகரிக்கவும்", "acceptConfirm": "இந்தக் கோரிக்கையின் முழு அளவையும் உறுதிசெய்து ஏற்கவா?", "rejectConfirm": "இந்த சாகுபடி கோரிக்கையை நிராகரிக்கவா?", "statuses": { "pending": "நிலுவையில்", "accepted": "ஏற்கப்பட்டது", "rejected": "நிராகரிக்கப்பட்டது", "cancelled": "ரத்துசெய்யப்பட்டது" } },
+    "cultivationAds": {
+      "addTitle": "சாகுபடி விளம்பரம் சேர்க்கவும்", "editTitle": "சாகுபடி விளம்பரத்தைத் திருத்தவும்", "opportunitiesTitle": "சாகுபடி வாய்ப்புகள்", "futureLabel": "எதிர்கால சாகுபடி வாய்ப்பு", "explanation": "எதிர்கால வாங்குபவர் தேவைக்கேற்ப நீங்கள் சாகுபடி செய்ய விரும்பும் மற்றும் செய்யக்கூடிய பயிரை விளம்பரப்படுத்துங்கள்.", "manageSubtitle": "தற்போதைய பயிர் இருப்பிலிருந்து தனியாக எதிர்கால சாகுபடி திறனை நிர்வகிக்கவும்.",
+      "cropName": "பயிரின் பெயர்", "category": "வகை", "district": "மாவட்டம்", "capacity": "சாகுபடி திறன்", "committed": "உறுதியளிக்கப்பட்டது", "available": "கிடைக்கிறது", "remainingCapacity": "மீதமுள்ள திறன்", "unit": "அலகு", "estimatedPrice": "மதிப்பிடப்பட்ட அலகு விலை", "expectedHarvest": "எதிர்பார்க்கப்படும் அறுவடை தேதி", "cultivationArea": "சாகுபடி பரப்பு (விருப்பம்)", "areaUnit": "பரப்பு அலகு (விருப்பம்)", "description": "விளக்கம்", "photos": "புகைப்படங்கள்", "photoHint": "5 JPG, PNG அல்லது WebP படங்கள் வரை; ஒவ்வொன்றும் அதிகபட்சம் 2 MB.", "selectedCount": "{{count}} தேர்ந்தெடுக்கப்பட்டன", "existingPhotos": "ஏற்கனவே உள்ள புகைப்படங்கள்", "newPhotos": "புதிதாகத் தேர்ந்தெடுத்த புகைப்படங்கள்", "select": "தேர்ந்தெடுக்கவும்", "capacityCommitment": "திறன் உறுதிப்பாடு", "created": "உருவாக்கப்பட்டது", "edit": "திருத்து", "closeOpportunity": "வாய்ப்பை மூடவும்", "closeConfirm": "இந்த சாகுபடி வாய்ப்பை மூடவா? பதிவு வரலாற்றில் இருக்கும்.", "save": "சேமிக்கவும்", "cancel": "ரத்து செய்", "saving": "சேமிக்கப்படுகிறது...", "loading": "ஏற்றப்படுகிறது...", "empty": "சாகுபடி வாய்ப்புகள் இன்னும் இல்லை", "updated": "சாகுபடி வாய்ப்பு வெற்றிகரமாக புதுப்பிக்கப்பட்டது.", "saveFailed": "சாகுபடி வாய்ப்பைச் சேமிக்க முடியவில்லை.",
+      "categories": { "vegetable": "காய்கறி", "fruit": "பழம்", "grain": "தானியம்", "other": "மற்றவை" }, "areaUnits": { "acres": "ஏக்கர்", "hectares": "ஹெக்டேர்", "perches": "பேர்ச்" },
+      "createdSuccess": "சாகுபடி வாய்ப்பு வெற்றிகரமாக உருவாக்கப்பட்டது.", "statuses": { "draft": "வரைவு", "open": "திறந்தது", "fullyCommitted": "முழுமையாக உறுதியானது", "cultivating": "சாகுபடியில்", "harvested": "அறுவடை செய்யப்பட்டது", "cancelled": "ரத்து செய்யப்பட்டது", "closed": "மூடப்பட்டது" },
+      "validation": { "required": "தேவையான அனைத்து புலங்களையும் நிரப்பவும்.", "capacity": "திறன் பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.", "price": "மதிப்பிடப்பட்ட விலை பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.", "date": "எதிர்பார்க்கப்படும் அறுவடை தேதி எதிர்காலத்தில் இருக்க வேண்டும்.", "area": "சாகுபடி பரப்பு பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.", "areaUnit": "சாகுபடி பரப்பை உள்ளிட்டால் பரப்பு அலகைத் தேர்ந்தெடுக்கவும்.", "description": "விளக்கம் 2000 எழுத்துகளுக்கு மேல் இருக்கக்கூடாது.", "photos": "அதிகபட்சம் 5 புகைப்படங்கள் மட்டுமே அனுமதிக்கப்படும்.", "photoType": "JPG, PNG அல்லது WebP படங்கள் மட்டும்; ஒவ்வொன்றும் 2 MB-க்கு மிகாமல் இருக்க வேண்டும்." }
+    }
   },
   "forecast": {
     "title": "தேவை முன்னறிவிப்பு மற்றும் பகுப்பாய்வு",
@@ -467,7 +500,10 @@
     "successAlert": "மதிப்பீடு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
     "review": "மதிப்புரை",
     "reviews": "மதிப்புரைகள்",
-    "selectOrder": "ஆர்டரைத் தேர்ந்தெடுக்கவும்"
+    "selectOrder": "ஆர்டரைத் தேர்ந்தெடுக்கவும்",
+    "completed": "நிறைவடைந்தது",
+    "rateFarmer": "விவசாயியை மதிப்பிடுக",
+    "rateBuyer": "வாங்குபவரை மதிப்பிடுக"
   },
   "auth": {
     "minPasswordHint": "குறைந்தது 8 எழுத்துக்கள்"
@@ -654,6 +690,25 @@
   "label_photo": "புகைப்படம்",
   "msg_sent": "அனுப்பப்பட்டது",
   "msg_read": "படிக்கப்பட்டது",
+  "orderPresentation": {
+    "availableCrop": "கிடைக்கும் பயிர்",
+    "unitPrice": "அலகு விலை",
+    "cultivationOrder": "சாகுபடி ஆர்டர்",
+    "awaitingAdvance": "முன்பணம் செலுத்த காத்திருக்கிறது",
+    "inPreparation": "தயாரிப்பில் உள்ளது",
+    "finalPaymentRequired": "தயார் – இறுதிப் பணம் தேவை",
+    "awaitingCompletion": "முழுமையாக செலுத்தப்பட்டது – நிறைவுக்காக காத்திருக்கிறது",
+    "waitingBuyerAdvance": "வாங்குபவரின் முன்பணத்திற்காக காத்திருக்கிறது",
+    "advancePaid": "முன்பணம் செலுத்தப்பட்டது / தயாரிப்பில் உள்ளது",
+    "waitingFinalPayment": "தயார் / இறுதிப் பணத்திற்காக காத்திருக்கிறது",
+    "readyToComplete": "முழுமையாக செலுத்தப்பட்டது / முடிக்கத் தயார்",
+    "viewOrder": "ஆர்டரைப் பார்க்கவும்",
+    "orderCreated": "ஆர்டர் உருவாக்கப்பட்டது",
+    "payAdvance": "முன்பணம் செலுத்தவும்",
+    "payRemaining": "மீதித் தொகையை செலுத்தவும்",
+    "complete": "முடிக்கவும்",
+    "cancelled": "ரத்து செய்யப்பட்டது"
+  },
   "footer": {
     "tagline": "நம்பகமான டிஜிட்டல் தளம் மூலம் விவசாயிகளையும் வாங்குபவர்களையும் இணைக்கும் இலங்கையின் நேரடி சந்தை.",
     "quickLinks": "விரைவான இணைப்புகள்",
