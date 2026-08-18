@@ -98,27 +98,30 @@ try {
         $expected_amount = $expected_prepayment;
     } else {
         if ($resStatus !== 'ready' || $txStatus !== 'partially_paid' ||
-            ($order['reservation_source'] === 'cultivation' &&
-                ($order['cultivation_request_status'] !== 'accepted' || (int)$order['completed_advance_count'] !== 1))) {
+            (int)$order['completed_advance_count'] !== 1 ||
+            ($order['reservation_source'] === 'cultivation' && $order['cultivation_request_status'] !== 'accepted')) {
             echo json_encode(["success" => false, "message" => "Final payment requires a ready order with its advance already paid."]);
             exit;
         }
         $expected_amount = $expected_balance;
-        if ($order['reservation_source'] === 'cultivation' && abs((float)$order['completed_advance_amount'] - $expected_prepayment) > 0.01) {
+        if (abs((float)$order['completed_advance_amount'] - $expected_prepayment) > 0.01) {
             echo json_encode(["success" => false, "message" => "The completed advance payment is inconsistent with this agreement."]);
             exit;
         }
     }
 
-    if (abs($amount - $expected_amount) > 1.0) {
+    if (abs($amount - $expected_amount) > 0.01) {
         echo json_encode(["success" => false, "message" => "Payment amount mismatch. Expected: Rs " . $expected_amount . ", Submitted: Rs " . $amount]);
         exit;
     }
 } catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Validation error: " . $e->getMessage()]);
+    error_log('Payment validation failed: '.$e->getMessage());
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Unable to validate this payment. Please try again."]);
     exit;
 }
 
+$created_proof_file = null;
 try {
     $proof_file_path = 'online';
     if ($method === 'bank') {
@@ -167,17 +170,18 @@ try {
     if (($payment_type === 'advance' && ($lockedResStatus !== 'confirmed' || $lockedTxStatus !== 'unpaid' ||
             ($lockedIsCultivation && $lockedOrder['cultivation_request_status'] !== 'accepted'))) ||
         ($payment_type === 'final' && ($lockedResStatus !== 'ready' || $lockedTxStatus !== 'partially_paid' ||
-            ($lockedIsCultivation && ($lockedOrder['cultivation_request_status'] !== 'accepted' || (int)$lockedOrder['completed_advance_count'] !== 1))))) {
+            (int)$lockedOrder['completed_advance_count'] !== 1 ||
+            ($lockedIsCultivation && $lockedOrder['cultivation_request_status'] !== 'accepted')))) {
         throw new RuntimeException('Payment state changed. Please refresh and try again.');
     }
 
     $lockedTotal = floatval($lockedOrder['total_amount']);
     $lockedExpectedAdvance = round($lockedTotal / 3);
     $lockedExpectedAmount = $payment_type === 'advance' ? $lockedExpectedAdvance : $lockedTotal - $lockedExpectedAdvance;
-    if ($lockedIsCultivation && $payment_type === 'final' && abs((float)$lockedOrder['completed_advance_amount'] - $lockedExpectedAdvance) > 0.01) {
+    if ($payment_type === 'final' && abs((float)$lockedOrder['completed_advance_amount'] - $lockedExpectedAdvance) > 0.01) {
         throw new RuntimeException('The completed advance payment is inconsistent with this agreement.');
     }
-    if (abs($amount - $lockedExpectedAmount) > 1.0) {
+    if (abs($amount - $lockedExpectedAmount) > 0.01) {
         throw new RuntimeException('Payment amount does not match the order total.');
     }
 
@@ -192,7 +196,7 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$reservation_id, $payment_type, $amount, $method, $proof_file_path, 'completed']);
 
-    if ($lockedIsCultivation && $payment_type === 'final') {
+    if ($payment_type === 'final') {
         $ledgerStmt = $pdo->prepare("SELECT COUNT(*) AS payment_count, COALESCE(SUM(amount), 0) AS paid_total
             FROM payment WHERE reservation_id = ? AND payment_type IN ('advance', 'final') AND payment_status = 'completed'");
         $ledgerStmt->execute([$reservation_id]);
@@ -200,6 +204,7 @@ try {
         if ((int)$ledger['payment_count'] !== 2 || abs((float)$ledger['paid_total'] - $lockedTotal) > 0.01) {
             throw new RuntimeException('Payment ledger does not match the cultivation agreement total.');
         }
+        $created_proof_file = $upload_dir . $filename;
     }
 
     // Update reservation transaction status
@@ -238,21 +243,29 @@ try {
             $farmer_user_id = $paymentInfo['farmer_user_id'];
             $crop_name = $paymentInfo['crop_name'];
             
-            $notif_data = json_encode([
+            $buyer_notif_data = json_encode([
                 "amount" => $amount,
-                "orderId" => $reservation_id
+                "orderId" => $reservation_id,
+                "source" => $paymentInfo['reservation_source'],
+                "link" => "/buyer/BuyerOrderHistory"
+            ]);
+            $farmer_notif_data = json_encode([
+                "amount" => $amount,
+                "orderId" => $reservation_id,
+                "source" => $paymentInfo['reservation_source'],
+                "link" => "/farmer/orders"
             ]);
 
             // Notify Buyer
             $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
-            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $notif_data);
+            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $buyer_notif_data);
             
             // Notify Farmer
             $isCultivationFinal = $paymentInfo['reservation_source'] === 'cultivation' && $payment_type === 'final';
             $farmer_msg = $isCultivationFinal
                 ? "Final payment received for cultivation order ORD{$reservation_id} ({$crop_name})."
                 : "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
-            create_notification($farmer_user_id, $isCultivationFinal ? "Cultivation Final Payment Received" : "Payment Received", $farmer_msg, $isCultivationFinal ? 'cultivationFinalPaymentReceived' : 'paymentReceived', $notif_data);
+            create_notification($farmer_user_id, $isCultivationFinal ? "Cultivation Final Payment Received" : "Payment Received", $farmer_msg, $isCultivationFinal ? 'cultivationFinalPaymentReceived' : 'paymentReceived', $farmer_notif_data);
         }
     } catch (Exception $e) {
         error_log("Notification error in submit_payment.php: " . $e->getMessage());
@@ -263,9 +276,23 @@ try {
         "message" => "Payment proof submitted successfully."
     ]);
 
-} catch (Exception $e) {
+} catch (PDOException $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if ($created_proof_file && is_file($created_proof_file)) unlink($created_proof_file);
+    error_log('Payment database write failed: '.$e->getMessage());
+    http_response_code($e->getCode() === '23000' ? 409 : 500);
+    echo json_encode(["success" => false, "message" => $e->getCode() === '23000' ? "This payment has already been recorded." : "Unable to submit payment. Please try again."]);
+} catch (RuntimeException $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    if ($created_proof_file && is_file($created_proof_file)) unlink($created_proof_file);
+    http_response_code(409);
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if ($created_proof_file && is_file($created_proof_file)) unlink($created_proof_file);
+    error_log('Payment submission failed: '.$e->getMessage());
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Unable to submit payment. Please try again."]);
 }

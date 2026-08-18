@@ -1,7 +1,8 @@
 <?php
 header('Content-Type: application/json'); require_once __DIR__.'/_common.php';
 if($_SERVER['REQUEST_METHOD']!=='POST')cultivation_json(405,['success'=>false,'message'=>'Method not allowed.']);
-$farmer=cultivation_require_farmer();$input=json_decode(file_get_contents('php://input'),true)?:[];$id=(int)($input['cultivation_request_id']??0);$note=trim((string)($input['farmer_note']??''));
+$farmer=cultivation_require_farmer();$input=cultivation_json_input();$id=(int)($input['cultivation_request_id']??0);$note=trim((string)($input['farmer_note']??''));
+if($id<=0)cultivation_json(422,['success'=>false,'message'=>'Select a valid cultivation request.']);
 if(mb_strlen($note)>2000)cultivation_json(422,['success'=>false,'message'=>'Farmer note must not exceed 2000 characters.']);
 try{$pdo->beginTransaction();$request=cultivation_farmer_request($id,(int)$farmer['farmer_id']);
  if(!$request){$pdo->rollBack();cultivation_json(404,['success'=>false,'message'=>'Cultivation request not found.']);}

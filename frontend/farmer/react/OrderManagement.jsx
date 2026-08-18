@@ -5,6 +5,7 @@ import RatingStars from "../../components/ratingStars";
 import ReviewModal from "../../components/ReviewModal";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
+import { readJsonResponse } from "../../utils/readJsonResponse";
 
 const statusKeyMap = {
     "Ready": "orders.status.ready",
@@ -48,13 +49,14 @@ function OrderManagement() {
     const [selectedBuyer, setSelectedBuyer] = useState(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [activeChatOrder, setActiveChatOrder] = useState(null);
+    const [updatingOrderId, setUpdatingOrderId] = useState(null);
 
     const fetchOrders = async () => {
         try {
             const res = await fetch("/backend/get_farmer_orders.php", {
                 credentials: "include"
             });
-            const data = await res.json();
+            const data = await readJsonResponse(res, t("errors.failedFetchOrders"));
             if (data.success) {
                 setOrders(data.orders);
             } else {
@@ -75,6 +77,8 @@ function OrderManagement() {
     }, []);
 
     const handleAction = async (orderId, action) => {
+        if (updatingOrderId !== null) return;
+        setUpdatingOrderId(orderId);
         try {
             const res = await fetch("/backend/update_order_status.php", {
                 method: "POST",
@@ -87,7 +91,7 @@ function OrderManagement() {
                 }),
                 credentials: "include"
             });
-            const data = await res.json();
+            const data = await readJsonResponse(res, t("errors.submissionFailed"));
             if (data.success) {
                 alert(data.message);
                 fetchOrders();
@@ -96,6 +100,8 @@ function OrderManagement() {
             }
         } catch {
             alert(t("errors.submissionFailed"));
+        } finally {
+            setUpdatingOrderId(null);
         }
     };
 
@@ -275,17 +281,17 @@ function OrderManagement() {
 
                             {order.status === "Pending" && (
                                 <>
-                                    <button className="accept-btn" onClick={() => handleAction(order.db_id, 'accept')}>
+                                    <button className="accept-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'accept')}>
                                         {t("buttons.accept")}
                                     </button>
-                                    <button className="decline-btn" onClick={() => handleAction(order.db_id, 'decline')}>
+                                    <button className="decline-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'decline')}>
                                         {t("buttons.decline")}
                                     </button>
                                 </>
                             )}
 
                             {order.status === "Accepted" && order.payment === "Paid (1/3)" && (
-                                <button className="ready-btn" onClick={() => handleAction(order.db_id, 'ready')}>
+                                <button className="ready-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'ready')}>
                                     {t("buttons.markReady")}
                                 </button>
                             )}
@@ -299,7 +305,7 @@ function OrderManagement() {
                             )}
 
                             {order.status === "Ready" && order.payment === "Paid (Full)" && (
-                                <button className="complete-btn" onClick={() => handleAction(order.db_id, 'complete')}>
+                                <button className="complete-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'complete')}>
                                     {t("orderPresentation.complete")}
                                 </button>
                             )}

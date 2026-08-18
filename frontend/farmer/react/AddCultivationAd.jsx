@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CultivationAdForm } from "./CultivationAdForm";
 import { emptyCultivationAd, validateCultivationAd } from "./cultivationAdUtils";
+import { readCultivationResponse } from "../../buyer/react/cultivationApi.js";
 import "../csss/CultivationAds.css";
 
 export default function AddCultivationAd() {
@@ -16,14 +17,14 @@ export default function AddCultivationAd() {
   const [submitting, setSubmitting] = useState(false);
   const submit = async (event) => {
     event.preventDefault();
+    if (submitting) return;
     const error = validateCultivationAd(form, photos);
     if (error) return alert(text(`validation.${error}`, "Please check the entered details."));
     const body = new FormData(); Object.entries(form).forEach(([key, value]) => body.append(key, value)); photos.forEach((photo) => body.append("photos[]", photo));
     setSubmitting(true);
     try {
       const response = await fetch("/backend/Apis/farmer/cultivationAds/createCultivationAd.php", { method: "POST", credentials: "include", body });
-      const result = await response.json();
-      if (!result.success) throw new Error(result.message);
+      await readCultivationResponse(response);
       alert(text("createdSuccess", "Cultivation opportunity created successfully."));
       navigate("/farmer/cultivation-opportunities");
     } catch (error) { alert(error.message || text("saveFailed", "Unable to save cultivation opportunity.")); }

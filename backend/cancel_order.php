@@ -123,7 +123,7 @@ try {
         ]);
         exit;
 
-    } else if ($status === 'confirmed' || $status === 'ready') {
+    } else if ($status === 'confirmed') {
         // Accepted orders: check if current date is more than 48 hours before collection date
         $collection_date = $order['collection_date']; // format YYYY-MM-DD
         
@@ -189,7 +189,7 @@ try {
 
     $pdo->rollBack();
     http_response_code(409);
-    echo json_encode(["success" => false, "message" => "This order cannot be cancelled in its current state."]);
+    echo json_encode(["success" => false, "message" => "Only pending or confirmed crop orders can be cancelled. Ready, completed, and cultivation orders require a separate resolution process."]);
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {

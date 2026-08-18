@@ -34,7 +34,7 @@ export function CultivationAdForm({ form, setForm, photos, setPhotos, existingPh
         <label className="cultivation-wide">{t("description")}<textarea name="description" rows="5" maxLength="2000" value={form.description} onChange={change} /><small>{form.description.length}/2000</small></label>
         <label className="cultivation-wide">{t("photos")}<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={selectPhotos} /><small>{t("photoHint")} {t("selectedCount", "{{count}} selected", { count: photos.length })}</small></label>
       </div>
-      {existingPhotos.length > 0 && <div className="cultivation-photo-group"><strong>{t("existingPhotos")}</strong><div className="cultivation-photo-strip">{existingPhotos.map((photo) => <img key={photo.id} src={`/${photo.photo_path}`} alt="" />)}</div></div>}
+      {existingPhotos.length > 0 && <div className="cultivation-photo-group"><strong>{t("existingPhotos")}</strong><div className="cultivation-photo-strip">{existingPhotos.map((photo) => <img key={photo.id} src={`/${photo.photo_path}`} alt={`${form.crop_name} — ${t("existingPhotos")}`} />)}</div></div>}
       {previews.length > 0 && <div className="cultivation-photo-group"><strong>{t("newPhotos")}</strong><div className="cultivation-photo-strip">{previews.map((preview) => <figure key={preview.url}><img src={preview.url} alt={preview.name} /><figcaption>{preview.name}</figcaption></figure>)}</div></div>}
       <div className="cultivation-form-actions"><button type="button" className="cultivation-secondary" onClick={onCancel}>{t("cancel")}</button><button type="submit" className="cultivation-primary" disabled={submitting}>{submitting ? t("saving") : t("save")}</button></div>
     </form>

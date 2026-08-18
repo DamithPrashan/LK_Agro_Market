@@ -39,7 +39,7 @@ try {
 
     // 2. Fetch the listing. Pending requests do not consume stock; stock is
     // locked and deducted only if the farmer later accepts the request.
-    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ?");
+    $cropQuery = $pdo->prepare("SELECT price_per_unit, quantity, crop_status, harvest_date FROM crop WHERE crop_id = ? FOR UPDATE");
     $cropQuery->execute([$crop_id]);
     $crop = $cropQuery->fetch();
     if (!$crop) {

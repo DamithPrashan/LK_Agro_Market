@@ -91,11 +91,15 @@ try {
             "buyer" => $order['buyer'],
             "crop" => $order['crop'],
             "quantity" => floatval($order['quantity']) . " " . $order['unit'],
+            "quantity_value" => floatval($order['quantity']),
+            "unit" => $order['unit'],
             "unit_price" => floatval($order['unit_price']),
             "total_amount" => floatval($order['total_amount']),
             "date" => $order['date'],
             "status" => $statusUI,
             "payment" => $paymentUI,
+            "reservation_status" => $order['status'],
+            "transaction_status" => $order['payment'],
             "lifecycle_status" => $order['status'] === 'cancelled' ? 'cancelled'
                 : ($order['status'] === 'completed' && $order['payment'] === 'paid' ? 'completed'
                 : ($order['status'] === 'confirmed' && $order['payment'] === 'unpaid' ? 'waiting_advance'

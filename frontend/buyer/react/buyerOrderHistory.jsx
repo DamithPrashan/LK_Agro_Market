@@ -76,7 +76,7 @@ export default function BuyerOrderHistory() {
       
       await executeCancellation(order.orderId);
       
-    } else if (status === "accepted" || status === "ready") {
+    } else if (status === "accepted") {
       // Calculate hours remaining before collection date
       const collectionDate = order.date; // format YYYY-MM-DD
       const now = new Date();
@@ -121,7 +121,7 @@ export default function BuyerOrderHistory() {
   };
 
   return (
-    <div className="container">
+    <div className="buyer-order-history">
       <h1>{t("orders.historyTitle")}</h1>
 
           {/* Cancellation Success/Error Modals */}
@@ -278,7 +278,7 @@ export default function BuyerOrderHistory() {
                           )}
                         </button>
 
-                        {order.reservationSource === "crop" && (order.orderStatus.toLowerCase() === "accepted" || order.orderStatus.toLowerCase() === "ready") &&
+                        {order.reservationSource === "crop" && order.orderStatus.toLowerCase() === "accepted" &&
                          order.paymentStatus.toLowerCase() !== "paid" && (
                           <button 
                             className="cancel-order-action-btn"

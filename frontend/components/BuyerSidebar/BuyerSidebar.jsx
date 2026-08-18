@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt, FaMapMarkedAlt, FaSearch } from "react-icons/fa";
+import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt, FaMapMarkedAlt, FaSearch, FaHandshake } from "react-icons/fa";
 import "./BuyerSidebar.css";
 
 export default function BuyerSidebar() {
@@ -46,7 +46,7 @@ export default function BuyerSidebar() {
     {
       label: t("buyer.cultivation.requestsTitle"),
       path: "/buyer/cultivation-requests",
-      icon: <FaClipboardList className="sidebar-icon" />,
+      icon: <FaHandshake className="sidebar-icon" />,
       active: currentPath === "/buyer/cultivation-requests"
     },
     {
@@ -83,6 +83,10 @@ export default function BuyerSidebar() {
               key={index}
               className={`sidebar-menu-item ${item.active ? "active" : ""}`}
               onClick={() => navigate(item.path)}
+              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(item.path); }}
+              role="link"
+              tabIndex="0"
+              aria-current={item.active ? "page" : undefined}
               title={item.label}
             >
               {item.icon}
@@ -95,13 +99,16 @@ export default function BuyerSidebar() {
       <div
         className="sidebar-profile-footer"
         onClick={() => navigate("/profile")}
+        onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate("/profile"); }}
+        role="link"
+        tabIndex="0"
         title={t("sidebar.profile")}
       >
         <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`} style={{ overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {user?.profile_image ? (
             <img 
               src={user.profile_image.startsWith("http") || user.profile_image.startsWith("/") ? user.profile_image : "/" + user.profile_image} 
-              alt="Profile" 
+              alt={t("sidebar.profile")}
               className="sidebar-avatar-img"
               style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", display: "block" }}
             />

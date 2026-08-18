@@ -17,6 +17,16 @@ function cultivation_json(int $status, array $payload): never
     exit;
 }
 
+function cultivation_json_input(): array
+{
+    $raw = file_get_contents('php://input');
+    if ($raw === false || trim($raw) === '') cultivation_json(400, ['success' => false, 'message' => 'Request body is required.']);
+    try { $input = json_decode($raw, true, 512, JSON_THROW_ON_ERROR); }
+    catch (JsonException $error) { cultivation_json(400, ['success' => false, 'message' => 'Request body must contain valid JSON.']); }
+    if (!is_array($input)) cultivation_json(400, ['success' => false, 'message' => 'Request body must be a JSON object.']);
+    return $input;
+}
+
 function cultivation_require_farmer(bool $verifiedOnly = false): array
 {
     require_login();

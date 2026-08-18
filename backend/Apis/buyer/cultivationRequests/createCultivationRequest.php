@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/_common.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') cultivation_request_json(405,['success'=>false,'message'=>'Method not allowed.']);
-$buyer=cultivation_require_buyer(); $input=json_decode(file_get_contents('php://input'),true) ?: [];
+$buyer=cultivation_require_buyer(); $input=cultivation_request_input();
 $adId=(int)($input['cultivation_ad_id']??0); $quantity=(float)($input['requested_quantity']??0);
 $collection=trim((string)($input['requested_collection_date']??''));
 if ($adId<=0 || $quantity<=0) cultivation_request_json(422,['success'=>false,'message'=>'Requested quantity must be greater than zero.']);

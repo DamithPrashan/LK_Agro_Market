@@ -45,7 +45,7 @@
 .sidebar-menu-item {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   padding: 14px 20px;
   font-size: 15px;
   font-weight: 500;
@@ -53,6 +53,9 @@
   transition: all 0.2s ease;
   color: #c2dcc8;
   border-left: 4px solid transparent;
+  text-align: left;
+  line-height: 1.25;
+  min-width: 0;
 }
 
 .sidebar-menu-item:hover {
@@ -69,7 +72,15 @@
 
 .sidebar-icon {
   font-size: 18px;
+  width: 20px;
   flex-shrink: 0;
+}
+
+.sidebar-nav-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: break-word;
 }
 
 /* Profile Footer Section */
@@ -168,3 +179,4 @@
     padding: 15px 0;
   }
 }
+.sidebar-menu-item:focus-visible,.sidebar-profile-footer:focus-visible{outline:3px solid rgba(63,145,84,.45);outline-offset:2px}

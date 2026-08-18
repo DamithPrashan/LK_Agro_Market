@@ -31,6 +31,20 @@ function index_exists(PDO $pdo, string $table, string $index): bool
     return (int)$stmt->fetchColumn() > 0;
 }
 
+function constraint_exists(PDO $pdo, string $table, string $constraint): bool
+{
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?');
+    $stmt->execute([$table, $constraint]);
+    return (int)$stmt->fetchColumn() === 1;
+}
+
+function column_is_nullable(PDO $pdo, string $table, string $column): bool
+{
+    $stmt = $pdo->prepare('SELECT IS_NULLABLE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?');
+    $stmt->execute([$table, $column]);
+    return $stmt->fetchColumn() === 'YES';
+}
+
 function migration_is_reflected(PDO $pdo, string $name): bool
 {
     return match ($name) {
@@ -58,6 +72,14 @@ function migration_is_reflected(PDO $pdo, string $name): bool
             column_exists($pdo, 'reservation', 'reservation_source') &&
             column_exists($pdo, 'reservation', 'cultivation_request_id') &&
             index_exists($pdo, 'reservation', 'uq_reservation_cultivation_request'),
+        '2026_08_18_phase1_4_integrity_hardening.sql' =>
+            constraint_exists($pdo, 'cultivation_ad', 'chk_cultivation_ad_unit') &&
+            constraint_exists($pdo, 'cultivation_request', 'chk_cultivation_request_agreed_price') &&
+            constraint_exists($pdo, 'cultivation_request', 'chk_cultivation_request_accepted_snapshot'),
+        '2026_08_18_rating_source_hardening.sql' =>
+            column_is_nullable($pdo, 'ratings_review', 'crop_id') &&
+            index_exists($pdo, 'ratings_review', 'uq_ratings_reservation_reviewer') &&
+            constraint_exists($pdo, 'ratings_review', 'chk_ratings_review_value'),
         default => false,
     };
 }

@@ -94,9 +94,9 @@ try {
     $cultivationAccepted = !$isCultivation || $order['cultivation_request_status'] === 'accepted';
     $isAdvancePayable = $resStatus === 'confirmed' && $txStatus === 'unpaid' && $cultivationAccepted;
     $expectedAdvance = round((float)$order['total_amount'] / 3);
-    $validCultivationAdvance = !$isCultivation || ((int)$order['completed_advance_count'] === 1
-        && abs((float)$order['completed_advance_amount'] - $expectedAdvance) <= 0.01);
-    $isFinalPayable = $resStatus === 'ready' && $txStatus === 'partially_paid' && $cultivationAccepted && $validCultivationAdvance;
+    $validAdvance = (int)$order['completed_advance_count'] === 1
+        && abs((float)$order['completed_advance_amount'] - $expectedAdvance) <= 0.01;
+    $isFinalPayable = $resStatus === 'ready' && $txStatus === 'partially_paid' && $cultivationAccepted && $validAdvance;
     if (!$isAdvancePayable && !$isFinalPayable) {
         http_response_code(400);
         echo json_encode([

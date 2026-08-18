@@ -1,29 +1,29 @@
-body {
+.buyer-order-history {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f4f6f8;
 }
 
-.container {
+.buyer-order-history {
   width: 90%;
   margin: auto;
   padding: 20px;
 }
 
-h1 {
+.buyer-order-history h1 {
   text-align: center;
   color: #1b5e20;
 }
 
 /* Tabs */
-.tabs {
+.buyer-order-history .tabs {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
 }
 
-.tab {
+.buyer-order-history .tab {
   padding: 10px 18px;
   border: none;
   cursor: pointer;
@@ -32,24 +32,24 @@ h1 {
   transition: 0.3s;
 }
 
-.tab:hover {
+.buyer-order-history .tab:hover {
   background: #bbb;
 }
 
-.tab.active {
+.buyer-order-history .tab.active {
   background: #1b5e20;
   color: white;
 }
 
 /* Orders grid */
-.orders {
+.buyer-order-history .orders {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 15px;
 }
 
 /* Card */
-.order-card {
+.buyer-order-history .order-card {
   background: white;
   padding: 15px;
   border-radius: 12px;
@@ -58,62 +58,62 @@ h1 {
   transition: 0.3s;
 }
 
-.order-card:hover {
+.buyer-order-history .order-card:hover {
   transform: translateY(-3px);
 }
 
 /* Status borders */
-.order-card.pending {
+.buyer-order-history .order-card.pending {
   border-left-color: orange;
 }
 
-.order-card.accepted {
+.buyer-order-history .order-card.accepted {
   border-left-color: dodgerblue;
 }
 
-.order-card.completed {
+.buyer-order-history .order-card.completed {
   border-left-color: green;
 }
 
 /* Header */
-.order-header {
+.buyer-order-history .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.order-header h3 {
+.buyer-order-history .order-header h3 {
   margin: 0;
 }
 
 /* Status badge */
-.status {
+.buyer-order-history .status {
   padding: 5px 10px;
   border-radius: 12px;
   font-size: 12px;
   color: white;
 }
 
-.status.pending {
+.buyer-order-history .status.pending {
   background: orange;
 }
 
-.status.accepted {
+.buyer-order-history .status.accepted {
   background: dodgerblue;
 }
 
-.status.completed {
+.buyer-order-history .status.completed {
   background: green;
 }
 
 /* Body */
-.order-body {
+.buyer-order-history .order-body {
   margin-top: 10px;
   font-size: 14px;
 }
 
 /* Footer */
-.order-footer {
+.buyer-order-history .order-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -121,27 +121,27 @@ h1 {
 }
 
 /* Payment badges */
-.payment {
+.buyer-order-history .payment {
   font-size: 12px;
   padding: 5px 10px;
   border-radius: 10px;
   color: white;
 }
 
-.payment.paid {
+.buyer-order-history .payment.paid {
   background: green;
 }
 
-.payment.partial {
+.buyer-order-history .payment.partial {
   background: orange;
 }
 
-.payment.unpaid {
+.buyer-order-history .payment.unpaid {
   background: red;
 }
 
 /* Button */
-.view-btn {
+.buyer-order-history .view-btn {
   padding: 6px 12px;
   border: none;
   background: #1b5e20;
@@ -150,12 +150,12 @@ h1 {
   cursor: pointer;
 }
 
-.view-btn:hover {
+.buyer-order-history .view-btn:hover {
   background: #145a1a;
 }
 
 /* Orange Cancel Order Action Button */
-.cancel-order-action-btn {
+.buyer-order-history .cancel-order-action-btn {
   padding: 6px 12px;
   border: none;
   background: #f39c12;
@@ -166,6 +166,24 @@ h1 {
   transition: background 0.2s;
 }
 
-.cancel-order-action-btn:hover {
+.buyer-order-history .cancel-order-action-btn:hover {
   background: #e67e22;
+}
+
+@media (max-width: 700px) {
+  .buyer-order-history {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .buyer-order-history .tabs,
+  .buyer-order-history .order-header,
+  .buyer-order-history .order-footer {
+    flex-wrap: wrap;
+  }
+
+  .buyer-order-history .status {
+    max-width: 100%;
+    white-space: normal;
+  }
 }

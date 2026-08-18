@@ -197,7 +197,11 @@ function ResolveComplaint() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "25px", borderBottom: "1px solid #eee", paddingBottom: "20px" }}>
             <div>
               <p><strong>{t("admin.complaints.orderIdLabel")}</strong> {complaint.orderId}</p>
+              <p><strong>{t(complaint.reservationSource === "cultivation" ? "complaints.cultivationOrder" : "complaints.availableCrop")}</strong></p>
               <p><strong>{t("admin.complaints.cropItemLabel")}</strong> {complaint.cropName}</p>
+              <p><strong>{t("complaints.agreedQuantity")}</strong> {complaint.quantityRequested} {complaint.unit}</p>
+              <p><strong>{t("complaints.agreedUnitPrice")}</strong> Rs. {Number(complaint.unitPrice).toFixed(2)} / {complaint.unit}</p>
+              <p><strong>{t("complaints.agreedTotal")}</strong> Rs. {Number(complaint.totalAmount).toFixed(2)}</p>
               <p><strong>{t("admin.complaints.filingDateLabel")}</strong> {new Date(complaint.createdAt).toLocaleDateString()}</p>
             </div>
             <div>

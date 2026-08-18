@@ -53,7 +53,7 @@ try {
                c.crop_status, cr.request_status AS cultivation_request_status,
                CASE WHEN r.reservation_source = 'cultivation' THEN cb.user_id ELSE b.user_id END AS buyer_user_id,
                CASE WHEN r.reservation_source = 'cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name,
-               cr.agreed_total_amount,
+               CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_total_amount ELSE rc.total_amount END AS order_total,
                (SELECT COUNT(*) FROM payment p
                 WHERE p.reservation_id = r.reservation_id
                   AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_count,
@@ -119,15 +119,17 @@ try {
             ->execute([$order['reserve_crop_id']]);
     } elseif ($action === 'ready') {
         $sourceReady = $isCultivation
-            ? $order['cultivation_request_status'] === 'accepted' && (int)$order['completed_advance_count'] === 1
+            ? $order['cultivation_request_status'] === 'accepted'
             : $order['reserve_status'] === 'confirmed';
-        if ($order['reservation_status'] !== 'confirmed' || $order['transaction_status'] !== 'partially_paid' || !$sourceReady) {
+        $validAdvance = (int)$order['completed_advance_count'] === 1
+            && abs((float)$order['completed_advance_amount'] - round((float)$order['order_total'] / 3)) <= 0.01;
+        if ($order['reservation_status'] !== 'confirmed' || $order['transaction_status'] !== 'partially_paid' || !$sourceReady || !$validAdvance) {
             throw new DomainException('The order can be marked ready only after the advance payment is completed.');
         }
         $pdo->prepare("UPDATE reservation SET reservation_status = 'ready' WHERE reservation_id = ?")->execute([$order_id]);
         if ($isCultivation) {
             require_once 'create_notification.php';
-            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation']);
+            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Ready', 'Your cultivation order is ready.', 'cultivationOrderReady', $notificationData)) {
                 throw new RuntimeException('Unable to notify the buyer that the cultivation order is ready.');
             }
@@ -138,18 +140,18 @@ try {
     } elseif ($action === 'complete') {
         $sourceComplete = $isCultivation
             ? $order['cultivation_request_status'] === 'accepted'
-                && (int)$order['completed_advance_count'] === 1
-                && (int)$order['completed_final_count'] === 1
-                && abs((float)$order['completed_advance_amount'] - round((float)$order['agreed_total_amount'] / 3)) <= 0.01
-                && abs((float)$order['completed_payment_total'] - (float)$order['agreed_total_amount']) <= 0.01
             : $order['reserve_status'] === 'ready';
-        if ($order['reservation_status'] !== 'ready' || $order['transaction_status'] !== 'paid' || !$sourceComplete) {
+        $validLedger = (int)$order['completed_advance_count'] === 1
+            && (int)$order['completed_final_count'] === 1
+            && abs((float)$order['completed_advance_amount'] - round((float)$order['order_total'] / 3)) <= 0.01
+            && abs((float)$order['completed_payment_total'] - (float)$order['order_total']) <= 0.01;
+        if ($order['reservation_status'] !== 'ready' || $order['transaction_status'] !== 'paid' || !$sourceComplete || !$validLedger) {
             throw new DomainException('The order can be completed only after the final payment is completed.');
         }
         $pdo->prepare("UPDATE reservation SET reservation_status = 'completed', completion_date = NOW() WHERE reservation_id = ?")->execute([$order_id]);
         if ($isCultivation) {
             require_once 'create_notification.php';
-            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation']);
+            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Completed', 'Your cultivation order has been completed.', 'cultivationOrderCompleted', $notificationData)) {
                 throw new RuntimeException('Unable to notify the buyer that the cultivation order was completed.');
             }
@@ -213,6 +215,8 @@ try {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    error_log('Order status update failed: '.$e->getMessage());
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Unable to update the order. Please try again."]);
 }
 ?>

@@ -8,6 +8,7 @@ require_once 'Apis/auth_check.php';
 
 // Ensure user is logged in
 require_login();
+require_role('farmer');
 
 $user_id = $_SESSION['user']['id'];
 

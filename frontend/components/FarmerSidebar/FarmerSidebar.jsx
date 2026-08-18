@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaClipboardList, FaPlus, FaSeedling, FaUserCircle, FaTachometerAlt, FaExclamationTriangle, FaStar, FaLeaf } from "react-icons/fa";
+import { FaClipboardList, FaPlusSquare, FaSeedling, FaUserCircle, FaTachometerAlt, FaExclamationTriangle, FaStar, FaLeaf, FaBullhorn } from "react-icons/fa";
 import "./FarmerSidebar.css";
 
 export default function FarmerSidebar() {
@@ -28,7 +28,7 @@ export default function FarmerSidebar() {
     {
       label: t("sidebar.addListing"),
       path: "/farmer/add-listing",
-      icon: <FaPlus className="sidebar-icon" />,
+      icon: <FaPlusSquare className="sidebar-icon" />,
       active: currentPath === "/farmer/add-listing"
     },
     {
@@ -40,7 +40,7 @@ export default function FarmerSidebar() {
     {
       label: t("sidebar.addCultivationAd"),
       path: "/farmer/add-cultivation-ad",
-      icon: <FaPlus className="sidebar-icon" />,
+      icon: <FaBullhorn className="sidebar-icon" />,
       active: currentPath === "/farmer/add-cultivation-ad"
     },
     {
@@ -83,6 +83,10 @@ export default function FarmerSidebar() {
               key={index}
               className={`sidebar-menu-item ${item.active ? "active" : ""}`}
               onClick={() => navigate(item.path)}
+              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(item.path); }}
+              role="link"
+              tabIndex="0"
+              aria-current={item.active ? "page" : undefined}
               title={item.label}
             >
               {item.icon}
@@ -95,13 +99,16 @@ export default function FarmerSidebar() {
       <div
         className="sidebar-profile-footer"
         onClick={() => navigate("/profile")}
+        onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate("/profile"); }}
+        role="link"
+        tabIndex="0"
         title={t("sidebar.profile")}
       >
         <div className={`sidebar-avatar-circle ${currentPath === "/profile" ? "active-avatar" : ""}`} style={{ overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {user?.profile_image ? (
             <img 
               src={user.profile_image.startsWith("http") || user.profile_image.startsWith("/") ? user.profile_image : "/" + user.profile_image} 
-              alt="Profile" 
+              alt={t("sidebar.profile")}
               className="sidebar-avatar-img"
               style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", display: "block" }}
             />

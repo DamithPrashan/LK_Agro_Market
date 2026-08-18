@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { readJsonResponse } from "../../utils/readJsonResponse.js";
 import "../csss/Complaints.css";
 
 function ComplaintPage() {
@@ -74,7 +75,7 @@ function ComplaintPage() {
       const response = await fetch("/backend/get_buyer_complaints.php", {
         credentials: "include",
       });
-      const data = await response.json();
+      const data = await readJsonResponse(response, t("errors.submissionFailed"));
       if (data.success && data.complaints) {
         setComplaints(data.complaints);
       } else {
@@ -166,8 +167,8 @@ function ComplaintPage() {
       } else {
         setMsg({ text: data.message || t("errors.submissionFailed"), ok: false });
       }
-    } catch {
-      setMsg({ text: t("errors.networkXamppError"), ok: false });
+    } catch (error) {
+      setMsg({ text: error.message || t("errors.submissionFailed"), ok: false });
     } finally {
       setLoading(false);
     }
@@ -186,8 +187,8 @@ function ComplaintPage() {
 
   const getStatusBadge = (status) => {
     const s = (status || "").toLowerCase();
-    if (s === "submitted") return <span className="status-badge submitted">Pending Admin Review</span>;
-    if (s === "awaiting_farmer_response") return <span className="status-badge awaiting-farmer">Farmer Action Requested</span>;
+    if (s === "submitted") return <span className="status-badge submitted">{t("complaints.pendingAdminReview")}</span>;
+    if (s === "awaiting_farmer_response") return <span className="status-badge awaiting-farmer">{t("complaints.farmerActionRequested")}</span>;
     if (s === "resolved") return <span className="status-badge resolved">Resolved</span>;
     if (s === "dismissed") return <span className="status-badge dismissed">Dismissed</span>;
     if (s === "submitted" || s === "pending") {
@@ -275,7 +276,7 @@ function ComplaintPage() {
                     ) : (
                       orders.map((ord) => (
                         <option key={ord.id} value={ord.id}>
-                          {ord.orderId} - {ord.cropName} - {ord.date}
+                          {ord.orderId} - {t(ord.reservation_source === "cultivation" ? "complaints.cultivationOrder" : "complaints.availableCrop")} - {ord.cropName} - {ord.date}
                         </option>
                       ))
                     )}
@@ -292,6 +293,7 @@ function ComplaintPage() {
                   <option value="Late Delivery">{t("complaints.reasonOption2")}</option>
                   <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
                   <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
+                  <option value="Harvest Delay">{t("complaints.harvestDelay")}</option>
                 </select>
 
                 <label>{t("forms.description")}</label>
@@ -394,32 +396,22 @@ function ComplaintPage() {
                   <div
                     key={c.id}
                     id={`complaint-card-${c.id}`}
-                    className={`complaint-item-card ${isHighlighted ? "highlighted" : ""}`}
+                    className={`complaint-item-card buyer-complaint-card ${isHighlighted ? "highlighted" : ""}`}
                   >
-                    {/* Header */}
-                    <div className="complaint-item-header">
-                      <div className="complaint-item-title">
-                        <h3>
-                          {t("complaints.disputeNumber", { id: c.id })} — {c.crop_name}
-                          {isHighlighted && (
-                            <span className="highlight-badge">
-                              {t("complaints.selectedDisputeBadge")}
-                            </span>
-                          )}
-                        </h3>
-                        <div className="complaint-meta-info">
-                          <span>
-                            <strong>{t("complaints.orderNumber", { id: c.reservation_id })}</strong>
-                          </span>
-                          <span>
-                            <strong>{t("complaints.farmerLabel")}:</strong> {c.farmer_name || "Farmer"}
-                          </span>
-                          <span>
-                            {t("complaints.submittedOn", { date: formatDate(c.created_at) })}
-                          </span>
-                        </div>
-                      </div>
-                      <div>{getStatusBadge(c.status)}</div>
+                    <div className="buyer-complaint-topline">
+                      <span className={`buyer-complaint-source ${c.reservation_source === "cultivation" ? "cultivation" : "crop"}`}>
+                        {t(c.reservation_source === "cultivation" ? "complaints.cultivationOrder" : "complaints.availableCrop")}
+                      </span>
+                      <div className="buyer-complaint-status">{getStatusBadge(c.status)}</div>
+                    </div>
+                    <div className="buyer-complaint-heading">
+                      <h3>{t("complaints.disputeNumber", { id: c.id })} — {c.crop_name}</h3>
+                      {isHighlighted && <span className="highlight-badge">{t("complaints.selectedDisputeBadge")}</span>}
+                    </div>
+                    <div className="buyer-complaint-meta">
+                      <span><strong>{t("complaints.orderNumber", { id: c.reservation_id })}</strong></span>
+                      <span><strong>{t("complaints.farmerLabel")}:</strong> {c.farmer_name || t("complaints.farmerFallback")}</span>
+                      <span>{t("complaints.submittedOn", { date: formatDate(c.created_at) })}</span>
                     </div>
 
                     {/* Buyer's Issue Description */}
@@ -440,8 +432,8 @@ function ComplaintPage() {
 
                     {c.status === "submitted" && (
                       <div className="buyer-complaint-state pending-review-state">
-                        <strong>Pending Admin Review</strong>
-                        <p>Your complaint has been submitted and is waiting for administrator review.</p>
+                        <strong>{t("complaints.pendingAdminReview")}</strong>
+                        <p>{t("complaints.pendingAdminReviewDescription")}</p>
                       </div>
                     )}
 
@@ -472,9 +464,9 @@ function ComplaintPage() {
                       <div className="waiting-response-box">
                         <span className="waiting-icon">⏳</span>
                         <div>
-                          <strong>Farmer Action Requested</strong>
+                          <strong>{t("complaints.farmerActionRequested")}</strong>
                           <p>The administrator has requested a response from the farmer. You will be notified when the farmer responds.</p>
-                          {c.farmer_response_deadline && <span>Farmer response due by: {formatDate(c.farmer_response_deadline)}</span>}
+                          {c.farmer_response_deadline && <span>{t("complaints.farmerResponseDue", { date: formatDate(c.farmer_response_deadline) })}</span>}
                         </div>
                       </div>
                     ) : null}

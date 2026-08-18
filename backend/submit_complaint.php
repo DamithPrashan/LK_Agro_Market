@@ -1,140 +1,100 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: POST");
-header("Content-Type: application/json");
+declare(strict_types=1);
+header('Content-Type: application/json');
+header('Access-Control-Allow-Methods: POST');
+require_once __DIR__ . '/connection/db.php';
+require_once __DIR__ . '/Apis/auth_check.php';
+require_once __DIR__ . '/services/order_resolver.php';
+require_once __DIR__ . '/create_notification.php';
+require_role('buyer');
 
-require_once 'connection/db.php';
-require_once 'Apis/auth_check.php';
+const COMPLAINT_EVIDENCE_MAX_BYTES = 5242880;
+function complaint_fail(int $status,string $message): never { http_response_code($status); echo json_encode(['success'=>false,'message'=>$message]); exit; }
 
-// Ensure user is logged in
-require_login();
-
-$user_id = $_SESSION['user']['id'];
-
-// Fetch inputs
-$reservation_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
-$reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
-$description = isset($_POST['description']) ? trim($_POST['description']) : '';
-
-if ($reservation_id === 0 || empty($reason) || empty($description)) {
-    echo json_encode(["success" => false, "message" => "Please fill in all required fields."]);
-    exit;
+function complaint_evidence_mime(string $path): ?string
+{
+    if (class_exists('finfo')) {
+        $detector = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $detector->file($path);
+        return is_string($mime) ? $mime : null;
+    }
+    $image = @getimagesize($path);
+    if (is_array($image) && isset($image['mime'])) return (string)$image['mime'];
+    $handle = @fopen($path, 'rb');
+    if ($handle !== false) {
+        $signature = fread($handle, 5);
+        fclose($handle);
+        if ($signature === '%PDF-') return 'application/pdf';
+    }
+    return null;
 }
 
+$reservationId=(int)($_POST['order_id']??0);
+$reason=trim((string)($_POST['reason']??''));
+$description=trim((string)($_POST['description']??''));
+if($reservationId<=0||$reason===''||$description==='') complaint_fail(422,'Please fill in all required fields.');
+
+$createdEvidence=null;
+$failureStage='reservation resolution';
 try {
     $pdo->beginTransaction();
-
-    // 1. Get buyer_id for the logged-in user
-    $buyerQuery = $pdo->prepare("SELECT buyer_id FROM buyer WHERE user_id = ?");
-    $buyerQuery->execute([$user_id]);
-    $buyer = $buyerQuery->fetch();
-    
-    if (!$buyer) {
-        echo json_encode(["success" => false, "message" => "Invalid buyer account."]);
-        $pdo->rollBack();
-        exit;
-    }
-    
-    $buyer_id = $buyer['buyer_id'];
-
-    // 2. Validate that the reservation exists and belongs to the buyer
-    $resQuery = $pdo->prepare("
-        SELECT r.reservation_id, rc.buyer_id, c.farmer_id, u_farmer.user_id as farmer_user_id, c.crop_name
-        FROM reservation r
-        JOIN reserve_crop rc ON r.reserve_crop_id = rc.reserve_crop_id
-        JOIN crop c ON rc.crop_id = c.crop_id
-        JOIN farmer f ON c.farmer_id = f.farmer_id
-        JOIN user u_farmer ON f.user_id = u_farmer.user_id
-        WHERE r.reservation_id = ? AND rc.buyer_id = ?
-    ");
-    $resQuery->execute([$reservation_id, $buyer_id]);
-    $reservation = $resQuery->fetch();
-
-    if (!$reservation) {
-        echo json_encode(["success" => false, "message" => "Order not found or permission denied."]);
-        $pdo->rollBack();
-        exit;
+    $order=resolve_order_snapshot($pdo,$reservationId,true);
+    if(!$order||$order['buyer_user_id']!==(int)$_SESSION['user']['id']) throw new DomainException('Order not found or permission denied.');
+    if(!in_array($order['reservation_status'],['confirmed','ready','completed'],true)
+        ||($order['reservation_source']==='cultivation'&&$order['source_status']!=='accepted')) {
+        throw new DomainException('This reservation is not eligible for a complaint.');
     }
 
-    $farmer_user_id = $reservation['farmer_user_id'];
-    $crop_name = $reservation['crop_name'];
-
-    // 3. Handle evidence photo upload
-    $evidence_path = null;
-    if (isset($_FILES['evidence']) && $_FILES['evidence']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'uploads/';
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
-        }
-        
-        $file_ext = pathinfo($_FILES['evidence']['name'], PATHINFO_EXTENSION);
-        $file_name = 'complaint_' . time() . '_' . uniqid() . '.' . $file_ext;
-        
-        if (move_uploaded_file($_FILES['evidence']['tmp_name'], $upload_dir . $file_name)) {
-            $evidence_path = 'backend/uploads/' . $file_name;
+    $evidencePath=null;
+$failureStage='evidence validation';
+    if(isset($_FILES['evidence'])) {
+        $file=$_FILES['evidence'];
+        if($file['error']!==UPLOAD_ERR_NO_FILE) {
+            if($file['error']!==UPLOAD_ERR_OK) throw new DomainException('Evidence upload failed.');
+            if((int)$file['size']<=0||(int)$file['size']>COMPLAINT_EVIDENCE_MAX_BYTES) throw new DomainException('Evidence must be 5 MB or smaller.');
+            $extension=strtolower(pathinfo((string)$file['name'],PATHINFO_EXTENSION));
+            $allowed=['jpg'=>'image/jpeg','jpeg'=>'image/jpeg','png'=>'image/png','pdf'=>'application/pdf'];
+            $mime=complaint_evidence_mime($file['tmp_name']);
+            if(!isset($allowed[$extension])||$mime!==$allowed[$extension]) throw new DomainException('Evidence must be a JPG, PNG, or PDF file.');
+            $directory=__DIR__.'/uploads';
+            if(!is_dir($directory)&&!mkdir($directory,0755,true)&&!is_dir($directory)) throw new RuntimeException('Unable to prepare evidence storage.');
+            $filename='complaint_'.bin2hex(random_bytes(16)).'.'.$extension;
+            $createdEvidence=$directory.DIRECTORY_SEPARATOR.$filename;
+            if(!move_uploaded_file($file['tmp_name'],$createdEvidence)) throw new RuntimeException('Unable to store complaint evidence.');
+            $evidencePath='backend/uploads/'.$filename;
         }
     }
 
-    // 4. Insert into complaints table
-    $insertSql = "
-        INSERT INTO complaints (reservation_id, buyer_id, reason, description, evidence_file, status) 
-        VALUES (?, ?, ?, ?, ?, 'submitted')
-    ";
-    $insertStmt = $pdo->prepare($insertSql);
-    $insertStmt->execute([
-        $reservation_id,
-        $buyer_id,
-        $reason,
-        $description,
-        $evidence_path
-    ]);
-    
-    $complaint_id = $pdo->lastInsertId();
-
-    // 5. Trigger notifications (inserts into notifications table)
-    require_once 'create_notification.php';
-    $farmer_notif_data = json_encode([
-        "complaint_id" => $complaint_id,
-        "orderId" => $reservation_id,
-        "link" => "farmer/complaints.php"
-    ]);
-
-    // Notify the Farmer
-    $farmerMsg = "A buyer has submitted a complaint for Order #{$reservation_id} ({$crop_name}). Reason: {$reason}.";
-    create_notification($farmer_user_id, 'New Dispute Filed', $farmerMsg, 'complaintSubmitted', $farmer_notif_data);
-
-    // Notify all Admins
-    $adminQuery = $pdo->query("SELECT user_id FROM user WHERE role = 'admin'");
-    $admins = $adminQuery->fetchAll(PDO::FETCH_COLUMN);
-    
-    $admin_notif_data = json_encode([
-        "complaint_id" => $complaint_id,
-        "orderId" => $reservation_id,
-        "link" => "admin/complaint/" . $complaint_id
-    ]);
-
-    $adminMsg = "Dispute #{$complaint_id} has been opened for Order #{$reservation_id}. Reason: {$reason}.";
-    foreach ($admins as $admin_user_id) {
-        create_notification($admin_user_id, 'New Dispute Submitted', $adminMsg, 'complaintSubmitted', $admin_notif_data);
+$failureStage='complaint insertion';
+    $insert=$pdo->prepare("INSERT INTO complaints(reservation_id,buyer_id,reason,description,evidence_file,status) VALUES(?,?,?,?,?,'submitted')");
+    $insert->execute([$reservationId,$order['buyer_id'],$reason,$description,$evidencePath]);
+    $complaintId=(int)$pdo->lastInsertId();
+    $baseData=['complaint_id'=>$complaintId,'complaintId'=>$complaintId,'reservation_id'=>$reservationId,'orderId'=>$reservationId,
+        'reservation_source'=>$order['reservation_source'],'crop_name'=>$order['crop_name'],'cropName'=>$order['crop_name']];
+    $farmerData=$baseData+['link'=>'/farmer/complaints'];
+    $farmerMessage="A buyer submitted a complaint for Order #{$reservationId} ({$order['crop_name']}). Reason: {$reason}.";
+$failureStage='farmer notification';
+    if(!create_notification($order['farmer_user_id'],'New Dispute Filed',$farmerMessage,'complaintSubmitted',json_encode($farmerData))) {
+        throw new RuntimeException('Unable to notify the farmer.');
     }
-
+    $admins=$pdo->query("SELECT user_id FROM user WHERE role='admin'")->fetchAll(PDO::FETCH_COLUMN);
+$failureStage='administrator notification';
+    foreach($admins as $adminUserId) {
+        $adminData=$baseData+['link'=>'/admin/complaint/'.$complaintId];
+        if(!create_notification((int)$adminUserId,'New Dispute Submitted',"Dispute #{$complaintId} opened for Order #{$reservationId}. Reason: {$reason}.",'complaintSubmitted',json_encode($adminData))) {
+            throw new RuntimeException('Unable to notify administrators.');
+        }
+    }
+$failureStage='transaction commit';
     $pdo->commit();
-
-    echo json_encode([
-        "success" => true,
-        "message" => "Complaint submitted successfully. Dispute #{$complaint_id} opened.",
-        "complaint_id" => $complaint_id
-    ]);
-
-} catch (PDOException $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
-    http_response_code(500);
-    echo json_encode([
-        "success" => false,
-        "message" => "Database error: " . $e->getMessage()
-    ]);
+    echo json_encode(['success'=>true,'message'=>"Complaint submitted successfully. Dispute #{$complaintId} opened.",'complaint_id'=>$complaintId]);
+} catch(DomainException $error) {
+    if($pdo->inTransaction())$pdo->rollBack();
+    if($createdEvidence&&is_file($createdEvidence))unlink($createdEvidence);
+    complaint_fail(409,$error->getMessage());
+} catch(Throwable $error) {
+    if($pdo->inTransaction())$pdo->rollBack();
+    if($createdEvidence&&is_file($createdEvidence))unlink($createdEvidence);
+    error_log("Complaint submission failed during {$failureStage} for reservation {$reservationId}: ".$error->getMessage());
+    complaint_fail(500,'Unable to submit complaint.');
 }
-?>

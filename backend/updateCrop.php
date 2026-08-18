@@ -8,6 +8,7 @@ require_once 'Apis/auth_check.php';
 
 // Ensure user is logged in
 require_login();
+require_role('farmer');
 
 $user_id = $_SESSION['user']['id'];
 
@@ -54,8 +55,30 @@ try {
         $growthStage = 'planted';
     }
 
-    // Ownership check baked into the WHERE clause: a farmer can only ever
-    // update a row that actually belongs to them, even if they tamper with crop_id.
+    $pdo->beginTransaction();
+    $lock = $pdo->prepare("SELECT quantity FROM crop WHERE crop_id = ? AND farmer_id = ? AND crop_status <> 'removed' FOR UPDATE");
+    $lock->execute([$crop_id, $farmer_id]);
+    $currentCrop = $lock->fetch(PDO::FETCH_ASSOC);
+    if (!$currentCrop) {
+        $pdo->rollBack();
+        echo json_encode(["success" => false, "message" => "No matching listing found, or you don't have permission to edit it."]);
+        exit;
+    }
+
+    if (abs((float)$currentCrop['quantity'] - $quantity) > 0.00001) {
+        $activeOrders = $pdo->prepare("SELECT COUNT(*) FROM reserve_crop rc
+            JOIN reservation r ON r.reserve_crop_id = rc.reserve_crop_id
+            WHERE rc.crop_id = ? AND r.reservation_status IN ('pending','confirmed','ready')");
+        $activeOrders->execute([$crop_id]);
+        if ((int)$activeOrders->fetchColumn() > 0) {
+            $pdo->rollBack();
+            http_response_code(409);
+            echo json_encode(["success" => false, "message" => "Available quantity cannot be edited while this listing has active orders."]);
+            exit;
+        }
+    }
+
+    // Ownership is enforced both by the locked preflight row and this update.
     $sql = "UPDATE crop SET
                 crop_name = ?,
                 category = ?,
@@ -86,13 +109,7 @@ try {
         $farmer_id
     ]);
 
-    if ($stmt->rowCount() === 0) {
-        echo json_encode([
-            "success" => false,
-            "message" => "No matching listing found, or you don't have permission to edit it."
-        ]);
-        exit;
-    }
+    $pdo->commit();
 
     echo json_encode([
         "success" => true,
@@ -100,6 +117,7 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
     echo json_encode([
         "success" => false,
         "message" => "Database error: " . $e->getMessage()

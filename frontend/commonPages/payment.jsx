@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../src/context/AuthContext";
+import { readJsonResponse } from "../utils/readJsonResponse";
 
 const fmt = (n) => "Rs " + Number(n).toLocaleString("en-LK");
 
@@ -35,7 +36,7 @@ export default function Payment() {
             credentials: "include",
           },
         );
-        const data = await res.json();
+        const data = await readJsonResponse(res, t("errors.networkXamppError"));
         if (data.success && data.order) {
           setOrder(data.order);
         } else {
@@ -54,6 +55,7 @@ export default function Payment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     if (method === "bank" && !proof) {
       setError(t("payment.errorNoProof"));
       return;
@@ -79,7 +81,7 @@ export default function Payment() {
         body,
         credentials: "include",
       });
-      const data = await res.json();
+      const data = await readJsonResponse(res, t("errors.submissionFailed"));
       if (data.success) {
         setDone(true);
       } else {

@@ -453,6 +453,14 @@ body {
   background-color: #114221;
 }
 
+/* Keep Available Crop cards in the original marketplace visual language. */
+.crop-grid .featured-card{min-width:0;text-align:left;border-radius:12px;background:#fff;border:1px solid #e5e7eb;box-shadow:0 4px 12px rgba(6,78,59,.06)}
+.crop-grid .featured-image-wrap{height:220px}.crop-grid .featured-card-body{min-width:0;padding:18px;text-align:left}
+.crop-card-meta{margin-bottom:8px;align-items:flex-start;flex-wrap:wrap}.crop-card-farmer{display:flex;align-items:center;gap:4px;min-width:0;text-align:left}.crop-card-farmer>span:last-child{min-width:0;overflow-wrap:break-word}
+.crop-card-details{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;font-size:12px;color:#64748b;text-align:left}.crop-card-rating{color:#f1c40f;font-size:14px;margin-top:auto;text-align:left}.crop-card-divider{margin:12px 0}
+.crop-card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.crop-card-footer .featured-price{white-space:nowrap}.crop-card-action{min-width:110px;max-width:100%;margin-left:auto}.crop-card-action .pre-order-btn{width:auto;max-width:100%;white-space:normal;overflow-wrap:break-word}
+@media(max-width:420px){.crop-grid{width:100%;max-width:100%}.crop-grid .featured-image-wrap{height:210px}.crop-card-footer{align-items:stretch}.crop-card-action{width:100%;margin-left:0}.crop-card-action .pre-order-btn{width:100%}}
+
 /* ADVANCED FILTERS PANEL */
 .advanced-filters-panel {
   background: white;

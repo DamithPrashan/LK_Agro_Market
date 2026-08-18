@@ -172,6 +172,8 @@ try {
             "total" => floatval($row['total_amount']),
             "orderStatus" => $orderStatus,
             "paymentStatus" => $paymentStatus,
+            "reservationStatus" => $row['reservation_status'],
+            "transactionStatus" => $row['transaction_status'],
             "lifecycleStatus" => $lifecycleStatus,
             "farmerName" => $row['farmer_name'],
             "farmerUserId" => intval($row['farmer_user_id']),

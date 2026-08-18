@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json'); require_once __DIR__ . '/_common.php';
 if($_SERVER['REQUEST_METHOD']!=='POST') cultivation_request_json(405,['success'=>false,'message'=>'Method not allowed.']);
-$buyer=cultivation_require_buyer(); $input=json_decode(file_get_contents('php://input'),true)?:[]; $id=(int)($input['cultivation_request_id']??0);
+$buyer=cultivation_require_buyer(); $input=cultivation_request_input(); $id=(int)($input['cultivation_request_id']??0);
 try { $pdo->beginTransaction();
  $stmt=$pdo->prepare("SELECT cr.request_status,ca.crop_name,f.user_id farmer_user_id FROM cultivation_request cr JOIN cultivation_ad ca ON ca.cultivation_ad_id=cr.cultivation_ad_id JOIN farmer f ON f.farmer_id=ca.farmer_id WHERE cr.cultivation_request_id=? AND cr.buyer_id=? FOR UPDATE");
  $stmt->execute([$id,$buyer['buyer_id']]); $request=$stmt->fetch(PDO::FETCH_ASSOC);
