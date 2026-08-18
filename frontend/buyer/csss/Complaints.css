@@ -560,4 +560,107 @@ textarea {
   padding: 32px;
   text-align: center;
   color: #64748b;
-}
+}
+
+/* Calm complaint cards shared by buyer history and farmer action views. */
+.complaint-item-card,
+.farmer-action-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(20, 50, 35, 0.06);
+  color: #23342a;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.complaint-item-card.highlighted { border-color: #8fc8aa; box-shadow: 0 3px 14px rgba(0, 108, 73, .12); }
+.complaint-item-header { margin: 0; padding: 0; border: 0; align-items: flex-start; }
+.complaint-item-title h3 { margin: 0 0 6px; font-size: 17px; color: #1d3025; }
+.complaint-meta-info { display: flex; flex-wrap: wrap; gap: 5px 18px; color: #65736b; font-size: 12px; }
+
+.status-badge {
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.status-badge.submitted { background: #fff4db; color: #8a5a00; border: 0; }
+.status-badge.awaiting-farmer { background: #fff1d6; color: #8a5400; }
+.status-badge.resolved { background: #e7f7ef; color: #006c49; border: 0; }
+.status-badge.dismissed { background: #eef1ef; color: #5b6460; }
+
+.dispute-section-box { margin: 0; padding: 12px 14px; border: 1px solid #e4eae6; border-radius: 8px; }
+.buyer-issue-box { background: #f8faf9; border: 1px solid #e4eae6; }
+.buyer-issue-box .reason-row { margin-bottom: 4px; color: #2d4335; font-size: 14px; }
+.buyer-issue-box .desc-row { margin: 0; color: #46564c; }
+.farmer-response-box { background: #f4faf6; border: 1px solid #dce9e0; }
+.farmer-response-box .box-header { color: #006c49; }
+.admin-resolution-box { background: #f5f8f6; border: 1px solid #dfe7e2; }
+.admin-resolution-box .box-header { margin-bottom: 7px; color: #34473b; }
+.admin-resolution-box p { margin: 0 0 8px; }
+.admin-action-tag { background: #e8f0eb; color: #395347; }
+.resolution-date { margin-top: 6px; color: #65736b; font-size: 12px; }
+
+.buyer-complaint-state,
+.waiting-response-box {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+.buyer-complaint-state p, .waiting-response-box p { margin: 0; }
+.pending-review-state { background: #fffaf0; border: 1px solid #eadbb8; color: #73551a; }
+.farmer-action-state,
+.waiting-response-box { background: #fffaf0; border: 1px solid #eed8a5; color: #795516; }
+.waiting-response-box .waiting-icon { display: none; }
+.waiting-response-box span { font-size: 12px; }
+
+.farmer-complaint-page .page-header h1 { margin-bottom: 4px; }
+.farmer-action-list { display: grid; gap: 16px; }
+.farmer-action-card > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.farmer-action-card h2 { margin: 3px 0 0; font-size: 17px; color: #203328; }
+.complaint-card-kicker { color: #6a786f; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.farmer-action-pill { min-height: 28px; padding: 5px 10px; border-radius: 999px; background: #fff1d6; color: #8a5400; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.farmer-action-pill.overdue { background: #fde8e7; color: #a32920; }
+.farmer-action-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px 16px; }
+.farmer-action-meta span { min-width: 0; color: #4f6056; font-size: 13px; overflow-wrap: anywhere; }
+.farmer-action-meta strong { display: block; margin-bottom: 2px; color: #76837b; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.calm-complaint-description { padding: 12px 14px; border: 1px solid #e4eae6; border-radius: 8px; background: #f8faf9; }
+.calm-complaint-description h3 { margin: 0 0 5px; font-size: 13px; }
+.calm-complaint-description p { margin: 0; white-space: pre-wrap; }
+.farmer-action-panel { padding: 12px 14px; border: 1px solid #eed8a5; border-radius: 8px; background: #fffaf0; color: #6f531d; }
+.farmer-action-panel.overdue { border-color: #efc0bc; background: #fff3f2; color: #8e3029; }
+.farmer-action-panel p { margin: 3px 0; }
+.farmer-action-panel span { font-size: 12px; }
+.farmer-response-form { display: grid; gap: 8px; padding-top: 2px; }
+.farmer-response-form > label { color: #34473b; font-size: 13px; font-weight: 600; }
+.farmer-response-form textarea { width: 100%; padding: 11px 12px; border: 1px solid #cfdad3; border-radius: 8px; font: inherit; resize: vertical; }
+.farmer-response-form textarea:focus { outline: none; border-color: #559a73; box-shadow: 0 0 0 3px rgba(0, 108, 73, .08); }
+.farmer-evidence-label { display: grid; gap: 6px; color: #647269 !important; font-size: 12px !important; font-weight: 500 !important; }
+.farmer-response-form button { width: fit-content; padding: 9px 16px; border: 0; border-radius: 7px; background: #006c49; color: #fff; font-weight: 700; cursor: pointer; }
+.farmer-response-form button:disabled { opacity: .6; cursor: not-allowed; }
+.complaint-feedback { padding: 10px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; }
+.complaint-feedback.error { border: 1px solid #efc4c0; background: #fff1f0; color: #9b3028; }
+.complaint-feedback.success { border: 1px solid #c7e4d3; background: #edf8f1; color: #17683e; }
+.complaint-empty-calm { padding: 28px 20px; border: 1px solid #dfe7e2; border-radius: 12px; background: #fff; box-shadow: 0 3px 12px rgba(20, 50, 35, .05); color: #65736b; text-align: center; }
+.complaint-empty-calm h3 { margin: 0; color: #34473b; font-size: 16px; }
+
+@media (max-width: 760px) {
+  .complaint-item-card, .farmer-action-card { padding: 16px; }
+  .complaint-item-header, .farmer-action-card > header { flex-direction: column; }
+  .farmer-action-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .farmer-action-meta { grid-template-columns: 1fr; }
+}

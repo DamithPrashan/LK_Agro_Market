@@ -23,32 +23,24 @@ export default function Hero() {
   });
 
   useEffect(() => {
-
     const fetchHomeStats = async () => {
-
       try {
-
-        const response = await fetch("http://localhost:8000/Apis/get_home_stats.php");
+        const response = await fetch(
+          "http://localhost:8000/Apis/get_home_stats.php",
+        );
 
         const result = await response.json();
 
         if (result.success) {
           setHomeStats(result.data);
         }
-
       } catch (error) {
-        console.error(
-          "Failed to load homepage statistics:",
-          error
-        );
+        console.error("Failed to load homepage statistics:", error);
       }
-
     };
 
     fetchHomeStats();
-
   }, []);
-
 
   const stats = [
     {
@@ -80,76 +72,55 @@ export default function Hero() {
     },
   ];
 
-
   return (
-    <section
-      className="hero"
-      style={{ backgroundImage: `url(${heroBg})` }}
-    >
-
+    <section className="hero" style={{ backgroundImage: `url(${heroBg})` }}>
       <div className="hero-overlay"></div>
 
       <div className="hero-container">
-
         <div className="hero-content">
-
-          <h1>
-            Connecting Sri Lankan Farmers Directly with Buyers
-          </h1>
+          <h1>Connecting Sri Lankan Farmers Directly with Buyers</h1>
 
           <p>
-            Experience a secure, transparent agricultural marketplace.
-            Pre-order fresh crops, access real-time demand forecasting,
-            and ensure fair pricing for everyone.
+            Experience a secure, transparent agricultural marketplace. Pre-order
+            fresh crops, access real-time demand forecasting, and ensure fair
+            pricing for everyone.
           </p>
 
           <div className="hero-buttons">
-
-            <button className="hero-btn-primary" onClick={() => navigate("/browse")}>
+            <button
+              className="hero-btn-primary"
+              onClick={() => navigate("/browse")}
+            >
               Browse Marketplace
               <FaArrowRight />
             </button>
 
-            <button className="hero-btn-secondary" onClick={() => navigate("/register")}>
-              Become a Farmer
+            <button
+              className="hero-btn-secondary"
+              onClick={() => navigate("/register")}
+            >
+              Join With Us
             </button>
 
           </div>
-
         </div>
 
-
         <div className="hero-stats-area">
-
           <div className="hero-stats">
-
             {stats.map((stat, index) => (
-
-              <div
-                className={`hero-card hero-card-${index + 1}`}
-                key={index}
-              >
-
-                <div
-                  className={`hero-card-icon hero-card-icon-${stat.type}`}
-                >
+              <div className={`hero-card hero-card-${index + 1}`} key={index}>
+                <div className={`hero-card-icon hero-card-icon-${stat.type}`}>
                   {stat.icon}
                 </div>
 
                 <h3>{stat.value}</h3>
 
                 <p>{stat.label}</p>
-
               </div>
-
             ))}
-
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }

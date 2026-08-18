@@ -22,7 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 c.reason,
                 c.description,
                 c.evidence_file,
+                c.admin_notes,
                 c.status,
+                c.farmer_response_requested_at,
+                c.farmer_response_deadline,
                 c.created_at,
                 u_buyer.name AS buyer_name,
                 u_buyer.email AS buyer_email,
@@ -34,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             JOIN farmer f ON cr.farmer_id = f.farmer_id
             JOIN buyer b ON c.buyer_id = b.buyer_id
             JOIN user u_buyer ON b.user_id = u_buyer.user_id
-            WHERE f.user_id = ? AND c.status = 'submitted'
+            WHERE f.user_id = ? AND c.status = 'awaiting_farmer_response'
             ORDER BY c.created_at DESC
         ";
 
@@ -52,7 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 "reason" => $row['reason'],
                 "description" => $row['description'],
                 "evidence_file" => $row['evidence_file'],
+                "admin_notes" => $row['admin_notes'],
                 "status" => $row['status'],
+                "farmer_response_requested_at" => $row['farmer_response_requested_at'],
+                "farmer_response_deadline" => $row['farmer_response_deadline'],
+                "is_overdue" => !empty($row['farmer_response_deadline']) && strtotime($row['farmer_response_deadline']) < time(),
                 "buyer_name" => $row['buyer_name'],
                 "buyer_email" => $row['buyer_email'],
                 "created_at" => $row['created_at']
@@ -144,12 +151,12 @@ try {
         exit;
     }
 
-    // Validate status: complaint must be in 'submitted' status
-    if (strtolower($complaint['status']) !== 'submitted') {
+    // The admin must explicitly request a response before the farmer can act.
+    if (strtolower($complaint['status']) !== 'awaiting_farmer_response') {
         http_response_code(400);
         echo json_encode([
             "success" => false,
-            "error" => "Complaint is not in 'submitted' status or has already been responded to."
+            "error" => "This complaint is not awaiting your response or has already been handled."
         ]);
         exit;
     }
@@ -207,11 +214,18 @@ try {
         SET farmer_response = ?, 
             farmer_evidence_file = ?, 
             farmer_responded_at = NOW(), 
-            status = 'farmer_responded' 
-        WHERE id = ?
+            status = 'resolved',
+            resolution_action = 'farmer_response_received',
+            resolved_at = NOW()
+        WHERE id = ? AND status = 'awaiting_farmer_response'
     ";
     $updateStmt = $pdo->prepare($updateSql);
     $updateStmt->execute([$response_text, $farmer_evidence_path, $complaint_id]);
+    if ($updateStmt->rowCount() !== 1) {
+        http_response_code(409);
+        echo json_encode(["success" => false, "error" => "This complaint was already handled; a second response is not allowed."]);
+        exit;
+    }
 
     // Send notification to buyer
     require_once __DIR__ . '/create_notification.php';
@@ -237,8 +251,8 @@ try {
     echo json_encode([
         "success" => true,
         "complaint_id" => $complaint_id,
-        "status" => "farmer_responded",
-        "message" => "Farmer response submitted successfully."
+        "status" => "resolved",
+        "message" => "Your response was submitted and the complaint is now resolved."
     ]);
 
 } catch (PDOException $e) {

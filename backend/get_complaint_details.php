@@ -29,10 +29,13 @@ try {
             c.reason,
             c.description,
             c.evidence_file,
+            c.farmer_evidence_file,
             c.status as db_status,
             c.farmer_response,
             c.admin_notes,
             c.resolution_action,
+            c.farmer_response_requested_at,
+            c.farmer_response_deadline,
             c.farmer_responded_at,
             c.resolved_at,
             c.created_at,
@@ -40,7 +43,15 @@ try {
             u_buyer.email as buyer_email,
             u_farmer.name as farmer_name,
             u_farmer.email as farmer_email,
-            cr.crop_name
+            cr.crop_name,
+            cr.category as crop_category,
+            cr.location as crop_location,
+            r.collection_date,
+            r.reservation_status,
+            r.transaction_status,
+            rc.quantity_requested,
+            rc.unit_price,
+            rc.total_amount
         FROM complaints c
         JOIN buyer b ON c.buyer_id = b.buyer_id
         JOIN user u_buyer ON b.user_id = u_buyer.user_id
@@ -91,11 +102,15 @@ try {
             "description" => $complaint['description'],
             "evidenceFile" => $complaint['evidence_file'] ? "/backend/uploads/" . basename($complaint['evidence_file']) : null,
             "evidenceCount" => $complaint['evidence_file'] ? 1 : 0,
+            "farmerEvidenceFile" => $complaint['farmer_evidence_file'] ? "/backend/uploads/" . basename($complaint['farmer_evidence_file']) : null,
             "status" => $statusFlow,
             "dbStatus" => $complaint['db_status'],
             "farmerResponse" => $complaint['farmer_response'],
             "adminNotes" => $complaint['admin_notes'],
             "resolutionAction" => $complaint['resolution_action'],
+            "farmerResponseRequestedAt" => $complaint['farmer_response_requested_at'],
+            "farmerResponseDeadline" => $complaint['farmer_response_deadline'],
+            "isOverdue" => $complaint['db_status'] === 'awaiting_farmer_response' && !empty($complaint['farmer_response_deadline']) && strtotime($complaint['farmer_response_deadline']) < time(),
             "farmerRespondedAt" => $complaint['farmer_responded_at'],
             "resolvedAt" => $complaint['resolved_at'],
             "createdAt" => $complaint['created_at'],
@@ -103,7 +118,15 @@ try {
             "buyerEmail" => $complaint['buyer_email'],
             "farmerName" => $complaint['farmer_name'],
             "farmerEmail" => $complaint['farmer_email'],
-            "cropName" => $complaint['crop_name']
+            "cropName" => $complaint['crop_name'],
+            "cropCategory" => $complaint['crop_category'],
+            "cropLocation" => $complaint['crop_location'],
+            "quantityRequested" => (float) $complaint['quantity_requested'],
+            "unitPrice" => (float) $complaint['unit_price'],
+            "totalAmount" => (float) $complaint['total_amount'],
+            "collectionDate" => $complaint['collection_date'],
+            "reservationStatus" => $complaint['reservation_status'],
+            "transactionStatus" => $complaint['transaction_status']
         ]
     ]);
 

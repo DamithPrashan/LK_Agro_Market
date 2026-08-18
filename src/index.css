@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap');
 
 :root {
+  --navbar-height: 92px;
   /* Green ramp */
   --g-900: #0d3b1a; --g-800: #1a5c2a; --g-600: #2e7d32;
   --g-400: #4caf50; --g-100: #c8e6c9; --g-50:  #e8f5e9;
@@ -21,6 +22,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; min-height: 100%; overflow-x: clip; }
 body { font-family: 'Noto Sans', sans-serif; font-size: 14px; color: var(--t-1); background: var(--page); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 input, textarea, select, button { font-family: inherit; font-size: 13px; }
 a { color: var(--g-600); text-decoration: none; }

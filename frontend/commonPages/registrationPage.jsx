@@ -4,16 +4,13 @@ import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { useForm } from "../../src/hooks/useForm";
 import FarmerVerificationForm from "../components/FarmerVerificationForm";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
-
 import { DISTRICTS } from "../../src/constants/districts";
 
 
 function validate(v) {
   const e = {};
   if (!v.name.trim()) e.name = "errors.fullNameReq";
-  
+
   // Clean contact number and validate
   const cleanContact = v.contact.trim().replace(/[\s-]/g, "");
   if (!cleanContact) {
@@ -53,6 +50,17 @@ export default function RegistrationPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll()) return;
+
+    const maxFileSize = 3 * 1024 * 1024;
+    const oversizedFile = [nicFile, evidenceFile].find(
+      (file) => file && file.size > maxFileSize
+    );
+
+    if (oversizedFile) {
+      setApiErr(`${oversizedFile.name} is too large. Each image must be 3 MB or smaller.`);
+      return;
+    }
+
     setLoading(true);
     setApiErr("");
 
@@ -73,8 +81,12 @@ export default function RegistrationPage() {
         { method: "POST", body, credentials: "include" });
       const data = await res.json();
       if (data.success) {
-        login(data.user);
-        navigate(role === "farmer" ? "/farmer" : "/buyer");
+        if (role === "farmer" && data.verification_required) {
+          setApiErr(data.message);
+        } else {
+          login(data.user);
+          navigate("/buyer");
+        }
       } else {
         setApiErr(data.message || t("errors.submissionFailed"));
       }
@@ -208,4 +220,4 @@ const s = {
   roleBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "14px 10px", borderRadius: "var(--r-lg)", border: "2px solid var(--s-200)", background: "var(--white)", cursor: "pointer", transition: "all .15s" },
   roleActive: { borderColor: "var(--g-600)", background: "var(--g-50)" },
   foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)", marginTop: 16 },
-};
+};
