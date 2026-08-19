@@ -1,22 +1,466 @@
-/* .page-shell {
-  min-height: 80vh;
+/* Registration Page Layout - LK Agro Market */
+
+.register-page-wrapper {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - var(--navbar-height, 92px));
+  min-height: 520px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+/* =========================================
+   LEFT SIDE - BRANDING SECTION
+========================================= */
+
+.register-left-side {
+  flex: 0 0 42%;
+  max-width: 42%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 40px;
+  color: #ffffff;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.register-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      rgba(13, 59, 26, 0.85) 0%,
+      rgba(13, 59, 26, 0.65) 40%,
+      rgba(10, 40, 18, 0.94) 100%);
+  z-index: 1;
+}
+
+.brand-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.brand-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.brand-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--g-100, #c8e6c9);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-content-bottom {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  text-align: left;
+}
+
+.hero-headline {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.hero-headline .highlight-text {
+  color: #a5d6a7;
+  display: inline-block;
+}
+
+.hero-description {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+
+.hero-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.benefit-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a5d6a7;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   RIGHT SIDE - FORM SECTION (EXACT LEVEL ALIGNED)
+========================================= */
+
+.register-right-side {
+  flex: 0 0 58%;
+  max-width: 58%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3rem 1.5rem;
-  background: #fff7f2;
-  color: #3d2c2a;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+.register-form-card {
+  width: 100%;
+  max-width: 600px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Fixed Level Top Header Elements */
+
+.form-header {
   text-align: center;
+  margin-bottom: 12px;
 }
 
-.page-shell h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
+.form-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--t-1, #1e293b);
+  margin-bottom: 3px;
+  letter-spacing: -0.3px;
 }
 
-.page-shell p {
-  font-size: 1.1rem;
-  max-width: 44rem;
-  line-height: 1.6;
-} */
+.form-subtitle {
+  font-size: 13px;
+  color: var(--t-3, #94a3b8);
+}
+
+/* Step Progress Indicator */
+
+.step-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--s-100, #f1f5f9);
+  color: var(--t-3, #94a3b8);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.step-pill.active {
+  background: var(--g-50, #e8f5e9);
+  color: var(--g-800, #1a5c2a);
+}
+
+.step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--s-200, #e2e8f0);
+  color: var(--t-2, #475569);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.step-pill.active .step-num {
+  background: var(--g-600, #2e7d32);
+  color: #ffffff;
+}
+
+.step-line {
+  height: 2px;
+  width: 24px;
+  background: var(--s-200, #e2e8f0);
+}
+
+/* Role Selector Grid */
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.role-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--r-lg, 10px);
+  border: 1.5px solid var(--s-200, #e2e8f0);
+  background: var(--white, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.role-btn:hover {
+  border-color: var(--g-400, #4caf50);
+}
+
+.role-btn.active {
+  border-color: var(--g-600, #2e7d32);
+  background: var(--g-50, #e8f5e9);
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.08);
+}
+
+.role-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.role-text-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.role-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--t-1, #1e293b);
+  line-height: 1.2;
+}
+
+.role-sub {
+  font-size: 11px;
+  color: var(--t-3, #94a3b8);
+}
+
+/* Form Step Container with Fixed Level Alignment */
+
+.step-form-area {
+  min-height: 310px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Form Fields & Grids */
+
+.register-form-card .section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.register-form-card .field {
+  margin-bottom: 8px;
+}
+
+.register-form-card .field label {
+  font-size: 12px;
+  margin-bottom: 3px;
+  font-weight: 600;
+  color: var(--t-1, #1e293b);
+}
+
+.register-form-card .field input,
+.register-form-card .field select {
+  padding: 6px 12px;
+  font-size: 13px;
+  height: 38px;
+  border-radius: 7px;
+  border: 1px solid var(--s-200, #cbd5e1);
+}
+
+.register-form-card .field input:focus,
+.register-form-card .field select:focus {
+  border-color: var(--g-600, #2e7d32);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+}
+
+.register-form-card .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.register-form-card .btn-lg {
+  min-height: 42px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--s-200, #e2e8f0);
+}
+
+.foot-text {
+  font-size: 12px;
+  color: var(--t-2, #475569);
+}
+
+.foot-link {
+  font-weight: 700;
+  color: var(--g-600, #2e7d32);
+  margin-left: 4px;
+}
+
+/* Side-by-Side Upload Boxes */
+
+.upload-zone-box {
+  border: 1.5px dashed #81c784;
+  background: #ffffff;
+  border-radius: var(--r-md, 8px);
+  padding: 10px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 82px;
+  box-sizing: border-box;
+}
+
+.upload-zone-box:hover {
+  border-color: var(--g-600, #2e7d32);
+  background: var(--g-50, #e8f5e9);
+  transform: translateY(-1px);
+}
+
+.upload-icon {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.upload-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t-1, #1e293b);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-subtext {
+  font-size: 11px;
+  color: var(--t-3, #94a3b8);
+  margin-top: 2px;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1023px) {
+  .register-page-wrapper {
+    min-height: auto;
+    overflow-y: auto;
+  }
+
+  .register-left-side {
+    flex: 0 0 38%;
+    max-width: 38%;
+    padding: 24px 20px;
+  }
+
+  .register-right-side {
+    flex: 0 0 62%;
+    max-width: 62%;
+    padding: 20px 20px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .register-page-wrapper {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .register-left-side {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 16px;
+  }
+
+  .hero-description {
+    display: none;
+  }
+
+  .register-right-side {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+}
