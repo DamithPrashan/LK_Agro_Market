@@ -156,6 +156,25 @@ try {
 
     $pdo->commit();
 
+    // Send email notification for FARMER registration only (Non-blocking)
+    if ($role === 'farmer') {
+        try {
+            require_once __DIR__ . '/../config/mailer.php';
+            require_once __DIR__ . '/../config/farmer_email_templates.php';
+            if (function_exists('farmerRegistrationReceived') && function_exists('sendMail')) {
+                $template = farmerRegistrationReceived($name);
+                sendMail($email, $name, $template['subject'], $template['body']);
+            }
+        } catch (Throwable $e) {
+            $logDir = __DIR__ . '/../logs';
+            if (!is_dir($logDir)) {
+                @mkdir($logDir, 0755, true);
+            }
+            $timestamp = date('Y-m-d H:i:s');
+            @file_put_contents($logDir . '/mail_log.txt', "[{$timestamp}] FAILED  | {$email} | Exception during reg email: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+    }
+
     // Map fields to what the frontend expects
     $userResponse = [
         "id" => $userId,
