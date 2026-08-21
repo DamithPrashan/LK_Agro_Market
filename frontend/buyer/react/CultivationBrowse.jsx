@@ -34,7 +34,7 @@ export default function CultivationBrowse() {
     .filter((ad) => `${ad.crop_name} ${ad.farmer_name} ${ad.district}`.toLowerCase().includes(search.trim().toLowerCase()))
     .sort((a, b) => sort === "price"
       ? Number(a.estimated_unit_price) - Number(b.estimated_unit_price)
-      : String(a.expected_harvest_date).localeCompare(String(b.expected_harvest_date))), [ads, district, search, sort]);
+      : String(a.expected_harvest_date ?? a.growing_period_days ?? "").localeCompare(String(b.expected_harvest_date ?? b.growing_period_days ?? ""))), [ads, district, search, sort]);
 
   if (loading) return <div className="cultivation-market-state">{t("buyer.cultivation.loading")}</div>;
   if (error) return <div className="cultivation-market-state error">{error}</div>;
@@ -59,7 +59,8 @@ export default function CultivationBrowse() {
               <div><strong>{ad.farmer_name}</strong>{Number(ad.verified_status) === 1 && <span>{t("buyerDashboard.verifiedFarmer")}</span>}</div>
             </div>
             <div className="cultivation-card-row"><FaMapMarkerAlt aria-hidden="true" /><span>{ad.district}</span></div>
-            <div className="cultivation-card-row"><FaCalendarAlt aria-hidden="true" /><span>{t("buyer.cultivation.expectedHarvest")}: <strong>{ad.expected_harvest_date}</strong></span></div>
+            <div className="cultivation-card-row"><FaCalendarAlt aria-hidden="true" /><span>{t(ad.timing_model === "growing_period" ? "growingPeriod.label" : "buyer.cultivation.expectedHarvest")}: <strong>{ad.timing_model === "growing_period" ? `${ad.growing_period_days} ${t("growingPeriod.units.days")}` : ad.expected_harvest_date}</strong></span></div>
+            {ad.timing_model === "growing_period" && <div className="cultivation-card-row"><span>{ad.cultivation_started_at ? `${t("growingPeriod.cultivationStarted")}: ${String(ad.cultivation_started_at).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}{ad.estimated_harvest_date && ` · ${t("growingPeriod.estimatedHarvest")}: ${ad.estimated_harvest_date}`}</span></div>}
             <div className="cultivation-card-divider" />
             <div className="cultivation-card-capacity">
               <span>{t("buyer.cultivation.capacity")}<strong>{capacity} {ad.unit}</strong></span>

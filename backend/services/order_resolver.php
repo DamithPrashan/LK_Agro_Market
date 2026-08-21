@@ -31,6 +31,11 @@ function resolve_order_snapshot(PDO $pdo, int $reservationId, bool $forUpdate = 
             CASE WHEN r.reservation_source = 'cultivation' THEN cr.request_status ELSE rc.status END AS source_status,
             CASE WHEN r.reservation_source = 'cultivation' THEN ca.cultivation_ad_id ELSE NULL END AS cultivation_ad_id,
             CASE WHEN r.reservation_source = 'cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name,
+              CASE WHEN r.reservation_source = 'cultivation' THEN ca.timing_model ELSE NULL END AS timing_model,
+              CASE WHEN r.reservation_source = 'cultivation' THEN ca.cultivation_started_at ELSE NULL END AS cultivation_started_at,
+              CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_growing_period_days ELSE NULL END AS agreed_growing_period_days,
+              CASE WHEN r.reservation_source = 'cultivation' AND ca.cultivation_started_at IS NOT NULL AND cr.agreed_growing_period_days IS NOT NULL
+                  THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL cr.agreed_growing_period_days DAY)) ELSE NULL END AS estimated_harvest_date,
             CASE WHEN r.reservation_source = 'cultivation' THEN ca.category ELSE c.category END AS category,
             CASE WHEN r.reservation_source = 'cultivation' THEN ca.district ELSE c.location END AS location,
             CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_quantity ELSE rc.quantity_requested END AS quantity,

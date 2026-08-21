@@ -77,6 +77,10 @@ export default function BuyerOrderHistory() {
       await executeCancellation(order.orderId);
       
     } else if (status === "accepted") {
+      if (!order.date) {
+        setCancelErrorMsg(t("growingPeriod.cancellationDeferred"));
+        return;
+      }
       // Calculate hours remaining before collection date
       const collectionDate = order.date; // format YYYY-MM-DD
       const now = new Date();
@@ -219,7 +223,8 @@ export default function BuyerOrderHistory() {
                   <div className="order-body">
                     <p>{t("orders.orderId", { id: order.orderId })}</p>
                     <p>{t("orders.quantity", { qty: order.quantity, unit: order.unit })}</p>
-                    <p>{t("orders.date", { date: order.date })}</p>
+                    <p>{t("orders.date", { date: order.date || t("growingPeriod.toBeConfirmed") })}</p>
+                    {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <><p>{t("growingPeriod.label")}: ~{order.agreedGrowingPeriodDays} {t("growingPeriod.units.days")}</p><p>{order.cultivationStartedAt ? `${t("growingPeriod.startedOn")}: ${String(order.cultivationStartedAt).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}</p>{order.estimatedHarvestDate && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimatedHarvestDate}</p>}{order.cultivationAdStatus === "harvested" && <p>{t("growingPeriod.harvestCompleted")}</p>}</>}
                     <p>{t("orders.total", { total: order.total.toLocaleString() })}</p>
                   </div>
 

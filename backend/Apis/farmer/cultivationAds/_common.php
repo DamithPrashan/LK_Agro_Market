@@ -5,6 +5,8 @@ require_once __DIR__ . '/../../auth_check.php';
 const CULTIVATION_AD_MAX_PHOTOS = 5;
 const CULTIVATION_AD_MAX_PHOTO_BYTES = 2097152;
 const CULTIVATION_AD_MAX_DESCRIPTION = 2000;
+const CULTIVATION_AD_MAX_GROWING_PERIOD_DAYS = 3650;
+const CULTIVATION_AD_GROWING_PERIOD_MULTIPLIERS = ['days' => 1, 'weeks' => 7, 'months' => 30];
 const CULTIVATION_AD_UNITS = ['kg'];
 const CULTIVATION_AD_AREA_UNITS = ['acres', 'hectares', 'perches'];
 const CULTIVATION_AD_CATEGORIES = ['Vegetable', 'Fruit', 'Grain', 'Other'];
@@ -44,8 +46,26 @@ function cultivation_require_farmer(bool $verifiedOnly = false): array
     return $farmer;
 }
 
-function cultivation_fields(array $source, float $committed = 0): array
+function cultivation_growing_period_days(array $source): int
 {
+    $rawValue = trim((string)($source['growing_period_value'] ?? ''));
+    $unit = strtolower(trim((string)($source['growing_period_unit'] ?? '')));
+    if (!preg_match('/^\d+(?:\.\d+)?$/', $rawValue) || !isset(CULTIVATION_AD_GROWING_PERIOD_MULTIPLIERS[$unit])) {
+        cultivation_json(422, ['success' => false, 'message' => 'Enter a valid growing period and select days, weeks, or months.']);
+    }
+    $value = (float)$rawValue;
+    $days = (int)round($value * CULTIVATION_AD_GROWING_PERIOD_MULTIPLIERS[$unit]);
+    if (!is_finite($value) || $value <= 0 || $days <= 0 || $days > CULTIVATION_AD_MAX_GROWING_PERIOD_DAYS) {
+        cultivation_json(422, ['success' => false, 'message' => 'Growing period must be between 1 and 3650 days.']);
+    }
+    return $days;
+}
+
+function cultivation_fields(array $source, float $committed = 0, string $timingModel = 'growing_period'): array
+{
+    if (!in_array($timingModel, ['fixed_date', 'growing_period'], true)) {
+        cultivation_json(422, ['success' => false, 'message' => 'Invalid cultivation timing model.']);
+    }
     $data = [
         'crop_name' => trim((string)($source['crop_name'] ?? '')),
         'category' => trim((string)($source['category'] ?? '')),
@@ -53,7 +73,9 @@ function cultivation_fields(array $source, float $committed = 0): array
         'capacity_quantity' => (float)($source['capacity_quantity'] ?? 0),
         'unit' => trim((string)($source['unit'] ?? '')),
         'estimated_unit_price' => (float)($source['estimated_unit_price'] ?? 0),
-        'expected_harvest_date' => trim((string)($source['expected_harvest_date'] ?? '')),
+        'timing_model' => $timingModel,
+        'expected_harvest_date' => null,
+        'growing_period_days' => null,
         'cultivation_area' => ($source['cultivation_area'] ?? '') === '' ? null : (float)$source['cultivation_area'],
         'area_unit' => trim((string)($source['area_unit'] ?? '')) ?: null,
         'description' => trim((string)($source['description'] ?? '')) ?: null,
@@ -66,9 +88,14 @@ function cultivation_fields(array $source, float $committed = 0): array
     if ($data['capacity_quantity'] < $committed) $errors[] = 'Capacity cannot be lower than the committed quantity.';
     if (!in_array($data['unit'], CULTIVATION_AD_UNITS, true)) $errors[] = 'Unit must be kg.';
     if ($data['estimated_unit_price'] <= 0) $errors[] = 'Estimated price must be greater than zero.';
-    $date = DateTime::createFromFormat('!Y-m-d', $data['expected_harvest_date']);
-    $today = new DateTime('today');
-    if (!$date || $date->format('Y-m-d') !== $data['expected_harvest_date'] || $date <= $today) $errors[] = 'Expected harvest date must be a valid future date.';
+    if ($timingModel === 'fixed_date') {
+        $data['expected_harvest_date'] = trim((string)($source['expected_harvest_date'] ?? ''));
+        $date = DateTime::createFromFormat('!Y-m-d', $data['expected_harvest_date']);
+        $today = new DateTime('today');
+        if (!$date || $date->format('Y-m-d') !== $data['expected_harvest_date'] || $date <= $today) $errors[] = 'Expected harvest date must be a valid future date.';
+    } else {
+        $data['growing_period_days'] = cultivation_growing_period_days($source);
+    }
     if ($data['cultivation_area'] !== null && $data['cultivation_area'] <= 0) $errors[] = 'Cultivation area must be greater than zero when provided.';
     if ($data['cultivation_area'] !== null && !in_array($data['area_unit'], CULTIVATION_AD_AREA_UNITS, true)) $errors[] = 'Select a valid area unit when cultivation area is provided.';
     if ($data['cultivation_area'] === null) $data['area_unit'] = null;

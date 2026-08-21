@@ -48,6 +48,17 @@ function column_is_nullable(PDO $pdo, string $table, string $column): bool
 function migration_is_reflected(PDO $pdo, string $name): bool
 {
     return match ($name) {
+        '2026_08_21_cultivation_growing_period_transition.sql' =>
+            column_exists($pdo, 'cultivation_ad', 'timing_model') &&
+            column_exists($pdo, 'cultivation_ad', 'growing_period_days') &&
+            column_exists($pdo, 'cultivation_ad', 'cultivation_started_at') &&
+            column_is_nullable($pdo, 'cultivation_ad', 'expected_harvest_date') &&
+            constraint_exists($pdo, 'cultivation_ad', 'chk_cultivation_ad_growing_period_positive') &&
+            constraint_exists($pdo, 'cultivation_ad', 'chk_cultivation_ad_timing_model') &&
+            column_exists($pdo, 'cultivation_request', 'agreed_growing_period_days') &&
+            column_is_nullable($pdo, 'cultivation_request', 'requested_collection_date') &&
+            constraint_exists($pdo, 'cultivation_request', 'chk_cultivation_request_agreed_growing_period_positive') &&
+            column_is_nullable($pdo, 'reservation', 'collection_date'),
         '2026_08_21_user_account_status.sql' => column_exists($pdo, 'user', 'account_status'),
         '2026_08_17_complaint_workflow.sql' =>
             column_exists($pdo, 'complaints', 'farmer_evidence_file') &&

@@ -2,11 +2,10 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/_common.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') cultivation_request_json(405,['success'=>false,'message'=>'Method not allowed.']);
-$buyer=cultivation_require_buyer(); $input=cultivation_request_input();
+$buyer=cultivation_require_buyer(); $input=isset($mockInput)?$mockInput:cultivation_request_input();
 $adId=(int)($input['cultivation_ad_id']??0); $quantity=(float)($input['requested_quantity']??0);
 $collection=trim((string)($input['requested_collection_date']??''));
 if ($adId<=0 || $quantity<=0) cultivation_request_json(422,['success'=>false,'message'=>'Requested quantity must be greater than zero.']);
-if (!cultivation_valid_date($collection)) cultivation_request_json(422,['success'=>false,'message'=>'Select a valid preferred collection date.']);
 try {
  $pdo->beginTransaction();
  $stmt=$pdo->prepare("SELECT ca.*, f.user_id farmer_user_id FROM cultivation_ad ca JOIN farmer f ON f.farmer_id=ca.farmer_id WHERE ca.cultivation_ad_id=? FOR UPDATE");
@@ -14,7 +13,13 @@ try {
  if (!$ad || $ad['status']!=='open') { $pdo->rollBack(); cultivation_request_json(409,['success'=>false,'message'=>'This cultivation opportunity is no longer open.']); }
  $remaining=max(0,(float)$ad['capacity_quantity']-(float)$ad['committed_quantity']);
  if ($quantity>$remaining) { $pdo->rollBack(); cultivation_request_json(409,['success'=>false,'message'=>'Requested quantity exceeds the remaining capacity.']); }
- if ($collection<$ad['expected_harvest_date']) { $pdo->rollBack(); cultivation_request_json(422,['success'=>false,'message'=>'Preferred collection date cannot be before the expected harvest date.']); }
+ if ($ad['timing_model']==='growing_period') {
+  if ($collection!=='') { $pdo->rollBack(); cultivation_request_json(422,['success'=>false,'message'=>'Collection date must not be supplied for a growing-period opportunity.']); }
+  $collection=null;
+ } else {
+  if (!cultivation_valid_date($collection)) { $pdo->rollBack(); cultivation_request_json(422,['success'=>false,'message'=>'Select a valid preferred collection date.']); }
+  if ($collection<$ad['expected_harvest_date']) { $pdo->rollBack(); cultivation_request_json(422,['success'=>false,'message'=>'Preferred collection date cannot be before the expected harvest date.']); }
+ }
  $pending=$pdo->prepare("SELECT cultivation_request_id FROM cultivation_request WHERE cultivation_ad_id=? AND buyer_id=? AND request_status='pending' LIMIT 1 FOR UPDATE");
  $pending->execute([$adId,$buyer['buyer_id']]);
  if($pending->fetchColumn()){ $pdo->rollBack(); cultivation_request_json(409,['success'=>false,'message'=>'You already have a pending request for this cultivation opportunity.']); }

@@ -46,6 +46,22 @@ try {
 
     $pdo->beginTransaction();
 
+    $cultivationCheck = $pdo->prepare("SELECT r.collection_date FROM reservation r JOIN cultivation_request cr ON r.cultivation_request_id=cr.cultivation_request_id WHERE r.reservation_id=? AND r.reservation_source='cultivation' AND cr.buyer_id=? FOR UPDATE");
+    $cultivationCheck->execute([$orderId, $buyer_id]);
+    $cultivationOrder = $cultivationCheck->fetch(PDO::FETCH_ASSOC);
+    if ($cultivationOrder && $cultivationOrder['collection_date'] === null) {
+        $pdo->rollBack();
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'This cultivation order cannot be cancelled until its collection date is confirmed.']);
+        exit;
+    }
+    if ($cultivationOrder) {
+        $pdo->rollBack();
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'Cancellation after cultivation advance payment requires administrator assistance because refunds are not automated.']);
+        exit;
+    }
+
     // Lock the order and crop so cancellation can restore accepted stock once.
     $sql = "
         SELECT 
