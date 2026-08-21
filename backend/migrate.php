@@ -60,6 +60,7 @@ function migration_is_reflected(PDO $pdo, string $name): bool
             constraint_exists($pdo, 'cultivation_request', 'chk_cultivation_request_agreed_growing_period_positive') &&
             column_is_nullable($pdo, 'reservation', 'collection_date'),
         '2026_08_21_user_account_status.sql' => column_exists($pdo, 'user', 'account_status'),
+        '2026_08_21_cultivation_planned_start_date.sql' => column_exists($pdo, 'cultivation_ad', 'planned_start_date'),
         '2026_08_17_complaint_workflow.sql' =>
             column_exists($pdo, 'complaints', 'farmer_evidence_file') &&
             column_exists($pdo, 'complaints', 'farmer_response_requested_at') &&

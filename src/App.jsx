@@ -204,8 +204,10 @@ function App() {
 
             <Route
               path="/profile"
-              element={<ProfilePage />}
-            />
+              element={user?.role?.toLowerCase() === "admin" ? <AdminLayout /> : <ProfilePage />}
+            >
+              {user?.role?.toLowerCase() === "admin" && <Route index element={<ProfilePage />} />}
+            </Route>
 
 
             {/* ============================

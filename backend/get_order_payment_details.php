@@ -56,6 +56,8 @@ try {
             CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_quantity ELSE rc.quantity_requested END AS quantity_requested,
             CASE WHEN r.reservation_source = 'cultivation' THEN ca.unit ELSE 'kg' END AS unit,
             cr.request_status AS cultivation_request_status,
+            ca.timing_model,
+            ca.planned_start_date,
             (SELECT COUNT(*) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_count,
             (SELECT COALESCE(SUM(p.amount), 0) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_amount,
             (SELECT COALESCE(SUM(p.amount), 0) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_status = 'completed') AS amount_already_paid,
@@ -92,12 +94,18 @@ try {
 
     $isCultivation = $order['reservation_source'] === 'cultivation';
     $cultivationAccepted = !$isCultivation || $order['cultivation_request_status'] === 'accepted';
-    $isAdvancePayable = $resStatus === 'confirmed' && $txStatus === 'unpaid' && $cultivationAccepted;
+    $plannedStartConfirmed = !$isCultivation || $order['timing_model'] !== 'growing_period' || $order['planned_start_date'] !== null;
+    $isAdvancePayable = $resStatus === 'confirmed' && $txStatus === 'unpaid' && $cultivationAccepted && $plannedStartConfirmed;
     $expectedAdvance = round((float)$order['total_amount'] / 3);
     $validAdvance = (int)$order['completed_advance_count'] === 1
         && abs((float)$order['completed_advance_amount'] - $expectedAdvance) <= 0.01;
     $isFinalPayable = $resStatus === 'ready' && $txStatus === 'partially_paid' && $cultivationAccepted && $validAdvance;
     if (!$isAdvancePayable && !$isFinalPayable) {
+        if ($isCultivation && $order['timing_model'] === 'growing_period' && $resStatus === 'confirmed' && $txStatus === 'unpaid' && $order['planned_start_date'] === null) {
+            http_response_code(409);
+            echo json_encode(['success'=>false,'message'=>'The farmer must confirm the planned cultivation start date before advance payment.']);
+            exit;
+        }
         http_response_code(400);
         echo json_encode([
             "success" => false,

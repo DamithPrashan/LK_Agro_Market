@@ -224,7 +224,7 @@ export default function BuyerOrderHistory() {
                     <p>{t("orders.orderId", { id: order.orderId })}</p>
                     <p>{t("orders.quantity", { qty: order.quantity, unit: order.unit })}</p>
                     <p>{t("orders.date", { date: order.date || t("growingPeriod.toBeConfirmed") })}</p>
-                    {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <><p>{t("growingPeriod.label")}: ~{order.agreedGrowingPeriodDays} {t("growingPeriod.units.days")}</p><p>{order.cultivationStartedAt ? `${t("growingPeriod.startedOn")}: ${String(order.cultivationStartedAt).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}</p>{order.estimatedHarvestDate && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimatedHarvestDate}</p>}{order.cultivationAdStatus === "harvested" && <p>{t("growingPeriod.harvestCompleted")}</p>}</>}
+                    {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <><p>{t("growingPeriod.plannedCultivationStart")}: {order.plannedStartDate || "—"}</p><p>{t("growingPeriod.label")}: ~{order.agreedGrowingPeriodDays} {t("growingPeriod.units.days")}</p><p>{t("growingPeriod.actualStart")}: {order.cultivationStartedAt ? String(order.cultivationStartedAt).slice(0, 10) : t("growingPeriod.notStarted")}</p>{order.plannedStartDate && !order.cultivationStartedAt && new Date().toISOString().slice(0,10) > order.plannedStartDate && <p>{t("growingPeriod.startDelayed")}</p>}{order.estimatedHarvestDate && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimatedHarvestDate}</p>}{order.cultivationAdStatus === "harvested" && <p>{t("growingPeriod.harvestCompleted")}</p>}</>}
                     <p>{t("orders.total", { total: order.total.toLocaleString() })}</p>
                   </div>
 
@@ -293,8 +293,8 @@ export default function BuyerOrderHistory() {
                           </button>
                         )}
 
-                        {((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid") ||
-                         (order.orderStatus.toLowerCase() === "ready" && order.paymentStatus.toLowerCase() === "partial")) ? (
+                        {((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid" && (order.reservationSource !== "cultivation" || order.timingModel !== "growing_period" || order.plannedStartDate)) ||
+                         (order.orderStatus.toLowerCase() === "ready" && order.paymentStatus.toLowerCase() === "partial")) && (
                           <button 
                             className="view-btn" 
                             onClick={() => navigate(`/payment/${order.orderId}`)}
@@ -304,8 +304,6 @@ export default function BuyerOrderHistory() {
                               ? t("orderPresentation.payRemaining")
                               : t("orderPresentation.payAdvance")}
                           </button>
-                        ) : (
-                          <button className="view-btn">{t("buttons.view")}</button>
                         )}
                       </div>
                     </div>

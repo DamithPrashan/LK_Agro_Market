@@ -39,6 +39,7 @@ function ComplaintPage() {
   const [msg, setMsg] = useState({ text: "", ok: false });
   const selectedOrder = orders.find((order) => String(order.id) === String(selectedOrderId));
   const harvestDelayUnavailable = selectedOrder?.reservation_source === "cultivation" && selectedOrder?.timing_model === "growing_period" && (!selectedOrder.estimated_harvest_date || new Date().toISOString().slice(0, 10) <= selectedOrder.estimated_harvest_date || ["ready", "completed"].includes(selectedOrder.reservation_status));
+  const startDelayUnavailable = !selectedOrder || selectedOrder.reservation_source !== "cultivation" || selectedOrder.timing_model !== "growing_period" || !selectedOrder.planned_start_date || new Date().toISOString().slice(0, 10) <= selectedOrder.planned_start_date || selectedOrder.cultivation_started_at;
 
   // Buyer Complaints List State
   const [complaints, setComplaints] = useState([]);
@@ -296,6 +297,7 @@ function ComplaintPage() {
                   <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
                   <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
                   <option value="Harvest Delay" disabled={harvestDelayUnavailable}>{t("complaints.harvestDelay")}{harvestDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
+                  <option value="Cultivation Start Delay" disabled={startDelayUnavailable}>{t("complaints.cultivationStartDelay")}{startDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
                 </select>
 
                 <label>{t("forms.description")}</label>
