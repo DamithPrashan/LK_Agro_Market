@@ -148,7 +148,8 @@ try {
 
             f.user_id,
 
-            u.name
+            u.name,
+            u.email
 
         FROM farmer_verification fv
 
@@ -209,6 +210,9 @@ try {
 
     $farmerName =
         $verification["name"];
+
+    $farmerEmail =
+        $verification["email"];
 
 
     $criteriaJson =
@@ -299,6 +303,21 @@ try {
 
         $pdo->commit();
 
+        // Send approval email to farmer (Non-blocking)
+        try {
+            require_once __DIR__ . '/../../../config/mailer.php';
+            require_once __DIR__ . '/../../../config/farmer_email_templates.php';
+            if (function_exists('farmerAccountApproved') && function_exists('sendMail')) {
+                $template = farmerAccountApproved($farmerName);
+                sendMail($farmerEmail, $farmerName, $template['subject'], $template['body']);
+            }
+        } catch (Throwable $e) {
+            $logDir = __DIR__ . '/../../../logs';
+            if (!is_dir($logDir)) { @mkdir($logDir, 0755, true); }
+            $timestamp = date('Y-m-d H:i:s');
+            @file_put_contents($logDir . '/mail_log.txt', "[{$timestamp}] FAILED  | {$farmerEmail} | Exception during approval email: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+
 
         echo json_encode([
 
@@ -385,6 +404,21 @@ try {
 
 
     $pdo->commit();
+
+    // Send rejection email to farmer (Non-blocking)
+    try {
+        require_once __DIR__ . '/../../../config/mailer.php';
+        require_once __DIR__ . '/../../../config/farmer_email_templates.php';
+        if (function_exists('farmerAccountRejected') && function_exists('sendMail')) {
+            $template = farmerAccountRejected($farmerName, $feedback);
+            sendMail($farmerEmail, $farmerName, $template['subject'], $template['body']);
+        }
+    } catch (Throwable $e) {
+        $logDir = __DIR__ . '/../../../logs';
+        if (!is_dir($logDir)) { @mkdir($logDir, 0755, true); }
+        $timestamp = date('Y-m-d H:i:s');
+        @file_put_contents($logDir . '/mail_log.txt', "[{$timestamp}] FAILED  | {$farmerEmail} | Exception during rejection email: " . $e->getMessage() . "\n", FILE_APPEND);
+    }
 
 
     echo json_encode([

@@ -4,6 +4,8 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 require_once '../connection/db.php';
+require_once '../config/mailer.php';
+require_once '../config/farmer_email_templates.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
@@ -19,16 +21,26 @@ if (empty($email)) {
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id FROM user WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT user_id, name FROM user WHERE email = ?");
     $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // In a production environment, you would generate a token and send a real email reset link.
-        // For this local prototype/demo, we return success.
+        $userName = $user['name'] ?? 'Valued User';
+        $resetToken = bin2hex(random_bytes(16));
+        $resetLink = "http://localhost:5173/reset-password?email=" . urlencode($email) . "&token=" . $resetToken;
+
+        // Send email notification for password reset
+        $mailSent = false;
+        if (function_exists('passwordResetRequest') && function_exists('sendMail')) {
+            $template = passwordResetRequest($userName, $resetLink);
+            $mailSent = sendMail($email, $userName, $template['subject'], $template['body']);
+        }
+
         echo json_encode([
             "success" => true,
-            "message" => "Reset instructions sent."
+            "message" => "Password reset instructions have been sent to your email address.",
+            "mail_sent" => $mailSent
         ]);
     } else {
         echo json_encode([
@@ -36,6 +48,6 @@ try {
             "message" => "We couldn't find an account associated with that email."
         ]);
     }
-} catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "message" => "Error processing password reset: " . $e->getMessage()]);
 }
