@@ -2,3 +2,5 @@
 /* Phase 7A: translation-safe responsive refinements. */
 .cultivation-form-actions,.cultivation-card-actions{flex-wrap:wrap}.cultivation-photo-strip figure{min-width:0;margin:0}.cultivation-photo-strip figcaption{max-width:110px;margin-top:4px;font-size:11px;overflow-wrap:anywhere}
 @media(max-width:620px){.cultivation-hero,.cultivation-panel{padding:20px 16px}.cultivation-form-actions>*{flex:1 1 140px}}
+.cultivation-period-input{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,.55fr);gap:8px;min-width:0}.cultivation-period-input input,.cultivation-period-input select{min-width:0}
+@media(max-width:620px){.cultivation-period-input{grid-template-columns:1fr}}

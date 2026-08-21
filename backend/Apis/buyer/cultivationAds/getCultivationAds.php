@@ -9,7 +9,8 @@ try {
     $sql = "SELECT ca.cultivation_ad_id, ca.crop_name, ca.category, ca.district,
                    ca.capacity_quantity, ca.committed_quantity,
                    GREATEST(ca.capacity_quantity-ca.committed_quantity,0) remaining_capacity,
-                   ca.unit, ca.estimated_unit_price, ca.expected_harvest_date,
+                   ca.unit, ca.estimated_unit_price, ca.timing_model, ca.growing_period_days, ca.expected_harvest_date, ca.cultivation_started_at,
+                   CASE WHEN ca.timing_model='growing_period' AND ca.cultivation_started_at IS NOT NULL THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL ca.growing_period_days DAY)) END estimated_harvest_date,
                    ca.cultivation_area, ca.area_unit, ca.description, ca.created_at,
                    ca.farmer_id, u.name farmer_name, f.verified_status,
                    COALESCE((SELECT AVG(rr.rating) FROM ratings_review rr

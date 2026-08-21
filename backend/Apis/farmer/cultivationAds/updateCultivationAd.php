@@ -13,7 +13,7 @@ $existing = $preflight->fetch(PDO::FETCH_ASSOC);
 if (!$existing) cultivation_json(404, ['success' => false, 'message' => 'Cultivation opportunity not found.']);
 if (!in_array($existing['status'], ['draft', 'open', 'cultivating'], true)) cultivation_json(409, ['success' => false, 'message' => 'This cultivation opportunity is read-only.']);
 if (in_array($existing['status'], ['open', 'cultivating'], true) && (int)$farmer['verified_status'] !== 1) cultivation_json(403, ['success' => false, 'message' => 'Only verified farmers can maintain an open cultivation opportunity.']);
-$data = cultivation_fields($_POST, (float)$existing['committed_quantity']);
+$data = cultivation_fields($_POST, (float)$existing['committed_quantity'], $existing['timing_model']);
 try {
     $pdo->beginTransaction();
     $lock = $pdo->prepare('SELECT * FROM cultivation_ad WHERE cultivation_ad_id = ? AND farmer_id = ? FOR UPDATE');
@@ -31,12 +31,13 @@ try {
     $termsChanged = $data['crop_name'] !== $locked['crop_name']
         || $data['unit'] !== $locked['unit']
         || abs($data['estimated_unit_price'] - (float)$locked['estimated_unit_price']) > 0.00001
-        || $data['expected_harvest_date'] !== $locked['expected_harvest_date'];
+        || $data['expected_harvest_date'] !== $locked['expected_harvest_date']
+        || $data['growing_period_days'] !== ($locked['growing_period_days'] === null ? null : (int)$locked['growing_period_days']);
     if ((int)$stats['pending_count'] > 0 && $termsChanged) {
-        throw new DomainException('Crop, unit, estimated price, and harvest date cannot change while buyer requests are pending.');
+        throw new DomainException('Crop, unit, estimated price, and cultivation timing cannot change while buyer requests are pending.');
     }
-    if ((int)$stats['accepted_count'] > 0 && ($data['crop_name'] !== $locked['crop_name'] || $data['unit'] !== $locked['unit'] || $data['expected_harvest_date'] !== $locked['expected_harvest_date'])) {
-        throw new DomainException('Crop, unit, and harvest date cannot change after an agreement is accepted.');
+    if ((int)$stats['accepted_count'] > 0 && ($data['crop_name'] !== $locked['crop_name'] || $data['unit'] !== $locked['unit'] || $data['expected_harvest_date'] !== $locked['expected_harvest_date'] || $data['growing_period_days'] !== ($locked['growing_period_days'] === null ? null : (int)$locked['growing_period_days']))) {
+        throw new DomainException('Crop, unit, and cultivation timing cannot change after an agreement is accepted.');
     }
     if ((int)$stats['pending_count'] > 0 && $data['capacity_quantity'] < (float)$stats['largest_pending_quantity']) {
         throw new DomainException('Capacity cannot be reduced below the largest pending buyer request.');
@@ -44,8 +45,8 @@ try {
     $count = $pdo->prepare('SELECT COUNT(*) FROM cultivation_ad_photos WHERE cultivation_ad_id = ?');
     $count->execute([$id]);
     if ((int)$count->fetchColumn() + count($photos) > CULTIVATION_AD_MAX_PHOTOS) { $pdo->rollBack(); cultivation_json(422, ['success' => false, 'message' => 'A maximum of 5 photos is allowed.']); }
-    $stmt = $pdo->prepare("UPDATE cultivation_ad SET crop_name=?, category=?, district=?, capacity_quantity=?, unit=?, estimated_unit_price=?, expected_harvest_date=?, cultivation_area=?, area_unit=?, description=?, status=CASE WHEN status='open' AND ? <= committed_quantity THEN 'capacity_reached' ELSE status END WHERE cultivation_ad_id=? AND farmer_id=?");
-    $stmt->execute([$data['crop_name'], $data['category'], $data['district'], $data['capacity_quantity'], $data['unit'], $data['estimated_unit_price'], $data['expected_harvest_date'], $data['cultivation_area'], $data['area_unit'], $data['description'], $data['capacity_quantity'], $id, $farmer['farmer_id']]);
+    $stmt = $pdo->prepare("UPDATE cultivation_ad SET crop_name=?, category=?, district=?, capacity_quantity=?, unit=?, estimated_unit_price=?, expected_harvest_date=?, growing_period_days=?, cultivation_area=?, area_unit=?, description=?, status=CASE WHEN status='open' AND ? <= committed_quantity THEN 'capacity_reached' ELSE status END WHERE cultivation_ad_id=? AND farmer_id=?");
+    $stmt->execute([$data['crop_name'], $data['category'], $data['district'], $data['capacity_quantity'], $data['unit'], $data['estimated_unit_price'], $data['expected_harvest_date'], $data['growing_period_days'], $data['cultivation_area'], $data['area_unit'], $data['description'], $data['capacity_quantity'], $id, $farmer['farmer_id']]);
     cultivation_store_photos($pdo, $id, $photos, $createdFiles);
     $pdo->commit();
     cultivation_json(200, ['success' => true, 'message' => 'Cultivation opportunity updated successfully.', 'data' => ['cultivation_ad_id' => $id]]);

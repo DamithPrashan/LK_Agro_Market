@@ -44,6 +44,14 @@ try {
         ||($order['reservation_source']==='cultivation'&&$order['source_status']!=='accepted')) {
         throw new DomainException('This reservation is not eligible for a complaint.');
     }
+    if ($reason === 'Harvest Delay' && $order['reservation_source'] === 'cultivation' && $order['timing_model'] === 'growing_period') {
+        $eligible = $order['cultivation_started_at'] !== null
+            && (int)$order['agreed_growing_period_days'] > 0
+            && $order['estimated_harvest_date'] !== null
+            && date('Y-m-d') > $order['estimated_harvest_date']
+            && !in_array($order['reservation_status'], ['ready', 'completed'], true);
+        if (!$eligible) throw new DomainException('This order is not yet eligible for a harvest-delay complaint.');
+    }
 
     $evidencePath=null;
 $failureStage='evidence validation';

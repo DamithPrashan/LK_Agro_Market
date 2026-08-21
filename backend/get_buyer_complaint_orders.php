@@ -31,6 +31,8 @@ try {
             'unit'=>$order['unit'], 'unit_price'=>$order['unit_price'], 'total_amount'=>$order['total_amount'],
             'totalPrice'=>$order['total_amount'], 'reservation_status'=>$order['reservation_status'],
             'transaction_status'=>$order['transaction_status'], 'collection_date'=>$order['collection_date'], 'date'=>$order['collection_date'],
+            'timing_model'=>$order['timing_model'], 'cultivation_started_at'=>$order['cultivation_started_at'],
+            'agreed_growing_period_days'=>$order['agreed_growing_period_days'], 'estimated_harvest_date'=>$order['estimated_harvest_date'],
         ];
     }
     echo json_encode(['success'=>true,'orders'=>$orders]);

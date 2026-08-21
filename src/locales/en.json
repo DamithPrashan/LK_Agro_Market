@@ -107,7 +107,7 @@
     "reasonOption2": "Late Delivery",
     "reasonOption3": "Wrong Quantity",
     "reasonOption4": "Damaged Product",
-    "harvestDelay": "Harvest Delay",
+    "harvestDelay": "Harvest Delay", "harvestDelayNotEligible": "Not Yet Eligible",
     "availableCrop": "Available Crop",
     "cultivationOrder": "Cultivation Order",
     "agreedQuantity": "Agreed Quantity",
@@ -341,7 +341,7 @@
     "complaintDismissed": "Your complaint for Order #{{orderId}} was dismissed after review.",
     "farmer_response_reminder": "Less than 24 hours remain to respond to complaint #{{complaintId}}.",
     "farmer_response_overdue": "The response deadline for complaint #{{complaintId}} has passed.",
-    "warningIssued": "An administrator has issued a warning for your account.", "cultivationRequestSubmitted": "New request for {{quantity}} {{unit}} of {{cropName}}.", "cultivationRequestAccepted": "Your request for {{quantity}} {{unit}} of {{cropName}} was accepted.", "cultivationRequestRejected": "Your cultivation request for {{cropName}} was rejected.", "cultivationRequestCancelled": "A pending cultivation request for {{cropName}} was cancelled.", "cultivationOrderReady": "Your cultivation order for {{cropName}} is ready.", "cultivationFinalPaymentReceived": "Final payment was received for the {{cropName}} cultivation order.", "cultivationOrderCompleted": "Your cultivation order for {{cropName}} has been completed.",
+    "warningIssued": "An administrator has issued a warning for your account.", "cultivationRequestSubmitted": "New request for {{quantity}} {{unit}} of {{cropName}}.", "cultivationRequestAccepted": "Your request for {{quantity}} {{unit}} of {{cropName}} was accepted.", "cultivationRequestRejected": "Your cultivation request for {{cropName}} was rejected.", "cultivationRequestCancelled": "A pending cultivation request for {{cropName}} was cancelled.", "cultivationStarted": "Cultivation has started for {{cropName}}. Estimated harvest: {{estimated_harvest_date}}.", "cultivationOrderReady": "Your cultivation order for {{cropName}} is ready.", "cultivationFinalPaymentReceived": "Final payment was received for the {{cropName}} cultivation order.", "cultivationOrderCompleted": "Your cultivation order for {{cropName}} has been completed.",
     "title": {
       "orderSubmitted": "New Order Received",
       "orderAccepted": "Reservation Accepted",
@@ -353,7 +353,7 @@
       "complaintResolved": "Dispute Resolved",
       "verifiedBadge": "Verification Completed",
       "preorderCancelled": "Pre-Order Cancelled",
-      "farmerResponseRequested": "Complaint Response Required", "complaintDismissed": "Complaint Dismissed", "farmer_response_reminder": "Complaint Response Reminder", "farmer_response_overdue": "Complaint Response Overdue", "warningIssued": "Administrative Warning", "cultivationRequestSubmitted": "New Cultivation Request", "cultivationRequestAccepted": "Cultivation Request Accepted", "cultivationRequestRejected": "Cultivation Request Rejected", "cultivationRequestCancelled": "Cultivation Request Cancelled", "cultivationOrderReady": "Cultivation Order Ready", "cultivationFinalPaymentReceived": "Cultivation Final Payment Received", "cultivationOrderCompleted": "Cultivation Order Completed"
+      "farmerResponseRequested": "Complaint Response Required", "complaintDismissed": "Complaint Dismissed", "farmer_response_reminder": "Complaint Response Reminder", "farmer_response_overdue": "Complaint Response Overdue", "warningIssued": "Administrative Warning", "cultivationRequestSubmitted": "New Cultivation Request", "cultivationRequestAccepted": "Cultivation Request Accepted", "cultivationRequestRejected": "Cultivation Request Rejected", "cultivationRequestCancelled": "Cultivation Request Cancelled", "cultivationStarted": "Cultivation Started", "cultivationOrderReady": "Cultivation Order Ready", "cultivationFinalPaymentReceived": "Cultivation Final Payment Received", "cultivationOrderCompleted": "Cultivation Order Completed"
     }
   },
   "confirmations": {
@@ -446,6 +446,7 @@
     "responseSubmittedAlert": "Response submitted successfully.",
     "cultivationRequests": { "title": "Buyer Requests", "loading": "Loading requests...", "empty": "No cultivation requests yet.", "requestedQuantity": "Requested Quantity", "collectionDate": "Collection Date", "requestDate": "Request Date", "remaining": "Current Remaining Capacity", "accept": "Accept", "reject": "Reject", "acceptConfirm": "Accept this request and commit its full quantity?", "rejectConfirm": "Reject this cultivation request?", "statuses": { "pending": "Pending", "accepted": "Accepted", "rejected": "Rejected", "cancelled": "Cancelled" } },
     "cultivationAds": {
+      "growingPeriod": "Growing Period", "growingPeriodHint": "Months use 30 days. The duration is stored as whole days.", "growingPeriodValidation": "Enter a positive growing period up to 3650 days.", "periodUnits": { "days": "Days", "weeks": "Weeks", "months": "Months" },
       "addTitle": "Add Cultivation Ad", "editTitle": "Edit Cultivation Ad", "opportunitiesTitle": "Cultivation Opportunities", "futureLabel": "Future Cultivation Opportunity", "explanation": "Advertise a crop you are willing and able to cultivate based on future buyer demand.", "manageSubtitle": "Manage future cultivation capability separately from current crop stock.",
       "cropName": "Crop Name", "category": "Category", "district": "District", "capacity": "Cultivation Capacity", "committed": "committed", "available": "available", "remainingCapacity": "Remaining Capacity", "unit": "Unit", "estimatedPrice": "Estimated Price Per Unit", "expectedHarvest": "Expected Harvest Date", "cultivationArea": "Cultivation Area (optional)", "areaUnit": "Area Unit (optional)", "description": "Description", "photos": "Photos", "photoHint": "Up to 5 JPG, PNG, or WebP images; maximum 2 MB each.", "selectedCount": "{{count}} selected", "existingPhotos": "Existing photos", "newPhotos": "Newly selected photos", "select": "Select", "capacityCommitment": "Capacity Commitment", "created": "Created", "edit": "Edit", "closeOpportunity": "Close Opportunity", "closeConfirm": "Close this cultivation opportunity? The record will remain in history.", "save": "Save", "cancel": "Cancel", "saving": "Saving...", "loading": "Loading...", "empty": "No cultivation opportunities yet", "updated": "Cultivation opportunity updated successfully.", "saveFailed": "Unable to save cultivation opportunity.",
       "categories": { "vegetable": "Vegetable", "fruit": "Fruit", "grain": "Grain", "other": "Other" }, "areaUnits": { "acres": "Acres", "hectares": "Hectares", "perches": "Perches" },
@@ -638,6 +639,7 @@
     "watermelon": "Watermelon",
     "corn": "Corn"
   },
+  "growingPeriod": { "label": "Growing Period", "units": { "days": "days", "weeks": "weeks", "months": "months" }, "startCultivation": "Start Cultivation", "startConfirm": "Start cultivation for this opportunity?", "cultivationStarted": "Cultivation Started", "cultivationNotStarted": "Cultivation Not Started", "startedOn": "Started On", "estimatedHarvest": "Estimated Harvest", "markHarvested": "Mark Harvested", "markHarvestedConfirm": "Mark this cultivation opportunity harvested?", "harvestCompleted": "Harvest Completed", "resolvePendingFirst": "Resolve Pending Requests First", "confirmCollectionDate": "Confirm Collection Date", "collectionDate": "Collection Date", "confirmAndMarkReady": "Confirm & Mark Ready", "collectionDateAfterHarvest": "Collection date must be on or after estimated harvest", "collectionDateToBeConfirmed": "Collection date to be confirmed", "requestExplanation": "Cultivation not started. Timing begins when the farmer starts cultivation. The collection date will be confirmed later.", "requestTimingSummary": "Growing Period: ~{{days}} days · Cultivation not started · Collection date: To be confirmed", "toBeConfirmed": "To be confirmed", "cancellationDeferred": "Cancellation is unavailable until the cultivation collection date is confirmed." },
   "admin": {
     "dashboard": {
       "welcomeBack": "Welcome Back {{name}} 👋",

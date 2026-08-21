@@ -4,13 +4,13 @@ header('Access-Control-Allow-Methods: POST');
 require_once __DIR__ . '/_common.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') cultivation_json(405, ['success' => false, 'message' => 'Method not allowed.']);
 $farmer = cultivation_require_farmer(true);
-$data = cultivation_fields($_POST);
+$data = cultivation_fields($_POST, 0, 'growing_period');
 $photos = cultivation_photo_files();
 $createdFiles = [];
 try {
     $pdo->beginTransaction();
-    $stmt = $pdo->prepare('INSERT INTO cultivation_ad (farmer_id, crop_name, category, district, capacity_quantity, committed_quantity, unit, estimated_unit_price, expected_harvest_date, cultivation_area, area_unit, description, status) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, \'open\')');
-    $stmt->execute([$farmer['farmer_id'], $data['crop_name'], $data['category'], $data['district'], $data['capacity_quantity'], $data['unit'], $data['estimated_unit_price'], $data['expected_harvest_date'], $data['cultivation_area'], $data['area_unit'], $data['description']]);
+    $stmt = $pdo->prepare('INSERT INTO cultivation_ad (farmer_id, crop_name, category, district, capacity_quantity, committed_quantity, unit, estimated_unit_price, timing_model, expected_harvest_date, growing_period_days, cultivation_area, area_unit, description, status) VALUES (?, ?, ?, ?, ?, 0, ?, ?, \'growing_period\', NULL, ?, ?, ?, ?, \'open\')');
+    $stmt->execute([$farmer['farmer_id'], $data['crop_name'], $data['category'], $data['district'], $data['capacity_quantity'], $data['unit'], $data['estimated_unit_price'], $data['growing_period_days'], $data['cultivation_area'], $data['area_unit'], $data['description']]);
     $adId = (int)$pdo->lastInsertId();
     cultivation_store_photos($pdo, $adId, $photos, $createdFiles);
     $pdo->commit();

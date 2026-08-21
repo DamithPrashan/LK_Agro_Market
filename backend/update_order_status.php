@@ -17,6 +17,7 @@ $user_id = $_SESSION['user']['id'];
 $data = isset($mockInput) ? $mockInput : json_decode(file_get_contents("php://input"), true);
 $order_id = isset($data['order_id']) ? intval($data['order_id']) : 0;
 $action = isset($data['action']) ? trim($data['action']) : '';
+$collection_date = isset($data['collection_date']) ? trim((string)$data['collection_date']) : '';
 
 if ($order_id <= 0 || empty($action)) {
     echo json_encode(["success" => false, "message" => "Invalid parameters."]);
@@ -47,10 +48,12 @@ try {
     // Lock the reservation and its source record. This serializes competing
     // status transitions and keeps ownership and payment checks atomic.
     $checkQuery = $pdo->prepare("
-        SELECT r.reservation_id, r.reservation_source, r.reservation_status, r.transaction_status,
+        SELECT r.reservation_id, r.reservation_source, r.reservation_status, r.transaction_status, r.collection_date,
                rc.reserve_crop_id, rc.status AS reserve_status,
                rc.quantity_requested, c.crop_id, c.quantity AS available_quantity,
-               c.crop_status, cr.request_status AS cultivation_request_status,
+               c.crop_status, cr.request_status AS cultivation_request_status, cr.agreed_growing_period_days,
+               ca.timing_model, ca.cultivation_started_at,
+               CASE WHEN ca.cultivation_started_at IS NOT NULL AND cr.agreed_growing_period_days IS NOT NULL THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL cr.agreed_growing_period_days DAY)) END AS estimated_harvest_date,
                CASE WHEN r.reservation_source = 'cultivation' THEN cb.user_id ELSE b.user_id END AS buyer_user_id,
                CASE WHEN r.reservation_source = 'cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name,
                CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_total_amount ELSE rc.total_amount END AS order_total,
@@ -126,10 +129,26 @@ try {
         if ($order['reservation_status'] !== 'confirmed' || $order['transaction_status'] !== 'partially_paid' || !$sourceReady || !$validAdvance) {
             throw new DomainException('The order can be marked ready only after the advance payment is completed.');
         }
-        $pdo->prepare("UPDATE reservation SET reservation_status = 'ready' WHERE reservation_id = ?")->execute([$order_id]);
+        if ($isCultivation && $order['timing_model'] === 'growing_period') {
+            if ($order['cultivation_started_at'] === null || $order['estimated_harvest_date'] === null) {
+                throw new DomainException('Cultivation must be started before this order can be marked ready.');
+            }
+            $date = DateTimeImmutable::createFromFormat('!Y-m-d', $collection_date);
+            $today = new DateTimeImmutable('today');
+            if (!$date || $date->format('Y-m-d') !== $collection_date || $date < $today) {
+                throw new DomainException('Enter a valid collection date that is not in the past.');
+            }
+            if ($collection_date < $order['estimated_harvest_date']) {
+                throw new DomainException('Collection date must be on or after estimated harvest.');
+            }
+            $pdo->prepare("UPDATE reservation SET collection_date=?, reservation_status='ready' WHERE reservation_id=?")->execute([$collection_date, $order_id]);
+        } else {
+            $pdo->prepare("UPDATE reservation SET reservation_status = 'ready' WHERE reservation_id = ?")->execute([$order_id]);
+        }
         if ($isCultivation) {
             require_once 'create_notification.php';
-            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
+            $confirmedDate = $order['timing_model'] === 'growing_period' ? $collection_date : $order['collection_date'];
+            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'collectionDate' => $confirmedDate, 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Ready', 'Your cultivation order is ready.', 'cultivationOrderReady', $notificationData)) {
                 throw new RuntimeException('Unable to notify the buyer that the cultivation order is ready.');
             }

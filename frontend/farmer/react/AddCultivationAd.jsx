@@ -19,7 +19,7 @@ export default function AddCultivationAd() {
     event.preventDefault();
     if (submitting) return;
     const error = validateCultivationAd(form, photos);
-    if (error) return alert(text(`validation.${error}`, "Please check the entered details."));
+    if (error) return alert(text(error === "growingPeriod" ? "growingPeriodValidation" : `validation.${error}`, "Please check the entered details."));
     const body = new FormData(); Object.entries(form).forEach(([key, value]) => body.append(key, value)); photos.forEach((photo) => body.append("photos[]", photo));
     setSubmitting(true);
     try {

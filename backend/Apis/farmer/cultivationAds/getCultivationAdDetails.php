@@ -4,7 +4,7 @@ require_once __DIR__ . '/_common.php';
 $farmer = cultivation_require_farmer();
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) cultivation_json(400, ['success' => false, 'message' => 'Invalid cultivation ad ID.']);
-$stmt = $pdo->prepare('SELECT ca.*, GREATEST(ca.capacity_quantity - ca.committed_quantity, 0) AS remaining_capacity FROM cultivation_ad ca WHERE ca.cultivation_ad_id = ? AND ca.farmer_id = ?');
+$stmt = $pdo->prepare("SELECT ca.*, GREATEST(ca.capacity_quantity - ca.committed_quantity, 0) AS remaining_capacity, CASE WHEN ca.timing_model='growing_period' AND ca.cultivation_started_at IS NOT NULL THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL ca.growing_period_days DAY)) END AS estimated_harvest_date FROM cultivation_ad ca WHERE ca.cultivation_ad_id = ? AND ca.farmer_id = ?");
 $stmt->execute([$id, $farmer['farmer_id']]);
 $ad = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$ad) cultivation_json(404, ['success' => false, 'message' => 'Cultivation opportunity not found.']);

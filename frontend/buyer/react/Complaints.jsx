@@ -37,6 +37,8 @@ function ComplaintPage() {
   const [loading, setLoading] = useState(false);
   const [fetchOrdersLoading, setFetchOrdersLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
+  const selectedOrder = orders.find((order) => String(order.id) === String(selectedOrderId));
+  const harvestDelayUnavailable = selectedOrder?.reservation_source === "cultivation" && selectedOrder?.timing_model === "growing_period" && (!selectedOrder.estimated_harvest_date || new Date().toISOString().slice(0, 10) <= selectedOrder.estimated_harvest_date || ["ready", "completed"].includes(selectedOrder.reservation_status));
 
   // Buyer Complaints List State
   const [complaints, setComplaints] = useState([]);
@@ -293,7 +295,7 @@ function ComplaintPage() {
                   <option value="Late Delivery">{t("complaints.reasonOption2")}</option>
                   <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
                   <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
-                  <option value="Harvest Delay">{t("complaints.harvestDelay")}</option>
+                  <option value="Harvest Delay" disabled={harvestDelayUnavailable}>{t("complaints.harvestDelay")}{harvestDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
                 </select>
 
                 <label>{t("forms.description")}</label>

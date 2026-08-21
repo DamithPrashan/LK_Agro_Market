@@ -401,7 +401,7 @@ export default function Payment() {
                 )}
               </div>
               <div style={{ fontSize: 11, color: "var(--t-2)" }}>
-                {order.quantity} {order.unit} · Collection {order.collectionDate}
+                {order.quantity} {order.unit} · {t("buyer.cultivation.collectionDate")}: {order.collectionDate || t("growingPeriod.toBeConfirmed")}
               </div>
             </div>
           </div>

@@ -50,6 +50,8 @@ function OrderManagement() {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [activeChatOrder, setActiveChatOrder] = useState(null);
     const [updatingOrderId, setUpdatingOrderId] = useState(null);
+    const [readyOrder, setReadyOrder] = useState(null);
+    const [collectionDate, setCollectionDate] = useState("");
 
     const fetchOrders = async () => {
         try {
@@ -76,8 +78,8 @@ function OrderManagement() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleAction = async (orderId, action) => {
-        if (updatingOrderId !== null) return;
+    const handleAction = async (orderId, action, confirmedCollectionDate = null) => {
+        if (updatingOrderId !== null) return false;
         setUpdatingOrderId(orderId);
         try {
             const res = await fetch("/backend/update_order_status.php", {
@@ -87,7 +89,8 @@ function OrderManagement() {
                 },
                 body: JSON.stringify({
                     order_id: orderId,
-                    action: action
+                    action: action,
+                    ...(confirmedCollectionDate ? { collection_date: confirmedCollectionDate } : {})
                 }),
                 credentials: "include"
             });
@@ -95,11 +98,14 @@ function OrderManagement() {
             if (data.success) {
                 alert(data.message);
                 fetchOrders();
+                return true;
             } else {
                 alert(data.message);
+                return false;
             }
         } catch {
             alert(t("errors.submissionFailed"));
+            return false;
         } finally {
             setUpdatingOrderId(null);
         }
@@ -188,7 +194,8 @@ function OrderManagement() {
 
                             <div>
                                 <p className="label">{t("farmer.collectionDateLabel")}</p>
-                                <p>{order.date}</p>
+                                <p>{order.date || t("growingPeriod.toBeConfirmed")}</p>
+                                {order.reservation_source === "cultivation" && order.timing_model === "growing_period" && <><p>{t("growingPeriod.label")}: ~{order.agreed_growing_period_days} {t("growingPeriod.units.days")}</p><p>{order.cultivation_started_at ? `${t("growingPeriod.startedOn")}: ${String(order.cultivation_started_at).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}</p>{order.estimated_harvest_date && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimated_harvest_date}</p>}</>}
                             </div>
 
                             <div>
@@ -291,7 +298,7 @@ function OrderManagement() {
                             )}
 
                             {order.status === "Accepted" && order.payment === "Paid (1/3)" && (
-                                <button className="ready-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, 'ready')}>
+                                <button className="ready-btn" disabled={updatingOrderId === order.db_id} onClick={() => order.reservation_source === "cultivation" && order.timing_model === "growing_period" ? (setReadyOrder(order), setCollectionDate("")) : handleAction(order.db_id, 'ready')}>
                                     {t("buttons.markReady")}
                                 </button>
                             )}
@@ -327,6 +334,8 @@ function OrderManagement() {
                     onClose={() => setSelectedBuyer(null)}
                 />
             )}
+
+            {readyOrder && <div className="collection-date-modal" role="dialog" aria-modal="true" aria-labelledby="collection-date-title"><div className="collection-date-panel"><h3 id="collection-date-title">{t("growingPeriod.confirmCollectionDate")}</h3><p>{t("growingPeriod.startedOn")}: {String(readyOrder.cultivation_started_at).slice(0, 10)}</p><p>{t("growingPeriod.estimatedHarvest")}: {readyOrder.estimated_harvest_date}</p><p>{t("growingPeriod.label")}: ~{readyOrder.agreed_growing_period_days} {t("growingPeriod.units.days")}</p><label>{t("growingPeriod.collectionDate")}<input type="date" min={readyOrder.estimated_harvest_date} value={collectionDate} onChange={(event) => setCollectionDate(event.target.value)} /></label><div className="collection-date-actions"><button type="button" onClick={() => { setReadyOrder(null); setCollectionDate(""); }}>{t("buttons.cancel")}</button><button type="button" className="ready-btn" disabled={!collectionDate || updatingOrderId !== null} onClick={async () => { if (await handleAction(readyOrder.db_id, "ready", collectionDate)) { setReadyOrder(null); setCollectionDate(""); } }}>{t("growingPeriod.confirmAndMarkReady")}</button></div></div></div>}
 
             {isChatOpen && activeChatOrder && (
                 <MessageModal
