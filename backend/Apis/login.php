@@ -121,6 +121,16 @@ try {
         exit;
     }
 
+    if (($user['account_status'] ?? 'inactive') !== 'active') {
+
+        echo json_encode([
+            "success" => false,
+            "message" => "Your account is inactive. Please contact the administrator."
+        ]);
+
+        exit;
+    }
+
 
     /*
     =====================================================

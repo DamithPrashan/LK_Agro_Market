@@ -5623,6 +5623,8 @@
 .user-management-page .user-role-badge.admin { background: #f1ecfb; color: #62468f; }
 .user-management-page .user-status-badge { gap: 6px; background: #e5f6ea; color: #216a3d; }
 .user-management-page .user-status-badge > span { width: 6px; height: 6px; border-radius: 50%; background: #2d8a50; }
+.user-management-page .user-status-badge.inactive { background: #f3e8e7; color: #7f3d38; }
+.user-management-page .user-status-badge.inactive > span { background: #a85a53; }
 .user-management-page .user-priority-badge { min-width: 72px; }
 .user-management-page .user-priority-badge.overdue { background: #fde8e7; color: #a32920; }
 .user-management-page .user-priority-badge.urgent { background: #fff0d5; color: #946000; }
@@ -5631,6 +5633,9 @@
 .user-management-page .user-priority-detail { margin-top: 5px; display: block; color: #68776d; font-size: 10px; }
 .user-management-page .user-actions { display: flex; align-items: center; gap: 5px; }
 .user-management-page .user-actions button { width: 31px; height: 31px; display: grid; place-items: center; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+.user-management-page .user-actions .user-status-action { width: auto; min-width: 76px; padding: 0 9px; font-size: 11px; font-weight: 650; white-space: nowrap; }
+.user-management-page .user-status-action.active { background: #f8e9e7; color: #8a3730; }
+.user-management-page .user-status-action.inactive { background: #e5f6ea; color: #216a3d; }
 .user-management-page .user-warning-btn { color: #9a6909; }
 .user-management-page .user-delete-btn { color: #a43b32; }
 .user-management-page .user-actions button:hover:not(:disabled) { background: #edf5f1; }

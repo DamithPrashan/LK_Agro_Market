@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `language` VARCHAR(20) NOT NULL DEFAULT 'sinhala',
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('farmer', 'buyer', 'admin') NOT NULL,
+  `account_status` ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
   `verified` TINYINT(1) NOT NULL DEFAULT 0,
   `nic` VARCHAR(50) NULL,
   `farm_location` VARCHAR(255) NULL,

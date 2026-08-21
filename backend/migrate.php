@@ -48,6 +48,7 @@ function column_is_nullable(PDO $pdo, string $table, string $column): bool
 function migration_is_reflected(PDO $pdo, string $name): bool
 {
     return match ($name) {
+        '2026_08_21_user_account_status.sql' => column_exists($pdo, 'user', 'account_status'),
         '2026_08_17_complaint_workflow.sql' =>
             column_exists($pdo, 'complaints', 'farmer_evidence_file') &&
             column_exists($pdo, 'complaints', 'farmer_response_requested_at') &&
