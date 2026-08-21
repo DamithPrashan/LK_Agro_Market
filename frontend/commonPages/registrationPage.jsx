@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "../../src/hooks/useForm";
 import FarmerVerificationForm from "../components/FarmerVerificationForm";
 import { DISTRICTS } from "../../src/constants/districts";
-
+import { FiShield, FiLock, FiGlobe } from "react-icons/fi";
+import logo from "../../src/assets/logo.png";
+import bgImage from "../../src/assets/registration-bg.jpg";
+import "./csss/registrationPage.css";
 
 function validate(v) {
   const e = {};
@@ -37,6 +40,7 @@ export default function RegistrationPage() {
   const { login } = useAuth();
   const { t } = useTranslation();
   const [role, setRole] = useState("farmer");
+  const [step, setStep] = useState(1);
   const [apiErr, setApiErr] = useState("");
   const [loading, setLoading] = useState(false);
   const [nicFile, setNicFile] = useState(null);
@@ -46,6 +50,19 @@ export default function RegistrationPage() {
     { name: "", contact: "", email: "", district: "", language: "sinhala", password: "", confirm: "", nic: "", farm_location: "" },
     validate
   );
+
+  const handleRoleSelect = (selectedRole) => {
+    setRole(selectedRole);
+    setStep(1);
+    setApiErr("");
+  };
+
+  const handleNextStep = () => {
+    if (validateAll()) {
+      setStep(2);
+      setApiErr("");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,112 +129,211 @@ export default function RegistrationPage() {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div className="register-page-wrapper">
+      {/* LEFT SIDE - BRANDING & VISUAL SECTION */}
+      <div
+        className="register-left-side"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className="register-hero-overlay" />
 
-      <main style={s.page}>
-        <div className="card" style={s.card}>
-          <div style={s.header}>
-            <div style={s.logo}>{t("login.logoTitle")}</div>
-            <h1 style={s.title}>{t("register.header")}</h1>
-            <p style={s.sub}>{t("register.subtitle")}</p>
+        {/* Top Branding / Logo */}
+        <div className="brand-header">
+          <img src={logo} alt="LK Agro Market" className="brand-logo-img" />
+          <div className="brand-title-wrap">
+            <span className="brand-name">LK Agro Market</span>
+            <span className="brand-badge">Sri Lanka</span>
+          </div>
+        </div>
+
+        {/* Bottom Marketing Content */}
+        <div className="hero-content-bottom">
+          <h2 className="hero-headline">
+            Fresh crops.<br />
+            <span className="highlight-text">Direct from Sri Lankan farms.</span>
+          </h2>
+          <p className="hero-description">
+            Connect directly with verified farmers. Browse and pre-order fresh crops with confidence. No unnecessary middlemen.
+          </p>
+
+          <div className="hero-benefits">
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <FiShield />
+              </div>
+              <span>Verified farmer system</span>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <FiLock />
+              </div>
+              <span>Secure payment process</span>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <FiGlobe />
+              </div>
+              <span>Sinhala · Tamil · English support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE - EXISTING REGISTRATION FORM */}
+      <div className="register-right-side">
+        <div className="register-form-card">
+          <div className="form-header">
+            <h1 className="form-title">{t("register.header")}</h1>
+            <p className="form-subtitle">{t("register.subtitle")}</p>
           </div>
 
-          {/* Role selector */}
-          <div style={s.roleGrid}>
+          {/* Role selector - Fixed Vertical Position */}
+          <div className="role-grid">
             {["farmer", "buyer"].map((r) => (
               <button
                 key={r} type="button"
-                onClick={() => setRole(r)}
-                style={{ ...s.roleBtn, ...(role === r ? s.roleActive : {}) }}
+                onClick={() => handleRoleSelect(r)}
+                className={`role-btn ${role === r ? "active" : ""}`}
               >
-                <span style={{ fontSize: 28 }}>{r === "farmer" ? "🌾" : "🛒"}</span>
-                <span style={{ fontWeight: 700, fontSize: 14 }}>{r === "farmer" ? t("register.roleFarmer") : t("register.roleBuyer")}</span>
-                <span style={{ fontSize: 11, color: "var(--t-3)" }}>
-                  {r === "farmer" ? t("register.roleFarmerSub") : t("register.roleBuyerSub")}
-                </span>
+                <span className="role-emoji">{r === "farmer" ? "🌾" : "🛒"}</span>
+                <div className="role-text-wrap">
+                  <span className="role-label">{r === "farmer" ? t("register.roleFarmer") : t("register.roleBuyer")}</span>
+                  <span className="role-sub">
+                    {r === "farmer" ? t("register.roleFarmerSub") : t("register.roleBuyerSub")}
+                  </span>
+                </div>
               </button>
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <p className="section-label">{t("register.sectionPersonal")}</p>
-            <div className="grid-2">
-              {renderField(t("forms.fullName"), "name", "text", "R.M.S.T. Randeniya")}
-              {renderField(t("forms.contactNumber"), "contact", "text", "+94 71 234 5678")}
-            </div>
-            {renderField(t("forms.emailAddress"), "email", "email", t("login.emailPlaceholder"))}
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="district">{t("forms.district")}</label>
-                <select
-                  id="district" name="district" value={values.district}
-                  onChange={handleChange} onBlur={handleBlur}
-                  className={touched.district && errors.district ? "error" : ""}
-                >
-                  <option value="">{t("forms.selectDistrict")}</option>
-                  {DISTRICTS.map((d) => (
-                    <option key={d.key} value={d.value}>
-                      {t(`districts.${d.key}`)}
-                    </option>
-                  ))}
-                </select>
-                {touched.district && errors.district && <p className="err-msg">{t(errors.district)}</p>}
+          {/* Progress Indicator for Farmers - Fixed Vertical Position */}
+          {role === "farmer" && (
+            <div className="step-progress-bar">
+              <div className={`step-pill ${step >= 1 ? "active" : ""}`}>
+                <span className="step-num">1</span>
+                <span className="step-text">Personal Details</span>
               </div>
-              <div className="field">
-                <label htmlFor="language">{t("forms.preferredLanguage")}</label>
-                <select id="language" name="language" value={values.language} onChange={handleChange}>
-                  <option value="sinhala">සිංහල (Sinhala)</option>
-                  <option value="tamil">தமிழ் (Tamil)</option>
-                  <option value="english">English</option>
-                </select>
+              <div className="step-line" />
+              <div className={`step-pill ${step >= 2 ? "active" : ""}`}>
+                <span className="step-num">2</span>
+                <span className="step-text">Farmer Verification</span>
               </div>
             </div>
-            <div className="grid-2">
-              {renderField(t("forms.password"), "password", "password", "", t("auth.minPasswordHint"))}
-              {renderField(t("forms.confirmPassword"), "confirm", "password")}
-            </div>
+          )}
 
-            {/* Farmer verification — rendered from its own component */}
-            {role === "farmer" && (
-              <FarmerVerificationForm
-                nic={values.nic}
-                farm_location={values.farm_location}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                onNicFile={setNicFile}
-                onEvidenceFile={setEvidenceFile}
-                nicFile={nicFile}
-                evidenceFile={evidenceFile}
-              />
+          <form onSubmit={handleSubmit} noValidate className="step-form-area">
+            {/* STEP 1: Personal Details */}
+            {step === 1 && (
+              <div>
+                <div className="grid-2">
+                  {renderField(t("forms.fullName"), "name", "text", "R.M.S.T. Randeniya")}
+                  {renderField(t("forms.contactNumber"), "contact", "text", "+94 71 234 5678")}
+                </div>
+                <div className="grid-2">
+                  {renderField(t("forms.emailAddress"), "email", "email", t("login.emailPlaceholder"))}
+                  <div className="field">
+                    <label htmlFor="district">{t("forms.district")}</label>
+                    <select
+                      id="district" name="district" value={values.district}
+                      onChange={handleChange} onBlur={handleBlur}
+                      className={touched.district && errors.district ? "error" : ""}
+                    >
+                      <option value="">{t("forms.selectDistrict")}</option>
+                      {DISTRICTS.map((d) => (
+                        <option key={d.key} value={d.value}>
+                          {t(`districts.${d.key}`)}
+                        </option>
+                      ))}
+                    </select>
+                    {touched.district && errors.district && <p className="err-msg">{t(errors.district)}</p>}
+                  </div>
+                </div>
+                <div className="grid-2">
+                  <div className="field">
+                    <label htmlFor="language">{t("forms.preferredLanguage")}</label>
+                    <select id="language" name="language" value={values.language} onChange={handleChange}>
+                      <option value="sinhala">සිංහල (Sinhala)</option>
+                      <option value="tamil">தமிழ் (Tamil)</option>
+                      <option value="english">English</option>
+                    </select>
+                  </div>
+                  {renderField(t("forms.password"), "password", "password", "", t("auth.minPasswordHint"))}
+                </div>
+                <div className="grid-2">
+                  {renderField(t("forms.confirmPassword"), "confirm", "password")}
+                </div>
+
+                {role === "farmer" ? (
+                  <button
+                    className="btn btn-primary btn-lg btn-full"
+                    type="button"
+                    onClick={handleNextStep}
+                  >
+                    Next: Verification →
+                  </button>
+                ) : (
+                  <>
+                    {apiErr && <div className="info-red">{apiErr}</div>}
+                    <button
+                      className="btn btn-primary btn-lg btn-full"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? t("register.btnCreating") : t("register.btnCreate")}
+                    </button>
+                  </>
+                )}
+              </div>
             )}
 
-            {apiErr && <div className="info-red">{apiErr}</div>}
+            {/* STEP 2: Farmer Verification (Farmer only) */}
+            {step === 2 && role === "farmer" && (
+              <div>
+                <FarmerVerificationForm
+                  nic={values.nic}
+                  farm_location={values.farm_location}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  onNicFile={setNicFile}
+                  onEvidenceFile={setEvidenceFile}
+                  nicFile={nicFile}
+                  evidenceFile={evidenceFile}
+                />
 
-            <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? t("register.btnCreating") : t("register.btnCreate")}
-            </button>
+                {apiErr && <div className="info-red">{apiErr}</div>}
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-lg"
+                    onClick={() => setStep(1)}
+                    style={{ flex: 1 }}
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    className="btn btn-primary btn-lg"
+                    type="submit"
+                    disabled={loading}
+                    style={{ flex: 2 }}
+                  >
+                    {loading ? t("register.btnCreating") : t("register.btnCreate")}
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
 
-          <p style={s.foot}>
-            {t("register.footText")}{" "}
-            <Link to="/login" style={{ fontWeight: 600 }}>{t("register.footLink")}</Link>
-          </p>
+          <div className="form-footer">
+            <p className="foot-text">
+              {t("register.footText")}{" "}
+              <Link to="/login" className="foot-link">{t("register.footLink")}</Link>
+            </p>
+          </div>
         </div>
-      </main>
-
+      </div>
     </div>
   );
 }
-
-const s = {
-  page: { flex: 1, background: "var(--page)", display: "flex", justifyContent: "center", padding: "28px 16px" },
-  card: { width: "100%", maxWidth: 540, alignSelf: "flex-start" },
-  header: { textAlign: "center", marginBottom: 22 },
-  logo: { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
-  title: { fontSize: 20, fontWeight: 700, marginBottom: 4 },
-  sub: { fontSize: 12, color: "var(--t-3)" },
-  roleGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 },
-  roleBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "14px 10px", borderRadius: "var(--r-lg)", border: "2px solid var(--s-200)", background: "var(--white)", cursor: "pointer", transition: "all .15s" },
-  roleActive: { borderColor: "var(--g-600)", background: "var(--g-50)" },
-  foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)", marginTop: 16 },
-};
