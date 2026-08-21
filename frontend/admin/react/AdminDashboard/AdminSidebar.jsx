@@ -6,7 +6,7 @@ import {
   FiShield,
   FiAlertTriangle,
   FiUsers,
-  FiDownload,
+  FiUser,
   FiLogOut,
   FiTruck,
 } from "react-icons/fi";
@@ -138,13 +138,14 @@ export default function AdminSidebar() {
 
         <button
           type="button"
-          className="admin-export-btn"
+          className={`admin-profile-btn ${isActive("/profile") ? "active" : ""}`}
+          onClick={() => navigate("/profile")}
         >
 
-          <FiDownload />
+          <FiUser />
 
           <span>
-            {t("admin.sidebar.exportReports")}
+            {t("admin.sidebar.profile")}
           </span>
 
         </button>

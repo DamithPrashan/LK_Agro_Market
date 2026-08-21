@@ -195,7 +195,7 @@ function OrderManagement() {
                             <div>
                                 <p className="label">{t("farmer.collectionDateLabel")}</p>
                                 <p>{order.date || t("growingPeriod.toBeConfirmed")}</p>
-                                {order.reservation_source === "cultivation" && order.timing_model === "growing_period" && <><p>{t("growingPeriod.label")}: ~{order.agreed_growing_period_days} {t("growingPeriod.units.days")}</p><p>{order.cultivation_started_at ? `${t("growingPeriod.startedOn")}: ${String(order.cultivation_started_at).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}</p>{order.estimated_harvest_date && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimated_harvest_date}</p>}</>}
+                                {order.reservation_source === "cultivation" && order.timing_model === "growing_period" && <><p>{t("growingPeriod.plannedStart")}: {order.planned_start_date || "—"}</p><p>{t("growingPeriod.label")}: ~{order.agreed_growing_period_days} {t("growingPeriod.units.days")}</p><p>{t("growingPeriod.actualStart")}: {order.cultivation_started_at ? String(order.cultivation_started_at).slice(0, 10) : t("growingPeriod.notStarted")}</p>{order.planned_start_date && !order.cultivation_started_at && new Date().toISOString().slice(0,10) > order.planned_start_date && <p>{t("growingPeriod.startDelayed")}</p>}{order.estimated_harvest_date && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimated_harvest_date}</p>}</>}
                             </div>
 
                             <div>
@@ -297,7 +297,7 @@ function OrderManagement() {
                                 </>
                             )}
 
-                            {order.status === "Accepted" && order.payment === "Paid (1/3)" && (
+                            {order.status === "Accepted" && order.payment === "Paid (1/3)" && (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date)) && (
                                 <button className="ready-btn" disabled={updatingOrderId === order.db_id} onClick={() => order.reservation_source === "cultivation" && order.timing_model === "growing_period" ? (setReadyOrder(order), setCollectionDate("")) : handleAction(order.db_id, 'ready')}>
                                     {t("buttons.markReady")}
                                 </button>

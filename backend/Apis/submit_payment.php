@@ -65,11 +65,14 @@ try {
             CASE WHEN r.reservation_source = 'cultivation' THEN cr.buyer_id ELSE rc.buyer_id END AS buyer_id,
             CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_total_amount ELSE rc.total_amount END AS total_amount,
             cr.request_status AS cultivation_request_status,
+            ca.timing_model,
+            ca.planned_start_date,
             (SELECT COUNT(*) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_count,
             (SELECT COALESCE(SUM(p.amount), 0) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_amount
         FROM reservation r
         LEFT JOIN reserve_crop rc ON r.reservation_source = 'crop' AND r.reserve_crop_id = rc.reserve_crop_id
         LEFT JOIN cultivation_request cr ON r.reservation_source = 'cultivation' AND r.cultivation_request_id = cr.cultivation_request_id
+        LEFT JOIN cultivation_ad ca ON cr.cultivation_ad_id = ca.cultivation_ad_id
         WHERE r.reservation_id = ?
           AND ((r.reservation_source = 'crop' AND rc.buyer_id = ?)
             OR (r.reservation_source = 'cultivation' AND cr.buyer_id = ?))
@@ -90,6 +93,10 @@ try {
     $expected_balance = $total_amount - $expected_prepayment;
 
     if ($payment_type === 'advance') {
+        if ($order['reservation_source'] === 'cultivation' && $order['timing_model'] === 'growing_period' && $order['planned_start_date'] === null) {
+            echo json_encode(["success" => false, "message" => "The farmer must confirm the planned cultivation start date before advance payment."]);
+            exit;
+        }
         if ($resStatus !== 'confirmed' || $txStatus !== 'unpaid' ||
             ($order['reservation_source'] === 'cultivation' && $order['cultivation_request_status'] !== 'accepted')) {
             echo json_encode(["success" => false, "message" => "Advance payment requires a confirmed, unpaid order."]);
@@ -148,11 +155,14 @@ try {
         SELECT r.reservation_source, r.reservation_status, r.transaction_status,
                CASE WHEN r.reservation_source = 'cultivation' THEN cr.agreed_total_amount ELSE rc.total_amount END AS total_amount,
                cr.request_status AS cultivation_request_status,
+               ca.timing_model,
+               ca.planned_start_date,
                (SELECT COUNT(*) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_count,
                (SELECT COALESCE(SUM(p.amount), 0) FROM payment p WHERE p.reservation_id = r.reservation_id AND p.payment_type = 'advance' AND p.payment_status = 'completed') AS completed_advance_amount
         FROM reservation r
         LEFT JOIN reserve_crop rc ON r.reservation_source = 'crop' AND r.reserve_crop_id = rc.reserve_crop_id
         LEFT JOIN cultivation_request cr ON r.reservation_source = 'cultivation' AND r.cultivation_request_id = cr.cultivation_request_id
+        LEFT JOIN cultivation_ad ca ON cr.cultivation_ad_id = ca.cultivation_ad_id
         WHERE r.reservation_id = ?
           AND ((r.reservation_source = 'crop' AND rc.buyer_id = ?)
             OR (r.reservation_source = 'cultivation' AND cr.buyer_id = ?))
@@ -167,6 +177,9 @@ try {
     $lockedResStatus = strtolower($lockedOrder['reservation_status']);
     $lockedTxStatus = strtolower($lockedOrder['transaction_status']);
     $lockedIsCultivation = $lockedOrder['reservation_source'] === 'cultivation';
+    if ($payment_type === 'advance' && $lockedIsCultivation && $lockedOrder['timing_model'] === 'growing_period' && $lockedOrder['planned_start_date'] === null) {
+        throw new DomainException('The farmer must confirm the planned cultivation start date before advance payment.');
+    }
     if (($payment_type === 'advance' && ($lockedResStatus !== 'confirmed' || $lockedTxStatus !== 'unpaid' ||
             ($lockedIsCultivation && $lockedOrder['cultivation_request_status'] !== 'accepted'))) ||
         ($payment_type === 'final' && ($lockedResStatus !== 'ready' || $lockedTxStatus !== 'partially_paid' ||

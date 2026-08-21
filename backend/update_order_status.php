@@ -52,7 +52,7 @@ try {
                rc.reserve_crop_id, rc.status AS reserve_status,
                rc.quantity_requested, c.crop_id, c.quantity AS available_quantity,
                c.crop_status, cr.request_status AS cultivation_request_status, cr.agreed_growing_period_days,
-               ca.timing_model, ca.cultivation_started_at,
+               ca.cultivation_ad_id, ca.status AS cultivation_ad_status, ca.timing_model, ca.cultivation_started_at,
                CASE WHEN ca.cultivation_started_at IS NOT NULL AND cr.agreed_growing_period_days IS NOT NULL THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL cr.agreed_growing_period_days DAY)) END AS estimated_harvest_date,
                CASE WHEN r.reservation_source = 'cultivation' THEN cb.user_id ELSE b.user_id END AS buyer_user_id,
                CASE WHEN r.reservation_source = 'cultivation' THEN ca.crop_name ELSE c.crop_name END AS crop_name,
@@ -169,6 +169,22 @@ try {
         }
         $pdo->prepare("UPDATE reservation SET reservation_status = 'completed', completion_date = NOW() WHERE reservation_id = ?")->execute([$order_id]);
         if ($isCultivation) {
+            $adState = $pdo->prepare("SELECT
+                    SUM(cr.request_status = 'pending') AS pending_count,
+                    SUM(cr.request_status = 'accepted') AS accepted_count,
+                    SUM(cr.request_status = 'accepted' AND
+                        (r.reservation_id IS NULL OR r.reservation_status <> 'completed' OR r.transaction_status <> 'paid')) AS active_count
+                FROM cultivation_request cr
+                LEFT JOIN reservation r ON r.cultivation_request_id = cr.cultivation_request_id
+                    AND r.reservation_source = 'cultivation'
+                WHERE cr.cultivation_ad_id = ?");
+            $adState->execute([$order['cultivation_ad_id']]);
+            $counts = $adState->fetch(PDO::FETCH_ASSOC);
+            if ((int)$counts['accepted_count'] > 0 && (int)$counts['pending_count'] === 0 && (int)$counts['active_count'] === 0) {
+                $pdo->prepare("UPDATE cultivation_ad SET status = 'closed'
+                    WHERE cultivation_ad_id = ? AND status IN ('cultivating', 'harvested')")
+                    ->execute([$order['cultivation_ad_id']]);
+            }
             require_once 'create_notification.php';
             $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Completed', 'Your cultivation order has been completed.', 'cultivationOrderCompleted', $notificationData)) {
