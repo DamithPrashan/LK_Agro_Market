@@ -23,6 +23,7 @@ export default function UserManagement() {
   const [warningMessage, setWarningMessage] = useState("");
   const [warningError, setWarningError] = useState("");
   const [sendingWarning, setSendingWarning] = useState(false);
+  const [updatingUserId, setUpdatingUserId] = useState(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -75,9 +76,27 @@ export default function UserManagement() {
     }
   };
 
-  const requestRemoval = (user) => {
-    if (!window.confirm(t("admin.users.removeConfirm", { name: user.name }))) return;
-    setNotice(t("admin.users.removeUnavailable"));
+  const updateStatus = async (user) => {
+    const nextStatus = user.status === "active" ? "inactive" : "active";
+    const confirmationKey = nextStatus === "inactive" ? "confirmDeactivation" : "confirmReactivation";
+    if (!window.confirm(t(`admin.users.${confirmationKey}`, { name: user.name }))) return;
+    setUpdatingUserId(user.user_id);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch("/backend/Apis/admin/userManagement/updateUserStatus.php", {
+        method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.user_id, account_status: nextStatus }),
+      });
+      const body = await response.json();
+      if (!response.ok || !body.success) throw new Error(body.message || t("admin.users.errors.updateStatus"));
+      setUsers((current) => current.map((item) => item.user_id === user.user_id ? { ...item, status: body.account_status } : item));
+      setNotice(t(nextStatus === "inactive" ? "admin.users.deactivated" : "admin.users.reactivated", { name: user.name }));
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setUpdatingUserId(null);
+    }
   };
 
   return <div className="user-management-page">
@@ -100,7 +119,7 @@ export default function UserManagement() {
         <td className="user-muted">{user.district}</td><td className="user-muted">{formatDate(user.created_at, locale)}</td>
         <td><span className={`user-status-badge ${user.status}`}><span />{t(`admin.users.status.${user.status}`)}</span></td>
         <td><span className={`user-priority-badge ${user.priority}`}>{t(`admin.users.priority.${user.priority}`)}</span>{user.active_complaint_count > 0 && <small className="user-priority-detail">{t("admin.users.complaintSummary", { active: user.active_complaint_count, overdue: user.overdue_complaint_count })}</small>}</td>
-        <td><div className="user-actions"><button type="button" className="user-warning-btn" title={user.priority === "normal" ? t("admin.users.noWarningRequired") : t("admin.users.issueWarning")} disabled={user.priority === "normal"} onClick={() => openWarning(user)}><FiAlertTriangle /></button><button type="button" className="user-delete-btn" title={t("admin.users.removeUser")} onClick={() => requestRemoval(user)}><FiTrash2 /></button></div></td>
+        <td><div className="user-actions"><button type="button" className="user-warning-btn" title={user.priority === "normal" ? t("admin.users.noWarningRequired") : t("admin.users.issueWarning")} disabled={user.priority === "normal"} onClick={() => openWarning(user)}><FiAlertTriangle /></button><button type="button" className={`user-status-action ${user.status}`} disabled={updatingUserId === user.user_id} onClick={() => updateStatus(user)}>{t(`admin.users.${user.status === "active" ? "deactivate" : "reactivate"}`)}</button><button type="button" className="user-delete-btn" title={t("admin.users.removeUnavailable")} disabled><FiTrash2 /></button></div></td>
       </tr>) : <tr><td colSpan="7" className="user-empty">{t("admin.users.empty")}</td></tr>}
     </tbody></table></div>
       <div className="user-pagination"><p>{t("admin.users.pagination", { from: filteredUsers.length ? startIndex + 1 : 0, to: Math.min(startIndex + itemsPerPage, filteredUsers.length), total: filteredUsers.length })}</p><div className="user-pages"><button type="button" aria-label={t("admin.common.previousPage")} disabled={currentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}><FiChevronLeft /></button>{Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => <button type="button" key={page} className={page === currentPage ? "active" : ""} onClick={() => setCurrentPage(page)}>{page}</button>)}<button type="button" aria-label={t("admin.common.nextPage")} disabled={currentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}><FiChevronRight /></button></div></div>
