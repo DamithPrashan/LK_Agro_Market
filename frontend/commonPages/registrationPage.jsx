@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "../../src/hooks/useForm";
 import FarmerVerificationForm from "../components/FarmerVerificationForm";
 import { DISTRICTS } from "../../src/constants/districts";
-import { FiShield, FiLock, FiGlobe } from "react-icons/fi";
+import { FiShield, FiLock, FiGlobe, FiCheck } from "react-icons/fi";
 import logo from "../../src/assets/logo.png";
 import bgImage from "../../src/assets/registration-bg.jpg";
 import "./csss/registrationPage.css";
@@ -43,6 +43,7 @@ export default function RegistrationPage() {
   const [step, setStep] = useState(1);
   const [apiErr, setApiErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [nicFile, setNicFile] = useState(null);
   const [evidenceFile, setEvidenceFile] = useState(null);
 
@@ -99,7 +100,8 @@ export default function RegistrationPage() {
       const data = await res.json();
       if (data.success) {
         if (role === "farmer" && data.verification_required) {
-          setApiErr(data.message);
+          setApiErr("");
+          setShowSuccessModal(true);
         } else {
           login(data.user);
           navigate("/buyer");
@@ -334,6 +336,52 @@ export default function RegistrationPage() {
           </div>
         </div>
       </div>
+
+      {/* FARMER REGISTRATION SUCCESS MODAL POPUP */}
+      {showSuccessModal && (
+        <div
+          className="registration-modal-overlay"
+          onClick={() => {
+            setShowSuccessModal(false);
+            navigate("/login");
+          }}
+        >
+          <div
+            className="registration-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 1. Success Section */}
+            <div className="modal-success-header">
+              <div className="modal-icon-badge modal-icon-success">
+                <FiCheck className="modal-icon-svg" />
+              </div>
+              <h2 className="modal-success-title">Registration successful.</h2>
+            </div>
+
+            {/* 2. Information / Verification Section */}
+            <div className="modal-info-box">
+              <div className="modal-info-icon-wrap">
+                <span className="modal-info-badge">!</span>
+              </div>
+              <p className="modal-info-text">
+                Your farmer verification request is now under review. You can log in after admin approval.
+              </p>
+            </div>
+
+            {/* 3. Action Button */}
+            <button
+              type="button"
+              className="btn btn-primary btn-lg btn-full modal-confirm-btn"
+              onClick={() => {
+                setShowSuccessModal(false);
+                navigate("/login");
+              }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
