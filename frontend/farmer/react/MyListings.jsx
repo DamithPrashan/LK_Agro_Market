@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaPlus, FaPen, FaTrashAlt, FaBoxOpen } from "react-icons/fa";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 import "../csss/dashBoard.css";
 
 export default function MyListings() {
@@ -56,6 +57,36 @@ export default function MyListings() {
         }
     };
 
+    const categoryMap = {
+        "Vegetable": "farmer.categoryVegetable",
+        "Vegetables": "farmer.categoryVegetable",
+        "Fruit": "farmer.categoryFruit",
+        "Fruits": "farmer.categoryFruit",
+        "Grain": "farmer.categoryGrain",
+        "Grains": "farmer.categoryGrain",
+        "Other": "farmer.categoryOther"
+    };
+
+    const growthStageMap = {
+        "planted": "farmer.stagePlanted",
+        "growing": "farmer.stageGrowing",
+        "ready_for_harvest": "farmer.stageReadyForHarvest",
+        "harvested": "farmer.stageHarvested",
+        "Planted": "farmer.stagePlanted",
+        "Growing": "farmer.stageGrowing",
+        "Ready for Harvest": "farmer.stageReadyForHarvest",
+        "Harvested": "farmer.stageHarvested"
+    };
+
+    const statusMap = {
+        "active": "listing.statusActive",
+        "inactive": "listing.statusInactive",
+        "pending": "listing.statusPending",
+        "ACTIVE": "listing.statusActive",
+        "INACTIVE": "listing.statusInactive",
+        "PENDING": "listing.statusPending"
+    };
+
     return (
         <div className="section" style={{ margin: "20px 0" }}>
             <div className="section-header">
@@ -88,14 +119,14 @@ export default function MyListings() {
                             {myCrops.map((crop) => (
                                 <tr key={crop.crop_id}>
                                     <td data-label={t("farmer.tableCrop")}>{crop.crop_name}</td>
-                                    <td data-label={t("farmer.tableCategory")}>{crop.category}</td>
+                                    <td data-label={t("farmer.tableCategory")}>{t(categoryMap[crop.category] || crop.category, crop.category)}</td>
                                     <td data-label={t("farmer.tableQuantity")}>{crop.quantity} kg</td>
-                                    <td data-label={t("farmer.tableLocation")}>{crop.location}</td>
-                                    <td data-label={t("farmer.tableGrowthStage")}>{crop.growth_stage}</td>
+                                    <td data-label={t("farmer.tableLocation")}>{getDistrictLabel(t, crop.location)}</td>
+                                    <td data-label={t("farmer.tableGrowthStage")}>{t(growthStageMap[crop.growth_stage] || crop.growth_stage, crop.growth_stage)}</td>
                                     <td data-label={t("farmer.tablePrice")}>Rs.{crop.price_per_unit}</td>
                                     <td data-label={t("farmer.tableHarvestDate")}>{crop.harvest_date}</td>
                                     <td data-label={t("farmer.tableStatus", "Status")}>
-                                        <span className={`status-badge ${crop.crop_status}`}>{crop.crop_status}</span>
+                                        <span className={`status-badge ${crop.crop_status}`}>{t(statusMap[crop.crop_status] || crop.crop_status, crop.crop_status)}</span>
                                     </td>
                                     <td data-label={t("farmer.tableAction")}>
                                         <div className="row-actions">

@@ -128,6 +128,7 @@ function EditList() {
           <div className="form-section">
             <h3>{t("farmer.cropDetailsTab")}</h3>
 
+            <label className="field-label">{t("forms.cropName", "Crop Name")}</label>
             <input
               type="text"
               name="cropName"
@@ -136,14 +137,20 @@ function EditList() {
               onChange={handleChange}
             />
 
-            <input
-              type="text"
+            <label className="field-label">{t("farmer.growthStageLabel")}</label>
+            <select
               name="stage"
-              placeholder={t("farmer.growthStageLabel")}
               value={formData.stage}
               onChange={handleChange}
-            />
+            >
+              <option value="">{t("farmer.selectGrowthStage")}</option>
+              <option value="planted">{t("farmer.stagePlanted")}</option>
+              <option value="growing">{t("farmer.stageGrowing")}</option>
+              <option value="ready_for_harvest">{t("farmer.stageReadyForHarvest")}</option>
+              <option value="harvested">{t("farmer.stageHarvested")}</option>
+            </select>
 
+            <label className="field-label">{t("listing.categoryLabel")}</label>
             <select
               name="category"
               value={formData.category}
@@ -153,8 +160,10 @@ function EditList() {
               <option value="Vegetable">{t("farmer.categoryVegetable")}</option>
               <option value="Fruit">{t("farmer.categoryFruit")}</option>
               <option value="Grain">{t("farmer.categoryGrain")}</option>
+              <option value="Other">{t("farmer.categoryOther")}</option>
             </select>
 
+            <label className="field-label">{t("forms.district", "District")}</label>
             <select
               name="location"
               value={formData.location}
@@ -168,6 +177,7 @@ function EditList() {
               ))}
             </select>
 
+            <label className="field-label">{t("farmer.harvestDateLabel")}</label>
             <input
               type="date"
               name="harvestDate"
@@ -175,6 +185,7 @@ function EditList() {
               onChange={handleChange}
             />
 
+            <label className="field-label">{t("farmer.quantityLabel")}</label>
             <input
               type="number"
               name="quantity"
@@ -200,6 +211,7 @@ function EditList() {
           <div className="form-section">
             <h3>{t("farmer.pricingTab")}</h3>
 
+            <label className="field-label">{t("farmer.priceLabel")}</label>
             <input
               type="number"
               name="price"
@@ -215,7 +227,7 @@ function EditList() {
                 {suggestion.basis === 'district' ? (
                   <>
                     <p className="suggestion-info">
-                      ℹ {t("farmer.suggestedPriceLabel")}: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                      ℹ {t("farmer.suggestedPriceLabel")}: <strong>{t("farmer.rsPrefix")} {Number(suggestion.suggested_price).toLocaleString()} {t("farmer.kgSuffix")}</strong>
                     </p>
                     <p className="suggestion-subtext">
                       {t("farmer.basedOnDistrict", { count: suggestion.sample_count })}
@@ -224,7 +236,7 @@ function EditList() {
                 ) : (
                   <>
                     <p className="suggestion-info">
-                      {t("farmer.nationalAverage", { price: suggestion.suggested_price })}
+                      {t("farmer.nationalAverage", { price: Number(suggestion.suggested_price).toLocaleString() })}
                     </p>
                     <p className="suggestion-subtext">
                       {t("farmer.basedOnNational", { count: suggestion.sample_count })}
@@ -270,10 +282,10 @@ function EditList() {
 
             <div className="review-box">
               <p><b>{t("farmer.cropLabel")}:</b> {formData.cropName}</p>
-              <p><b>{t("farmer.categoryLabel")}:</b> {formData.category}</p>
+              <p><b>{t("listing.categoryLabel")}:</b> {t(`farmer.category${formData.category === "Other" ? "Other" : formData.category}`, formData.category)}</p>
               <p><b>{t("farmer.quantityLabel")}:</b> {formData.quantity}{t("farmer.kgSuffix")}</p>
-              <p><b>{t("forms.location")}:</b> {formData.location}</p>
-              <p><b>{t("farmer.growthStageLabel")}:</b> {formData.stage}</p>
+              <p><b>{t("forms.location")}:</b> {t(`districts.${DISTRICTS.find(d => d.value === formData.location)?.key || formData.location}`, formData.location)}</p>
+              <p><b>{t("farmer.growthStageLabel")}:</b> {t(`farmer.stage${formData.stage?.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join("") || formData.stage}`, formData.stage)}</p>
               <p><b>{t("farmer.harvestDateLabel")}:</b> {formData.harvestDate}</p>
               <p><b>{t("farmer.priceLabel")}:</b> {t("farmer.rsPrefix")}{formData.price}</p>
             </div>
