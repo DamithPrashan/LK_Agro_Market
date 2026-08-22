@@ -120,6 +120,9 @@ export default function Profile() {
   const initials = (user?.name || "U")
     .split(" ").map((n) => n[0]).join("").slice(0,2).toUpperCase();
 
+  const userDistrictObj = DISTRICTS.find(d => d.value === user?.district);
+  const displayDistrict = userDistrictObj ? t(`districts.${userDistrictObj.key}`) : user?.district;
+
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
       
@@ -166,7 +169,7 @@ export default function Profile() {
           <div>
             <div style={{ fontSize:16, fontWeight:700 }}>{user?.name}</div>
             <div style={{ fontSize:12, color:"var(--t-3)", marginTop:2 }}>
-              {user?.role === "farmer" ? t("profile.roleFarmer") : user?.role === "admin" ? t("profile.roleAdmin") : t("profile.roleBuyer")} · {user?.district}
+              {user?.role === "farmer" ? t("profile.roleFarmer") : user?.role === "admin" ? t("profile.roleAdmin") : t("profile.roleBuyer")} · {displayDistrict}
             </div>
             {user?.verified && (
               <span className="badge badge-green" style={{ marginTop:6, display:"inline-flex" }}>{t("profile.verifiedBadge")}</span>

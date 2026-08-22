@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaMapMarkerAlt, FaFilter, FaCalendarAlt, FaStar, FaRegStar, FaLeaf, FaTimes } from "react-icons/fa";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
+import { getCategoryLabel } from "../../../src/constants/categoryUtils";
 import "../csss/mapSearch.css";
 
 // Sri Lanka Adjacency Map for Distance Calculation
@@ -268,7 +270,7 @@ export default function MapSearch() {
             >
               <option value="All Districts">{t("browse.allSriLanka", "All Sri Lanka")}</option>
               {DISTRICTS.map((d) => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d}>{getDistrictLabel(t, d)}</option>
               ))}
             </select>
           </div>
@@ -284,7 +286,7 @@ export default function MapSearch() {
             >
               <option value="All Crops">{t("sidebar.browseCrops", "All Crops")}</option>
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>{getCategoryLabel(t, c)}</option>
               ))}
             </select>
           </div>
@@ -392,7 +394,7 @@ export default function MapSearch() {
                               <span className="badge-unverified">{t("buyerDashboard.standardListing", "Standard")}</span>
                             )}
                           </div>
-                          <span className="popup-farmer-location">📍 {farmer.location}</span>
+                          <span className="popup-farmer-location">📍 {getDistrictLabel(t, farmer.location)}</span>
                         </div>
 
                         <div className="popup-crops-section">
@@ -493,13 +495,13 @@ export default function MapSearch() {
                         )}
                       </div>
                       <div className="card-meta-row">
-                        <span>📍 {farmer.location}</span>
+                        <span>📍 {getDistrictLabel(t, farmer.location)}</span>
                         <span className={`distance-label ${distance.className}`}>{distance.text}</span>
                       </div>
                       <div className="card-rating-row">
                         {renderStars(farmer.rating_average)}
                         <span className="card-rating-count">
-                          ({farmer.rating_average.toFixed(1)} • {farmer.rating_count} {t("buyerDashboard.reviews", "reviews")})
+                          ({farmer.rating_average.toFixed(1)} • {t("buyerDashboard.reviews", { count: farmer.rating_count })})
                         </span>
                       </div>
                     </div>
@@ -574,7 +576,7 @@ export default function MapSearch() {
                         <span className="calendar-item-price">Rs {item.price_per_unit}/kg</span>
                       </div>
                       <div className="calendar-item-details">
-                        <span className="calendar-item-farmer">{item.farmer_name} ({item.district})</span>
+                        <span className="calendar-item-farmer">{item.farmer_name} ({getDistrictLabel(t, item.district)})</span>
                         <span className="calendar-item-date">{item.harvest_date}</span>
                       </div>
                     </div>
@@ -601,7 +603,7 @@ export default function MapSearch() {
                         <span className="calendar-item-price">Rs {item.price_per_unit}/kg</span>
                       </div>
                       <div className="calendar-item-details">
-                        <span className="calendar-item-farmer">{item.farmer_name} ({item.district})</span>
+                        <span className="calendar-item-farmer">{item.farmer_name} ({getDistrictLabel(t, item.district)})</span>
                         <span className="calendar-item-date">{item.harvest_date}</span>
                       </div>
                     </div>
@@ -628,7 +630,7 @@ export default function MapSearch() {
                         <span className="calendar-item-price">Rs {item.price_per_unit}/kg</span>
                       </div>
                       <div className="calendar-item-details">
-                        <span className="calendar-item-farmer">{item.farmer_name} ({item.district})</span>
+                        <span className="calendar-item-farmer">{item.farmer_name} ({getDistrictLabel(t, item.district)})</span>
                         <span className="calendar-item-date">{item.harvest_date}</span>
                       </div>
                     </div>

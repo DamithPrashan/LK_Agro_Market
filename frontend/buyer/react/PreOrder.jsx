@@ -4,6 +4,7 @@ import "../../buyer/csss/PreOrder.css";
 import { useCrops } from "../../../src/context/CropContext";
 import { useTranslation } from "react-i18next";
 import ReviewModal from "../../components/ReviewModal";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
 // local images map for fallback rendering
 import tomatoImg from "../../assests/png/tomato.jpg";
@@ -199,7 +200,6 @@ export default function CropDetail() {
     // Generic high-quality agricultural fallbacks to make a premium looking carousel
     images.push("https://images.unsplash.com/photo-1606787366850-de6330128bfc");
     images.push("https://images.unsplash.com/photo-1592924357228-91a4daadcfea");
-    images.push("https://images.unsplash.com/photo-1582281298055-e25b84a5a2f4");
   }
 
   // Handle actual reservation submission
@@ -285,7 +285,7 @@ export default function CropDetail() {
             <img
               key={i}
               src={img}
-              alt="thumb"
+              alt={t("cropThumbnail", "Thumbnail")}
               className={mainImage === img ? "thumb active" : "thumb"}
               onClick={() => setMainImage(img)}
             />
@@ -297,13 +297,15 @@ export default function CropDetail() {
           <h1>{cropData.name}</h1>
           <h3>Rs. {parseFloat(cropData.price).toFixed(0)} per kg</h3>
           <p>
-            Premium quality {cropData.name.toLowerCase()} fresh from the farms of {cropData.location}.
-            Grown under natural conditions using organic farming practices. High nutrients, rich taste,
-            and harvested fresh at maturity.
+            {t("buyerDashboard.cropDescriptionTemplate", {
+               defaultValue: "Premium quality {{crop}} fresh from the farms of {{location}}. Grown under natural conditions using organic farming practices. High nutrients, rich taste, and harvested fresh at maturity.",
+               crop: cropData.name.toLowerCase(),
+               location: getDistrictLabel(t, cropData.location)
+            })}
           </p>
 
           <div className="meta">
-            <span>📍 {t("forms.location")}: {cropData.location}</span>
+            <span>📍 {t("forms.location")}: {getDistrictLabel(t, cropData.location)}</span>
             <span style={{ color: isOutOfStock ? "#c0392b" : "inherit", fontWeight: isOutOfStock ? "bold" : "normal" }}>
               📦 {t("forms.quantity")}: {isOutOfStock ? t("emptyStates.outOfStock") : `${parseFloat(cropData.qty).toFixed(0)} kg`}
             </span>
@@ -339,7 +341,7 @@ export default function CropDetail() {
 
           <div className="farmer-info">
             <h3>{cropData.farmer_name}</h3>
-            <p>⭐ {parseFloat(cropData.rating).toFixed(1)} Rating</p>
+            <p>⭐ {parseFloat(cropData.rating).toFixed(1)} {t("buyerDashboard.rating", "Rating")}</p>
             <p>{t("buyerDashboard.farmLocation", { location: cropData.farm_location || cropData.location })}</p>
             <p>{t("buyerDashboard.verifiedStatus")}{parseInt(cropData.is_verified) === 1 ? t("buyerDashboard.verifiedFarmer") : t("buyerDashboard.standardListing")}</p>
             <p>{t("buyerDashboard.contact", { phone: cropData.farmer_phone || "077-XXXXXXX" })}</p>

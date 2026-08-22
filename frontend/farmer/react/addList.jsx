@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import "../csss/addList.css";
 import { useAuth } from "../../../src/context/AuthContext";
 import { DISTRICTS } from "../../../src/constants/districts";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
 function AddListing() {
     const { user } = useAuth();
@@ -268,7 +269,7 @@ function AddListing() {
                                 {suggestion.basis === 'district' ? (
                                     <>
                                         <p className="suggestion-info">
-                                            ℹ {t("farmer.suggestedPriceLabel")}: <strong>Rs. {suggestion.suggested_price} / kg</strong>
+                                            ℹ {t("farmer.suggestedPriceLabel")}: <strong>{t("farmer.rsPrefix")} {Number(suggestion.suggested_price).toLocaleString()} {t("farmer.kgSuffix")}</strong>
                                         </p>
                                         <p className="suggestion-subtext">
                                             {t("farmer.basedOnDistrict", { count: suggestion.sample_count })}
@@ -277,7 +278,7 @@ function AddListing() {
                                 ) : (
                                     <>
                                         <p className="suggestion-info">
-                                            {t("farmer.nationalAverage", { price: suggestion.suggested_price })}
+                                            {t("farmer.nationalAverage", { price: Number(suggestion.suggested_price).toLocaleString() })}
                                         </p>
                                         <p className="suggestion-subtext">
                                             {t("farmer.basedOnNational", { count: suggestion.sample_count })}
@@ -328,10 +329,10 @@ function AddListing() {
 
                         <div className="review-box">
                             <p><strong>{t("farmer.cropLabel")}:</strong> {formData.cropName}</p>
-                            <p><strong>{t("farmer.categoryLabel")}:</strong> {formData.category}</p>
+                            <p><strong>{t("listing.categoryLabel")}:</strong> {t(`farmer.category${formData.category}`, formData.category)}</p>
                             <p><strong>{t("farmer.quantityLabel")}:</strong> {formData.quantity}{t("farmer.kgSuffix")}</p>
-                            <p><strong>{t("forms.location")}:</strong> {formData.location}</p>
-                            <p><strong>{t("farmer.growthStageLabel")}:</strong> {formData.growthStage}</p>
+                            <p><strong>{t("forms.location")}:</strong> {getDistrictLabel(t, formData.location)}</p>
+                            <p><strong>{t("farmer.growthStageLabel")}:</strong> {t(`farmer.stage${(formData.growthStage || "").split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join("")}`, formData.growthStage)}</p>
                             <p><strong>{t("farmer.harvestDateLabel")}:</strong> {formData.harvestDate}</p>
                             <p><strong>{t("farmer.priceLabel")}:</strong> {t("farmer.rsPrefix")}{formData.price}</p>
                             <p><strong>{t("farmer.uploadedPhotosLabel")}:</strong> {formData.photos.filter(Boolean).length}</p>

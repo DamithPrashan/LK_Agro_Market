@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../src/context/AuthContext";
+import FileInputButton from "../../components/FileInputButton";
 import "../../farmer/csss/dashBoard.css";
 import "../../buyer/csss/Complaints.css";
 
@@ -101,7 +102,10 @@ export default function FarmerComplaints() {
             {feedback?.text && <div className={`complaint-feedback ${feedback.ok ? "success" : "error"}`}>{feedback.text}</div>}
             <label htmlFor={`complaint-response-${complaint.complaint_id}`}>{t("farmerComplaints.yourResponse")}</label>
             <textarea id={`complaint-response-${complaint.complaint_id}`} rows="4" required minLength="10" disabled={submitting} value={responses[complaint.complaint_id] || ""} onChange={(event) => setResponses((current) => ({ ...current, [complaint.complaint_id]: event.target.value }))} placeholder={t("farmerComplaints.responsePlaceholder")} />
-            <label className="farmer-evidence-label" htmlFor={`complaint-evidence-${complaint.complaint_id}`}>{t("farmerComplaints.supportingEvidence")}<input id={`complaint-evidence-${complaint.complaint_id}`} type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" disabled={submitting} onChange={(event) => handleFile(complaint.complaint_id, event.target.files[0])} /></label>
+            <div style={{ marginBottom: 12 }}>
+              <label className="farmer-evidence-label" style={{ display: 'block', marginBottom: 8 }}>{t("farmerComplaints.supportingEvidence")}</label>
+              <FileInputButton id={`complaint-evidence-${complaint.complaint_id}`} accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" disabled={submitting} onChange={(files) => handleFile(complaint.complaint_id, files[0])} files={evidence[complaint.complaint_id] ? [evidence[complaint.complaint_id]] : []} />
+            </div>
             <button type="submit" disabled={submitting}>{submitting ? t("farmerComplaints.submitting") : t("farmerComplaints.submitResponse")}</button>
           </form>
         </article>;

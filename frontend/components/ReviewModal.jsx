@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import RatingStars from "./ratingStars";
 import ReviewList from "./reviewList";
 import { useTranslation } from "react-i18next";
+import { DISTRICTS } from "../../src/constants/districts";
 
 export default function ReviewModal({ userId, userName, userRole, userLocation, onClose }) {
   const { t } = useTranslation();
@@ -49,6 +50,10 @@ export default function ReviewModal({ userId, userName, userRole, userLocation, 
       ? t("profile.roleBuyer", "Buyer")
       : userRole;
 
+  // District mapping
+  const userDistrictObj = DISTRICTS.find(d => d.value === userLocation);
+  const displayLocation = userDistrictObj ? t(`districts.${userDistrictObj.key}`) : userLocation;
+
   return (
     <div style={s.overlay} onClick={onClose}>
       <div style={s.modal} onClick={(e) => e.stopPropagation()}>
@@ -64,7 +69,7 @@ export default function ReviewModal({ userId, userName, userRole, userLocation, 
             <h2 style={s.name}>{userName}</h2>
             <div style={s.meta}>
               <span style={s.roleBadge}>{roleLabel}</span>
-              {userLocation && <span style={s.location}>📍 {userLocation}</span>}
+              {userLocation && <span style={s.location}>📍 {displayLocation}</span>}
             </div>
           </div>
         </div>
@@ -109,7 +114,7 @@ export default function ReviewModal({ userId, userName, userRole, userLocation, 
 
               {/* Scrollable Reviews List */}
               <div style={s.listContainer}>
-                <h3 style={s.listHeading}>{t("ratings.reviewsReceived", "Reviews Received")}</h3>
+                <h3 style={s.listHeading}>{t("ratings.reviewsReceived", { count: summary?.total || 0, defaultValue: "Reviews Received" })}</h3>
                 <div style={s.scrollList}>
                   <ReviewList reviews={reviews} />
                 </div>

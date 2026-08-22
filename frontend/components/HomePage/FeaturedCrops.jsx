@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
 import "../../commonPages/csss/HomePage/FeaturedCrops.css";
 
@@ -23,6 +25,7 @@ const cropImages = {
 
 export default function FeaturedCrops() {
 
+  const { t } = useTranslation();
   const [crops, setCrops] = useState([]);
 
   const [loading, setLoading] =
@@ -154,7 +157,7 @@ export default function FeaturedCrops() {
                         <FaMapMarkerAlt />
 
                         <span>
-                          {crop.district}
+                          {getDistrictLabel(t, crop.district)}
                         </span>
 
                       </div>

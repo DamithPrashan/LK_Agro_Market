@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { DISTRICTS } from "../../../src/constants/districts";
+import FileInputButton from "../../components/FileInputButton";
 
 export function CultivationAdForm({ form, setForm, photos, setPhotos, existingPhotos = [], submitting, onSubmit, onCancel, t }) {
   const change = ({ target }) => setForm((current) => ({ ...current, [target.name]: target.value }));
   const previews = useMemo(() => photos.map((file) => ({ name: file.name, url: URL.createObjectURL(file) })), [photos]);
   useEffect(() => () => previews.forEach((preview) => URL.revokeObjectURL(preview.url)), [previews]);
-  const selectPhotos = (event) => {
-    const selected = Array.from(event.target.files);
+  const selectPhotos = (files, event) => {
+    const selected = Array.from(files);
     if (selected.length + existingPhotos.length > 5) {
       event.target.value = "";
       setPhotos([]);
@@ -34,7 +35,7 @@ export function CultivationAdForm({ form, setForm, photos, setPhotos, existingPh
         <label>{t("cultivationArea")}<input type="number" min="0.01" step="0.01" name="cultivation_area" value={form.cultivation_area} onChange={change} /></label>
         <label>{t("areaUnit")}<select name="area_unit" value={form.area_unit} onChange={change} disabled={form.cultivation_area === ""} required={form.cultivation_area !== ""}><option value="">{t("select")}</option><option value="acres">{t("areaUnits.acres")}</option><option value="hectares">{t("areaUnits.hectares")}</option><option value="perches">{t("areaUnits.perches")}</option></select></label>
         <label className="cultivation-wide">{t("description")}<textarea name="description" rows="5" maxLength="2000" value={form.description} onChange={change} /><small>{form.description.length}/2000</small></label>
-        <label className="cultivation-wide">{t("photos")}<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={selectPhotos} /><small>{t("photoHint")} {t("selectedCount", "{{count}} selected", { count: photos.length })}</small></label>
+        <label className="cultivation-wide">{t("photos")}<div style={{ margin: "6px 0" }}><FileInputButton accept="image/jpeg,image/png,image/webp" multiple onChange={selectPhotos} files={photos} /></div><small>{t("photoHint")} {t("selectedCount", "{{count}} selected", { count: photos.length })}</small></label>
       </div>
       {existingPhotos.length > 0 && <div className="cultivation-photo-group"><strong>{t("existingPhotos")}</strong><div className="cultivation-photo-strip">{existingPhotos.map((photo) => <img key={photo.id} src={`/${photo.photo_path}`} alt={`${form.crop_name} — ${t("existingPhotos")}`} />)}</div></div>}
       {previews.length > 0 && <div className="cultivation-photo-group"><strong>{t("newPhotos")}</strong><div className="cultivation-photo-strip">{previews.map((preview) => <figure key={preview.url}><img src={preview.url} alt={preview.name} /><figcaption>{preview.name}</figcaption></figure>)}</div></div>}
