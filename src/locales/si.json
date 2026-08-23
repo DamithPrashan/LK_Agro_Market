@@ -548,7 +548,10 @@
     "tablePrice": "මිල / කි.ග්‍රෑ",
     "tableHarvestDate": "අස්වනු නෙළන දිනය",
     "tableAction": "ක්‍රියාමාර්ගය",
+    "editDisabledActiveOrders": "සංස්කරණය කළ නොහැක — මෙම ලැයිස්තුවේ ක්‍රියාකාරී ඇණවුම් ඇත",
+    "editBlockedActiveOrders": "ක්‍රියාකාරී ඇණවුම් ඇති නිසා මෙම ලැයිස්තුව සංස්කරණය කළ නොහැකිය. පළමුව සියලු ඇණවුම් අවලංගු කරන්න හෝ සම්පූර්ණ කරන්න.",
     "ordersTitle": "මගේ ඇණවුම්",
+
     "orderCardTitle": "ඇණවුම {{id}}",
     "buyerLabel": "මිලදී ගන්නා",
     "cropLabel": "භෝගය",

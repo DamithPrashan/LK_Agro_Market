@@ -232,77 +232,86 @@ function OrderManagement() {
 
                                 {/* ── Footer ── */}
                                 <div className="order-footer">
-                                    {/* Payment badge (left) */}
-                                    <span className={`payment-badge ${pClass}`}>
-                                        {t(paymentI18nKey(order.payment)).toUpperCase()}
-                                    </span>
+                                    <div className="footer-top-row">
+                                        {/* Payment badge (left) */}
+                                        <span className={`payment-badge ${pClass}`}>
+                                            {t(paymentI18nKey(order.payment)).toUpperCase()}
+                                        </span>
 
-                                    {/* Action buttons (right) */}
-                                    <div className="action-buttons">
-                                        <button
-                                            className="message-buyer-btn"
-                                            style={{ position: "relative" }}
-                                            onClick={() => {
-                                                setActiveChatOrder(order);
-                                                setIsChatOpen(true);
-                                            }}
-                                        >
-                                            💬 {t("btn_message_buyer")}
-                                            {order.unreadMessages > 0 && (
-                                                <span style={{
-                                                    position: "absolute", top: "-8px", right: "-8px",
-                                                    background: "#e74c3c", color: "white", borderRadius: "50%",
-                                                    padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5
-                                                }}>
-                                                    {order.unreadMessages}
-                                                </span>
-                                            )}
-                                        </button>
-
-                                        <button
-                                            className="about-buyer-btn"
-                                            onClick={() => setSelectedBuyer({
-                                                userId: order.buyer_user_id,
-                                                userName: order.buyer,
-                                                userLocation: order.buyer_location,
-                                                userRole: "buyer"
-                                            })}
-                                        >
-                                            👤 {t("buttons.aboutBuyer", "About Buyer")}
-                                        </button>
-
-                                        {order.status === "Pending" && (
-                                            <>
-                                                <button className="accept-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "accept")}>
-                                                    {t("buttons.accept")}
-                                                </button>
-                                                <button className="decline-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "decline")}>
-                                                    {t("buttons.decline")}
-                                                </button>
-                                            </>
-                                        )}
-
-                                        {order.status === "Accepted" && order.payment === "Paid (1/3)" &&
-                                            (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date)) && (
+                                        {/* Secondary Actions (right) */}
+                                        <div className="secondary-actions">
                                             <button
-                                                className="ready-btn"
-                                                disabled={updatingOrderId === order.db_id}
-                                                onClick={() =>
-                                                    order.reservation_source === "cultivation" && order.timing_model === "growing_period"
-                                                        ? (setReadyOrder(order), setCollectionDate(""))
-                                                        : handleAction(order.db_id, "ready")
-                                                }
+                                                className="secondary-btn message-buyer-btn"
+                                                style={{ position: "relative" }}
+                                                onClick={() => {
+                                                    setActiveChatOrder(order);
+                                                    setIsChatOpen(true);
+                                                }}
                                             >
-                                                {t("buttons.markReady")}
+                                                💬 {t("btn_message_buyer")}
+                                                {order.unreadMessages > 0 && (
+                                                    <span style={{
+                                                        position: "absolute", top: "-8px", right: "-8px",
+                                                        background: "#e74c3c", color: "white", borderRadius: "50%",
+                                                        padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5
+                                                    }}>
+                                                        {order.unreadMessages}
+                                                    </span>
+                                                )}
                                             </button>
-                                        )}
 
-                                        {order.status === "Ready" && order.payment === "Paid (Full)" && (
-                                            <button className="complete-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "complete")}>
-                                                {t("orderPresentation.complete")}
+                                            <button
+                                                className="secondary-btn about-buyer-btn"
+                                                onClick={() => setSelectedBuyer({
+                                                    userId: order.buyer_user_id,
+                                                    userName: order.buyer,
+                                                    userLocation: order.buyer_location,
+                                                    userRole: "buyer"
+                                                })}
+                                            >
+                                                👤 {t("buttons.aboutBuyer", "About Buyer")}
                                             </button>
-                                        )}
+                                        </div>
                                     </div>
+
+                                    {/* Primary Action buttons (bottom row) */}
+                                    {(order.status === "Pending" ||
+                                        (order.status === "Accepted" && order.payment === "Paid (1/3)" && (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date))) ||
+                                        (order.status === "Ready" && order.payment === "Paid (Full)")) && (
+                                        <div className="footer-bottom-row">
+                                            {order.status === "Pending" && (
+                                                <>
+                                                    <button className="accept-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "accept")}>
+                                                        {t("buttons.accept")}
+                                                    </button>
+                                                    <button className="decline-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "decline")}>
+                                                        {t("buttons.decline")}
+                                                    </button>
+                                                </>
+                                            )}
+
+                                            {order.status === "Accepted" && order.payment === "Paid (1/3)" &&
+                                                (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date)) && (
+                                                <button
+                                                    className="ready-btn"
+                                                    disabled={updatingOrderId === order.db_id}
+                                                    onClick={() =>
+                                                        order.reservation_source === "cultivation" && order.timing_model === "growing_period"
+                                                            ? (setReadyOrder(order), setCollectionDate(""))
+                                                            : handleAction(order.db_id, "ready")
+                                                    }
+                                                >
+                                                    {t("buttons.markReady")}
+                                                </button>
+                                            )}
+
+                                            {order.status === "Ready" && order.payment === "Paid (Full)" && (
+                                                <button className="complete-btn" disabled={updatingOrderId === order.db_id} onClick={() => handleAction(order.db_id, "complete")}>
+                                                    {t("orderPresentation.complete")}
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );

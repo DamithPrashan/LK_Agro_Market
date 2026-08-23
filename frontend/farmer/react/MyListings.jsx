@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaPlus, FaPen, FaTrashAlt, FaBoxOpen } from "react-icons/fa";
+import { FaPlus, FaPen, FaTrashAlt, FaBoxOpen, FaLock } from "react-icons/fa";
 import { getDistrictLabel } from "../../../src/constants/districtUtils";
 import "../csss/dashBoard.css";
 
@@ -130,25 +130,40 @@ export default function MyListings() {
                                     </td>
                                     <td data-label={t("farmer.tableAction")}>
                                         <div className="row-actions">
-                                            <button
-                                                className="edit-btn"
-                                                onClick={() =>
-                                                    navigate("/farmer/edit-listing", {
-                                                        state: {
-                                                            crop_id: crop.crop_id,
-                                                            cropName: crop.crop_name,
-                                                            category: crop.category,
-                                                            quantity: crop.quantity,
-                                                            location: crop.location,
-                                                            harvestDate: crop.harvest_date,
-                                                            price: crop.price_per_unit,
-                                                            stage: crop.growth_stage,
-                                                        },
-                                                    })
-                                                }
-                                            >
-                                                <FaPen /> {t("buttons.edit")}
-                                            </button>
+                                            {crop.has_active_orders ? (
+                                                <button
+                                                    className="edit-btn"
+                                                    disabled
+                                                    title={t("farmer.editDisabledActiveOrders")}
+                                                    style={{
+                                                        opacity: 0.45,
+                                                        cursor: "not-allowed",
+                                                        pointerEvents: "all",
+                                                    }}
+                                                >
+                                                    <FaLock /> {t("buttons.edit")}
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="edit-btn"
+                                                    onClick={() =>
+                                                        navigate("/farmer/edit-listing", {
+                                                            state: {
+                                                                crop_id: crop.crop_id,
+                                                                cropName: crop.crop_name,
+                                                                category: crop.category,
+                                                                quantity: crop.quantity,
+                                                                location: crop.location,
+                                                                harvestDate: crop.harvest_date,
+                                                                price: crop.price_per_unit,
+                                                                stage: crop.growth_stage,
+                                                            },
+                                                        })
+                                                    }
+                                                >
+                                                    <FaPen /> {t("buttons.edit")}
+                                                </button>
+                                            )}
                                             <button
                                                 className="delete-btn"
                                                 onClick={() => deleteCrop(crop.crop_id)}
