@@ -65,17 +65,19 @@ try {
         exit;
     }
 
-    if (abs((float)$currentCrop['quantity'] - $quantity) > 0.00001) {
-        $activeOrders = $pdo->prepare("SELECT COUNT(*) FROM reserve_crop rc
-            JOIN reservation r ON r.reserve_crop_id = rc.reserve_crop_id
-            WHERE rc.crop_id = ? AND r.reservation_status IN ('pending','confirmed','ready')");
-        $activeOrders->execute([$crop_id]);
-        if ((int)$activeOrders->fetchColumn() > 0) {
-            $pdo->rollBack();
-            http_response_code(409);
-            echo json_encode(["success" => false, "message" => "Available quantity cannot be edited while this listing has active orders."]);
-            exit;
-        }
+    // Block ALL edits when the listing has any active order
+    // (reservation_status: pending = buyer waiting, confirmed = accepted by farmer, ready = awaiting collection)
+    $activeOrderCheck = $pdo->prepare("
+        SELECT COUNT(*) FROM reserve_crop rc
+        JOIN reservation r ON r.reserve_crop_id = rc.reserve_crop_id
+        WHERE rc.crop_id = ? AND r.reservation_status IN ('pending','confirmed','ready')
+    ");
+    $activeOrderCheck->execute([$crop_id]);
+    if ((int)$activeOrderCheck->fetchColumn() > 0) {
+        $pdo->rollBack();
+        http_response_code(409);
+        echo json_encode(["success" => false, "message" => "Cannot edit a listing that has active orders."]);
+        exit;
     }
 
     // Ownership is enforced both by the locked preflight row and this update.

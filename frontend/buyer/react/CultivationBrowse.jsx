@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaCalendarAlt, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
 import { readCultivationResponse } from "./cultivationApi.js";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 import "../csss/CultivationAudit.css";
 
 const imageUrl = (path) => path ? (path.startsWith("/") ? path : `/${path}`) : null;
@@ -42,7 +43,7 @@ export default function CultivationBrowse() {
   return <>
     <div className="cultivation-market-filters">
       <input aria-label={t("cultivationAudit.searchPlaceholder")} value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("cultivationAudit.searchPlaceholder")} />
-      <select aria-label={t("cultivationAudit.districtFilter")} value={district} onChange={(event) => setDistrict(event.target.value)}><option value="all">{t("cultivationAudit.allDistricts")}</option>{districts.map((item) => <option key={item}>{item}</option>)}</select>
+      <select aria-label={t("cultivationAudit.districtFilter")} value={district} onChange={(event) => setDistrict(event.target.value)}><option value="all">{t("cultivationAudit.allDistricts")}</option>{districts.map((item) => <option key={item} value={item}>{getDistrictLabel(t, item)}</option>)}</select>
       <select aria-label={t("cultivationAudit.sortLabel")} value={sort} onChange={(event) => setSort(event.target.value)}><option value="harvest">{t("cultivationAudit.sortHarvest")}</option><option value="price">{t("cultivationAudit.sortPrice")}</option></select>
     </div>
     {!visibleAds.length ? <div className="cultivation-market-state">{t("buyer.cultivation.empty")}</div> : <div className="cultivation-market-grid">{visibleAds.map((ad) => {
@@ -58,7 +59,7 @@ export default function CultivationBrowse() {
               <FaUserCircle aria-hidden="true" />
               <div><strong>{ad.farmer_name}</strong>{Number(ad.verified_status) === 1 && <span>{t("buyerDashboard.verifiedFarmer")}</span>}</div>
             </div>
-            <div className="cultivation-card-row"><FaMapMarkerAlt aria-hidden="true" /><span>{ad.district}</span></div>
+            <div className="cultivation-card-row"><FaMapMarkerAlt aria-hidden="true" /><span>{getDistrictLabel(t, ad.district)}</span></div>
             <div className="cultivation-card-row"><FaCalendarAlt aria-hidden="true" /><span>{t(ad.timing_model === "growing_period" ? "growingPeriod.label" : "buyer.cultivation.expectedHarvest")}: <strong>{ad.timing_model === "growing_period" ? `${ad.growing_period_days} ${t("growingPeriod.units.days")}` : ad.expected_harvest_date}</strong></span></div>
             {ad.timing_model === "growing_period" && <div className="cultivation-card-row"><span>{ad.cultivation_started_at ? `${t("growingPeriod.cultivationStarted")}: ${String(ad.cultivation_started_at).slice(0, 10)}` : t("growingPeriod.cultivationNotStarted")}{ad.estimated_harvest_date && ` · ${t("growingPeriod.estimatedHarvest")}: ${ad.estimated_harvest_date}`}</span></div>}
             <div className="cultivation-card-divider" />

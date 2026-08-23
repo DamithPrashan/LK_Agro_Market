@@ -6,6 +6,8 @@ import { useCrops } from "../../../src/context/CropContext";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaMapMarkerAlt, FaFire } from "react-icons/fa";
+import { DISTRICTS } from "../../../src/constants/districts";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 import "../../commonPages/csss/HomePage/FeaturedCrops.css";
 import tomatoImg from "../../assests/png/tomato.jpg";
 import carrotImg from "../../assests/png/carrot.jpg";
@@ -200,26 +202,9 @@ export default function Browse() {
               onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
             >
               <option value="All Districts">{t("forms.selectDistrict")}</option>
-              <option>Badulla</option>
-              <option>Colombo</option>
-              <option>Kandy</option>
-              <option>Galle</option>
-              <option>Matara</option>
-              <option>Jaffna</option>
-              <option>Anuradhapura</option>
-              <option>Kurunegala</option>
-              <option>Trincomalee</option>
-              <option>Batticaloa</option>
-              <option>Ratnapura</option>
-              <option>Kegalle</option>
-              <option>Nuwara Eliya</option>
-              <option>Polonnaruwa</option>
-              <option>Monaragala</option>
-              <option>Hambantota</option>
-              <option>Kalutara</option>
-              <option>Puttalam</option>
-              <option>Vavuniya</option>
-              <option>Ampara</option>
+              {DISTRICTS.map((d) => (
+                <option key={d.key} value={d.value}>{getDistrictLabel(t, d.value)}</option>
+              ))}
             </select>
             <select
               className="dropdown"

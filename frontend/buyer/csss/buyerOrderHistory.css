@@ -79,11 +79,13 @@
 .buyer-order-history .order-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .buyer-order-history .order-header h3 {
   margin: 0;
+  flex: 1;
 }
 
 /* Status badge */
@@ -92,6 +94,10 @@
   border-radius: 12px;
   font-size: 12px;
   color: white;
+  white-space: normal;
+  word-break: break-word;
+  text-align: right;
+  max-width: 55%;
 }
 
 .buyer-order-history .status.pending {

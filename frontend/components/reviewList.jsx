@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export default function ReviewList({ reviews = [] }) {
   const { t } = useTranslation();
   if (reviews.length === 0) {
-    return <p style={{ fontSize:12, color:"var(--t-3)", padding:"12px 0" }}>No reviews yet.</p>;
+    return <p style={{ fontSize:12, color:"var(--t-3)", padding:"12px 0" }}>{t("ratings.noReviews", "No reviews yet.")}</p>;
   }
   return (
     <div>

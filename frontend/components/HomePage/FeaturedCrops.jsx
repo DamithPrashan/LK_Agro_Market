@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { FaFire, FaMapMarkerAlt } from "react-icons/fa";
+import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
 import "../../commonPages/csss/HomePage/FeaturedCrops.css";
 
@@ -69,7 +70,7 @@ export default function FeaturedCrops() {
                 </div>
                 <div className="featured-card-body">
                   <h3>{crop.crop_name}</h3>
-                  <div className="featured-meta"><div className="featured-location"><FaMapMarkerAlt /><span>{crop.district}</span></div></div>
+                  <div className="featured-meta"><div className="featured-location"><FaMapMarkerAlt /><span>{getDistrictLabel(t, crop.district)}</span></div></div>
                   <div className="featured-divider" />
                   <div className="featured-price">
                     {Number(crop.average_price) > 0 ? <><span className="featured-price-main">Rs. {Number(crop.average_price).toLocaleString()}</span><span className="featured-price-unit">/kg</span></> : <span className="featured-price-unavailable">{t("homepage.priceUnavailable")}</span>}
