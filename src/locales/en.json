@@ -548,7 +548,10 @@
     "tablePrice": "Price / Kg",
     "tableHarvestDate": "Harvest Date",
     "tableAction": "Action",
+    "editDisabledActiveOrders": "Cannot edit — this listing has active orders",
+    "editBlockedActiveOrders": "This listing cannot be edited because it has active orders. Cancel or complete all orders first.",
     "ordersTitle": "My Orders",
+
     "orderCardTitle": "Order {{id}}",
     "buyerLabel": "Buyer",
     "cropLabel": "Crop",

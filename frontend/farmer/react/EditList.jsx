@@ -92,6 +92,9 @@ function EditList() {
       if (result.success) {
         alert(t("farmer.listingUpdatedSuccess", "Listing Updated Successfully!"));
         navigate("/farmer/listings");
+      } else if (response.status === 409) {
+        // Listing is locked because it has active orders
+        alert(t("farmer.editBlockedActiveOrders", result.message));
       } else {
         alert(result.message);
       }
@@ -100,6 +103,7 @@ function EditList() {
       alert(t("errors.submissionFailed"));
     }
   };
+
 
   return (
     <div className="add-listing-container">
