@@ -78,6 +78,8 @@
 ========================= */
 
 .why-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
   width: 100%;
 
   display: flex;

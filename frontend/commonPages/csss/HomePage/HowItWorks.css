@@ -88,6 +88,8 @@
 =================================== */
 
 .how-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
   position: relative;
   z-index: 1;
 

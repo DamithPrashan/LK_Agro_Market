@@ -452,6 +452,7 @@ body {
 .pre-order-btn:hover {
   background-color: #114221;
 }
+.guest-browse-back { display: inline-flex; margin: 0 0 22px; padding: 9px 13px; border: 1px solid #b9d6c1; border-radius: 7px; background: #fff; color: #1a5c2d; font-weight: 700; cursor: pointer; }
 
 /* Keep Available Crop cards in the original marketplace visual language. */
 .crop-grid .featured-card{min-width:0;text-align:left;border-radius:12px;background:#fff;border:1px solid #e5e7eb;box-shadow:0 4px 12px rgba(6,78,59,.06)}

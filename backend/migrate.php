@@ -110,7 +110,9 @@ if ((int)$lock !== 1) {
 }
 
 try {
-    $files = glob(__DIR__ . '/migrations/*.sql') ?: [];
+    $sqlFiles = glob(__DIR__ . '/migrations/*.sql') ?: [];
+    $phpFiles = glob(__DIR__ . '/migrations/*.php') ?: [];
+    $files = array_merge($sqlFiles, $phpFiles);
     sort($files, SORT_STRING);
     $applied = $pdo->query('SELECT migration_name FROM migrations')->fetchAll(PDO::FETCH_COLUMN);
     $appliedMap = array_fill_keys($applied, true);
@@ -131,13 +133,20 @@ try {
             continue;
         }
 
-        $sql = trim((string)file_get_contents($file));
-        if ($sql === '') {
-            throw new RuntimeException("Migration is empty: $name");
-        }
-
         try {
-            $pdo->exec($sql);
+            if (str_ends_with($name, '.php')) {
+                $migration = require $file;
+                if (!is_callable($migration)) {
+                    throw new RuntimeException("PHP migration must return a callable: $name");
+                }
+                $migration($pdo);
+            } else {
+                $sql = trim((string)file_get_contents($file));
+                if ($sql === '') {
+                    throw new RuntimeException("Migration is empty: $name");
+                }
+                $pdo->exec($sql);
+            }
             $record->execute([$name]);
             echo "Applied: $name\n";
             $changed++;

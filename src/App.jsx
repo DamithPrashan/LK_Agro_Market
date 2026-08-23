@@ -32,7 +32,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
 
-import Footer from "../frontend/components/footer.jsx";
+import Footer from "../frontend/components/HomepageFooter.jsx";
 
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";

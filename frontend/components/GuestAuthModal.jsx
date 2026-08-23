@@ -1,0 +1,5 @@
+import "./GuestAuthModal.css";
+
+export default function GuestAuthModal({ message, registerLabel, cancelLabel, onRegister, onCancel }) {
+  return <div className="guest-auth-modal-backdrop"><div className="card guest-auth-modal" role="dialog" aria-modal="true" aria-describedby="guest-auth-modal-message"><div className="guest-auth-modal-icon" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V10"/><path d="M7 12c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M17 10c3 0 5-2 5-5-3 0-5 2-5 5Z"/><path d="M12 17c-3 0-5-2-5-5 3 0 5 2 5 5Z"/></svg></div><p id="guest-auth-modal-message">{message}</p><div className="guest-auth-modal-actions"><button type="button" className="btn btn-primary btn-lg btn-full" onClick={onRegister}>{registerLabel}</button><button type="button" className="btn btn-ghost guest-auth-modal-cancel" onClick={onCancel}>{cancelLabel}</button></div></div></div>;
+}

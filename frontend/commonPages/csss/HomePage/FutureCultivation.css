@@ -1,0 +1,24 @@
+.future-cultivation { padding: 40px 48px; background: #f7f8f7; text-align: left; }
+.future-container { width: 100%; max-width: 1280px; margin: 0 auto; }
+.future-header { margin-bottom: 22px; }
+.future-header h2 { margin: 0 0 5px; color: #171d18; font: 700 30px/1.2 "Hanken Grotesk", sans-serif; }
+.future-header p, .future-status { margin: 0; color: #687169; font-size: 13px; }
+.home-card-scroller { display: flex; gap: 16px; overflow-x: auto; padding: 2px 2px 12px; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: #a7c7b1 transparent; }
+.future-card { flex: 0 0 292px; overflow: hidden; scroll-snap-align: start; background: #fff; border: 1px solid #dde3df; border-radius: 10px; box-shadow: 0 3px 12px rgba(25, 63, 39, .06); }
+.future-image { position: relative; height: 170px; overflow: hidden; }
+.future-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.future-image > span { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.94); color: #174c2a; font-size: 9px; font-weight: 700; }
+.future-body { min-width: 0; padding: 14px; overflow-wrap: anywhere; }
+.future-body h3 { margin: 0 0 11px; color: #162219; font-size: 18px; line-height: 1.2; }
+.future-farmer { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.future-avatar { width: 34px; height: 34px; display: grid; place-items: center; flex: none; border-radius: 50%; background: #07552d; color: #fff; font-weight: 700; }
+.future-farmer strong, .future-farmer small { display: block; }
+.future-farmer strong { color: #243029; font-size: 12px; }.future-farmer small { color: #718077; font-size: 9px; }.future-farmer small svg { color: #168143; }
+.future-meta { display: flex; align-items: center; gap: 7px; margin: 7px 0; color: #657068; font-size: 10px; line-height: 1.4; }.future-meta svg, .future-meta-icon { width: 12px; flex: none; color: #66746b; }
+.future-divider { height: 1px; margin: 11px 0; background: #e9ecea; }
+.future-capacity { display: flex; justify-content: space-between; gap: 12px; color: #7b847e; font-size: 9px; }.future-capacity span:last-child { text-align: right; }.future-capacity strong { display: block; margin-top: 2px; color: #1d2921; font-size: 13px; }
+.future-progress { height: 7px; margin: 9px 0 4px; overflow: hidden; border-radius: 999px; background: #e5e8e6; }.future-progress span { display: block; height: 100%; border-radius: inherit; background: #08752f; }.future-committed { color: #8a928d; font-size: 8px; }
+.future-footer { display: flex; align-items: end; justify-content: space-between; gap: 8px; }.future-footer > span { color: #7b847e; font-size: 8px; }.future-footer strong { display: block; margin-top: 2px; color: #17231b; font-size: 11px; }.future-footer button { flex: 0 1 auto; max-width: 48%; padding: 8px 10px; border: 0; border-radius: 4px; background: #064e28; color: #fff; font-size: 9px; font-weight: 700; line-height: 1.3; white-space: normal; cursor: pointer; }.future-footer button:hover { background: #08783d; }
+@media (max-width: 1000px) { .future-cultivation { padding-inline: 32px; } }
+@media (max-width: 650px) { .future-cultivation { padding: 34px 20px; } .future-header h2 { font-size: 25px; } .future-card { flex-basis: min(292px, 84vw); } }
+.future-footer button:disabled { background: #789084; cursor: default; }

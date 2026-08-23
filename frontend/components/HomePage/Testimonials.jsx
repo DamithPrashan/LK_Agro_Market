@@ -1,4 +1,5 @@
 import "../../commonPages/csss/HomePage/Testimonials.css";
+import { useTranslation } from "react-i18next";
 
 import { FaStar } from "react-icons/fa";
 
@@ -9,7 +10,7 @@ const testimonials = [
   {
     id: 1,
     name: "Kamal Perera",
-    role: "Verified Farmer",
+    roleKey: "homepage.testimonialFarmer",
     image: farmer1,
     review:
       "LK Agro Market has changed my life. I get fair prices and secure payments.",
@@ -17,7 +18,7 @@ const testimonials = [
   {
     id: 2,
     name: "Sarah Jenkins",
-    role: "Commercial Buyer",
+    roleKey: "homepage.testimonialBuyer",
     image: buyer1,
     review:
       "The quality and reliability are unmatched. My restaurant chain finally has a stable supply.",
@@ -25,12 +26,13 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  const { t } = useTranslation();
   return (
     <section className="testimonials">
       <div className="testimonials-container">
 
         <div className="testimonials-header">
-          <h2>What Our Users Say</h2>
+          <h2>{t("homepage.testimonialsTitle")}</h2>
         </div>
 
         <div className="testimonials-grid">
@@ -61,7 +63,7 @@ export default function Testimonials() {
 
                 <div className="testimonial-user-text">
                   <h3>{item.name}</h3>
-                  <span>{item.role}</span>
+                  <span>{t(item.roleKey)}</span>
                 </div>
 
               </div>

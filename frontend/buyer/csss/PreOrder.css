@@ -24,12 +24,14 @@ body,
 ========================== */
 
 .crop-container {
+  position: relative;
   display: flex;
   gap: 25px;
   width: 100%;
   min-height: 100vh;
-  padding: 25px;
+  padding: 68px 25px 25px;
 }
+.crop-detail-back { position: absolute; top: 20px; left: 25px; padding: 8px 12px; border: 1px solid #cbd8cf; border-radius: 6px; background: #fff; color: #17552c; font-weight: 700; cursor: pointer; }
 
 /* ==========================
    LEFT SECTION
@@ -244,7 +246,7 @@ body,
 @media (max-width: 992px) {
   .crop-container {
     flex-direction: column;
-    padding: 15px;
+    padding: 64px 15px 15px;
   }
 
   .left-section,
@@ -283,3 +285,5 @@ body,
     height: 60px;
   }
 }
+.guest-auth-notice { margin: 12px 0; padding: 12px; border-radius: 8px; background: #fff8dc; color: #553d00; font-size: 13px; }.guest-auth-notice p { margin: 0 0 9px; color: inherit; }.guest-auth-notice > div { display: flex; gap: 8px; flex-wrap: wrap; }.guest-auth-notice button { padding: 7px 10px; border: 1px solid #a76d00; border-radius: 5px; background: #fff; color: #654600; font-weight: 700; cursor: pointer; }
+@media (max-width: 600px) { .crop-detail-back { left: 15px; } }
