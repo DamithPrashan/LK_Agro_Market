@@ -67,6 +67,7 @@ export default function Browse() {
 
   const { crops, loading, fetchCrops } = useCrops();
   const { user } = useAuth();
+  const activeMarketTab = user ? marketTab : "crops";
   
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalType, setAuthModalType] = useState(null); // 'guest' | 'farmer'
@@ -179,12 +180,12 @@ export default function Browse() {
             <p>{t("browse.subtitle")}</p>
           </div>
 
-          <div className="marketplace-tabs" role="tablist" aria-label={t("buyer.cultivation.marketplaceTabs")}>
+          {user ? <div className="marketplace-tabs" role="tablist" aria-label={t("buyer.cultivation.marketplaceTabs")}>
             <button className={marketTab === "crops" ? "active" : ""} onClick={() => setMarketTab("crops")}>{t("buyer.cultivation.availableCrops")}</button>
             <button className={marketTab === "cultivation" ? "active" : ""} onClick={() => setMarketTab("cultivation")}>{t("buyer.cultivation.opportunities")}</button>
-          </div>
+          </div> : <button type="button" className="guest-browse-back" onClick={() => navigate("/#market")}>← {t("homepage.backHome")}</button>}
 
-          {marketTab === "cultivation" ? <CultivationBrowse /> : <>
+          {activeMarketTab === "cultivation" ? <CultivationBrowse /> : <>
 
           {/* SEARCH BAR */}
           <div className="search-section">
@@ -322,11 +323,11 @@ export default function Browse() {
 
           {/* INFO BANNER */}
           <div className="info-banner">
-            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? t("browse.allSriLanka") : filters.district })}. <span style={{ textDecoration: "underline", cursor: "pointer", color: "#1a5c2d", marginLeft: "4px" }} onClick={() => navigate("/buyer/mapsearch")}>{t("browse.useMapSearch")}</span>
+            {t("browse.showingCropsNear", { district: filters.district === "All" || filters.district === "All Districts" ? t("browse.allSriLanka") : filters.district })}. {user && <span style={{ textDecoration: "underline", cursor: "pointer", color: "#1a5c2d", marginLeft: "4px" }} onClick={() => navigate("/buyer/mapsearch")}>{t("browse.useMapSearch")}</span>}
           </div>
 
           {/* STATS */}
-          <div className="stats-row">
+          {user && <div className="stats-row">
             <div className="stat-box">
               <h2>{stats.pending}</h2>
               <p>{t("stats.pendingOrders")}</p>
@@ -339,7 +340,7 @@ export default function Browse() {
               <h2>{stats.completed}</h2>
               <p>{t("stats.completedOrders")}</p>
             </div>
-          </div>
+          </div>}
 
           {/* CROP GRID */}
           {loading ? (

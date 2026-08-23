@@ -1,4 +1,5 @@
 import "../../commonPages/csss/HomePage/WhyChooseUs.css";
+import { useTranslation } from "react-i18next";
 
 import {
   FaUserCheck,
@@ -8,31 +9,24 @@ import {
 
 import farmerImage from "../../../src/assets/farmer1.png";
 
-const features = [
+const featureIcons = [
   {
     icon: <FaUserCheck />,
-    title: "Verified Farmers",
-    description:
-      "Every farmer is verified to ensure trusted sellers and quality produce.",
     color: "green",
   },
   {
     icon: <FaBalanceScale />,
-    title: "Fair Pricing",
-    description:
-      "Transparent pricing benefits both farmers and buyers without unnecessary middlemen.",
     color: "orange",
   },
   {
     icon: <FaLeaf />,
-    title: "Sustainable Agriculture",
-    description:
-      "Supporting local farmers while promoting environmentally responsible farming practices.",
     color: "light",
   },
 ];
 
 export default function WhyChooseUs() {
+  const { t } = useTranslation();
+  const features = featureIcons.map((feature, index) => ({ ...feature, title: t(`homepage.whyFeature${index + 1}Title`), description: t(`homepage.whyFeature${index + 1}Text`) }));
   return (
     <section className="why-choose-us">
 
@@ -41,11 +35,10 @@ export default function WhyChooseUs() {
         <div className="why-left">
 
           <div className="why-header">
-            <h2>Why Choose Us</h2>
+            <h2>{t("homepage.whyTitle")}</h2>
 
             <p>
-              Building trust between farmers and buyers through
-              transparency, technology and fair trade.
+              {t("homepage.whySubtitle")}
             </p>
           </div>
 
@@ -77,7 +70,7 @@ export default function WhyChooseUs() {
 
           <img
             src={farmerImage}
-            alt="Farmer"
+            alt={t("homepage.farmerImageAlt")}
           />
 
         </div>

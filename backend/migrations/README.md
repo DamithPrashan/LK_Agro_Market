@@ -24,7 +24,7 @@ If PHP is not available in `PATH` and you use XAMPP, run:
 D:\xampp\php\php.exe backend/migrate.php
 ```
 
-The runner finds `.sql` files in `backend/migrations/`, runs pending migrations
+The runner finds `.sql` and `.php` files in `backend/migrations/`, runs pending migrations
 in filename order, skips migrations already applied, and records successful
 migrations in the database. It stops if a migration fails, so fix the reported
 problem before running the same command again. The runner is designed to be run
@@ -60,4 +60,15 @@ change. Create a new migration instead, then run:
 
 ```cmd
 php backend/migrate.php
+```
+
+For migrations that must validate existing application records or safely carry
+generated IDs across several related inserts, a `.php` migration may return a
+callable accepting the shared `PDO` connection:
+
+```php
+<?php
+return static function (PDO $pdo): void {
+    // Validate prerequisites and apply the migration atomically.
+};
 ```

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../../src/context/AuthContext";
 
 import {
   FiGrid,
@@ -16,6 +17,7 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const { logout } = useAuth();
 
 
   const menuItems = [
@@ -55,10 +57,8 @@ export default function AdminSidebar() {
   };
 
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 

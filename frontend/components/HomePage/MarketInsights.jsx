@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import "../../commonPages/csss/HomePage/MarketInsights.css";
 
@@ -30,6 +31,8 @@ const districtColors = [
 ];
 
 export default function MarketInsights() {
+
+  const { t } = useTranslation();
 
   const [topCrops, setTopCrops] = useState([]);
 
@@ -116,10 +119,10 @@ export default function MarketInsights() {
 
           <div>
 
-            <h2>Live Market Insights</h2>
+            <h2>{t("homepage.insightsTitle")}</h2>
 
             <p>
-              Data-driven decisions for farmers and buyers.
+              {t("homepage.insightsSubtitle")}
             </p>
 
           </div>
@@ -135,11 +138,11 @@ export default function MarketInsights() {
 
           <div className="insight-card">
 
-            <h3>Top Available Crops (kg)</h3>
+            <h3>{t("homepage.topCrops")}</h3>
 
             {loading ? (
 
-              <p>Loading...</p>
+              <p>{t("homepage.loading")}</p>
 
             ) : (
 
@@ -208,7 +211,7 @@ export default function MarketInsights() {
 
           <div className="insight-card farmer-card">
 
-            <h3>Top Farmer Distribution</h3>
+            <h3>{t("homepage.farmerDistribution")}</h3>
 
 
             <div className="farmer-chart-wrapper">
@@ -281,9 +284,9 @@ export default function MarketInsights() {
 
               <div className="donut-center">
 
-                <strong>Top 4</strong>
+                <strong>{t("homepage.topFour")}</strong>
 
-                <span>Districts</span>
+                <span>{t("homepage.districts")}</span>
 
               </div>
 
@@ -341,7 +344,7 @@ export default function MarketInsights() {
           <div className="insight-card volume-card">
 
             <h3>
-              Successful Orders (30 Days)
+              {t("homepage.successfulOrders")}
             </h3>
 
             <div className="volume-chart">

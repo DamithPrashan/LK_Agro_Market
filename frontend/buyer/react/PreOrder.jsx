@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "../../buyer/csss/PreOrder.css";
 import { useCrops } from "../../../src/context/CropContext";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../src/context/AuthContext";
 import ReviewModal from "../../components/ReviewModal";
 import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
@@ -57,6 +58,7 @@ export default function CropDetail() {
   const navigate = useNavigate();
   const { updateCropQuantity } = useCrops();
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   // Determine which listing ID to load (defaulting to 1 if not specified)
   const cropId = id || location.state?.cropId || 1;
@@ -70,6 +72,7 @@ export default function CropDetail() {
   const [submitMsg, setSubmitMsg] = useState("");
   const [dateError, setDateError] = useState("");
   const [showFarmerReviews, setShowFarmerReviews] = useState(false);
+  const [guestAuthNotice, setGuestAuthNotice] = useState(false);
 
   const getMinMaxDates = () => {
     if (!cropData || !cropData.harvest) return { minStr: "", maxStr: "" };
@@ -205,6 +208,10 @@ export default function CropDetail() {
   // Handle actual reservation submission
   const handlePreOrder = async (e) => {
     e.preventDefault();
+    if (!user) {
+      setGuestAuthNotice(true);
+      return;
+    }
     const qtyVal = parseFloat(quantity);
     const availableQty = parseFloat(cropData.qty);
 
@@ -272,6 +279,7 @@ export default function CropDetail() {
 
   return (
     <div className="crop-container">
+      <button type="button" className="crop-detail-back" onClick={() => navigate(user ? "/browse" : "/#market")}>← {user ? t("homepage.backMarketplace") : t("homepage.backHome")}</button>
       {/* LEFT SIDE */}
       <div className="left-section">
         {/* Main Image */}
@@ -375,6 +383,7 @@ export default function CropDetail() {
         {/* Pre Order Box */}
         <div className="order-box" style={{ background: isOutOfStock ? "#34495e" : "#1b5e20" }}>
           <h2>{isOutOfStock ? t("emptyStates.outOfStock") : t("buyerDashboard.preOrderNow")}</h2>
+          {guestAuthNotice && <div className="guest-auth-notice"><p>{t("homepage.cropAuthMessage")}</p><div><button type="button" onClick={() => navigate("/register?role=buyer")}>{t("homepage.registerBuyer")}</button><button type="button" onClick={() => navigate("/login")}>{t("homepage.signIn")}</button></div></div>}
           <form onSubmit={handlePreOrder}>
             <label>{t("forms.quantity")}</label>
             <input

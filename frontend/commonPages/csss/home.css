@@ -1,183 +1,33 @@
-/* ==========================================
-   Reduce space between homepage sections
-========================================== */
+.home-page { width: 100%; overflow-x: clip; background: #fff; }
 
-.featured-crops,
-.how-it-works,
-.why-choose-us,
-.testimonials,
-.cta {
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
+.hero-container, .future-container, .market-container, .featured-container,
+.how-container, .why-container, .testimonials-container {
+  width: 100%; max-width: 1280px; margin-inline: auto;
 }
 
-.market-insights {
-    padding-top: 55px !important;
-    padding-bottom: 55px !important;
-}
+.hero-container, .market-insights, .featured-crops, .how-it-works,
+.why-choose-us, .testimonials, .cta { padding-inline: 48px; }
 
-/* =========================================
-   LK AGRO MARKET - HOMEPAGE GLOBAL SPACING
-========================================= */
-
-.home-page {
-  width: 100%;
-  overflow-x: hidden;
-  background: #ffffff;
-}
-
-/* =========================================
-   STANDARD CONTENT WIDTH
-========================================= */
-
-.hero-container,
-.market-container,
-.featured-container,
-.how-container,
-.why-container,
-.testimonials-container {
-  width: 100%;
-  max-width: 1280px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* =========================================
-   HERO
-========================================= */
-
-.hero-container {
-  padding-left: 48px !important;
-  padding-right: 48px !important;
-}
-
-/* =========================================
-   MARKET INSIGHTS
-========================================= */
-
-.market-insights {
-  padding-left: 48px !important;
-  padding-right: 48px !important;
-}
-
-.insights-grid {
-  gap: 28px !important;
-}
-
-/* =========================================
-   FEATURED CROPS
-========================================= */
-
-.featured-crops {
-  padding: 85px 48px !important;
-}
-
-.featured-grid {
-  gap: 28px !important;
-}
-
-/* =========================================
-   HOW IT WORKS
-========================================= */
-
-.how-it-works {
-  padding: 85px 48px !important;
-}
-
-.how-steps {
-  gap: 28px !important;
-}
-
-/* =========================================
-   WHY CHOOSE US
-========================================= */
-
-.why-choose-us {
-  padding: 90px 48px !important;
-}
-
-.why-container {
-  gap: 70px !important;
-}
-
-.why-list {
-  gap: 20px !important;
-}
-
-/* =========================================
-   TESTIMONIALS
-========================================= */
-
-.testimonials {
-  padding: 85px 48px !important;
-}
-
-.testimonials-grid {
-  gap: 32px !important;
-}
-
-/* =========================================
-   CTA
-========================================= */
-
-.cta {
-  padding: 90px 48px !important;
-  margin: 0 !important;
-}
-
-/* =========================================
-   FOOTER - REMOVE UNWANTED GAP
-========================================= */
-
-.footer,
-footer {
-  margin-top: 0 !important;
-}
-
-/* =========================================
-   TABLET
-========================================= */
+.market-insights { padding-block: 55px; }
+.featured-crops { padding-block: 40px; }
+.how-it-works, .why-choose-us, .testimonials { padding-block: 60px; }
+.cta { margin: 0; padding-block: 60px; }
+.insights-grid, .how-steps { gap: 28px; }
+.featured-grid { gap: 16px; }
+.why-container { gap: 70px; }
+.why-list { gap: 20px; }
+.testimonials-grid { gap: 32px; }
+.home-anchor { scroll-margin-top: calc(var(--navbar-height, 64px) + 12px); }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--navbar-height, 64px) + 12px); }
 
 @media (max-width: 1000px) {
-
-  .hero-container,
-  .market-insights,
-  .featured-crops,
-  .how-it-works,
-  .why-choose-us,
-  .testimonials,
-  .cta {
-    padding-left: 32px !important;
-    padding-right: 32px !important;
-  }
+  .hero-container, .market-insights, .featured-crops, .how-it-works,
+  .why-choose-us, .testimonials, .cta { padding-inline: 32px; }
+  .why-container { gap: 40px; }
 }
 
-/* =========================================
-   MOBILE
-========================================= */
-
 @media (max-width: 650px) {
-
-  .hero-container,
-  .market-insights,
-  .featured-crops,
-  .how-it-works,
-  .why-choose-us,
-  .testimonials,
-  .cta {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
-
-  .featured-crops,
-  .how-it-works,
-  .why-choose-us,
-  .testimonials {
-    padding-top: 65px !important;
-    padding-bottom: 65px !important;
-  }
-
-  .why-container {
-    gap: 40px !important;
-  }
+  .hero-container, .market-insights, .featured-crops, .how-it-works,
+  .why-choose-us, .testimonials, .cta { padding-inline: 20px; }
+  .market-insights, .how-it-works, .why-choose-us, .testimonials, .cta { padding-block: 56px; }
 }

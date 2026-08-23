@@ -61,6 +61,7 @@
 =================================== */
 
 .insight-card {
+  min-width: 0;
   min-height: 310px;
   padding: 24px;
   background: #ffffff;
@@ -93,9 +94,10 @@
 }
 
 .demand-row {
+  min-width: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 72px 1fr 46px;
+  grid-template-columns: 72px minmax(0, 1fr) minmax(52px, max-content);
   align-items: center;
   gap: 12px;
 }
@@ -123,6 +125,7 @@
 }
 
 .demand-value {
+  min-width: 0;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -230,6 +233,8 @@
 }
 
 .volume-chart {
+  min-width: 0;
+  overflow: hidden;
   width: 100%;
   margin-top: 4px;
 }
@@ -278,7 +283,7 @@
 
 @media (max-width: 450px) {
   .demand-row {
-    grid-template-columns: 60px 1fr 38px;
+    grid-template-columns: 58px minmax(0, 1fr) minmax(44px, max-content);
     gap: 8px;
   }
 

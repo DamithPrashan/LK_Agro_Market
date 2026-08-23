@@ -61,7 +61,7 @@ body {
 }
 
 /* HERO */
-.hero {
+.dashboard > .hero {
   /* background: linear-gradient(135deg, #1f7a3a, #2ecc71); */
   color: green;
   padding: 0 25px 55px 25px;
@@ -69,13 +69,13 @@ body {
   text-align: center;
 }
 
-.hero h1 {
+.dashboard > .hero h1 {
   font-size: 40px;
   margin-bottom: 8px;
   color: white;
 }
 
-.hero p {
+.dashboard > .hero p {
   font-size: 15px;
   opacity: 0.95;
 }
@@ -384,7 +384,7 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .hero {
+  .dashboard > .hero {
     margin-top: -14px;
   }
 

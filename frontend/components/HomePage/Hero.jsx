@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import "../../commonPages/csss/HomePage/Hero.css";
 import heroBg from "../../../src/assets/hero-bg.png";
@@ -14,6 +15,7 @@ import {
 
 export default function Hero() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [homeStats, setHomeStats] = useState({
     verifiedFarmers: 0,
@@ -46,28 +48,28 @@ export default function Hero() {
     {
       icon: <FaShieldAlt />,
       value: `${homeStats.verifiedFarmers}+`,
-      label: "Verified Farmers",
+      label: t("homepage.heroVerified"),
       type: "green",
     },
 
     {
       icon: <FaBoxOpen />,
       value: `${homeStats.activeListings}+`,
-      label: "Active Crop Listings",
+      label: t("homepage.heroListings"),
       type: "gold",
     },
 
     {
       icon: <FaMapMarkedAlt />,
       value: homeStats.districtsCovered,
-      label: "Districts Covered",
+      label: t("homepage.heroDistricts"),
       type: "green",
     },
 
     {
       icon: <FaThumbsUp />,
       value: `${homeStats.buyerSatisfaction}%`,
-      label: "Buyer Satisfaction",
+      label: t("homepage.heroSatisfaction"),
       type: "gold",
     },
   ];
@@ -78,12 +80,10 @@ export default function Hero() {
 
       <div className="hero-container">
         <div className="hero-content">
-          <h1>Connecting Sri Lankan Farmers Directly with Buyers</h1>
+          <h1>{t("homepage.heroTitle")}</h1>
 
           <p>
-            Experience a secure, transparent agricultural marketplace. Pre-order
-            fresh crops, access real-time demand forecasting, and ensure fair
-            pricing for everyone.
+            {t("homepage.heroSubtitle")}
           </p>
 
           <div className="hero-buttons">
@@ -91,7 +91,7 @@ export default function Hero() {
               className="hero-btn-primary"
               onClick={() => navigate("/browse")}
             >
-              Browse Marketplace
+              {t("homepage.browseMarketplace")}
               <FaArrowRight />
             </button>
 
@@ -99,7 +99,7 @@ export default function Hero() {
               className="hero-btn-secondary"
               onClick={() => navigate("/register")}
             >
-              Join With Us
+              {t("homepage.joinUs")}
             </button>
 
           </div>

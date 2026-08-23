@@ -1,4 +1,5 @@
 import "../../commonPages/csss/HomePage/HowItWorks.css";
+import { useTranslation } from "react-i18next";
 
 import {
   FaClipboardList,
@@ -7,48 +8,37 @@ import {
   FaTruck,
 } from "react-icons/fa";
 
-const steps = [
+const stepIcons = [
   {
     id: 1,
     icon: <FaClipboardList />,
-    title: "Farmer Lists Crops",
-    description:
-      "Farmers upload their upcoming harvest details.",
   },
   {
     id: 2,
     icon: <FaShoppingCart />,
-    title: "Buyer Places Pre-Order",
-    description:
-      "Secure your supply in advance with transparent pricing.",
   },
   {
     id: 3,
     icon: <FaCreditCard />,
-    title: "Secure Online Payment",
-    description:
-      "Transactions are protected through a secure payment process.",
   },
   {
     id: 4,
     icon: <FaTruck />,
-    title: "Collection and Delivery",
-    description:
-      "Coordinated collection and delivery from farmer to buyer.",
   },
 ];
 
 export default function HowItWorks() {
+  const { t } = useTranslation();
+  const steps = stepIcons.map((step, index) => ({ ...step, title: t(`homepage.howStep${index + 1}Title`), description: t(`homepage.howStep${index + 1}Text`) }));
   return (
     <section className="how-it-works">
       <div className="how-container">
 
         <div className="how-header">
-          <h2>How It Works</h2>
+          <h2>{t("homepage.howTitle")}</h2>
 
           <p>
-            A simple, transparent process connecting farmers directly
-            with buyers.
+            {t("homepage.howSubtitle")}
           </p>
         </div>
 

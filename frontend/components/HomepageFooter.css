@@ -1,0 +1,33 @@
+.home-footer-wrap { padding: 28px 5%; background: linear-gradient(120deg,#42df77 0%,#2bd888 72%,#27aef2 100%); color: #fff; }
+.home-footer-panel { max-width: 1280px; margin: 0 auto; padding: 42px 58px 18px; border-radius: 10px; background: #003d25; box-shadow: 0 7px 20px rgba(0,45,28,.24); text-align: left; }
+.home-footer-grid { display: grid; grid-template-columns: 1.35fr .75fr 1fr 1fr; gap: 50px; }
+.home-footer-panel h3 { margin: 0 0 17px; color: #fff; font-size: 14px; }
+.home-footer-brand h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 16px; color: #fff; font-size: 15px; line-height: 1.15; }
+.home-footer-brand h2 svg { padding: 7px; box-sizing: content-box; border-radius: 50%; background: #f5ad00; color: #04652e; }
+.home-footer-brand p { max-width: 235px; margin: 0; color: #e0ede5; font-size: 12px; line-height: 1.65; }
+.home-footer-panel ul { margin: 0; padding: 0; list-style: none; }
+.home-footer-panel li { margin: 8px 0; }
+.home-footer-panel li a { color: #d8e9df; font-size: 12px; }
+.home-footer-panel li a:hover { color: #70e49c; }
+.home-contact { display: flex; align-items: center; gap: 9px; margin: 0 0 14px; color: #d8e9df; font-size: 12px; white-space: nowrap; }
+.home-contact svg { padding: 6px; box-sizing: content-box; flex: none; border: 1px solid #3d7658; border-radius: 50%; color: #70e49c; }
+.home-contact-needed { color: #afc7b9; }
+.home-footer-gallery { display: grid; grid-template-columns: repeat(2,72px); gap: 7px; }
+.home-footer-gallery img { width: 72px; height: 53px; object-fit: cover; border-radius: 7px; }
+.home-footer-bottom { margin-top: 28px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.13); color: #d1e2d8; font-size: 11px; text-align: center; }
+
+@media (max-width: 900px) {
+  .home-footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 34px; }
+}
+
+@media (max-width: 580px) {
+  .home-footer-wrap { padding: 18px 12px; }
+  .home-footer-panel { padding: 28px 24px 16px; }
+  .home-footer-grid { grid-template-columns: 1fr; gap: 22px; }
+  .home-footer-panel h3 { margin-bottom: 12px; }
+  .home-footer-brand h2 { margin-bottom: 10px; }
+  .home-contact { margin-bottom: 10px; white-space: normal; overflow-wrap: anywhere; }
+  .home-footer-gallery { grid-template-columns: repeat(2,minmax(72px,110px)); }
+  .home-footer-gallery img { width: 100%; }
+  .home-footer-bottom { margin-top: 22px; }
+}

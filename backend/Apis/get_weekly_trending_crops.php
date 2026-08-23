@@ -86,7 +86,7 @@ try {
             FROM district_totals
         ),
 
-        district_prices AS
+        district_listings AS
         (
             SELECT
 
@@ -96,19 +96,16 @@ try {
 
                 district,
 
-                AVG(suggested_price)
-                    AS average_price
+                crop_id,
+                price_per_unit,
+                ROW_NUMBER() OVER (PARTITION BY LOWER(TRIM(crop_name)), district ORDER BY updated_at DESC, crop_id DESC) AS listing_rank
 
             FROM crop
 
             WHERE
-                updated_at >= NOW() - INTERVAL 7 DAY
-
-                AND suggested_price IS NOT NULL
-
-            GROUP BY
-                LOWER(TRIM(crop_name)),
-                district
+                crop_status = 'active'
+                AND quantity > 0
+                AND price_per_unit > 0
         )
 
         SELECT
@@ -119,11 +116,9 @@ try {
             ) AS crop_name,
 
             rd.district,
-
-            ROUND(
-                dp.average_price,
-                2
-            ) AS average_price,
+            dl.crop_id,
+            ROUND(dl.price_per_unit, 2) AS average_price,
+            (SELECT cp.photo_path FROM crop_photos cp WHERE cp.crop_id=dl.crop_id ORDER BY cp.id LIMIT 1) preview_image,
 
             ct.completed_orders
 
@@ -135,16 +130,15 @@ try {
 
             AND rd.ranking = 1
 
-        LEFT JOIN district_prices dp
-
-            ON dp.crop_key = ct.crop_key
-
-            AND dp.district = rd.district
+        LEFT JOIN district_listings dl
+            ON dl.crop_key = ct.crop_key
+            AND dl.district = rd.district
+            AND dl.listing_rank = 1
 
         ORDER BY
             ct.completed_orders DESC
 
-        LIMIT 4
+        LIMIT 10
     ";
 
     $stmt = $pdo->query($sql);
@@ -160,6 +154,12 @@ try {
 
             "district" =>
                 $row["district"],
+
+            "crop_id" =>
+                $row["crop_id"] !== null ? (int) $row["crop_id"] : null,
+
+            "preview_image" =>
+                $row["preview_image"],
 
             "average_price" =>
                 $row["average_price"] !== null

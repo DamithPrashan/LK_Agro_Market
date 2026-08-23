@@ -3,6 +3,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../cultivationRequests/_common.php';
 try {
     $id = (int)($_GET['id'] ?? 0);
+    $limit = max(1, min((int)($_GET['limit'] ?? 100), 100));
     $where = "ca.status = 'open' AND ca.committed_quantity < ca.capacity_quantity";
     $params = [];
     if ($id > 0) { $where .= ' AND ca.cultivation_ad_id = ?'; $params[] = $id; }
@@ -18,7 +19,8 @@ try {
                    (SELECT p.photo_path FROM cultivation_ad_photos p
                     WHERE p.cultivation_ad_id=ca.cultivation_ad_id ORDER BY p.id LIMIT 1) preview_image
             FROM cultivation_ad ca JOIN farmer f ON f.farmer_id=ca.farmer_id
-            JOIN user u ON u.user_id=f.user_id WHERE $where ORDER BY ca.expected_harvest_date, ca.created_at DESC";
+            JOIN user u ON u.user_id=f.user_id WHERE $where
+            ORDER BY ca.created_at DESC, ca.cultivation_ad_id DESC LIMIT $limit";
     $stmt = $pdo->prepare($sql); $stmt->execute($params); $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($id > 0 && !$ads) cultivation_request_json(404, ['success'=>false,'message'=>'Cultivation opportunity is unavailable.']);
     if ($id > 0) {
