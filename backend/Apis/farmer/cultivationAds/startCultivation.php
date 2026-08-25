@@ -27,6 +27,29 @@ try {
     if ((int)$requestCounts['pending_count'] > 0) { $pdo->rollBack(); cultivation_json(409, ['success' => false, 'message' => 'Resolve all pending buyer requests before starting cultivation.']); }
     if ((int)$requestCounts['accepted_count'] <= 0) { $pdo->rollBack(); cultivation_json(409, ['success' => false, 'message' => 'At least one accepted buyer request is required before starting cultivation.']); }
 
+    $accepted = $pdo->prepare("SELECT cr.cultivation_request_id, cr.agreed_total_amount, r.reservation_id, r.transaction_status
+        FROM cultivation_request cr
+        LEFT JOIN reservation r ON r.cultivation_request_id=cr.cultivation_request_id AND r.reservation_source='cultivation'
+        WHERE cr.cultivation_ad_id=? AND cr.request_status='accepted'
+        FOR UPDATE");
+    $accepted->execute([$id]);
+    $advancePayments = $pdo->prepare("SELECT payment_id, amount FROM payment
+        WHERE reservation_id=? AND payment_type='advance' AND payment_status='completed'
+        FOR UPDATE");
+    foreach ($accepted->fetchAll(PDO::FETCH_ASSOC) as $request) {
+        if ($request['reservation_id'] === null || $request['transaction_status'] !== 'partially_paid') {
+            $pdo->rollBack();
+            cultivation_json(409, ['success' => false, 'message' => 'Every accepted request must have a reservation with its advance payment completed before cultivation can start.']);
+        }
+        $advancePayments->execute([(int)$request['reservation_id']]);
+        $payments = $advancePayments->fetchAll(PDO::FETCH_ASSOC);
+        $expectedAdvance = round((float)$request['agreed_total_amount'] / 3);
+        if (count($payments) !== 1 || abs((float)$payments[0]['amount'] - $expectedAdvance) > 0.00001) {
+            $pdo->rollBack();
+            cultivation_json(409, ['success' => false, 'message' => 'Every accepted request must have exactly one valid completed advance payment before cultivation can start.']);
+        }
+    }
+
     $update = $pdo->prepare("UPDATE cultivation_ad SET status='cultivating', cultivation_started_at=NOW() WHERE cultivation_ad_id=? AND cultivation_started_at IS NULL AND status IN ('open','capacity_reached')");
     $update->execute([$id]);
     if ($update->rowCount() !== 1) throw new RuntimeException('Cultivation opportunity changed before it could be started.');

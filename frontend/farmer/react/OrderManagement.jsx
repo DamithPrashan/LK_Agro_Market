@@ -276,7 +276,7 @@ function OrderManagement() {
 
                                     {/* Primary Action buttons (bottom row) */}
                                     {(order.status === "Pending" ||
-                                        (order.status === "Accepted" && order.payment === "Paid (1/3)" && (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date))) ||
+                                        (order.status === "Accepted" && order.payment === "Paid (1/3)" && (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_ad_status === "harvested" && order.cultivation_started_at && order.estimated_harvest_date))) ||
                                         (order.status === "Ready" && order.payment === "Paid (Full)")) && (
                                         <div className="footer-bottom-row">
                                             {order.status === "Pending" && (
@@ -291,7 +291,7 @@ function OrderManagement() {
                                             )}
 
                                             {order.status === "Accepted" && order.payment === "Paid (1/3)" &&
-                                                (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_started_at && order.estimated_harvest_date)) && (
+                                                (order.reservation_source !== "cultivation" || order.timing_model !== "growing_period" || (order.cultivation_ad_status === "harvested" && order.cultivation_started_at && order.estimated_harvest_date)) && (
                                                 <button
                                                     className="ready-btn"
                                                     disabled={updatingOrderId === order.db_id}

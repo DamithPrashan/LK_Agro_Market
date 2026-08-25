@@ -39,7 +39,16 @@ $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $district = isset($_POST['district']) ? trim($_POST['district']) : '';
 $language = isset($_POST['language']) ? trim($_POST['language']) : 'sinhala';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
-$role = isset($_POST['role']) ? trim($_POST['role']) : 'buyer';
+$role = isset($_POST['role']) ? strtolower(trim($_POST['role'])) : 'buyer';
+
+if (!in_array($role, ['buyer', 'farmer'], true)) {
+    http_response_code(422);
+    echo json_encode([
+        "success" => false,
+        "message" => "Registration is available only for buyer and farmer accounts."
+    ]);
+    exit;
+}
 
 // Farmer fields
 $nic = isset($_POST['nic']) ? trim($_POST['nic']) : null;
