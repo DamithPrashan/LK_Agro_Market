@@ -1,20 +1,22 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 
 import AdminSidebar from "./AdminSidebar";
+import RequireRole from "../../../../src/components/RequireRole";
 
 import "../../csss/AdminDashboard/admin.css";
 
 export default function AdminLayout() {
   return (
-    <div className="admin-shell">
+    <RequireRole role="admin">
+      <div className="admin-shell">
 
-      <AdminSidebar />
+        <AdminSidebar />
 
-      <main className="admin-main">
-        <Outlet />
-      </main>
+        <main className="admin-main">
+          <Outlet />
+        </main>
 
-    </div>
+      </div>
+    </RequireRole>
   );
 }

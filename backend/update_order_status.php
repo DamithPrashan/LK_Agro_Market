@@ -130,6 +130,9 @@ try {
             throw new DomainException('The order can be marked ready only after the advance payment is completed.');
         }
         if ($isCultivation && $order['timing_model'] === 'growing_period') {
+            if ($order['cultivation_ad_status'] !== 'harvested') {
+                throw new DomainException('The growing-period cultivation opportunity must be marked harvested before this order can be marked ready.');
+            }
             if ($order['cultivation_started_at'] === null || $order['estimated_harvest_date'] === null) {
                 throw new DomainException('Cultivation must be started before this order can be marked ready.');
             }
