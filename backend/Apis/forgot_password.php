@@ -20,6 +20,14 @@ if (empty($email)) {
     exit;
 }
 
+// Ensure reset columns exist on user table
+try {
+    $pdo->exec("ALTER TABLE user ADD COLUMN reset_token VARCHAR(255) NULL");
+} catch (Exception $e) {}
+try {
+    $pdo->exec("ALTER TABLE user ADD COLUMN reset_token_expiry DATETIME NULL");
+} catch (Exception $e) {}
+
 try {
     $stmt = $pdo->prepare("SELECT user_id, name FROM user WHERE email = ?");
     $stmt->execute([$email]);
@@ -28,6 +36,12 @@ try {
     if ($user) {
         $userName = $user['name'] ?? 'Valued User';
         $resetToken = bin2hex(random_bytes(16));
+        $expiry = date("Y-m-d H:i:s", strtotime("+1 hour"));
+
+        // Save token and expiry to database
+        $updateStmt = $pdo->prepare("UPDATE user SET reset_token = ?, reset_token_expiry = ? WHERE email = ?");
+        $updateStmt->execute([$resetToken, $expiry, $email]);
+
         $resetLink = "http://localhost:5173/reset-password?email=" . urlencode($email) . "&token=" . $resetToken;
 
         // Send email notification for password reset

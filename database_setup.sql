@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `farm_location` VARCHAR(255) NULL,
   `nic_image` VARCHAR(255) NULL,
   `evidence` VARCHAR(255) NULL,
+  `reset_token` VARCHAR(255) NULL,
+  `reset_token_expiry` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
