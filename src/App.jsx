@@ -29,6 +29,7 @@ import UserManagement from "../frontend/admin/react/AdminDashboard/UserManagemen
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import ProfilePage from "./pages/Profile.jsx";
 import Ratings from "./pages/Ratings.jsx";
 
@@ -200,6 +201,11 @@ function App() {
             <Route
               path="/forgot-password"
               element={<ForgotPassword />}
+            />
+
+            <Route
+              path="/reset-password"
+              element={<ResetPassword />}
             />
 
             <Route
