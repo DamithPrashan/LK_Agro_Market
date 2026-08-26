@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import bgImage from "../../src/assets/login-bg.jpg";
+import "./csss/loginPage.css";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -37,56 +39,47 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <main style={s.page}>
-        <div className="card" style={s.card}>
-          <div style={s.header}>
-            <div style={s.logo}>🌿 LK Agro Market</div>
-            <h1 style={s.title}>Reset Password</h1>
-            <p style={s.sub}>Enter your email to receive recovery instructions</p>
+    <div className="login-page-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
+      <div className="login-page-overlay" />
+
+      <div className="login-card">
+        <div className="login-header">
+          <div className="login-logo">🌿 LK Agro Market</div>
+          <h1 className="login-title">Reset Password</h1>
+          <p className="login-subtitle">Enter your email to receive recovery instructions</p>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="field">
+            <label htmlFor="email">Email Address</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              placeholder="you@email.com"
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
           </div>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="field">
-              <label htmlFor="email">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                placeholder="you@email.com"
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-              />
+          {message.text && (
+            <div className={message.ok ? "info-green" : "info-red"} style={{ marginBottom: 14 }}>
+              {message.text}
             </div>
+          )}
 
-            {message.text && (
-              <div className={message.ok ? "info-green" : "info-red"} style={{ marginBottom: 14 }}>
-                {message.text}
-              </div>
-            )}
+          <button className="login-submit-btn" type="submit" disabled={loading}>
+            {loading ? "Sending instructions…" : "Send Reset Instructions"}
+          </button>
+        </form>
 
-            <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? "Sending instructions…" : "Send Reset Instructions"}
-            </button>
-          </form>
-
-          <hr className="divider" />
-          <p style={s.foot}>
-            Remembered your password?{" "}
-            <Link to="/login" style={{ fontWeight: 600 }}>Back to Sign In</Link>
-          </p>
-        </div>
-      </main>
+        <hr className="login-divider" />
+        <p className="login-footer-text">
+          Remembered your password?{" "}
+          <Link to="/login" className="login-footer-link">Back to Sign In</Link>
+        </p>
+      </div>
     </div>
   );
 }
 
-const s = {
-  page: { flex: 1, background: "var(--page)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px" },
-  card: { width: "100%", maxWidth: 420 },
-  header: { textAlign: "center", marginBottom: 24 },
-  logo: { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
-  title: { fontSize: 20, fontWeight: 700, marginBottom: 4 },
-  sub: { fontSize: 12, color: "var(--t-3)" },
-  foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)" },
-};

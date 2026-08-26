@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
+import bgImage from "../../src/assets/login-bg.jpg";
+import "./csss/loginPage.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -45,80 +45,67 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="login-page-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
+      <div className="login-page-overlay" />
 
-      <main style={s.page}>
-        <div className="card" style={s.card}>
-          <div style={s.header}>
-            <div style={s.logo}>{t("login.logoTitle")}</div>
-            <h1 style={s.title}>{t("login.header")}</h1>
-            <p style={s.sub}>{t("login.subtitle")}</p>
+      <div className="login-card">
+        <div className="login-header">
+          <div className="login-logo">{t("login.logoTitle")}</div>
+          <h1 className="login-title">{t("login.header")}</h1>
+          <p className="login-subtitle">{t("login.subtitle")}</p>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="field">
+            <label htmlFor="email">{t("forms.emailAddress")}</label>
+            <input
+              id="email" type="email" value={email} autoComplete="email"
+              placeholder={t("login.emailPlaceholder")}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="field">
-              <label htmlFor="email">{t("forms.emailAddress")}</label>
+          <div className="field">
+            <label htmlFor="password">{t("forms.password")}</label>
+            <div className="login-pw-wrap">
               <input
-                id="email" type="email" value={email} autoComplete="email"
-                placeholder={t("login.emailPlaceholder")}
-                onChange={(e) => setEmail(e.target.value)}
+                id="password"
+                type={showPw ? "text" : "password"}
+                value={password}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ paddingRight: 40 }}
               />
+              <button
+                type="button"
+                className="login-eye-btn"
+                onClick={() => setShowPw((p) => !p)}
+                aria-label={showPw ? t("login.hidePassword") : t("login.showPassword")}
+              >
+                {showPw ? "🙈" : "👁"}
+              </button>
             </div>
-
-            <div className="field">
-              <label htmlFor="password">{t("forms.password")}</label>
-              <div style={s.pwWrap}>
-                <input
-                  id="password"
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{ paddingRight: 40 }}
-                />
-                <button
-                  type="button"
-                  style={s.eyeBtn}
-                  onClick={() => setShowPw((p) => !p)}
-                  aria-label={showPw ? t("login.hidePassword") : t("login.showPassword")}
-                >
-                  {showPw ? "🙈" : "👁"}
-                </button>
-              </div>
-              <div style={{ textAlign: "right", marginTop: 4 }}>
-                <Link to="/forgot-password" style={{ fontSize: 11 }}>{t("login.forgotPassword")}</Link>
-              </div>
+            <div style={{ textAlign: "right", marginTop: 6 }}>
+              <Link to="/forgot-password" className="login-forgot-link">{t("login.forgotPassword")}</Link>
             </div>
+          </div>
 
-            {error && <div className="info-red" style={{ marginBottom: 14 }}>{error}</div>}
+          {error && <div className="info-red" style={{ marginBottom: 14 }}>{error}</div>}
 
-            <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
-              {loading ? t("login.btnSigningIn") : t("login.btnSignIn")}
-            </button>
-          </form>
+          <button className="login-submit-btn" type="submit" disabled={loading}>
+            {loading ? t("login.btnSigningIn") : t("login.btnSignIn")}
+          </button>
+        </form>
 
-          <hr className="divider" />
-          <p style={s.foot}>
-            {t("login.footText")}{" "}
-            <Link to="/register" style={{ fontWeight: 600 }}>{t("login.footLink")}</Link>
-          </p>
-        </div>
-      </main>
-
+        <hr className="login-divider" />
+        <p className="login-footer-text">
+          {t("login.footText")}{" "}
+          <Link to="/register" className="login-footer-link">{t("login.footLink")}</Link>
+        </p>
+      </div>
     </div>
   );
 }
 
-const s = {
-  page: { flex: 1, background: "var(--page)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px" },
-  card: { width: "100%", maxWidth: 420 },
-  header: { textAlign: "center", marginBottom: 24 },
-  logo: { fontSize: 18, fontWeight: 700, color: "var(--g-800)", marginBottom: 8 },
-  title: { fontSize: 20, fontWeight: 700, marginBottom: 4 },
-  sub: { fontSize: 12, color: "var(--t-3)" },
-  pwWrap: { position: "relative" },
-  eyeBtn: { position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, padding: 0, color: "var(--t-3)" },
-  foot: { textAlign: "center", fontSize: 12, color: "var(--t-3)" },
-};
 
