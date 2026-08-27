@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { useForm } from "../../src/hooks/useForm";
@@ -39,7 +39,9 @@ export default function RegistrationPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const { t } = useTranslation();
-  const [role, setRole] = useState("farmer");
+  const [searchParams] = useSearchParams();
+  const requestedRole = searchParams.get("role");
+  const [role, setRole] = useState(requestedRole === "buyer" ? "buyer" : "farmer");
   const [step, setStep] = useState(1);
   const [apiErr, setApiErr] = useState("");
   const [loading, setLoading] = useState(false);

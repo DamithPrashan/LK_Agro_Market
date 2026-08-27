@@ -1,0 +1,18 @@
+.registration-cta { padding: 60px 48px; background: #f4faf6; }
+.registration-cta-container { width: 100%; max-width: 1120px; margin: 0 auto; }
+.registration-cta-header { max-width: 720px; margin: 0 auto 30px; text-align: center; }
+.registration-cta-header h2 { margin: 0 0 10px; color: #102416; font: 700 clamp(28px,3vw,36px)/1.2 "Hanken Grotesk",sans-serif; }
+.registration-cta-header p { margin: 0; color: #53665a; font: 400 15px/1.65 "Inter",sans-serif; }
+.registration-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.registration-option { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; padding: 28px; border: 1px solid #dce9e0; border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgba(18,52,30,.07); }
+.registration-option-icon { width: 44px; height: 44px; display: grid; place-items: center; margin-bottom: 16px; border-radius: 50%; background: #e9f5ed; color: #08783d; font-size: 19px; }
+.registration-option-buyer .registration-option-icon { background: #fff5df; color: #b66a00; }
+.registration-option h3 { margin: 0 0 9px; color: #16321f; font: 700 21px/1.25 "Hanken Grotesk",sans-serif; }
+.registration-option p { flex: 1; margin: 0 0 22px; color: #53665a; font: 400 14px/1.65 "Inter",sans-serif; }
+.registration-option button { min-height: 44px; padding: 10px 19px; border: 1px solid #08783d; border-radius: 5px; background: #08783d; color: #fff; font: 600 13px/1.3 "Inter",sans-serif; cursor: pointer; transition: background .2s,transform .2s; }
+.registration-option button:hover { background: #066632; transform: translateY(-1px); }
+.registration-sign-in { margin: 24px 0 0; color: #64748b; text-align: center; font: 400 13px/1.5 "Inter",sans-serif; }
+.registration-sign-in button { padding: 3px; border: 0; background: transparent; color: #08783d; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.registration-option button:focus-visible,.registration-sign-in button:focus-visible { outline: 3px solid rgba(16,185,129,.35); outline-offset: 3px; }
+@media(max-width:1000px){.registration-cta{padding-inline:32px}}
+@media(max-width:650px){.registration-cta{padding:56px 20px}.registration-options{grid-template-columns:1fr;gap:16px}.registration-option{padding:23px}.registration-option button{width:100%}}
