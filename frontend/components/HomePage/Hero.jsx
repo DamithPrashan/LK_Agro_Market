@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import "../../commonPages/csss/HomePage/Hero.css";
@@ -10,12 +9,15 @@ import {
   FaBoxOpen,
   FaMapMarkedAlt,
   FaThumbsUp,
-  FaArrowRight,
+  FaChevronDown,
 } from "react-icons/fa";
 
 export default function Hero() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const exploreHomepage = () => {
+    document.getElementById("explore")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const [homeStats, setHomeStats] = useState({
     verifiedFarmers: 0,
@@ -86,23 +88,15 @@ export default function Hero() {
             {t("homepage.heroSubtitle")}
           </p>
 
-          <div className="hero-buttons">
-            <button
-              className="hero-btn-primary"
-              onClick={() => navigate("/browse")}
-            >
-              {t("homepage.browseMarketplace")}
-              <FaArrowRight />
-            </button>
-
-            <button
-              className="hero-btn-secondary"
-              onClick={() => navigate("/register")}
-            >
-              {t("homepage.joinUs")}
-            </button>
-
-          </div>
+          <button className="hero-explore" type="button" onClick={exploreHomepage}>
+            <span className="hero-explore-copy">
+              <strong>{t("homepage.explorePrompt")}</strong>
+              <small>{t("homepage.scrollToExplore")}</small>
+            </span>
+            <span className="hero-explore-arrow" aria-hidden="true">
+              <FaChevronDown />
+            </span>
+          </button>
         </div>
 
         <div className="hero-stats-area">

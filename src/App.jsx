@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -55,17 +55,16 @@ import CultivationRequests from "../frontend/buyer/react/CultivationRequests.jsx
 function App() {
   const { user } = useAuth();
   const { i18n } = useTranslation();
+  const { pathname } = useLocation();
 
 
   /* =========================================
      HIDE FOOTER FOR LOGGED-IN USERS
   ========================================= */
 
-  const hideFooter =
-    user &&
-    ["farmer", "buyer", "admin"].includes(
-      user.role?.toLowerCase()
-    );
+  const hideAppFooter =
+    pathname === "/" ||
+    (user && ["farmer", "buyer", "admin"].includes(user.role?.toLowerCase()));
 
 
   /* =========================================
@@ -390,11 +389,11 @@ function App() {
         {/* ================================
             FOOTER
 
-            Show only when there is no
-            logged-in Farmer, Buyer or Admin
+            Homepage owns its unconditional Footer.
+            Other public routes keep the existing guest Footer.
         ================================= */}
 
-        {!hideFooter && <Footer />}
+        {!hideAppFooter && <Footer />}
 
 
       </div>
