@@ -87,8 +87,51 @@ if (!function_exists('farmerAccountApproved')) {
     /**
      * Template 2: Farmer Account Approved
      */
-    function farmerAccountApproved(string $farmerName): array {
+    function farmerAccountApproved(string $farmerName, string $feedback = '', array $criteria = []): array {
         $safeName = htmlspecialchars($farmerName, ENT_QUOTES, 'UTF-8');
+        $safeFeedback = !empty(trim($feedback)) ? htmlspecialchars(trim($feedback), ENT_QUOTES, 'UTF-8') : 'Verification completed successfully.';
+
+        // Define 5 standard verification criteria with human readable labels
+        $standardCriteriaMap = [
+            'identity_valid'          => 'Identity & NIC Information Validated',
+            'farm_location_valid'     => 'Farm Location & Land Ownership Verified',
+            'evidence_sufficient'     => 'Sufficient Supporting Farming Evidence Provided',
+            'registration_complete'   => 'Complete & Accurate Registration Information',
+            'information_trustworthy' => 'High Information Integrity & Trustworthiness'
+        ];
+
+        $completedList = [];
+        $uncompletedList = [];
+
+        foreach ($standardCriteriaMap as $key => $label) {
+            if (in_array($key, $criteria, true)) {
+                $completedList[] = $label;
+            } else {
+                $uncompletedList[] = $label;
+            }
+        }
+
+        // Build HTML for completed criteria
+        $completedHtml = '';
+        if (!empty($completedList)) {
+            foreach ($completedList as $item) {
+                $completedHtml .= '<li style="margin-bottom: 6px; color: #166534;">✓ ' . htmlspecialchars($item, ENT_QUOTES, 'UTF-8') . '</li>';
+            }
+        } else {
+            $completedHtml = '<li style="margin-bottom: 6px; color: #6b7280; font-style: italic;">None specified</li>';
+        }
+
+        // Build HTML for uncompleted criteria
+        $uncompletedHtml = '';
+        if (!empty($uncompletedList)) {
+            foreach ($uncompletedList as $item) {
+                $uncompletedHtml .= '<li style="margin-bottom: 6px; color: #991b1b;">❌ ' . htmlspecialchars($item, ENT_QUOTES, 'UTF-8') . '</li>';
+            }
+        } else {
+            $uncompletedHtml = '<li style="margin-bottom: 6px; color: #166534; font-weight: 600;">🎉 All verification criteria successfully met!</li>';
+        }
+
+        $ratingCount = count($completedList);
         
         $subject = "Account Approved — You Can Now Log In";
 
@@ -124,6 +167,30 @@ if (!function_exists('farmerAccountApproved')) {
                                     🎉 Your farmer account has been approved by LK Agro Market admin.
                                 </p>
                             </div>
+
+                            <!-- Admin Feedback Box -->
+                            <h3 style="color: #1a5c2a; font-size: 15px; margin-top: 25px; margin-bottom: 8px;">💬 Admin Feedback:</h3>
+                            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 14px 16px; border-radius: 6px; font-size: 14px; color: #15803d; line-height: 1.6;">
+                                {$safeFeedback}
+                            </div>
+
+                            <!-- Verification Criteria Summary Box -->
+                            <h3 style="color: #1a5c2a; font-size: 15px; margin-top: 25px; margin-bottom: 10px;">📋 Verification Criteria Status ({$ratingCount}/5 Stars):</h3>
+                            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; margin-bottom: 25px;">
+                                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    ✓ Completed Criteria:
+                                </p>
+                                <ul style="margin: 0 0 16px 0; padding-left: 18px; font-size: 14px; line-height: 1.6; list-style-type: none;">
+                                    {$completedHtml}
+                                </ul>
+
+                                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 700; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    ❌ Uncompleted Criteria:
+                                </p>
+                                <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; list-style-type: none;">
+                                    {$uncompletedHtml}
+                                </ul>
+                            </div>
                             
                             <h3 style="color: #1a5c2a; font-size: 16px; margin-top: 25px; margin-bottom: 12px;">You can now:</h3>
                             <ul style="padding-left: 20px; margin: 0 0 25px 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
@@ -141,7 +208,7 @@ if (!function_exists('farmerAccountApproved')) {
                             </div>
                             
                             <p style="font-size: 14px; color: #374151; line-height: 1.6; background-color: #f9fafb; padding: 12px 16px; border-radius: 6px;">
-                                🛡️ <strong>Verified Status:</strong> Your verified farmer badge has been awarded. Buyers will see the <strong>✓ Verified</strong> badge on your profile and listings.
+                                🛡️ <strong>Verified Status:</strong> Your verified farmer badge has been awarded ({$ratingCount}/5 stars). Buyers will see the <strong>✓ Verified</strong> badge on your profile and listings.
                             </p>
                             
                             <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin-top: 20px;">

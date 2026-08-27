@@ -19,9 +19,9 @@ class AuthService {
     /**
      * Sends approval email to farmer.
      */
-    public static function sendFarmerApprovalEmail(string $email, string $name): bool {
+    public static function sendFarmerApprovalEmail(string $email, string $name, string $feedback = '', array $criteria = []): bool {
         if (function_exists('farmerAccountApproved') && function_exists('sendMail')) {
-            $template = farmerAccountApproved($name);
+            $template = farmerAccountApproved($name, $feedback, $criteria);
             return sendMail($email, $name, $template['subject'], $template['body']);
         }
         return false;
