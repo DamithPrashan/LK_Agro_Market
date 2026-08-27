@@ -16,6 +16,12 @@
     "viewAllNotifications": "සියලුම දැනුම්දීම් බලන්න",
     "noNotifications": "දැනුම්දීම් නැත"
   },
+  "logoutModal": {
+    "title": "පිටවීම තහවුරු කරන්න",
+    "message": "ඔබට මෙම ගිණුමෙන් පිටවීමට අවශ්‍ය බව විශ්වාසද?",
+    "cancel": "අවලංගු කරන්න",
+    "confirm": "පිටවන්න"
+  },
   "sidebar": {
     "buyerPanel": "මිලදී ගන්නන්ගේ පාලනය",
     "farmerPanel": "ගොවීන්ගේ පාලනය",
@@ -30,6 +36,7 @@
     "addCultivationAd": "වගා දැන්වීමක් එක් කරන්න",
     "cultivationOpportunities": "වගා අවස්ථා",
     "profile": "මගේ විස්තර",
+    "logout": "පිටවන්න",
     "browseCrops": "භෝග පිරික්සන්න",
     "mapSearch": "සිතියම් සෙවුම"
   },

@@ -308,7 +308,7 @@ try {
             require_once __DIR__ . '/../../../config/mailer.php';
             require_once __DIR__ . '/../../../config/farmer_email_templates.php';
             if (function_exists('farmerAccountApproved') && function_exists('sendMail')) {
-                $template = farmerAccountApproved($farmerName);
+                $template = farmerAccountApproved($farmerName, $feedback, $criteria);
                 sendMail($farmerEmail, $farmerName, $template['subject'], $template['body']);
             }
         } catch (Throwable $e) {
