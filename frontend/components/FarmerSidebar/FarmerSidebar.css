@@ -83,21 +83,73 @@
   overflow-wrap: break-word;
 }
 
-/* Profile Footer Section */
-.sidebar-profile-footer {
-  padding: 15px 20px;
+/* Profile & Bottom Container Section */
+.sidebar-bottom-container {
+  margin-top: auto;
+  padding: 10px 12px;
   background-color: #0b3017;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-profile-footer {
+  padding: 8px 10px;
+  background-color: transparent;
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-top: none;
   transition: background-color 0.2s ease;
-  margin-top: auto;
 }
 
-.sidebar-profile-footer:hover {
-  background-color: #0d3b1c;
+.sidebar-profile-footer:hover,
+.sidebar-profile-footer.active {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin: 2px 0;
+}
+
+.sidebar-logout-btn {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #fca5a5;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.sidebar-logout-btn:hover {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+}
+
+.sidebar-logout-btn .logout-icon {
+  font-size: 16px;
+  color: #fca5a5;
+  transition: color 0.2s ease;
+}
+
+.sidebar-logout-btn:hover .logout-icon {
+  color: #f87171;
 }
 
 .sidebar-avatar-circle {
@@ -174,9 +226,19 @@
     border-right-color: #4cd137;
   }
 
+  .sidebar-bottom-container {
+    padding: 10px 0;
+    align-items: center;
+  }
+
   .sidebar-profile-footer {
     justify-content: center;
-    padding: 15px 0;
+    padding: 8px 0;
+  }
+
+  .sidebar-logout-btn {
+    justify-content: center;
+    padding: 10px 0;
   }
 }
-.sidebar-menu-item:focus-visible,.sidebar-profile-footer:focus-visible{outline:3px solid rgba(63,145,84,.45);outline-offset:2px}
+.sidebar-menu-item:focus-visible,.sidebar-profile-footer:focus-visible,.sidebar-logout-btn:focus-visible{outline:3px solid rgba(63,145,84,.45);outline-offset:2px}

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../../src/context/AuthContext";
+import LogoutConfirmModal from "../../../components/LogoutConfirmModal/LogoutConfirmModal";
 
 import {
   FiGrid,
@@ -18,6 +20,7 @@ export default function AdminSidebar() {
   const location = useLocation();
   const { t } = useTranslation();
   const { logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
 
   const menuItems = [
@@ -64,113 +67,120 @@ export default function AdminSidebar() {
 
 
   return (
+    <>
+      <aside className="admin-sidebar">
 
-    <aside className="admin-sidebar">
 
+        {/* =========================
+            BRAND
+        ========================= */}
 
-      {/* =========================
-          BRAND
-      ========================= */}
+        <div className="admin-sidebar-brand">
 
-      <div className="admin-sidebar-brand">
+          <div className="admin-sidebar-logo">
+            <FiTruck />
+          </div>
 
-        <div className="admin-sidebar-logo">
-          <FiTruck />
+          <div>
+
+            <h2>
+              {t("admin.sidebar.brand")}
+            </h2>
+
+            <p>
+              {t("admin.sidebar.enterpriseAdmin")}
+            </p>
+
+          </div>
+
         </div>
 
-        <div>
 
-          <h2>
-            {t("admin.sidebar.brand")}
-          </h2>
+        {/* =========================
+            NAVIGATION
+        ========================= */}
 
-          <p>
-            {t("admin.sidebar.enterpriseAdmin")}
-          </p>
+        <nav className="admin-sidebar-nav">
 
-        </div>
+          {menuItems.map((item) => (
 
-      </div>
+            <button
+              key={item.path}
+              type="button"
+              className={`admin-nav-item ${
+                isActive(item.path)
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() =>
+                navigate(item.path)
+              }
+            >
+
+              <span className="admin-nav-icon">
+                {item.icon}
+              </span>
+
+              <span>
+                {item.label}
+              </span>
+
+            </button>
+
+          ))}
+
+        </nav>
 
 
-      {/* =========================
-          NAVIGATION
-      ========================= */}
+        {/* =========================
+            BOTTOM
+        ========================= */}
 
-      <nav className="admin-sidebar-nav">
+        <div className="admin-sidebar-bottom">
 
-        {menuItems.map((item) => (
 
           <button
-            key={item.path}
             type="button"
-            className={`admin-nav-item ${
-              isActive(item.path)
-                ? "active"
-                : ""
-            }`}
-            onClick={() =>
-              navigate(item.path)
-            }
+            className={`admin-profile-btn ${isActive("/profile") ? "active" : ""}`}
+            onClick={() => navigate("/profile")}
           >
 
-            <span className="admin-nav-icon">
-              {item.icon}
-            </span>
+            <FiUser />
 
             <span>
-              {item.label}
+              {t("admin.sidebar.profile")}
             </span>
 
           </button>
 
-        ))}
 
-      </nav>
-
-
-      {/* =========================
-          BOTTOM
-      ========================= */}
-
-      <div className="admin-sidebar-bottom">
+          <div className="admin-sidebar-divider" />
 
 
-        <button
-          type="button"
-          className={`admin-profile-btn ${isActive("/profile") ? "active" : ""}`}
-          onClick={() => navigate("/profile")}
-        >
+          <button
+            type="button"
+            className="admin-bottom-link logout"
+            onClick={() => setShowLogoutModal(true)}
+          >
 
-          <FiUser />
+            <FiLogOut />
 
-          <span>
-            {t("admin.sidebar.profile")}
-          </span>
+            <span>
+              {t("admin.sidebar.logout")}
+            </span>
 
-        </button>
-
-
-        <div className="admin-sidebar-divider" />
+          </button>
 
 
-        <button
-          type="button"
-          className="admin-bottom-link logout"
-          onClick={handleLogout}
-        >
+        </div>
 
-          <FiLogOut />
+      </aside>
 
-          <span>
-            {t("admin.sidebar.logout")}
-          </span>
-
-        </button>
-
-
-      </div>
-
-    </aside>
+      <LogoutConfirmModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleLogout} 
+      />
+    </>
   );
 }

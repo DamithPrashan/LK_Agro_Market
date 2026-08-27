@@ -12,9 +12,13 @@
     "logout": "Logout",
     "signIn": "Sign in",
     "notifications": "Notifications",
-    "markAllRead": "Mark all read",
-    "viewAllNotifications": "View all notifications",
     "noNotifications": "No notifications"
+  },
+  "logoutModal": {
+    "title": "Confirm Logout",
+    "message": "Are you sure you want to log out of your LK Agro Market account?",
+    "cancel": "Cancel",
+    "confirm": "Logout"
   },
   "sidebar": {
     "buyerPanel": "BUYER PANEL",
@@ -30,6 +34,7 @@
     "addCultivationAd": "Add Cultivation Ad",
     "cultivationOpportunities": "Cultivation Opportunities",
     "profile": "Profile",
+    "logout": "Logout",
     "browseCrops": "Browse Crops",
     "mapSearch": "Map Search"
   },
