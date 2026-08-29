@@ -66,6 +66,7 @@ function OrderManagement() {
     const [updatingOrderId, setUpdatingOrderId] = useState(null);
     const [readyOrder, setReadyOrder] = useState(null);
     const [collectionDate, setCollectionDate] = useState("");
+    const [verifyingPaymentId, setVerifyingPaymentId] = useState(null);
 
     const fetchOrders = async () => {
         try {
@@ -121,6 +122,18 @@ function OrderManagement() {
         } finally {
             setUpdatingOrderId(null);
         }
+    };
+
+    const verifyBankPayment = async (paymentId, action) => {
+        if (verifyingPaymentId !== null || !window.confirm(t(`payment.${action}BankConfirm`))) return;
+        setVerifyingPaymentId(paymentId);
+        try {
+            const response = await fetch("/backend/Apis/farmer/payments/verifyBankPayment.php", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ payment_id: paymentId, action }) });
+            const data = await readJsonResponse(response, t("errors.submissionFailed"));
+            if (!data.success) throw new Error(data.message);
+            alert(data.message); await fetchOrders();
+        } catch (caught) { alert(caught.message || t("errors.submissionFailed")); }
+        finally { setVerifyingPaymentId(null); }
     };
 
     const filteredOrders =
@@ -229,6 +242,18 @@ function OrderManagement() {
                                         </div>
                                     )}
                                 </div>
+
+                                {order.bankPayment?.status === "pending" && <section className="bank-verification-panel">
+                                    <strong>{t("payment.bankPendingFarmerTitle")}</strong>
+                                    <div><span>{t("payment.bankPaymentStage")}</span><b>{t(`payment.${order.bankPayment.paymentType}Payment`)}</b></div>
+                                    <div><span>{t("payment.bankAmount")}</span><b>Rs. {Number(order.bankPayment.amount).toLocaleString("en-LK")}</b></div>
+                                    <div><span>{t("payment.bankSubmitted")}</span><b>{String(order.bankPayment.paymentDate).slice(0, 10)}</b></div>
+                                    <div className="bank-verification-actions">
+                                        <button type="button" onClick={() => window.open(`/backend/Apis/farmer/payments/viewBankProof.php?payment_id=${order.bankPayment.paymentId}`, "_blank", "noopener,noreferrer")}>{t("payment.viewReceipt")}</button>
+                                        <button type="button" disabled={verifyingPaymentId === order.bankPayment.paymentId} onClick={() => verifyBankPayment(order.bankPayment.paymentId, "confirm")}>{t("payment.confirmBankPayment")}</button>
+                                        <button type="button" className="reject" disabled={verifyingPaymentId === order.bankPayment.paymentId} onClick={() => verifyBankPayment(order.bankPayment.paymentId, "reject")}>{t("payment.rejectBankPayment")}</button>
+                                    </div>
+                                </section>}
 
                                 {/* ── Footer ── */}
                                 <div className="order-footer">
