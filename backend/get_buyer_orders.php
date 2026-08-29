@@ -100,6 +100,8 @@ try {
             r.transaction_status,
             u_farmer.name as farmer_name,
             u_farmer.user_id as farmer_user_id,
+            (SELECT p.payment_status FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status IN ('pending','failed') ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_status,
+            (SELECT p.payment_type FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status IN ('pending','failed') ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_type,
             (SELECT COUNT(*) FROM message WHERE reservation_id = r.reservation_id AND sender_id = u_farmer.user_id AND is_read = 0) as unread_messages
         FROM reservation r
         LEFT JOIN reserve_crop rc ON r.reservation_source = 'crop' AND r.reserve_crop_id = rc.reserve_crop_id
@@ -186,6 +188,8 @@ try {
             "paymentStatus" => $paymentStatus,
             "reservationStatus" => $row['reservation_status'],
             "transactionStatus" => $row['transaction_status'],
+            "bankPaymentStatus" => $row['bank_payment_status'],
+            "bankPaymentType" => $row['bank_payment_type'],
             "lifecycleStatus" => $lifecycleStatus,
             "farmerName" => $row['farmer_name'],
             "farmerUserId" => intval($row['farmer_user_id']),

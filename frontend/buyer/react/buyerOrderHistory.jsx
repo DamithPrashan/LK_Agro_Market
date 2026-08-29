@@ -226,6 +226,8 @@ export default function BuyerOrderHistory() {
                     <p>{t("orders.date", { date: order.date || t("growingPeriod.toBeConfirmed") })}</p>
                     {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <><p>{t("growingPeriod.plannedCultivationStart")}: {order.plannedStartDate || "—"}</p><p>{t("growingPeriod.label")}: ~{order.agreedGrowingPeriodDays} {t("growingPeriod.units.days")}</p><p>{t("growingPeriod.actualStart")}: {order.cultivationStartedAt ? String(order.cultivationStartedAt).slice(0, 10) : t("growingPeriod.notStarted")}</p>{order.plannedStartDate && !order.cultivationStartedAt && new Date().toISOString().slice(0,10) > order.plannedStartDate && <p>{t("growingPeriod.startDelayed")}</p>}{order.estimatedHarvestDate && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimatedHarvestDate}</p>}{order.cultivationAdStatus === "harvested" && <p>{t("growingPeriod.harvestCompleted")}</p>}</>}
                     <p>{t("orders.total", { total: order.total.toLocaleString() })}</p>
+                    {order.bankPaymentStatus === "pending" && <p className="bank-payment-state pending">{t("payment.bankOrderPending")}</p>}
+                    {order.bankPaymentStatus === "failed" && <p className="bank-payment-state failed">{t("payment.bankOrderRejected")}</p>}
                   </div>
 
                   {/* Conditional Footer Layout */}
@@ -293,14 +295,14 @@ export default function BuyerOrderHistory() {
                           </button>
                         )}
 
-                        {((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid" && (order.reservationSource !== "cultivation" || order.timingModel !== "growing_period" || order.plannedStartDate)) ||
+                        {order.bankPaymentStatus !== "pending" && ((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid" && (order.reservationSource !== "cultivation" || order.timingModel !== "growing_period" || order.plannedStartDate)) ||
                          (order.orderStatus.toLowerCase() === "ready" && order.paymentStatus.toLowerCase() === "partial")) && (
                           <button 
                             className="view-btn" 
                             onClick={() => navigate(`/payment/${order.orderId}`)}
                             style={{ background: "#27ae60", color: "white", cursor: "pointer" }}
                           >
-                            {order.paymentStatus.toLowerCase() === "partial"
+                            {order.bankPaymentStatus === "failed" ? t("payment.retryBankPayment") : order.paymentStatus.toLowerCase() === "partial"
                               ? t("orderPresentation.payRemaining")
                               : t("orderPresentation.payAdvance")}
                           </button>

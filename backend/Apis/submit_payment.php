@@ -6,8 +6,9 @@ header("Content-Type: application/json");
 require_once __DIR__ . '/../connection/db.php';
 require_once __DIR__ . '/auth_check.php';
 
-// Ensure user is logged in
+// Payments can only be submitted by the buyer who owns the reservation.
 require_login();
+require_role('buyer');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
@@ -40,6 +41,12 @@ $payment_type_map = [
 ];
 if (!isset($payment_type_map[$payment_type_raw])) {
     echo json_encode(["success" => false, "message" => "Invalid payment type."]);
+    exit;
+}
+
+if (!in_array($method, ['bank', 'lanka'], true)) {
+    http_response_code(422);
+    echo json_encode(["success" => false, "message" => "Invalid payment method."]);
     exit;
 }
 $payment_type = $payment_type_map[$payment_type_raw];
@@ -129,22 +136,38 @@ try {
 }
 
 $created_proof_file = null;
+$old_proof_file = null;
 try {
     $proof_file_path = 'online';
     if ($method === 'bank') {
-        $upload_dir = '../uploads/';
+        $upload_dir = __DIR__ . '/../storage/bank_receipts/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
+            if (!mkdir($upload_dir, 0750, true) && !is_dir($upload_dir)) {
+                throw new RuntimeException('Unable to prepare secure receipt storage.');
+            }
         }
-        // Process proof file
-        $ext = pathinfo($_FILES['proof']['name'], PATHINFO_EXTENSION);
-        $filename = 'pay_' . time() . '_' . uniqid() . '.' . $ext;
-        $proof_file_path = 'backend/uploads/' . $filename;
+
+        if ((int)$_FILES['proof']['size'] <= 0 || (int)$_FILES['proof']['size'] > 5 * 1024 * 1024) {
+            throw new DomainException('Payment proof must be no larger than 5 MB.');
+        }
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($_FILES['proof']['tmp_name']);
+        $allowedMimes = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'application/pdf' => 'pdf',
+        ];
+        if (!isset($allowedMimes[$mime])) {
+            throw new DomainException('Payment proof must be a JPEG, PNG, WebP, or PDF file.');
+        }
+        $filename = 'bank_' . bin2hex(random_bytes(24)) . '.' . $allowedMimes[$mime];
+        $proof_file_path = 'backend/storage/bank_receipts/' . $filename;
 
         if (!move_uploaded_file($_FILES['proof']['tmp_name'], $upload_dir . $filename)) {
-            echo json_encode(["success" => false, "message" => "Failed to save uploaded proof file."]);
-            exit;
+            throw new RuntimeException('Failed to save uploaded proof file.');
         }
+        $created_proof_file = $upload_dir . $filename;
     }
 
     // Lock and revalidate the order inside the write transaction to prevent
@@ -198,18 +221,30 @@ try {
         throw new RuntimeException('Payment amount does not match the order total.');
     }
 
-    $duplicateStmt = $pdo->prepare("SELECT payment_id FROM payment WHERE reservation_id = ? AND payment_type = ? LIMIT 1");
+    $duplicateStmt = $pdo->prepare("SELECT payment_id, method, payment_status, proof_file FROM payment WHERE reservation_id = ? AND payment_type = ? LIMIT 1 FOR UPDATE");
     $duplicateStmt->execute([$reservation_id, $payment_type]);
-    if ($duplicateStmt->fetch()) {
-        throw new RuntimeException('This payment has already been recorded.');
+    $existingPayment = $duplicateStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingPayment) {
+        $canRetryBank = $method === 'bank'
+            && $existingPayment['method'] === 'bank'
+            && $existingPayment['payment_status'] === 'failed';
+        if (!$canRetryBank) {
+            throw new RuntimeException($existingPayment['payment_status'] === 'pending'
+                ? 'This Bank payment is already awaiting Farmer verification.'
+                : 'This payment has already been recorded.');
+        }
+        $old_proof_file = $existingPayment['proof_file'];
+        $stmt = $pdo->prepare("UPDATE payment SET amount=?, method='bank', proof_file=?, payment_status='pending', payment_date=NOW() WHERE payment_id=?");
+        $stmt->execute([$lockedExpectedAmount, $proof_file_path, $existingPayment['payment_id']]);
+    } else {
+        $status = $method === 'bank' ? 'pending' : 'completed';
+        $sql = "INSERT INTO payment (reservation_id, payment_type, amount, method, proof_file, payment_status) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$reservation_id, $payment_type, $lockedExpectedAmount, $method, $proof_file_path, $status]);
     }
 
-    // Insert payment record into payment table (not payments)
-    $sql = "INSERT INTO payment (reservation_id, payment_type, amount, method, proof_file, payment_status) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$reservation_id, $payment_type, $amount, $method, $proof_file_path, 'completed']);
-
-    if ($payment_type === 'final') {
+    if ($method === 'lanka' && $payment_type === 'final') {
         $ledgerStmt = $pdo->prepare("SELECT COUNT(*) AS payment_count, COALESCE(SUM(amount), 0) AS paid_total
             FROM payment WHERE reservation_id = ? AND payment_type IN ('advance', 'final') AND payment_status = 'completed'");
         $ledgerStmt->execute([$reservation_id]);
@@ -217,15 +252,25 @@ try {
         if ((int)$ledger['payment_count'] !== 2 || abs((float)$ledger['paid_total'] - $lockedTotal) > 0.01) {
             throw new RuntimeException('Payment ledger does not match the cultivation agreement total.');
         }
-        $created_proof_file = $upload_dir . $filename;
     }
 
-    // Update reservation transaction status
-    $new_status = ($payment_type === 'advance') ? 'partially_paid' : 'paid';
-    $updateReservation = $pdo->prepare("UPDATE reservation SET transaction_status = ? WHERE reservation_id = ?");
-    $updateReservation->execute([$new_status, $reservation_id]);
+    // Bank slips remain pending until the owning Farmer verifies them.
+    if ($method === 'lanka') {
+        $new_status = ($payment_type === 'advance') ? 'partially_paid' : 'paid';
+        $updateReservation = $pdo->prepare("UPDATE reservation SET transaction_status = ? WHERE reservation_id = ?");
+        $updateReservation->execute([$new_status, $reservation_id]);
+    }
 
     $pdo->commit();
+
+    if ($old_proof_file) {
+        $oldAbsolute = dirname(__DIR__) . '/../' . ltrim(str_replace('\\', '/', $old_proof_file), '/');
+        $receiptRoot = realpath(__DIR__ . '/../storage/bank_receipts');
+        $oldReal = realpath($oldAbsolute);
+        if ($receiptRoot && $oldReal && str_starts_with($oldReal, $receiptRoot . DIRECTORY_SEPARATOR)) {
+            @unlink($oldReal);
+        }
+    }
 
     // Trigger Notification to Buyer and Farmer
     try {
@@ -269,16 +314,20 @@ try {
                 "link" => "/farmer/orders"
             ]);
 
-            // Notify Buyer
-            $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
-            create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $buyer_notif_data);
-            
-            // Notify Farmer
-            $isCultivationFinal = $paymentInfo['reservation_source'] === 'cultivation' && $payment_type === 'final';
-            $farmer_msg = $isCultivationFinal
-                ? "Final payment received for cultivation order ORD{$reservation_id} ({$crop_name})."
-                : "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
-            create_notification($farmer_user_id, $isCultivationFinal ? "Cultivation Final Payment Received" : "Payment Received", $farmer_msg, $isCultivationFinal ? 'cultivationFinalPaymentReceived' : 'paymentReceived', $farmer_notif_data);
+            if ($method === 'bank') {
+                $stage = $payment_type === 'advance' ? 'Advance' : 'Final';
+                create_notification($buyer_user_id, 'Payment Submitted', "Your Bank {$stage} payment for order ORD{$reservation_id} is awaiting Farmer verification.", 'bankPaymentSubmitted', $buyer_notif_data);
+                create_notification($farmer_user_id, 'Bank Payment Verification Required', "A Bank receipt was submitted for the {$stage} payment on order ORD{$reservation_id} ({$crop_name}).", 'bankPaymentVerificationRequired', $farmer_notif_data);
+            } else {
+                // Existing Lanka/PayHere notification behavior remains unchanged.
+                $buyer_msg = "Your payment of Rs {$amount} for order ORD{$reservation_id} ({$crop_name}) has been confirmed.";
+                create_notification($buyer_user_id, "Payment Confirmed", $buyer_msg, 'paymentConfirmed', $buyer_notif_data);
+                $isCultivationFinal = $paymentInfo['reservation_source'] === 'cultivation' && $payment_type === 'final';
+                $farmer_msg = $isCultivationFinal
+                    ? "Final payment received for cultivation order ORD{$reservation_id} ({$crop_name})."
+                    : "Payment of Rs {$amount} has been received for order ORD{$reservation_id} ({$crop_name}).";
+                create_notification($farmer_user_id, $isCultivationFinal ? "Cultivation Final Payment Received" : "Payment Received", $farmer_msg, $isCultivationFinal ? 'cultivationFinalPaymentReceived' : 'paymentReceived', $farmer_notif_data);
+            }
         }
     } catch (Exception $e) {
         error_log("Notification error in submit_payment.php: " . $e->getMessage());
@@ -286,9 +335,15 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Payment proof submitted successfully."
+        "message" => $method === 'bank' ? "Payment submitted for Farmer verification." : "Payment proof submitted successfully.",
+        "verification_pending" => $method === 'bank'
     ]);
 
+} catch (DomainException $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if ($created_proof_file && is_file($created_proof_file)) unlink($created_proof_file);
+    http_response_code(422);
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     if ($created_proof_file && is_file($created_proof_file)) unlink($created_proof_file);

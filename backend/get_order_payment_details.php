@@ -120,6 +120,11 @@ try {
     $subtotal = floatval($order['total_amount']);
     $prePaymentDue = round($subtotal / 3);
     $balanceOnCollection = $subtotal - $prePaymentDue;
+    $paymentStage = $isAdvancePayable ? 'advance' : 'final';
+    $currentPaymentStmt = $pdo->prepare("SELECT payment_id,method,payment_type,payment_status,payment_date
+        FROM payment WHERE reservation_id=? AND payment_type=? LIMIT 1");
+    $currentPaymentStmt->execute([$orderId, $paymentStage]);
+    $currentPayment = $currentPaymentStmt->fetch(PDO::FETCH_ASSOC) ?: null;
 
     // Use emoji based on crop name
     $cropEmoji = "🥦"; // default
@@ -150,7 +155,13 @@ try {
             "reservationStatus" => $resStatus,
             "transactionStatus" => $txStatus,
             "paymentStatus" => $isAdvancePayable ? 'pending' : 'partial',
-            "paymentStage" => $isAdvancePayable ? 'advance' : 'final',
+            "paymentStage" => $paymentStage,
+            "bankPayment" => $currentPayment && $currentPayment['method'] === 'bank' ? [
+                "paymentId" => intval($currentPayment['payment_id']),
+                "status" => $currentPayment['payment_status'],
+                "paymentType" => $currentPayment['payment_type'],
+                "submittedAt" => $currentPayment['payment_date']
+            ] : null,
             "subtotal" => $subtotal,
             "amountAlreadyPaid" => floatval($order['amount_already_paid']),
             "prePaymentDue" => $prePaymentDue,

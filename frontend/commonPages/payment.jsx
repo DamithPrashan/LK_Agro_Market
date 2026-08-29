@@ -18,6 +18,7 @@ export default function Payment() {
   const [proof, setProof] = useState(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [submittedMethod, setSubmittedMethod] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -83,13 +84,18 @@ export default function Payment() {
       });
       const data = await readJsonResponse(res, t("errors.submissionFailed"));
       if (data.success) {
+        setSubmittedMethod(method);
         setDone(true);
       } else {
         setError(data.message || t("errors.submissionFailed"));
       }
     } catch (err) {
       console.error(err);
-      setError(t("errors.networkXamppError"));
+      setError(
+        err instanceof TypeError
+          ? t("errors.networkXamppError")
+          : err?.message || t("errors.networkXamppError"),
+      );
     } finally {
       setLoading(false);
     }
@@ -264,6 +270,8 @@ export default function Payment() {
     ? order.prePaymentDue
     : order.balanceOnCollection;
   const balance = order.balanceOnCollection;
+  const bankPending = order.bankPayment?.status === "pending";
+  const bankFailed = order.bankPayment?.status === "failed";
 
   if (done) {
     return (
@@ -289,7 +297,7 @@ export default function Payment() {
                 marginBottom: 8,
               }}
             >
-              {isPrePayment ? t("payment.successPrepaymentTitle") : t("payment.successCompleteTitle")}
+              {submittedMethod === "bank" ? t("payment.bankSubmittedTitle") : isPrePayment ? t("payment.successPrepaymentTitle") : t("payment.successCompleteTitle")}
             </h2>
             <p
               style={{
@@ -299,7 +307,7 @@ export default function Payment() {
                 lineHeight: 1.6,
               }}
             >
-              {isPrePayment
+              {submittedMethod === "bank" ? t("payment.bankSubmittedMessage") : isPrePayment
                 ? t("payment.successPrepaymentMsg", { amount: fmt(amountDue) })
                 : t("payment.successCompleteMsg", { amount: fmt(amountDue) })}
             </p>
@@ -449,6 +457,8 @@ export default function Payment() {
           </div>
 
           <form onSubmit={handleSubmit}>
+            {bankPending && <div className="info-green">{t("payment.bankAwaitingVerification")}</div>}
+            {bankFailed && <div className="info-red">{t("payment.bankRejectedRetry")}</div>}
             <div className="card" style={{ marginBottom: 14 }}>
               <p className="section-label" style={{ marginBottom: 12 }}>
                 {t("payment.methodTitle")}
@@ -478,6 +488,7 @@ export default function Payment() {
                   <button
                     key={m.id}
                     type="button"
+                    disabled={bankPending}
                     onClick={() => setMethod(m.id)}
                     style={{
                       ...s.methBtn,
@@ -543,7 +554,7 @@ export default function Payment() {
 
             {error && <div className="info-red">{error}</div>}
 
-            {method === "bank" && (
+            {method === "bank" && !bankPending && (
               <button className="btn btn-primary btn-lg btn-full" type="button" disabled={loading}
                 onClick={(e) => {
                   if (!proof) {
@@ -558,7 +569,7 @@ export default function Payment() {
               </button>
             )}
 
-            {method === "lanka" && (
+            {method === "lanka" && !bankPending && (
               <button
                 className="btn btn-primary btn-lg btn-full"
                 type="button"

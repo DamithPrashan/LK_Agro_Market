@@ -50,6 +50,11 @@ try {
             u_buyer.location as buyer_location,
             rr.rating as buyer_rating,
             rr.comment as buyer_comment,
+            (SELECT p.payment_id FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status='pending' ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_id,
+            (SELECT p.payment_type FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status='pending' ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_type,
+            (SELECT p.amount FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status='pending' ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_amount,
+            (SELECT p.payment_date FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status='pending' ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_date,
+            (SELECT p.payment_status FROM payment p WHERE p.reservation_id=r.reservation_id AND p.method='bank' AND p.payment_status='pending' ORDER BY p.payment_id DESC LIMIT 1) AS bank_payment_status,
             (SELECT COUNT(*) FROM message WHERE reservation_id = r.reservation_id AND sender_id = u_buyer.user_id AND is_read = 0) as unread_messages
         FROM reservation r
         LEFT JOIN reserve_crop rc ON r.reservation_source = 'crop' AND r.reserve_crop_id = rc.reserve_crop_id
@@ -123,7 +128,15 @@ try {
             "buyer_location" => $order['buyer_location'],
             "buyer_rating" => $order['buyer_rating'] !== null ? intval($order['buyer_rating']) : null,
             "buyer_comment" => $order['buyer_comment'],
-            "unreadMessages" => intval($order['unread_messages'])
+            "unreadMessages" => intval($order['unread_messages']),
+            "bankPayment" => $order['bank_payment_id'] === null ? null : [
+                "paymentId" => intval($order['bank_payment_id']),
+                "method" => "bank",
+                "paymentType" => $order['bank_payment_type'],
+                "amount" => floatval($order['bank_payment_amount']),
+                "paymentDate" => $order['bank_payment_date'],
+                "status" => $order['bank_payment_status']
+            ]
         ];
     }
 
