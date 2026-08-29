@@ -576,6 +576,21 @@
     "explainResponsePlaceholder": "Explain your response...",
     "writeResponseAlert": "Please write a response before submitting.",
     "responseSubmittedAlert": "Response submitted successfully.",
+    "platformFeedback": {
+      "title": "How was your experience with LK Agro Market?",
+      "subtitle": "Congratulations on your completed payment! Please share your feedback about our platform.",
+      "veryHappy": "Very Happy",
+      "happy": "Happy",
+      "neutral": "Neutral",
+      "sad": "Sad",
+      "verySad": "Very Sad",
+      "commentLabel": "Your Feedback / Review",
+      "commentPlaceholder": "Tell us what you loved or how we can improve LK Agro Market...",
+      "submitBtn": "Submit Review",
+      "skipBtn": "Skip / Remind Me Later",
+      "errorEmptyComment": "Please write a brief comment before submitting.",
+      "errorSubmit": "Failed to submit review. Please try again."
+    },
     "cultivationRequests": {
       "title": "Buyer Requests",
       "loading": "Loading requests...",

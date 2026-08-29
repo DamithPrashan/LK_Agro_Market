@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
+import PlatformFeedbackModal from "../../components/PlatformFeedbackModal";
 
 
 export default function BuyerDashboard() {
@@ -16,6 +17,11 @@ export default function BuyerDashboard() {
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Platform Feedback State
+  const [showPlatformFeedback, setShowPlatformFeedback] = useState(false);
+  const [feedbackOrderId, setFeedbackOrderId] = useState(null);
+  const [feedbackToast, setFeedbackToast] = useState("");
 
   const firstName = user?.name ? user.name.split(" ")[0] : "";
   const isReturningUser = user
@@ -60,6 +66,44 @@ export default function BuyerDashboard() {
   useEffect(() => {
     fetchDashboard();
   }, [fetchDashboard]);
+
+  // Check Platform Review Eligibility
+  useEffect(() => {
+    if (!user) return;
+    const checkFeedbackEligibility = async () => {
+      try {
+        const response = await fetch("/backend/Apis/buyer/check_platform_review_eligibility.php", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.success && data.eligible && data.order_id) {
+          const dismissedKey = `platform_review_dismissed_${user.id}_${data.order_id}`;
+          if (!localStorage.getItem(dismissedKey)) {
+            setFeedbackOrderId(data.order_id);
+            setShowPlatformFeedback(true);
+          }
+        }
+      } catch (err) {
+        console.error("Platform feedback check error:", err);
+      }
+    };
+    checkFeedbackEligibility();
+  }, [user]);
+
+  const handleCloseFeedbackModal = () => {
+    if (user && feedbackOrderId) {
+      localStorage.setItem(`platform_review_dismissed_${user.id}_${feedbackOrderId}`, "true");
+    }
+    setShowPlatformFeedback(false);
+  };
+
+  const handleFeedbackSubmitSuccess = (msg) => {
+    if (user && feedbackOrderId) {
+      localStorage.setItem(`platform_review_dismissed_${user.id}_${feedbackOrderId}`, "true");
+    }
+    setFeedbackToast(msg || "Thank you for your review!");
+    setTimeout(() => setFeedbackToast(""), 5000);
+  };
 
   const handleQuickLinkKeyDown = (e, path) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -212,23 +256,35 @@ export default function BuyerDashboard() {
             </div>
           )}
         </div>
-
-        {/* INFO BOX
-        <div className="content-box">
-          <h2>Buyer Insights</h2>
-          <p>
-            Track your reservations, manage orders, and explore fresh farm produce
-            directly from trusted farmers in your area.
-          </p>
-
-          <button
-            className="secondary-btn"
-            onClick={() => navigate("/buyer/BuyerOrderHistory")}
-          >
-            View Full Order History
-          </button>
-        </div> */}
       </section>
+
+      {/* FEEDBACK SUCCESS TOAST */}
+      {feedbackToast && (
+        <div style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          backgroundColor: "#166534",
+          color: "#ffffff",
+          padding: "14px 24px",
+          borderRadius: "12px",
+          boxShadow: "0 10px 25px rgba(22, 101, 52, 0.3)",
+          fontWeight: "600",
+          zIndex: 1300,
+          animation: "pfFadeIn 0.3s ease-out"
+        }}>
+          ✅ {feedbackToast}
+        </div>
+      )}
+
+      {/* PLATFORM FEEDBACK POPUP MODAL */}
+      {showPlatformFeedback && (
+        <PlatformFeedbackModal
+          orderId={feedbackOrderId}
+          onClose={handleCloseFeedbackModal}
+          onSubmitSuccess={handleFeedbackSubmitSuccess}
+        />
+      )}
     </div>
   );
 }
