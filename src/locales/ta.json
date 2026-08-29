@@ -579,6 +579,7 @@
     "writeResponseAlert": "சமர்ப்பிக்கும் முன் தயவுசெய்து ஒரு பதிலை எழுதவும்.",
     "responseSubmittedAlert": "பதில் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",
     "platformFeedback": {
+      "dismissBtn": "நிராகரி",
       "title": "LK Agro Market பற்றிய உங்கள் அனுபவம் எப்படி இருந்தது?",
       "subtitle": "உங்கள் செலுத்தல் வெற்றிகரமாக முடிந்தது! எங்கள் தளம் பற்றிய உங்கள் கருத்துக்களைப் பகிரவும்.",
       "veryHappy": "மிகவும் மகிழ்ச்சி",
@@ -847,6 +848,7 @@
     "cultivationNotStarted": "சாகுபடி தொடங்கவில்லை",
     "startedOn": "தொடங்கிய தேதி",
     "estimatedHarvest": "மதிப்பிடப்பட்ட அறுவடை",
+    "viewOrders": "ஆர்டர்களைப் பார்க்கவும்",
     "markHarvested": "அறுவடை முடிந்தது எனக் குறிக்கவும்",
     "markHarvestedConfirm": "இந்த சாகுபடி வாய்ப்பை அறுவடை முடிந்தது எனக் குறிக்கவா?",
     "harvestCompleted": "அறுவடை முடிந்தது",
@@ -1313,6 +1315,7 @@
   },
   "homepageGuest": { "demoLabel": "மாதிரி", "cropAuthMessage": "முன்பதிவு செய்ய வாங்குநராக பதிவு செய்யவும் அல்லது உள்நுழையவும்.", "cultivationAuthMessage": "இந்தச் சாகுபடி வாய்ப்பைக் கோர நீங்கள் வாங்குநராகப் பதிவு செய்ய வேண்டும்.", "registerBuyer": "வாங்குநராகப் பதிவு செய்க", "signIn": "உள்நுழைக" },
   "homepage": {
+    "noMarketplaceFeedback": "சந்தை கருத்துகள் இன்னும் கிடைக்கவில்லை.",
     "explorePrompt": "LK Agro Market-ஐ அறிந்துகொள்ளுங்கள்",
     "scrollToExplore": "நாங்கள் வழங்குவதை ஆராயுங்கள்",
     "registrationTitle": "LK Agro Market இன் ஒரு பகுதியாகத் தயாரா?",

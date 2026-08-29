@@ -11,15 +11,15 @@ $preflight = $pdo->prepare('SELECT * FROM cultivation_ad WHERE cultivation_ad_id
 $preflight->execute([$id, $farmer['farmer_id']]);
 $existing = $preflight->fetch(PDO::FETCH_ASSOC);
 if (!$existing) cultivation_json(404, ['success' => false, 'message' => 'Cultivation opportunity not found.']);
-if (!in_array($existing['status'], ['draft', 'open', 'cultivating'], true)) cultivation_json(409, ['success' => false, 'message' => 'This cultivation opportunity is read-only.']);
-if (in_array($existing['status'], ['open', 'cultivating'], true) && (int)$farmer['verified_status'] !== 1) cultivation_json(403, ['success' => false, 'message' => 'Only verified farmers can maintain an open cultivation opportunity.']);
+if (!in_array($existing['status'], ['draft', 'open'], true)) cultivation_json(409, ['success' => false, 'message' => 'This cultivation opportunity is read-only.']);
+if ($existing['status'] === 'open' && (int)$farmer['verified_status'] !== 1) cultivation_json(403, ['success' => false, 'message' => 'Only verified farmers can maintain an open cultivation opportunity.']);
 $data = cultivation_fields($_POST, (float)$existing['committed_quantity'], $existing['timing_model']);
 try {
     $pdo->beginTransaction();
     $lock = $pdo->prepare('SELECT * FROM cultivation_ad WHERE cultivation_ad_id = ? AND farmer_id = ? FOR UPDATE');
     $lock->execute([$id, $farmer['farmer_id']]);
     $locked = $lock->fetch(PDO::FETCH_ASSOC);
-    if (!$locked || !in_array($locked['status'], ['draft', 'open', 'cultivating'], true)) throw new DomainException('This cultivation opportunity changed and can no longer be edited.');
+    if (!$locked || !in_array($locked['status'], ['draft', 'open'], true)) throw new DomainException('This cultivation opportunity changed and can no longer be edited.');
     if ($data['capacity_quantity'] < (float)$locked['committed_quantity']) throw new DomainException('Capacity cannot be lower than the committed quantity.');
     $requestStats = $pdo->prepare("SELECT
         SUM(request_status='pending') AS pending_count,
