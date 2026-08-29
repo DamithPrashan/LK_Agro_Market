@@ -578,6 +578,21 @@
     "explainResponsePlaceholder": "ඔබේ ප්‍රතිචාරය පැහැදිලි කරන්න...",
     "writeResponseAlert": "කරුණාකර ඉදිරිපත් කිරීමට පෙර ප්‍රතිචාරයක් ලියන්න.",
     "responseSubmittedAlert": "ප්‍රතිචාරය සාර්ථකව ඉදිරිපත් කරන ලදී.",
+    "platformFeedback": {
+      "title": "LK Agro Market පිළිබඳ ඔබේ අත්දැකීම කෙසේද?",
+      "subtitle": "ඔබගේ ගෙවීම සාර්ථකයි! අපගේ වේදිකාව පිළිබඳ ඔබේ අදහස් දක්වන්න.",
+      "veryHappy": "ඉතා සතුටුයි",
+      "happy": "සතුටුයි",
+      "neutral": "සාමාන්‍යයි",
+      "sad": "අසතුටුයි",
+      "verySad": "ඉතා අසතුටුයි",
+      "commentLabel": "ඔබේ අදහස් / සමාලෝචනය",
+      "commentPlaceholder": "LK Agro Market සේවාව පිළිබඳ ඔබේ අදහස් හෝ වැඩිදියුණු විය යුතු දෑ ලියන්න...",
+      "submitBtn": "ඉදිරිපත් කරන්න",
+      "skipBtn": "පසුව කරන්න",
+      "errorEmptyComment": "කරුණාකර ඉදිරිපත් කිරීමට පෙර අදහසක් ලියන්න.",
+      "errorSubmit": "ඉදිරිපත් කිරීමට නොහැකි විය. නැවත උත්සාහ කරන්න."
+    },
     "cultivationRequests": {
       "title": "ගැනුම්කරු ඉල්ලීම්",
       "loading": "ඉල්ලීම් පූරණය වෙමින්...",
