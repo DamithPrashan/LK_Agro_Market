@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./PlatformFeedbackModal.css";
 
@@ -162,7 +162,7 @@ export default function PlatformFeedbackModal({ orderId, onClose, onSubmitSucces
           {/* ACTION BUTTONS */}
           <div className="platform-feedback-actions">
             <button type="button" className="platform-skip-btn" onClick={onClose} disabled={submitting}>
-              {t("platformFeedback.skipBtn", "Skip / Remind Me Later")}
+              {t("platformFeedback.dismissBtn", "Dismiss")}
             </button>
             <button type="submit" className="platform-submit-btn" disabled={submitting}>
               {submitting ? t("ratings.submitting", "Submitting...") : t("platformFeedback.submitBtn", "Submit Review")}

@@ -4,3 +4,26 @@
 @media(max-width:620px){.cultivation-hero,.cultivation-panel{padding:20px 16px}.cultivation-form-actions>*{flex:1 1 140px}}
 .cultivation-period-input{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,.55fr);gap:8px;min-width:0}.cultivation-period-input input,.cultivation-period-input select{min-width:0}
 @media(max-width:620px){.cultivation-period-input{grid-template-columns:1fr}}
+
+/* Compact management cards: preserve all Farmer details without stretching cards. */
+.cultivation-grid{grid-template-columns:repeat(auto-fill,minmax(300px,340px));justify-content:start;align-items:start;gap:16px}
+.cultivation-card{width:100%;min-width:0;border-radius:12px;box-shadow:0 4px 14px rgba(20,70,40,.07)}
+.cultivation-card-image{height:136px}
+.cultivation-placeholder{font-size:44px}
+.cultivation-card-body{padding:14px}
+.cultivation-card-title{gap:9px;min-width:0}
+.cultivation-card-title>div{min-width:0}
+.cultivation-card-title h2{margin-bottom:3px;font-size:18px;overflow-wrap:anywhere}
+.cultivation-card-title span{font-size:12px;overflow-wrap:anywhere}
+.cultivation-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.cultivation-facts span{min-width:0;font-size:11px;overflow-wrap:anywhere}
+.cultivation-facts strong{font-size:12px;margin-top:2px;overflow-wrap:anywhere}
+.capacity-block{border-radius:8px;padding:9px}
+.capacity-block>div:first-child{gap:6px;font-size:11px}
+.capacity-track{height:6px;margin:7px 0}
+.capacity-block p{font-size:11px}
+.cultivation-card-actions{justify-content:flex-start;gap:7px;margin-top:13px;padding-top:10px}
+.cultivation-card-actions>*{flex:0 1 auto;min-width:0;padding:9px 12px;font-size:13px;overflow-wrap:anywhere}
+@media(max-width:700px){.cultivation-grid{grid-template-columns:minmax(0,340px)}}
+@media(max-width:620px){.cultivation-grid{grid-template-columns:minmax(0,1fr)}.cultivation-card{width:100%}.cultivation-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.cultivation-card-title{flex-direction:row}.capacity-block>div:first-child{flex-direction:row}}
+@media(max-width:390px){.cultivation-facts{grid-template-columns:1fr}.cultivation-card-title{flex-direction:column}.capacity-block>div:first-child{flex-direction:column}.cultivation-card-actions>*{flex:1 1 130px}}

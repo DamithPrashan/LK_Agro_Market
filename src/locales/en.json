@@ -577,6 +577,7 @@
     "writeResponseAlert": "Please write a response before submitting.",
     "responseSubmittedAlert": "Response submitted successfully.",
     "platformFeedback": {
+      "dismissBtn": "Dismiss",
       "title": "How was your experience with LK Agro Market?",
       "subtitle": "Congratulations on your completed payment! Please share your feedback about our platform.",
       "veryHappy": "Very Happy",
@@ -910,6 +911,7 @@
     "cultivationNotStarted": "Cultivation Not Started",
     "startedOn": "Started On",
     "estimatedHarvest": "Estimated Harvest",
+    "viewOrders": "View Orders",
     "markHarvested": "Mark Harvested",
     "markHarvestedConfirm": "Mark this cultivation opportunity harvested?",
     "harvestCompleted": "Harvest Completed",
@@ -1376,6 +1378,7 @@
   },
   "homepageGuest": { "demoLabel": "Demo", "cropAuthMessage": "Please register or sign in as a Buyer to place a pre-order.", "cultivationAuthMessage": "You have to register as a buyer to request this cultivation opportunity.", "registerBuyer": "Register as Buyer", "signIn": "Sign In" },
   "homepage": {
+    "noMarketplaceFeedback": "No marketplace feedback is available yet.",
     "explorePrompt": "Discover LK Agro Market",
     "scrollToExplore": "Explore what we have to offer",
     "registrationTitle": "Ready to be part of LK Agro Market?",

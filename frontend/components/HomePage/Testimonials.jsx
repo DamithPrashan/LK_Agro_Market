@@ -3,35 +3,9 @@ import "../../commonPages/csss/HomePage/Testimonials.css";
 import { useTranslation } from "react-i18next";
 import { FaStar } from "react-icons/fa";
 
-import farmer1 from "../../../src/assets/farmer1.png";
-import buyer1 from "../../../src/assets/buyer1.png";
-
-const defaultTestimonials = [
-  {
-    id: 1,
-    name: "Kamal Perera",
-    roleKey: "homepage.testimonialFarmer",
-    location: "Kurunegala",
-    image: farmer1,
-    rating: 5,
-    review:
-      "LK Agro Market has changed my life. I get fair prices and secure payments.",
-  },
-  {
-    id: 2,
-    name: "Sarah Jenkins",
-    roleKey: "homepage.testimonialBuyer",
-    location: "Colombo",
-    image: buyer1,
-    rating: 5,
-    review:
-      "The quality and reliability are unmatched. My restaurant chain finally has a stable supply.",
-  },
-];
-
 export default function Testimonials() {
   const { t } = useTranslation();
-  const [items, setItems] = useState(defaultTestimonials);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     fetch("/backend/Apis/get_platform_reviews.php")
@@ -39,7 +13,7 @@ export default function Testimonials() {
       .then((data) => {
         if (data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {
           const formatted = data.reviews.map((r, index) => {
-            let avatar = index % 2 === 0 ? buyer1 : farmer1;
+            let avatar = null;
             if (r.profile_image && typeof r.profile_image === "string" && r.profile_image.trim() !== "") {
               avatar = r.profile_image.startsWith("http") || r.profile_image.startsWith("/")
                 ? r.profile_image
@@ -56,10 +30,13 @@ export default function Testimonials() {
             };
           });
           setItems(formatted);
+        } else {
+          setItems([]);
         }
       })
       .catch((err) => {
-        console.warn("Using fallback testimonials:", err);
+        console.warn("Unable to load marketplace feedback:", err);
+        setItems([]);
       });
   }, []);
 
@@ -73,7 +50,11 @@ export default function Testimonials() {
 
         <div className="testimonials-grid">
 
-          {items.map((item) => (
+          {items.length === 0 ? (
+            <p className="testimonial-empty">
+              {t("homepage.noMarketplaceFeedback", "No marketplace feedback is available yet.")}
+            </p>
+          ) : items.map((item) => (
             <article className="testimonial-card" key={item.id}>
 
               <div className="testimonial-stars">
@@ -90,10 +71,7 @@ export default function Testimonials() {
 
               <div className="testimonial-user">
 
-                <img
-                  src={item.image}
-                  alt={item.name}
-                />
+                {item.image && <img src={item.image} alt={item.name} />}
 
                 <div className="testimonial-user-text">
                   <h3>{item.name}</h3>

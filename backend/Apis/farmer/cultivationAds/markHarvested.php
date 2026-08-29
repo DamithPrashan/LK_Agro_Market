@@ -21,10 +21,6 @@ try {
     if ($ad['timing_model'] !== 'growing_period' || $ad['status'] !== 'cultivating' || $ad['cultivation_started_at'] === null) {
         $pdo->rollBack(); cultivation_json(409, ['success'=>false, 'message'=>'This cultivation opportunity is not eligible to be marked harvested.']);
     }
-    if ($ad['estimated_harvest_date'] === null || $ad['estimated_harvest_date'] > date('Y-m-d')) {
-        $pdo->rollBack(); cultivation_json(409, ['success'=>false, 'message'=>'The estimated harvest date has not been reached.']);
-    }
-
     $update = $pdo->prepare("UPDATE cultivation_ad SET status='harvested' WHERE cultivation_ad_id=? AND farmer_id=? AND status='cultivating'");
     $update->execute([$id, $farmer['farmer_id']]);
     if ($update->rowCount() !== 1) throw new RuntimeException('Cultivation opportunity changed before it could be marked harvested.');

@@ -579,6 +579,7 @@
     "writeResponseAlert": "කරුණාකර ඉදිරිපත් කිරීමට පෙර ප්‍රතිචාරයක් ලියන්න.",
     "responseSubmittedAlert": "ප්‍රතිචාරය සාර්ථකව ඉදිරිපත් කරන ලදී.",
     "platformFeedback": {
+      "dismissBtn": "ඉවත් කරන්න",
       "title": "LK Agro Market පිළිබඳ ඔබේ අත්දැකීම කෙසේද?",
       "subtitle": "ඔබගේ ගෙවීම සාර්ථකයි! අපගේ වේදිකාව පිළිබඳ ඔබේ අදහස් දක්වන්න.",
       "veryHappy": "ඉතා සතුටුයි",
@@ -910,6 +911,7 @@
     "cultivationNotStarted": "වගාව ආරම්භ කර නැත",
     "startedOn": "ආරම්භ කළ දිනය",
     "estimatedHarvest": "ඇස්තමේන්තුගත අස්වැන්න",
+    "viewOrders": "ඇණවුම් බලන්න",
     "markHarvested": "අස්වනු නෙළා අවසන් ලෙස සලකුණු කරන්න",
     "markHarvestedConfirm": "මෙම වගා අවස්ථාව අස්වනු නෙළා අවසන් ලෙස සලකුණු කරන්නද?",
     "harvestCompleted": "අස්වනු නෙළීම අවසන්",
@@ -1376,6 +1378,7 @@
   },
   "homepageGuest": { "demoLabel": "ආදර්ශ", "cropAuthMessage": "පෙර ඇණවුමක් කිරීමට ගැනුම්කරුවෙකු ලෙස ලියාපදිංචි වන්න හෝ පිවිසෙන්න.", "cultivationAuthMessage": "මෙම වගා අවස්ථාව ඉල්ලීමට ඔබ ගැනුම්කරුවෙකු ලෙස ලියාපදිංචි විය යුතුය.", "registerBuyer": "ගැනුම්කරුවෙකු ලෙස ලියාපදිංචි වන්න", "signIn": "පිවිසෙන්න" },
   "homepage": {
+    "noMarketplaceFeedback": "වෙළඳපොළ ප්‍රතිචාර තවම නොමැත.",
     "explorePrompt": "LK Agro Market සොයා බලන්න",
     "scrollToExplore": "අප පිරිනමන දේ ගවේෂණය කරන්න",
     "registrationTitle": "LK Agro Market හි කොටසක් වීමට සූදානම්ද?",

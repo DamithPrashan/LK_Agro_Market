@@ -7,20 +7,7 @@ header("Content-Type: application/json");
 require_once __DIR__ . '/../connection/db.php';
 
 try {
-    // 1. Ensure table exists
-    $createTableSql = "
-        CREATE TABLE IF NOT EXISTS `platform_reviews` (
-          `id` INT AUTO_INCREMENT PRIMARY KEY,
-          `buyer_id` INT NOT NULL,
-          `order_id` INT NULL,
-          `rating` INT NOT NULL CHECK (`rating` BETWEEN 1 AND 5),
-          `comment` TEXT NOT NULL,
-          `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-    ";
-    $pdo->exec($createTableSql);
-
-    // 2. Fetch platform reviews with buyer details
+    // Fetch platform reviews with buyer details.
     $sql = "
         SELECT 
             pr.id,
@@ -31,8 +18,9 @@ try {
             COALESCE(u.location, 'Sri Lanka') as location,
             u.profile_image
         FROM platform_reviews pr
-        LEFT JOIN user u ON pr.buyer_id = u.user_id
-        ORDER BY pr.created_at DESC
+        JOIN buyer b ON pr.buyer_id = b.buyer_id
+        JOIN user u ON b.user_id = u.user_id
+        ORDER BY pr.created_at DESC, pr.id DESC
         LIMIT 6
     ";
 
