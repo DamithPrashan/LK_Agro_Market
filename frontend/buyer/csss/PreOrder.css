@@ -197,6 +197,7 @@ body,
 .order-box h2,
 .order-box h3 {
   margin-top: 0;
+  color: #ffffff;
 }
 
 .order-box input {
@@ -226,11 +227,12 @@ body,
   background: #fb8c00;
 }
 
-.note {
+.order-box .note {
   margin-top: 15px;
   font-size: 13px;
   opacity: 0.9;
   line-height: 1.5;
+  color: #ffffff;
 }
 .order-box label {
   color: #ffffff;      
