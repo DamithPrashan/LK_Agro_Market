@@ -133,11 +133,12 @@ body {
 }
 
 .stat-card.blue::before {
-  background: #2f9e44;
+  background: #2563eb;
 }
 
 .stat-card.blue .stat-icon {
-  background: #eaf7ec;
+  background: #eff6ff;
+  color: #2563eb;
   border-radius: 10px;
   padding: 4px 10px;
 }
