@@ -71,7 +71,7 @@ export default function BuyerSidebar() {
       label: t("sidebar.browseCrops", "Browse"),
       path: "/browse",
       icon: <FaSearch className="sidebar-icon" />,
-      active: currentPath === "/browse"
+      active: currentPath === "/browse" || currentPath === "/buyer/browse"
     }
   ];
 

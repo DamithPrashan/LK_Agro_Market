@@ -144,7 +144,15 @@ function App() {
 
             <Route
               path="/browse"
-              element={<Browse />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <Browse />
+                  </BuyerLayout>
+                ) : (
+                  <Browse />
+                )
+              }
             />
 
             <Route
@@ -299,6 +307,11 @@ function App() {
               <Route
                 path="dashboard"
                 element={<BuyerDashboard />}
+              />
+
+              <Route
+                path="browse"
+                element={<Browse />}
               />
 
               <Route
