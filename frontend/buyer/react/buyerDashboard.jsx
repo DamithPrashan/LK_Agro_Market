@@ -191,13 +191,7 @@ export default function BuyerDashboard() {
           <p>{t("stats.completedOrders")}</p>
         </div>
 
-        <div
-          className="stat-card clickable-card"
-          onClick={() => navigate("/complaints")}
-          role="button"
-          tabIndex={0}
-          style={{ cursor: "pointer" }}
-        >
+        <div className="stat-card">
           <span className="stat-icon">⚠️</span>
           <h2>{stats.complaints}</h2>
           <p>{t("stats.openComplaints")}</p>
