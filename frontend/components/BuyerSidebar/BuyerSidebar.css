@@ -68,6 +68,42 @@
   border-left-color: #4cd137;
 }
 
+.sidebar-menu-item.parent-active {
+  background-color: rgba(255, 255, 255, 0.06);
+  opacity: 0.9;
+}
+
+/* Sub-menu item for nested routes (e.g. Pre-Order under Browse Crops) */
+.sidebar-sub-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px 10px 44px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #c2dcc8;
+  border-left: 4px solid transparent;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-sub-menu-item:hover,
+.sidebar-sub-menu-item.active {
+  background-color: rgba(76, 209, 55, 0.18);
+  color: #ffffff;
+  font-weight: 600;
+  border-left-color: #4cd137;
+}
+
+.sidebar-sub-connector {
+  font-family: monospace;
+  font-size: 15px;
+  color: #4cd137;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
 .sidebar-icon {
   font-size: 18px;
   flex-shrink: 0;

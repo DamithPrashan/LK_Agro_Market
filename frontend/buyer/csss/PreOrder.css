@@ -31,6 +31,11 @@ body,
   min-height: 100vh;
   padding: 68px 25px 25px;
 }
+
+.buyer-page-content .crop-container {
+  padding-top: 20px;
+  min-height: auto;
+}
 .crop-detail-back { position: absolute; top: 20px; left: 25px; padding: 8px 12px; border: 1px solid #cbd8cf; border-radius: 6px; background: #fff; color: #17552c; font-weight: 700; cursor: pointer; }
 
 /* ==========================
@@ -197,6 +202,7 @@ body,
 .order-box h2,
 .order-box h3 {
   margin-top: 0;
+  color: #ffffff;
 }
 
 .order-box input {
@@ -226,11 +232,12 @@ body,
   background: #fb8c00;
 }
 
-.note {
+.order-box .note {
   margin-top: 15px;
   font-size: 13px;
   opacity: 0.9;
   line-height: 1.5;
+  color: #ffffff;
 }
 .order-box label {
   color: #ffffff;      

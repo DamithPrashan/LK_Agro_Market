@@ -24,48 +24,64 @@ export default function BuyerSidebar() {
     }
   };
 
+  const isPreOrderSubPage =
+    currentPath === "/preorder" ||
+    currentPath === "/pre-order" ||
+    currentPath.startsWith("/crop/");
+
+  const isBrowseExact =
+    currentPath === "/browse" || currentPath === "/buyer/browse";
+
   const menuItems = [
     {
+      key: "dashboard",
       label: t("sidebar.dashboard"),
       path: "/buyer/dashboard",
       icon: <FaTachometerAlt className="sidebar-icon" />,
       active: currentPath === "/buyer/dashboard" || currentPath === "/buyer" || currentPath === "/buyer/"
     },
     {
+      key: "complaints",
       label: t("sidebar.complaints"),
       path: "/buyer/complaints",
       icon: <FaExclamationTriangle className="sidebar-icon" />,
       active: currentPath === "/buyer/complaints"
     },
     {
+      key: "ratings",
       label: t("sidebar.ratings"),
       path: "/buyer/ratings",
       icon: <FaStar className="sidebar-icon" />,
       active: currentPath === "/buyer/ratings"
     },
     {
+      key: "history",
       label: t("sidebar.viewOrderHistory"),
       path: "/buyer/buyerorderhistory",
       icon: <FaHistory className="sidebar-icon" />,
       active: currentPath === "/buyer/buyerorderhistory"
     },
     {
+      key: "cultivation",
       label: t("buyer.cultivation.requestsTitle"),
       path: "/buyer/cultivation-requests",
       icon: <FaHandshake className="sidebar-icon" />,
       active: currentPath === "/buyer/cultivation-requests"
     },
     {
+      key: "map",
       label: t("sidebar.mapSearch"),
       path: "/buyer/mapsearch",
       icon: <FaMapMarkedAlt className="sidebar-icon" />,
       active: currentPath === "/buyer/mapsearch"
     },
     {
+      key: "browse",
       label: t("sidebar.browseCrops", "Browse"),
       path: "/browse",
       icon: <FaSearch className="sidebar-icon" />,
-      active: currentPath === "/browse" || currentPath === "/buyer/browse"
+      active: isBrowseExact || isPreOrderSubPage,
+      isParentActive: isPreOrderSubPage
     }
   ];
 
@@ -85,20 +101,34 @@ export default function BuyerSidebar() {
         <div className="sidebar-nav-group">
           <p className="sidebar-nav-title">{t("sidebar.buyerPanel")}</p>
           <ul className="sidebar-menu">
-            {menuItems.map((item, index) => (
-              <li
-                key={index}
-                className={`sidebar-menu-item ${item.active ? "active" : ""}`}
-                onClick={() => navigate(item.path)}
-                onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(item.path); }}
-                role="link"
-                tabIndex="0"
-                aria-current={item.active ? "page" : undefined}
-                title={item.label}
-              >
-                {item.icon}
-                <span className="sidebar-nav-label">{item.label}</span>
-              </li>
+            {menuItems.map((item) => (
+              <div key={item.key}>
+                <li
+                  className={`sidebar-menu-item ${item.active ? "active" : ""} ${item.isParentActive ? "parent-active" : ""}`}
+                  onClick={() => navigate(item.path)}
+                  onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(item.path); }}
+                  role="link"
+                  tabIndex="0"
+                  aria-current={item.active ? "page" : undefined}
+                  title={item.label}
+                >
+                  {item.icon}
+                  <span className="sidebar-nav-label">{item.label}</span>
+                </li>
+                {item.key === "browse" && isPreOrderSubPage && (
+                  <li
+                    className="sidebar-sub-menu-item active"
+                    onClick={() => navigate(location.pathname)}
+                    onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(location.pathname); }}
+                    role="link"
+                    tabIndex="0"
+                    title={t("sidebar.preorderSubPage", "Pre-Order")}
+                  >
+                    <span className="sidebar-sub-connector">└</span>
+                    <span className="sidebar-nav-label">{t("sidebar.preorderSubPage", "Pre-Order")}</span>
+                  </li>
+                )}
+              </div>
             ))}
           </ul>
         </div>
