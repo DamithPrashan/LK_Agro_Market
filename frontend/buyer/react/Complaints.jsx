@@ -215,22 +215,6 @@ function ComplaintPage() {
           <p>{t("complaints.subtitle")}</p>
         </div>
 
-        {/* Tabs */}
-        <div className="tabs">
-          <button
-            className={`tab ${activeTab === "submit" ? "active" : ""}`}
-            onClick={() => handleTabChange("submit")}
-          >
-            {t("complaints.submitComplaintTab")}
-          </button>
-          <button
-            className={`tab ${activeTab === "farmer_response" ? "active" : ""}`}
-            onClick={() => handleTabChange("farmer_response")}
-          >
-            {t("complaints.farmerResponseTab")}
-          </button>
-        </div>
-
         {/* TAB 1: SUBMIT COMPLAINT */}
         {activeTab === "submit" && (
           <>
