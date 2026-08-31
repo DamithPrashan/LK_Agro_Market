@@ -315,11 +315,6 @@ function App() {
               />
 
               <Route
-                path="preorder"
-                element={<PreOrder />}
-              />
-
-              <Route
                 path="complaints"
                 element={<Complaints />}
               />

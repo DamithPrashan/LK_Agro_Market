@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaClipboardList, FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt, FaMapMarkedAlt, FaSearch, FaHandshake, FaSignOutAlt } from "react-icons/fa";
+import { FaExclamationTriangle, FaStar, FaHistory, FaUserCircle, FaTachometerAlt, FaMapMarkedAlt, FaSearch, FaHandshake, FaSignOutAlt } from "react-icons/fa";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 import "./BuyerSidebar.css";
 
@@ -30,12 +30,6 @@ export default function BuyerSidebar() {
       path: "/buyer/dashboard",
       icon: <FaTachometerAlt className="sidebar-icon" />,
       active: currentPath === "/buyer/dashboard" || currentPath === "/buyer" || currentPath === "/buyer/"
-    },
-    {
-      label: t("sidebar.preOrder"),
-      path: "/buyer/preorder",
-      icon: <FaClipboardList className="sidebar-icon" />,
-      active: currentPath === "/buyer/preorder" || currentPath === "/buyer/pre-order"
     },
     {
       label: t("sidebar.complaints"),
