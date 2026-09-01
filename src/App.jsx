@@ -144,22 +144,54 @@ function App() {
 
             <Route
               path="/browse"
-              element={<Browse />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <Browse />
+                  </BuyerLayout>
+                ) : (
+                  <Browse />
+                )
+              }
             />
 
             <Route
               path="/preorder"
-              element={<PreOrder />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <PreOrder />
+                  </BuyerLayout>
+                ) : (
+                  <PreOrder />
+                )
+              }
             />
 
             <Route
               path="/pre-order"
-              element={<PreOrder />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <PreOrder />
+                  </BuyerLayout>
+                ) : (
+                  <PreOrder />
+                )
+              }
             />
 
             <Route
               path="/crop/:id"
-              element={<PreOrder />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <PreOrder />
+                  </BuyerLayout>
+                ) : (
+                  <PreOrder />
+                )
+              }
             />
 
             <Route
@@ -302,8 +334,8 @@ function App() {
               />
 
               <Route
-                path="preorder"
-                element={<PreOrder />}
+                path="browse"
+                element={<Browse />}
               />
 
               <Route

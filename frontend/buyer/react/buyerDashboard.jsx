@@ -173,31 +173,25 @@ export default function BuyerDashboard() {
 
       {/* STATS */}
       <section className="stats-container">
-        <div className="stat-card">
+        <div className="stat-card yellow">
           <span className="stat-icon">⏳</span>
           <h2>{stats.pending}</h2>
           <p>{t("stats.pendingReservations")}</p>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card blue">
           <span className="stat-icon">🔄</span>
           <h2>{stats.active}</h2>
           <p>{t("stats.activeReservations")}</p>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card green">
           <span className="stat-icon">✅</span>
           <h2>{stats.completed}</h2>
           <p>{t("stats.completedOrders")}</p>
         </div>
 
-        <div
-          className="stat-card clickable-card"
-          onClick={() => navigate("/complaints")}
-          role="button"
-          tabIndex={0}
-          style={{ cursor: "pointer" }}
-        >
+        <div className="stat-card red">
           <span className="stat-icon">⚠️</span>
           <h2>{stats.complaints}</h2>
           <p>{t("stats.openComplaints")}</p>
