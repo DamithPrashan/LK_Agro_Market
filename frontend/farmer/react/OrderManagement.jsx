@@ -1,5 +1,16 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import {
+    FiAlertCircle,
+    FiCalendar,
+    FiCheckCircle,
+    FiClock,
+    FiDollarSign,
+    FiHash,
+    FiMessageCircle,
+    FiPackage,
+    FiUser
+} from "react-icons/fi";
 import "../csss/OrderManagement.css";
 import RatingStars from "../../components/ratingStars";
 import ReviewModal from "../../components/ReviewModal";
@@ -52,6 +63,21 @@ function paymentI18nKey(paymentUI) {
     if (paymentUI === "Paid (1/3)")  return "orders.paymentPartial";
     return "orders.paymentUnpaid";
 }
+
+const formatCropName = (cropName = "") =>
+    cropName.charAt(0).toUpperCase() + cropName.slice(1);
+
+const getOrderLabel = (translatedValue) => translatedValue.split(":")[0].trim();
+
+const OrderDetailRow = ({ icon: Icon, label, value, className = "" }) => (
+    <div className={`order-detail-row ${className}`.trim()}>
+        <span className="order-detail-label">
+            <Icon className="order-detail-icon" aria-hidden="true" />
+            {label}
+        </span>
+        {value !== undefined && <strong className="order-detail-value">{value}</strong>}
+    </div>
+);
 
 function OrderManagement() {
     const { user } = useAuth();
@@ -192,49 +218,49 @@ function OrderManagement() {
 
                                 {/* ── Header ── */}
                                 <div className="order-header">
-                                    <h3>
-                                        {order.crop}
-                                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--g-600)" }}>
+                                    <div className="order-title">
+                                        <h3>{formatCropName(order.crop)}</h3>
+                                        <span className="order-type">
                                             {order.reservation_source === "cultivation"
                                                 ? t("orderPresentation.cultivationOrder")
                                                 : t("orderPresentation.availableCrop")}
                                         </span>
-                                    </h3>
+                                    </div>
                                     <span className={`status-badge ${statusClass}`}>{badgeLabel}</span>
                                 </div>
 
                                 {/* ── Body ── */}
                                 <div className="order-body">
-                                    <p>{t("farmer.orderCardTitle", { id: order.id })}</p>
-                                    <p>{t("farmer.buyerLabel")}: {order.buyer}</p>
-                                    <p>{t("farmer.quantityLabel")}: {order.quantity}</p>
-                                    <p>{t("orderPresentation.unitPrice")}: Rs. {Number(order.unit_price).toLocaleString()}</p>
-                                    <p>{t("farmer.totalLabel", "Total")}: Rs. {Number(order.total_amount).toLocaleString()}</p>
-                                    <p>{t("farmer.collectionDateLabel")}: {order.date || t("growingPeriod.toBeConfirmed")}</p>
+                                    <OrderDetailRow icon={FiHash} label={getOrderLabel(t("orders.orderId", { id: "" }))} value={order.id} />
+                                    <OrderDetailRow icon={FiUser} label={t("farmer.buyerLabel")} value={order.buyer} />
+                                    <OrderDetailRow icon={FiPackage} label={t("farmer.quantityLabel")} value={order.quantity} />
+                                    <OrderDetailRow icon={FiDollarSign} label={t("orderPresentation.unitPrice")} value={`Rs. ${Number(order.unit_price).toLocaleString()}`} />
+                                    <OrderDetailRow icon={FiDollarSign} label={t("farmer.totalLabel", "Total")} value={`Rs. ${Number(order.total_amount).toLocaleString()}`} className="order-total-row" />
+                                    <OrderDetailRow icon={FiCalendar} label={t("farmer.collectionDateLabel")} value={order.date || t("growingPeriod.toBeConfirmed")} />
 
                                     {/* Growing-period extra details */}
                                     {order.reservation_source === "cultivation" && order.timing_model === "growing_period" && <>
-                                        <p>{t("growingPeriod.plannedStart")}: {order.planned_start_date || "—"}</p>
-                                        <p>{t("growingPeriod.label")}: ~{order.agreed_growing_period_days} {t("growingPeriod.units.days")}</p>
-                                        <p>{t("growingPeriod.actualStart")}: {order.cultivation_started_at ? String(order.cultivation_started_at).slice(0, 10) : t("growingPeriod.notStarted")}</p>
+                                        <OrderDetailRow icon={FiCalendar} label={t("growingPeriod.plannedStart")} value={order.planned_start_date || "—"} />
+                                        <OrderDetailRow icon={FiClock} label={t("growingPeriod.label")} value={`~${order.agreed_growing_period_days} ${t("growingPeriod.units.days")}`} />
+                                        <OrderDetailRow icon={FiCheckCircle} label={t("growingPeriod.actualStart")} value={order.cultivation_started_at ? String(order.cultivation_started_at).slice(0, 10) : t("growingPeriod.notStarted")} />
                                         {order.planned_start_date && !order.cultivation_started_at && new Date().toISOString().slice(0, 10) > order.planned_start_date && (
-                                            <p>{t("growingPeriod.startDelayed")}</p>
+                                            <OrderDetailRow icon={FiAlertCircle} label={t("growingPeriod.startDelayed")} className="order-detail-notice" />
                                         )}
                                         {order.estimated_harvest_date && (
-                                            <p>{t("growingPeriod.estimatedHarvest")}: {order.estimated_harvest_date}</p>
+                                            <OrderDetailRow icon={FiCalendar} label={t("growingPeriod.estimatedHarvest")} value={order.estimated_harvest_date} />
                                         )}
                                     </>}
 
                                     {/* Buyer review preview */}
                                     {order.buyer_rating !== null && (
                                         <div className="buyer-review-strip">
-                                            <p style={{ margin: "0 0 4px 0", color: "var(--t-3)" }}>
+                                            <p className="buyer-review-title">
                                                 {t("ratings.buyerReview", "Buyer Review Received")}
                                             </p>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                            <div className="buyer-review-content">
                                                 <RatingStars value={order.buyer_rating} readOnly size={16} />
                                                 {order.buyer_comment && (
-                                                    <span style={{ fontSize: "12px", color: "var(--t-2)", fontStyle: "italic" }}>
+                                                    <span className="buyer-review-comment">
                                                         "{order.buyer_comment.length > 60 ? order.buyer_comment.slice(0, 60) + "..." : order.buyer_comment}"
                                                     </span>
                                                 )}
@@ -267,13 +293,12 @@ function OrderManagement() {
                                         <div className="secondary-actions">
                                             <button
                                                 className="secondary-btn message-buyer-btn"
-                                                style={{ position: "relative" }}
                                                 onClick={() => {
                                                     setActiveChatOrder(order);
                                                     setIsChatOpen(true);
                                                 }}
                                             >
-                                                💬 {t("btn_message_buyer")}
+                                                <FiMessageCircle aria-hidden="true" /> {t("btn_message_buyer")}
                                                 {order.unreadMessages > 0 && (
                                                     <span style={{
                                                         position: "absolute", top: "-8px", right: "-8px",
@@ -294,7 +319,7 @@ function OrderManagement() {
                                                     userRole: "buyer"
                                                 })}
                                             >
-                                                👤 {t("buttons.aboutBuyer", "About Buyer")}
+                                                <FiUser aria-hidden="true" /> {t("buttons.aboutBuyer", "About Buyer")}
                                             </button>
                                         </div>
                                     </div>

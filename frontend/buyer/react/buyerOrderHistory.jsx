@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {
+  FiAlertCircle,
+  FiCalendar,
+  FiCheckCircle,
+  FiClock,
+  FiDollarSign,
+  FiHash,
+  FiMessageCircle,
+  FiPackage
+} from "react-icons/fi";
 import "../csss/BuyerOrderHistory.css";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
@@ -23,6 +33,21 @@ const lifecycleKeyMap = {
   completed: "orders.status.completed",
   cancelled: "orderPresentation.cancelled"
 };
+
+const formatCropName = (cropName = "") =>
+  cropName.charAt(0).toUpperCase() + cropName.slice(1);
+
+const getOrderLabel = (translatedValue) => translatedValue.split(":")[0].trim();
+
+const OrderDetailRow = ({ icon: Icon, label, value, className = "" }) => (
+  <div className={`order-detail-row ${className}`.trim()}>
+    <span className="order-detail-label">
+      <Icon className="order-detail-icon" aria-hidden="true" />
+      {label}
+    </span>
+    {value !== undefined && <strong className="order-detail-value">{value}</strong>}
+  </div>
+);
 
 export default function BuyerOrderHistory() {
   const { user } = useAuth();
@@ -207,45 +232,51 @@ export default function BuyerOrderHistory() {
                 <div key={order.orderId} className={`order-card ${order.orderStatus}`}>
                   
                   <div className="order-header">
-                    <h3>
-                      {order.cropName}
-                      <span style={{ marginLeft: "8px", fontSize: "11px", fontWeight: 600, color: "var(--g-600)" }}>
+                    <div className="order-title">
+                      <h3>{formatCropName(order.cropName)}</h3>
+                      <span className="order-type">
                         {order.reservationSource === "cultivation"
                           ? t("orderPresentation.cultivationOrder")
                           : t("orderPresentation.availableCrop")}
                       </span>
-                    </h3>
+                    </div>
                     <span className={`status ${order.orderStatus}`}>
                       {t(lifecycleKeyMap[order.lifecycleStatus] || statusKeyMap[order.orderStatus.toLowerCase()] || order.orderStatus).toUpperCase()}
                     </span>
                   </div>
 
                   <div className="order-body">
-                    <p>{t("orders.orderId", { id: order.orderId })}</p>
-                    <p>{t("orders.quantity", { qty: order.quantity, unit: order.unit })}</p>
-                    <p>{t("orders.date", { date: order.date || t("growingPeriod.toBeConfirmed") })}</p>
-                    {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <><p>{t("growingPeriod.plannedCultivationStart")}: {order.plannedStartDate || "—"}</p><p>{t("growingPeriod.label")}: ~{order.agreedGrowingPeriodDays} {t("growingPeriod.units.days")}</p><p>{t("growingPeriod.actualStart")}: {order.cultivationStartedAt ? String(order.cultivationStartedAt).slice(0, 10) : t("growingPeriod.notStarted")}</p>{order.plannedStartDate && !order.cultivationStartedAt && new Date().toISOString().slice(0,10) > order.plannedStartDate && <p>{t("growingPeriod.startDelayed")}</p>}{order.estimatedHarvestDate && <p>{t("growingPeriod.estimatedHarvest")}: {order.estimatedHarvestDate}</p>}{order.cultivationAdStatus === "harvested" && <p>{t("growingPeriod.harvestCompleted")}</p>}</>}
-                    <p>{t("orders.total", { total: order.total.toLocaleString() })}</p>
-                    {order.bankPaymentStatus === "pending" && <p className="bank-payment-state pending">{t("payment.bankOrderPending")}</p>}
-                    {order.bankPaymentStatus === "failed" && <p className="bank-payment-state failed">{t("payment.bankOrderRejected")}</p>}
+                    <OrderDetailRow icon={FiHash} label={getOrderLabel(t("orders.orderId", { id: "" }))} value={order.orderId} />
+                    <OrderDetailRow icon={FiPackage} label={getOrderLabel(t("orders.quantity", { qty: "", unit: "" }))} value={`${order.quantity} ${order.unit}`} />
+                    <OrderDetailRow icon={FiCalendar} label={getOrderLabel(t("orders.date", { date: "" }))} value={order.date || t("growingPeriod.toBeConfirmed")} />
+                    {order.reservationSource === "cultivation" && order.timingModel === "growing_period" && <>
+                      <OrderDetailRow icon={FiCalendar} label={t("growingPeriod.plannedCultivationStart")} value={order.plannedStartDate || "—"} />
+                      <OrderDetailRow icon={FiClock} label={t("growingPeriod.label")} value={`~${order.agreedGrowingPeriodDays} ${t("growingPeriod.units.days")}`} />
+                      <OrderDetailRow icon={FiCheckCircle} label={t("growingPeriod.actualStart")} value={order.cultivationStartedAt ? String(order.cultivationStartedAt).slice(0, 10) : t("growingPeriod.notStarted")} />
+                      {order.plannedStartDate && !order.cultivationStartedAt && new Date().toISOString().slice(0,10) > order.plannedStartDate && <OrderDetailRow icon={FiAlertCircle} label={t("growingPeriod.startDelayed")} className="order-detail-notice" />}
+                      {order.estimatedHarvestDate && <OrderDetailRow icon={FiCalendar} label={t("growingPeriod.estimatedHarvest")} value={order.estimatedHarvestDate} />}
+                      {order.cultivationAdStatus === "harvested" && <OrderDetailRow icon={FiCheckCircle} label={t("growingPeriod.harvestCompleted")} className="order-detail-notice" />}
+                    </>}
+                    <OrderDetailRow icon={FiDollarSign} label={getOrderLabel(t("orders.total", { total: "" }))} value={`Rs. ${order.total.toLocaleString()}`} className="order-total-row" />
+                    {order.bankPaymentStatus === "pending" && <OrderDetailRow icon={FiAlertCircle} label={t("payment.bankOrderPending")} className="bank-payment-state pending order-detail-notice" />}
+                    {order.bankPaymentStatus === "failed" && <OrderDetailRow icon={FiAlertCircle} label={t("payment.bankOrderRejected")} className="bank-payment-state failed order-detail-notice" />}
                   </div>
 
                   {/* Conditional Footer Layout */}
                   {order.orderStatus.toLowerCase() === "pending" ? (
-                    <div className="order-footer" style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between", marginTop: "15px" }}>
+                    <div className="order-footer">
                       <span className={`payment ${order.paymentStatus}`}>
                         {t("orders.payment", { status: order.paymentStatus.toUpperCase() })}
                       </span>
-                      <div style={{ display: "flex", gap: "10px" }}>
+                      <div className="order-actions">
                         <button
-                          className="view-btn"
+                          className="view-btn message-farmer-btn"
                           onClick={() => {
                             setActiveChatOrder(order);
                             setIsChatOpen(true);
                           }}
-                          style={{ background: "#1a5c2d", color: "white", cursor: "pointer", position: "relative" }}
                         >
-                          💬 {t("btn_message_farmer")}
+                          <FiMessageCircle aria-hidden="true" /> {t("btn_message_farmer")}
                           {order.unreadMessages > 0 && (
                             <span style={{ position: "absolute", top: "-8px", right: "-8px", background: "#e74c3c", color: "white", borderRadius: "50%", padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5 }}>
                               {order.unreadMessages}
@@ -253,31 +284,29 @@ export default function BuyerOrderHistory() {
                           )}
                         </button>
                         <button 
-                          className="view-btn" 
+                          className="cancel-order-action-btn"
                           onClick={() => handleCancelClick(order)}
-                          style={{ background: "#e74c3c", color: "white", cursor: "pointer" }}
                         >
                           {t("buttons.cancelOrder", "Cancel Order")}
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="order-footer" style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between", marginTop: "15px", flexWrap: "wrap" }}>
+                    <div className="order-footer">
                       <span className={`payment ${order.paymentStatus}`}>
                         {t("orders.payment", { status: order.paymentStatus.toUpperCase() })}
                       </span>
                       
                       {/* Action buttons grouped on the right */}
-                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                      <div className="order-actions">
                         <button
-                          className="view-btn"
+                          className="view-btn message-farmer-btn"
                           onClick={() => {
                             setActiveChatOrder(order);
                             setIsChatOpen(true);
                           }}
-                          style={{ background: "#1a5c2d", color: "white", cursor: "pointer", position: "relative" }}
                         >
-                          💬 {t("btn_message_farmer")}
+                          <FiMessageCircle aria-hidden="true" /> {t("btn_message_farmer")}
                           {order.unreadMessages > 0 && (
                             <span style={{ position: "absolute", top: "-8px", right: "-8px", background: "#e74c3c", color: "white", borderRadius: "50%", padding: "2px 6px", fontSize: "10px", fontWeight: "bold", zIndex: 5 }}>
                               {order.unreadMessages}
@@ -298,9 +327,8 @@ export default function BuyerOrderHistory() {
                         {order.bankPaymentStatus !== "pending" && ((order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "unpaid" && (order.reservationSource !== "cultivation" || order.timingModel !== "growing_period" || order.plannedStartDate)) ||
                          (order.orderStatus.toLowerCase() === "ready" && order.paymentStatus.toLowerCase() === "partial")) && (
                           <button 
-                            className="view-btn" 
+                            className="view-btn payment-action-btn"
                             onClick={() => navigate(`/payment/${order.orderId}`)}
-                            style={{ background: "#27ae60", color: "white", cursor: "pointer" }}
                           >
                             {order.bankPaymentStatus === "failed" ? t("payment.retryBankPayment") : order.paymentStatus.toLowerCase() === "partial"
                               ? t("orderPresentation.payRemaining")
