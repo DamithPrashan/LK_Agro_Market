@@ -12,6 +12,8 @@
 /* Tabs */
 .order-management .tabs {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     margin-bottom: 24px;
     flex-wrap: wrap;
@@ -43,23 +45,28 @@
 
 /* Card */
 .order-management .order-card {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 350px;
     background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    border-left: 6px solid #ccc;
-    transition: transform 0.25s;
+    padding: 16px;
+    border: 1px solid #e1e5e8;
+    border-left: 4px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(20, 39, 28, 0.08);
+    text-align: left;
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
 }
 
-.order-management .order-card:hover { transform: translateY(-3px); }
+.order-management .order-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(20, 39, 28, 0.11); }
 
 /* Status left-border accents */
 .order-management .order-card.pending   { border-left-color: #f59e0b; }
 .order-management .order-card.accepted  { border-left-color: #0ea5e9; }
-.order-management .order-card.ready     { border-left-color: #6366f1; }
-.order-management .order-card.completed { border-left-color: #10b981; }
+.order-management .order-card.ready     { border-left-color: #1b5e20; }
+.order-management .order-card.completed { border-left-color: #1b5e20; }
 .order-management .order-card.declined,
 .order-management .order-card.cancelled { border-left-color: #ef4444; }
 
@@ -68,159 +75,268 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 12px;
+    gap: 8px;
 }
 
-.order-management .order-header h3 {
-    margin: 0;
-    font-size: 15px;
+.order-management .order-title {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
     flex: 1;
+    margin: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    text-align: left;
+}
+
+.order-management .order-title h3 {
+    width: 100%;
+    margin: 0;
+    color: #132238;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
+.order-management .order-type {
+    display: block;
+    margin-top: 4px;
+    color: #60676f;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: left;
+    overflow-wrap: anywhere;
 }
 
 /* Status badge */
 .order-management .status-badge {
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 12px;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    padding: 4px 7px;
+    border-radius: 9px;
+    font-size: 9px;
     color: white;
     font-weight: 700;
-    white-space: normal;
-    word-break: break-word;
-    text-align: right;
-    max-width: 55%;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-align: center;
 }
 
 .order-management .status-badge.pending   { background: #f59e0b; }
 .order-management .status-badge.accepted  { background: #0ea5e9; }
-.order-management .status-badge.ready     { background: #6366f1; }
-.order-management .status-badge.completed { background: #10b981; }
+.order-management .order-card .status-badge.ready     { background: #1b5e20; }
+.order-management .order-card .status-badge.completed { background: #1b5e20; }
 .order-management .status-badge.declined,
 .order-management .status-badge.cancelled { background: #ef4444; }
 
 /* Buyer-review accent strip */
 .order-management .buyer-review-strip {
-    margin-top: 10px;
-    padding: 8px 10px;
-    background: #f9f9f9;
+    margin-top: 14px;
+    padding: 10px 11px;
+    background: #fafbfa;
     border-radius: 8px;
-    border-left: 4px solid #f1c40f;
+    border: 1px solid #e1e5e2;
     font-size: 12px;
+    text-align: left;
+}
+
+.order-management .buyer-review-title {
+    margin: 0 0 6px;
+    color: #3f4944;
+    font-weight: 700;
+}
+
+.order-management .buyer-review-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+}
+
+.order-management .buyer-review-comment {
+    max-width: 100%;
+    color: #59615d;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    text-align: left;
 }
 
 /* Body */
 .order-management .order-body {
-    margin-top: 4px;
-    font-size: 14px;
+    margin-top: 18px;
+    font-size: 13px;
     flex: 1;
 }
 
-.order-management .order-body p { margin: 5px 0; color: #444; }
+.order-management .order-detail-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    min-width: 0;
+    margin: 9px 0;
+    color: #555e67;
+    line-height: 1.4;
+}
+
+.order-management .order-detail-label {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+    min-width: 0;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.order-management .order-detail-icon {
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    color: #57625c;
+    stroke-width: 2;
+}
+
+.order-management .order-detail-value {
+    min-width: 0;
+    max-width: 145px;
+    color: #132238;
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.order-management .order-total-row .order-detail-value { font-weight: 700; }
+.order-management .order-detail-notice { grid-template-columns: minmax(0, 1fr); }
 
 /* Footer */
 .order-management .order-footer {
     display: flex;
     flex-direction: column;
-    margin-top: 15px;
+    margin-top: auto;
     gap: 12px;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+    padding-top: 14px;
 }
 
 .order-management .footer-top-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     width: 100%;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
 }
 
 .order-management .footer-bottom-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     width: 100%;
+    padding-top: 10px;
 }
 
 .order-management .footer-bottom-row button {
-    flex: 1;
-    padding: 10px 14px;
-    font-size: 14px;
+    min-width: 0;
+}
+
+.order-management .footer-bottom-row:has(> :only-child) {
+    grid-template-columns: max-content;
 }
 
 /* Payment badges */
 .order-management .payment-badge {
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    padding: 4px 8px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: left;
 }
 
-.order-management .payment-badge.paid    { background: green; }
-.order-management .payment-badge.partial { background: orange; }
-.order-management .payment-badge.unpaid  { background: #e74c3c; }
+.order-management .order-card .payment-badge.paid { color: #1b5e20; background: rgba(27, 94, 32, 0.08); border: 1px solid #1b5e20; }
+.order-management .payment-badge.partial { color: #825d00; background: #fff5dc; border: 1px solid #e3bd65; }
+.order-management .payment-badge.unpaid  { color: #c62828; background: #fff1f1; border: 1px solid #f1b9b9; }
 .order-management .payment-badge.waiting { background: #7f8c8d; }
 
 /* Action buttons */
-.order-management .action-buttons,
 .order-management .secondary-actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid #e8ebed;
 }
 
-.order-management .accept-btn,
-.order-management .ready-btn,
-.order-management .complete-btn,
-.order-management .decline-btn {
-    padding: 7px 14px;
+.order-management .order-card .accept-btn,
+.order-management .order-card .ready-btn,
+.order-management .order-card .complete-btn,
+.order-management .order-card .decline-btn,
+.order-management .order-card .secondary-btn {
+    min-height: 34px;
+    padding: 7px 10px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    font: inherit;
+    font-size: 12px;
     font-weight: 600;
-    font-size: 13px;
-    color: white;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
     transition: filter 0.2s;
 }
 
-.order-management .secondary-btn {
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid #ccc;
-    color: #4b5563;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 12px;
+.order-management .order-card .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #9da8a2;
+    color: #202624;
     transition: background 0.2s;
 }
 
-.order-management .secondary-btn:hover { background: #f3f4f6; }
+.order-management .order-card .secondary-btn:hover { background: #f3f4f6; }
 
-.order-management .accept-btn { background: #1b5e20; }
-.order-management .ready-btn   { background: #2563eb; }
-.order-management .complete-btn { background: #27ae60; }
-.order-management .decline-btn  { background: #ef4444; }
+.order-management .order-card .secondary-btn svg {
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
 
-.order-management .accept-btn:hover,
-.order-management .ready-btn:hover,
-.order-management .complete-btn:hover,
-.order-management .decline-btn:hover { filter: brightness(0.88); }
+.order-management .order-card .message-buyer-btn { position: relative; }
+
+.order-management .order-card .accept-btn { background: #1b5e20; color: #fff; }
+.order-management .order-card .ready-btn   { background: #2563eb; }
+.order-management .order-card .complete-btn { background: #1b5e20; color: #fff; }
+.order-management .order-card .decline-btn  { background: #ef4444; }
+
+.order-management .order-card .ready-btn,
+.order-management .order-card .decline-btn { color: #fff; }
+
+.order-management .order-card .accept-btn:hover,
+.order-management .order-card .ready-btn:hover,
+.order-management .order-card .complete-btn:hover,
+.order-management .order-card .decline-btn:hover { filter: brightness(0.88); }
 
 .order-management button:disabled { opacity: 0.55; cursor: not-allowed; }
 
 /* Responsive */
 @media (max-width: 700px) {
     .order-management { padding: 14px; margin: 14px auto; }
-    .order-management .order-header { flex-wrap: wrap; gap: 8px; }
     .order-management .order-footer { flex-direction: column; align-items: stretch; }
-    .order-management .action-buttons { justify-content: stretch; }
-    .order-management .action-buttons button { flex: 1; }
 }
 
 /* Collection date modal */
@@ -231,4 +347,4 @@
 .collection-date-panel label { display: grid; gap: 7px; margin-top: 18px; font-weight: 600; }
 .collection-date-panel input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
 .collection-date-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-.bank-verification-panel{margin:14px 18px;padding:13px;border:1px solid #e2b84d;border-radius:9px;background:#fff9e8;color:#4d421f}.bank-verification-panel>strong{display:block;margin-bottom:8px}.bank-verification-panel>div:not(.bank-verification-actions){display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-top:5px}.bank-verification-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}.bank-verification-actions button{border:0;border-radius:7px;padding:8px 11px;background:#1a5c2d;color:#fff;font-weight:700;cursor:pointer}.bank-verification-actions button.reject{background:#b43a35}.bank-verification-actions button:disabled{opacity:.6;cursor:not-allowed}
+.order-management .order-card .bank-verification-panel{margin:14px 0 0;padding:12px;border:1px solid #e2b84d;border-radius:8px;background:#fff9e8;color:#4d421f;text-align:left}.order-management .order-card .bank-verification-panel>strong{display:block;margin-bottom:8px}.order-management .order-card .bank-verification-panel>div:not(.bank-verification-actions){display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px;margin-top:6px}.order-management .order-card .bank-verification-panel b{text-align:right}.order-management .order-card .bank-verification-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}.order-management .order-card .bank-verification-actions button{min-height:34px;border:0;border-radius:8px;padding:7px 10px;background:#1b5e20;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.order-management .order-card .bank-verification-actions button.reject{background:#b43a35}.order-management .order-card .bank-verification-actions button:disabled{opacity:.6;cursor:not-allowed}
