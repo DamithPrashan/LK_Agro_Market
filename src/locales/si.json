@@ -89,6 +89,16 @@
     "reviews": "සමාලෝචන ({{count}})",
     "contactingFarmer": "{{channel}} හරහා {{name}} සම්බන්ධ කර ගනිමින්...",
     "recentActivity": "මෑතකාලීන ක්‍රියාකාරකම්",
+    "activity": {
+      "reservation_created": "{{qty}}{{unit}} {{crop}} වෙන්කරන ලදී",
+      "reservation_confirmed": "{{qty}}{{unit}} {{crop}} වෙන්කිරීම තහවුරු කරන ලදී",
+      "reservation_cancelled": "{{qty}}{{unit}} {{crop}} සඳහා වූ වෙන්කිරීම අවලංගු කරන ලදී",
+      "order_completed": "{{qty}}{{unit}} {{crop}} සඳහා වන ඇණවුම සාර්ථකව බෙදා හරින ලදී",
+      "new_listing_available": "අලුත් {{crop}} ලැයිස්තුගත කිරීමක් ඇත",
+      "browse_crops_hint": "නැවුම් නිෂ්පාදන වෙන්කරවා ගැනීම ආරම්භ කිරීමට භෝග පිරික්සන්න",
+      "explore_farmers_hint": "ඔබේ දිස්ත්‍රික්කයේ ආසන්න ගොවීන් සොයා බලන්න",
+      "track_stages_hint": "භෝග වර්ධන අදියර ගතිකව නිරීක්ෂණය කරන්න"
+    },
     "rating": "ශ්‍රේණිය",
     "cropDescriptionTemplate": "{{location}} ගොවිපළ වලින් නැවුම් ලෙස ලැබෙන ඉහළ ගුණමානයේ {{crop}}. ස්වාභාවික ක්‍රම භාවිතා කරමින් කාබනික ගොවිතැනෙන් වගා කරන ලද, ඉහළ පෝෂ්‍ය, රස, සහ ඉදුනු වූ පසු නැවුම් ලෙස අස්වනු නෙළනු ලැබේ."
   },
@@ -380,6 +390,10 @@
     "passwordsDoNotMatch": "මුරපද එකිනෙකට නොගැලපේ.",
     "enterEmailPassword": "කරුණාකර ඔබේ විද්‍යුත් තැපෑල සහ මුරපදය ඇතුළත් කරන්න.",
     "invalidEmailPassword": "විද්‍යුත් තැපෑල හෝ මුරපදය වැරදියි.",
+    "accountInactive": "ඔබගේ ගිණුම අක්‍රීයයි. කරුණාකර පරිපාලක අමතන්න.",
+    "farmerVerificationPending": "ඔබගේ ගොවි තහවුරු කිරීමේ ඉල්ලීම දැනට පරීක්ෂාවට ලක්වේ. කරුණාකර පරිපාලක අනුමැතිය තෙක් රැඳී සිටින්න.",
+    "farmerVerificationRejected": "ඔබගේ ගොවි තහවුරු කිරීමේ ඉල්ලීම ප්‍රතික්ෂේප විය.",
+    "farmerWaitingAdminVerification": "ඔබගේ ගොවි ගිණුම පරිපාලක තහවුරු කිරීම තෙක් රැඳී පවතී.",
     "selectStars": "කරුණාකර තරු ශ්‍රේණිගත කිරීමක් තෝරන්න.",
     "selectOrderRating": "කරුණාකර අදාළ ඇණවුම තෝරන්න.",
     "minPriceExceeds": "අවම මිල උපරිම මිලට වඩා වැඩි විය නොහැක",
@@ -742,6 +756,19 @@
     "footText": "ලක් ඇග්‍රෝ මාකට් හි නවකයෙක්ද?",
     "footLink": "නොමිලේ ගිණුමක් අරඹන්න"
   },
+  "forgotPassword": {
+    "title": "මුරපදය නැවත සකසන්න",
+    "subtitle": "ප්‍රතිසාධන උපදෙස් ලබා ගැනීමට ඔබේ විද්‍යුත් තැපෑල ඇතුළත් කරන්න",
+    "emailLabel": "විද්‍යුත් තැපැල් ලිපිනය",
+    "emailPlaceholder": "ඔබගේ@email.com",
+    "btnSend": "නැවත සැකසීමේ උපදෙස් යවන්න",
+    "btnSending": "උපදෙස් යවමින් පවතී…",
+    "remembered": "ඔබගේ මුරපදය මතකද?",
+    "backToSignIn": "නැවත ඇතුල් වීමට ආපසු යන්න",
+    "enterEmailReq": "කරුණාකර ඔබේ විද්‍යුත් තැපැල් ලිපිනය ඇතුළත් කරන්න.",
+    "instructionsSent": "✅ මුරපදය නැවත සැකසීමේ උපදෙස් ඔබේ විද්‍යුත් තැපෑලට යවන ලදී.",
+    "emailNotFound": "විද්‍යුත් තැපැල් ලිපිනය හමු නොවිය."
+  },
   "register": {
     "header": "ගිණුමක් සාදන්න",
     "subtitle": "ශ්‍රී ලංකාවේ සෘජු ගොවි-මිලදී ගන්නන්ගේ වේදිකාව හා එක්වන්න",
@@ -753,7 +780,19 @@
     "btnCreating": "ගිණුම සකසමින් පවතී...",
     "btnCreate": "ගිණුම සාදන්න",
     "footText": "දැනටමත් ගිණුමක් තිබේද?",
-    "footLink": "මෙතැනින් ඇතුල් වන්න"
+    "footLink": "මෙතැනින් ඇතුල් වන්න",
+    "heroTitleLine1": "නැවුම් අස්වැන්න.",
+    "heroTitleLine2": "ශ්‍රී ලාංකීය ගොවිපළවල් වලින් සෘජුවම.",
+    "heroDesc": "තහවුරු කළ ගොවීන් සමඟ සෘජුව සම්බන්ධ වන්න. විශ්වාසයෙන් යුතුව නැවුම් භෝග පිරික්සා පූර්ව ඇණවුම් කරන්න. අනවශ්‍ය මැදිහත්කරුවන් නැත.",
+    "heroFeatureVerified": "තහවුරු කළ ගොවි පද්ධතිය",
+    "heroFeaturePayment": "ආරක්ෂිත ගෙවීම් ක්‍රියාවලිය",
+    "heroFeatureLanguages": "සිංහල · தமிழ் · English සහාය",
+    "stepPersonalDetails": "පෞද්ගලික විස්තර",
+    "stepFarmerVerification": "ගොවි තහවුරු කිරීම",
+    "btnNextVerification": "ඊළඟ: තහවුරු කිරීම →",
+    "btnBack": "← ආපසු",
+    "modalSuccessTitle": "ලියාපදිංචිය සාර්ථකයි.",
+    "modalInfoText": "ඔබගේ ගොවි තහවුරු කිරීමේ ඉල්ලීම දැනට පරීක්ෂාවට ලක්වේ. පරිපාලක අනුමැතියෙන් පසු ඔබට ඇතුල් විය හැක."
   },
   "profile": {
     "title": "මගේ පැතිකඩ",
@@ -847,7 +886,9 @@
     "nicPlaceholder": "හැඳුනුම්පත් ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
     "evidence": "වගා සාක්ෂි ඡායාරූපය",
     "evidencePlaceholder": "වගා හෝ අස්වනු ඡායාරූපය උඩුගත කරන්න (JPG, PNG — උපරිම 5 MB)",
-    "farmLocationPlaceholder": "ඇල්ල, බදුල්ල (හෝ GPS: 6.8742, 81.0457)"
+    "farmLocationPlaceholder": "ඇල්ල, බදුල්ල (හෝ GPS: 6.8742, 81.0457)",
+    "nicPhotoPlaceholder": "ජා.හැ. ඡායාරූපය",
+    "cropEvidencePlaceholder": "වගා සාක්ෂි ඡායාරූපය"
   },
   "ratings": {
     "loading": "ශ්‍රේණිගත කිරීම් පූරණය වෙමින් පවතී...",

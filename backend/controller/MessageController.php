@@ -158,17 +158,6 @@ class MessageController {
                         $notifMessage = $senderName . " sent you a message";
                     }
 
-                    // Insert to 'notification' table (singular)
-                    $singularNotifSql = "INSERT INTO notification (user_id, message, notification_date, is_read, type) 
-                                         VALUES (?, ?, NOW(), 0, 'system')";
-                    $singStmt = $this->pdo->prepare($singularNotifSql);
-                    $singStmt->execute([$recipientId, $notifMessage]);
-
-                    // Insert to 'notifications' table (plural) via system helper
-                    if (!function_exists('create_notification')) {
-                        require_once __DIR__ . '/../create_notification.php';
-                    }
-                    create_notification($recipientId, 'New Message', $notifMessage, 'system', json_encode(['reservation_id' => $reservationId]));
                 }
 
                 echo json_encode(["success" => true, "message" => "Message sent successfully."]);

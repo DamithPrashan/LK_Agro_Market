@@ -34,7 +34,16 @@ export default function LoginPage() {
         else if (data.user.role === "buyer") navigate("/buyer");
         else if (data.user.role === "admin") navigate("/admin");
       } else {
-        setError(data.message || t("errors.invalidEmailPassword"));
+        const key = data.error_key || (
+          data.message === "Invalid email or password."
+            ? "errors.invalidEmailPassword"
+            : data.message === "Please enter your email and password."
+            ? "errors.enterEmailPassword"
+            : data.message === "Your account is inactive. Please contact the administrator."
+            ? "errors.accountInactive"
+            : null
+        );
+        setError(key ? t(key) : (data.message || t("errors.invalidEmailPassword")));
       }
     } catch (error) {
       console.log(error);

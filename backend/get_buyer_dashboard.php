@@ -96,14 +96,17 @@ try {
         $crop = $row['crop_name'];
         $date = strtotime($row['reserved_date']);
         if ($row['status'] === 'pending') {
-            $msg = "Reserved {$qty}kg {$crop}";
+            $type = 'reservation_created';
         } elseif ($row['status'] === 'confirmed') {
-            $msg = "Reservation for {$qty}kg {$crop} confirmed";
+            $type = 'reservation_confirmed';
         } else {
-            $msg = "Cancelled reservation for {$qty}kg {$crop}";
+            $type = 'reservation_cancelled';
         }
         $activities[] = [
-            "message" => $msg,
+            "type" => $type,
+            "qty" => $qty,
+            "unit" => "kg",
+            "crop" => $crop,
             "time" => $date
         ];
     }
@@ -125,7 +128,10 @@ try {
         $crop = $row['crop_name'];
         $date = strtotime($row['completion_date']);
         $activities[] = [
-            "message" => "Order for {$qty}kg {$crop} delivered successfully",
+            "type" => "order_completed",
+            "qty" => $qty,
+            "unit" => "kg",
+            "crop" => $crop,
             "time" => $date
         ];
     }
@@ -145,7 +151,8 @@ try {
         $crop = $row['crop_name'];
         $date = strtotime($row['created_at']);
         $activities[] = [
-            "message" => "New {$crop} listing available",
+            "type" => "new_listing_available",
+            "crop" => $crop,
             "time" => $date
         ];
     }
@@ -155,17 +162,14 @@ try {
         return $b['time'] - $a['time'];
     });
     
-    $recentActivityList = [];
-    foreach (array_slice($activities, 0, 5) as $act) {
-        $recentActivityList[] = $act['message'];
-    }
+    $recentActivityList = array_slice($activities, 0, 5);
     
     // If no activities generated, insert default placeholders
     if (empty($recentActivityList)) {
         $recentActivityList = [
-            "Browse crops to start reserving fresh products",
-            "Explore nearby farmers in your district",
-            "Keep track of crop growth stages dynamically"
+            ["type" => "browse_crops_hint"],
+            ["type" => "explore_farmers_hint"],
+            ["type" => "track_stages_hint"]
         ];
     }
 
