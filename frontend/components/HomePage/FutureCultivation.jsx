@@ -4,7 +4,27 @@ import { useTranslation } from "react-i18next";
 import { FaCheckCircle, FaMapMarkerAlt, FaSeedling } from "react-icons/fa";
 import "../../commonPages/csss/HomePage/FutureCultivation.css";
 
-const imageUrl = (path) => path && (path.startsWith("http") || path.startsWith("/") ? path : `/${path}`);
+const uploadedImageUrl = (path) => {
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path) || path.startsWith("/")) return path;
+  if (path.startsWith("backend/")) return `/${path}`;
+  return `/backend/${path}`;
+};
+
+function FutureCardImage({ ad }) {
+  const [src, setSrc] = useState(uploadedImageUrl(ad.preview_image));
+
+  useEffect(() => {
+    setSrc(uploadedImageUrl(ad.preview_image));
+  }, [ad.preview_image]);
+
+  if (!src) {
+    return <div className="future-image-placeholder" aria-label={ad.crop_name}>🌱</div>;
+  }
+
+  return <img src={src} alt={ad.crop_name} onError={() => setSrc(null)} />;
+}
+
 const periodLabel = (days, t) => {
   const value = Number(days);
   if (!value) return t("homepage.notAvailable");
@@ -36,7 +56,7 @@ export default function FutureCultivation() {
         const remaining = Math.max(Number(ad.remaining_capacity) || 0, 0);
         const progress = capacity > 0 ? Math.min((committed / capacity) * 100, 100) : 0;
         return <article className="future-card" key={ad.cultivation_ad_id}>
-          <div className="future-image"><img src={imageUrl(ad.preview_image)} alt={ad.crop_name} /><span><FaSeedling /> {t("homepage.opportunityBadge")}</span></div>
+          <div className="future-image"><FutureCardImage ad={ad} /><span><FaSeedling /> {t("homepage.opportunityBadge")}</span></div>
           <div className="future-body"><h3>{ad.crop_name}</h3>
             <div className="future-farmer"><span className="future-avatar">{ad.farmer_name?.charAt(0) || "F"}</span><div><strong>{ad.farmer_name}</strong>{Number(ad.verified_status) === 1 && <small><FaCheckCircle /> {t("homepage.verifiedFarmer")}</small>}</div></div>
             <p className="future-meta"><FaMapMarkerAlt /> {ad.district}</p>
