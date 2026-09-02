@@ -23,14 +23,14 @@ export default function Hero() {
     verifiedFarmers: 0,
     activeListings: 0,
     districtsCovered: 0,
-    buyerSatisfaction: 98,
+    buyerSatisfaction: 0,
   });
 
   useEffect(() => {
     const fetchHomeStats = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/Apis/get_home_stats.php",
+          "/backend/Apis/get_home_stats.php",
         );
 
         const result = await response.json();

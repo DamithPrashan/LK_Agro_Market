@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once '../connection/db.php';
+require_once __DIR__ . '/../connection/db.php';
 
 try {
 
@@ -57,9 +57,32 @@ try {
 
     // -----------------------------------
     // 4. BUYER SATISFACTION
-    // Hardcoded for now
+    // Calculated dynamically from platform_reviews ("What our users say")
     // -----------------------------------
-    $buyerSatisfaction = 98;
+    $satisfactionStmt = $pdo->query(
+        "SELECT COUNT(*) AS total_reviews, AVG(rating) AS avg_rating FROM platform_reviews"
+    );
+    $satisfactionResult = $satisfactionStmt->fetch();
+    $totalPlatformReviews = (int) ($satisfactionResult['total_reviews'] ?? 0);
+
+    if ($totalPlatformReviews > 0) {
+        $avgRating = (float) $satisfactionResult['avg_rating'];
+        $buyerSatisfaction = (int) round(($avgRating / 5.0) * 100);
+    } else {
+        // Fallback to general ratings_review table if no platform reviews exist yet
+        $generalRatingsStmt = $pdo->query(
+            "SELECT COUNT(*) AS total_reviews, AVG(rating) AS avg_rating FROM ratings_review WHERE is_removed = 0"
+        );
+        $generalRatingsResult = $generalRatingsStmt->fetch();
+        $totalGeneralReviews = (int) ($generalRatingsResult['total_reviews'] ?? 0);
+
+        if ($totalGeneralReviews > 0) {
+            $avgRating = (float) $generalRatingsResult['avg_rating'];
+            $buyerSatisfaction = (int) round(($avgRating / 5.0) * 100);
+        } else {
+            $buyerSatisfaction = 0;
+        }
+    }
 
 
     // -----------------------------------
