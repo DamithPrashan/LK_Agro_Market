@@ -15,11 +15,11 @@ try {
     $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 50;
     if ($limit <= 0) $limit = 50;
 
-    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
+    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0 AND (type IS NULL OR type != 'system')");
     $countStmt->execute([$user_id]);
     $unread_count = (int) $countStmt->fetchColumn();
 
-    $query = "SELECT id, title, message, type, data, is_read, (is_read = 0) as unread, created_at FROM notifications WHERE user_id = ?";
+    $query = "SELECT id, title, message, type, data, is_read, (is_read = 0) as unread, created_at FROM notifications WHERE user_id = ? AND (type IS NULL OR type != 'system')";
     if ($unread_only) {
         $query .= " AND is_read = 0";
     }

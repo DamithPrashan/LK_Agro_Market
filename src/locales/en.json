@@ -87,6 +87,16 @@
     "reviews": "Reviews ({{count}})",
     "contactingFarmer": "Contacting {{name}} via {{channel}}...",
     "recentActivity": "Recent Activity",
+    "activity": {
+      "reservation_created": "Reserved {{qty}}{{unit}} {{crop}}",
+      "reservation_confirmed": "Reservation for {{qty}}{{unit}} {{crop}} confirmed",
+      "reservation_cancelled": "Cancelled reservation for {{qty}}{{unit}} {{crop}}",
+      "order_completed": "Order for {{qty}}{{unit}} {{crop}} delivered successfully",
+      "new_listing_available": "New {{crop}} listing available",
+      "browse_crops_hint": "Browse crops to start reserving fresh products",
+      "explore_farmers_hint": "Explore nearby farmers in your district",
+      "track_stages_hint": "Keep track of crop growth stages dynamically"
+    },
     "rating": "Rating",
     "cropDescriptionTemplate": "Premium quality {{crop}} fresh from the farms of {{location}}. Grown under natural conditions using organic farming practices. High nutrients, rich taste, and harvested fresh at maturity."
   },
@@ -378,6 +388,10 @@
     "passwordsDoNotMatch": "Passwords do not match.",
     "enterEmailPassword": "Please enter your email and password.",
     "invalidEmailPassword": "Invalid email or password.",
+    "accountInactive": "Your account is inactive. Please contact the administrator.",
+    "farmerVerificationPending": "Your farmer verification request is still under review. Please wait for admin approval.",
+    "farmerVerificationRejected": "Your farmer verification request was rejected.",
+    "farmerWaitingAdminVerification": "Your farmer account is waiting for admin verification.",
     "selectStars": "Please select a star rating.",
     "selectOrderRating": "Please select an order.",
     "minPriceExceeds": "Min price cannot exceed Max price",
@@ -740,6 +754,19 @@
     "footText": "New to LK Agro Market?",
     "footLink": "Create a free account"
   },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email to receive recovery instructions",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@email.com",
+    "btnSend": "Send Reset Instructions",
+    "btnSending": "Sending instructions…",
+    "remembered": "Remembered your password?",
+    "backToSignIn": "Back to Sign In",
+    "enterEmailReq": "Please enter your email address.",
+    "instructionsSent": "✅ Password reset instructions sent to your email.",
+    "emailNotFound": "Email not found."
+  },
   "register": {
     "header": "Create your account",
     "subtitle": "Join Sri Lanka's direct farm-to-buyer platform",
@@ -751,7 +778,19 @@
     "btnCreating": "Creating account…",
     "btnCreate": "Create Account",
     "footText": "Already have an account?",
-    "footLink": "Sign in here"
+    "footLink": "Sign in here",
+    "heroTitleLine1": "Fresh crops.",
+    "heroTitleLine2": "Direct from Sri Lankan farms.",
+    "heroDesc": "Connect directly with verified farmers. Browse and pre-order fresh crops with confidence. No unnecessary middlemen.",
+    "heroFeatureVerified": "Verified farmer system",
+    "heroFeaturePayment": "Secure payment process",
+    "heroFeatureLanguages": "Sinhala · Tamil · English support",
+    "stepPersonalDetails": "Personal Details",
+    "stepFarmerVerification": "Farmer Verification",
+    "btnNextVerification": "Next: Verification →",
+    "btnBack": "← Back",
+    "modalSuccessTitle": "Registration successful.",
+    "modalInfoText": "Your farmer verification request is now under review. You can log in after admin approval."
   },
   "profile": {
     "title": "My Profile",
@@ -845,7 +884,9 @@
     "nicPlaceholder": "Click to upload NIC photo (JPG, PNG — max 5 MB)",
     "evidence": "Crop / Production Evidence Photo",
     "evidencePlaceholder": "Click to upload farm or crop photo (JPG, PNG — max 5 MB)",
-    "farmLocationPlaceholder": "Ella, Badulla (or GPS: 6.8742, 81.0457)"
+    "farmLocationPlaceholder": "Ella, Badulla (or GPS: 6.8742, 81.0457)",
+    "nicPhotoPlaceholder": "NIC photo",
+    "cropEvidencePlaceholder": "Crop evidence"
   },
   "ratings": {
     "loading": "Loading ratings…",

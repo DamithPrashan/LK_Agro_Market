@@ -67,7 +67,7 @@ export default function FarmerVerificationForm({
               onChange={(e) => onNicFile(e.target.files[0])}
             />
             <div className="upload-icon">{nicFile ? "✅" : "🪪"}</div>
-            <div className="upload-title">{nicFile ? nicFile.name : "NIC photo"}</div>
+            <div className="upload-title">{nicFile ? nicFile.name : t("verification.nicPhotoPlaceholder", "NIC photo")}</div>
             <div className="upload-subtext">JPG · PNG · max 3 MB</div>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function FarmerVerificationForm({
               onChange={(e) => onEvidenceFile(e.target.files[0])}
             />
             <div className="upload-icon">{evidenceFile ? "✅" : "📷"}</div>
-            <div className="upload-title">{evidenceFile ? evidenceFile.name : "Crop evidence"}</div>
+            <div className="upload-title">{evidenceFile ? evidenceFile.name : t("verification.cropEvidencePlaceholder", "Crop evidence")}</div>
             <div className="upload-subtext">JPG · PNG · max 3 MB</div>
           </div>
         </div>

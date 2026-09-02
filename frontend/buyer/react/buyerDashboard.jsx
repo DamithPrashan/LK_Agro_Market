@@ -105,6 +105,76 @@ export default function BuyerDashboard() {
     setTimeout(() => setFeedbackToast(""), 5000);
   };
 
+  const getCropNameTranslated = (cropName) => {
+    if (!cropName) return "";
+    const key = cropName.toLowerCase().replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
+      if (+match === 0) return "";
+      return index === 0 ? match.toLowerCase() : match.toUpperCase();
+    });
+    const translated = t(`crops.${key}`);
+    return translated && !translated.startsWith("crops.") ? translated : cropName;
+  };
+
+  const renderActivityMessage = (item) => {
+    if (!item) return null;
+    if (typeof item === "string") return item;
+
+    const { type, qty, unit, crop } = item;
+    const translatedCrop = crop ? getCropNameTranslated(crop) : "";
+
+    switch (type) {
+      case "reservation_created":
+      case "reservation_pending":
+        return t("buyerDashboard.activity.reservation_created", {
+          qty: qty,
+          unit: unit || "kg",
+          crop: translatedCrop,
+          defaultValue: `Reserved ${qty}${unit || "kg"} ${translatedCrop || crop}`
+        });
+      case "reservation_confirmed":
+        return t("buyerDashboard.activity.reservation_confirmed", {
+          qty: qty,
+          unit: unit || "kg",
+          crop: translatedCrop,
+          defaultValue: `Reservation for ${qty}${unit || "kg"} ${translatedCrop || crop} confirmed`
+        });
+      case "reservation_cancelled":
+        return t("buyerDashboard.activity.reservation_cancelled", {
+          qty: qty,
+          unit: unit || "kg",
+          crop: translatedCrop,
+          defaultValue: `Cancelled reservation for ${qty}${unit || "kg"} ${translatedCrop || crop}`
+        });
+      case "order_completed":
+      case "order_delivered":
+        return t("buyerDashboard.activity.order_completed", {
+          qty: qty,
+          unit: unit || "kg",
+          crop: translatedCrop,
+          defaultValue: `Order for ${qty}${unit || "kg"} ${translatedCrop || crop} delivered successfully`
+        });
+      case "new_listing_available":
+        return t("buyerDashboard.activity.new_listing_available", {
+          crop: translatedCrop,
+          defaultValue: `New ${translatedCrop || crop} listing available`
+        });
+      case "browse_crops_hint":
+        return t("buyerDashboard.activity.browse_crops_hint", {
+          defaultValue: "Browse crops to start reserving fresh products"
+        });
+      case "explore_farmers_hint":
+        return t("buyerDashboard.activity.explore_farmers_hint", {
+          defaultValue: "Explore nearby farmers in your district"
+        });
+      case "track_stages_hint":
+        return t("buyerDashboard.activity.track_stages_hint", {
+          defaultValue: "Keep track of crop growth stages dynamically"
+        });
+      default:
+        return item.message || type;
+    }
+  };
+
   const handleQuickLinkKeyDown = (e, path) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -237,7 +307,7 @@ export default function BuyerDashboard() {
           {recentActivities.length > 0 ? (
             <ul>
               {recentActivities.map((item, i) => (
-                <li key={i}>✅ {item}</li>
+                <li key={i}>✅ {renderActivityMessage(item)}</li>
               ))}
             </ul>
           ) : (
