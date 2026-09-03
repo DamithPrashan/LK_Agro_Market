@@ -39,7 +39,7 @@ try{
             'farmer_id'=>$order['farmer_id'],'farmer_name'=>$order['farmer_name'],'crop_id'=>$order['crop_id'],'crop_name'=>$order['crop_name'],
             'quantity'=>$order['quantity'],'unit'=>$order['unit'],'unit_price'=>$order['unit_price'],'total_amount'=>$order['total_amount'],
             'reason'=>$row['reason'],'description'=>$row['description'],'evidence_file'=>$row['evidence_file'],'farmer_evidence_file'=>$row['farmer_evidence_file'],
-            'status'=>in_array($row['status'],['submitted','awaiting_farmer_response'],true)?'open':$row['status'],'workflow_status'=>$row['status'],
+            'status'=>in_array($row['status'],['submitted','awaiting_farmer_response','under_review'],true)?'open':$row['status'],'workflow_status'=>$row['status'],
             'category'=>$category,'priority'=>$priority,'priority_score'=>$score,'age_hours'=>round($age,1),
             'farmer_response_requested_at'=>$row['farmer_response_requested_at'],'farmer_response_deadline'=>$row['farmer_response_deadline'],
             'deadline_remaining_hours'=>$remaining===null?null:round($remaining,1),'is_overdue'=>$overdue,'farmer_response'=>$row['farmer_response'],

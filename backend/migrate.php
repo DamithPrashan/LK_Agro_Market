@@ -65,6 +65,7 @@ function migration_is_reflected(PDO $pdo, string $name): bool
             column_exists($pdo, 'complaints', 'farmer_evidence_file') &&
             column_exists($pdo, 'complaints', 'farmer_response_requested_at') &&
             column_exists($pdo, 'complaints', 'farmer_response_deadline'),
+        '2026_09_03_structured_complaint_evidence.sql' => table_exists($pdo, 'complaint_evidence') && index_exists($pdo, 'complaint_evidence', 'uq_complaint_evidence_slot'),
         '2026_08_18_complaint_reminders.sql' =>
             column_exists($pdo, 'complaints', 'farmer_24h_reminder_sent_at') &&
             column_exists($pdo, 'complaints', 'farmer_overdue_reminder_sent_at'),

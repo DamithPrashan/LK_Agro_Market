@@ -299,6 +299,7 @@ export default function BuyerOrderHistory() {
                       
                       {/* Action buttons grouped on the right */}
                       <div className="order-actions">
+                        {order.paymentReceiptAvailable && <a className="view-btn payment-action-btn" href={`/backend/download_payment_receipt.php?reservation_id=${order.reservationId}`}>{t("complaints.downloadPaymentReceipt")}</a>}
                         <button
                           className="view-btn message-farmer-btn"
                           onClick={() => {

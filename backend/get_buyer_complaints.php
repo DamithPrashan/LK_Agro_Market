@@ -5,6 +5,7 @@ header('Access-Control-Allow-Methods: GET');
 require_once __DIR__.'/connection/db.php';
 require_once __DIR__.'/Apis/auth_check.php';
 require_once __DIR__.'/services/order_resolver.php';
+require_once __DIR__.'/services/complaint_evidence.php';
 require_login();
 
 $role=(string)($_SESSION['user']['role']??'');
@@ -34,7 +35,7 @@ try{
             'status'=>$row['status'],'farmer_response'=>$row['farmer_response'],'farmer_responded_at'=>$row['farmer_responded_at'],'admin_notes'=>$row['admin_notes'],
             'resolution_action'=>$row['resolution_action'],'farmer_response_requested_at'=>$row['farmer_response_requested_at'],
             'farmer_response_deadline'=>$row['farmer_response_deadline'],'is_overdue'=>$row['status']==='awaiting_farmer_response'&&$row['farmer_response_deadline']&&strtotime($row['farmer_response_deadline'])<time(),
-            'resolved_at'=>$row['resolved_at'],'created_at'=>$row['created_at'],
+            'resolved_at'=>$row['resolved_at'],'created_at'=>$row['created_at'],'structured_evidence'=>get_complaint_evidence($pdo,(int)$row['id']),
         ];
     }
     echo json_encode(['success'=>true,'complaints'=>$complaints,'count'=>count($complaints)]);

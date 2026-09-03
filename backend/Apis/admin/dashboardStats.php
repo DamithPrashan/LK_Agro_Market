@@ -63,7 +63,7 @@ try {
     $stmt = $pdo->query("
         SELECT COUNT(*) AS total
         FROM complaints
-        WHERE status IN ('submitted', 'awaiting_farmer_response')
+        WHERE status IN ('submitted', 'awaiting_farmer_response', 'under_review')
     ");
 
     $response["complaints"] =

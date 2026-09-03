@@ -13,7 +13,7 @@ import {
 } from "react-icons/fi";
 import "../csss/AdminDashboard/admin.css";
 
-const OPEN_STATUSES = ["submitted", "awaiting_farmer_response"];
+const OPEN_STATUSES = ["submitted", "awaiting_farmer_response", "under_review"];
 const initials = (name = "") => name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
 const niceText = (value = "") => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 const formatAge = (t, hours) => hours < 1 ? t("admin.complaints.ageLessHour") : hours < 24 ? t("admin.complaints.ageHours", { count: Math.floor(hours) }) : t("admin.complaints.ageDays", { count: Math.floor(hours / 24) });
@@ -64,7 +64,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
           complaint_id: item.complaint_id,
           action,
           resolution_action: action,
-          resolution_status: action === "dismiss" ? "dismissed" : "awaiting_farmer_response",
+          resolution_status: action === "dismiss" ? "dismissed" : action === "resolve" ? "resolved" : "awaiting_farmer_response",
           admin_notes: notes.trim(),
         }),
       });
@@ -81,6 +81,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
 
   const isOpen = OPEN_STATUSES.includes(item.workflow_status);
   const canRequestFarmer = item.workflow_status === "submitted";
+  const canResolve = item.workflow_status === "under_review";
 
   return <div className="complaint-modal-backdrop">
     <section className="complaint-review-modal" role="dialog" aria-modal="true" aria-label={t("admin.complaints.reviewTitle")}>
@@ -101,10 +102,9 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
 
         <section className="complaint-description-section"><h3>{t("admin.complaints.description")}</h3><p>{details.description}</p></section>
 
-        <section className="complaint-evidence-grid">
-          <EvidenceCard label={t("admin.complaints.buyerEvidence")} file={details.evidenceFile} owner={t("admin.complaints.buyer")} />
-          <EvidenceCard label={t("admin.complaints.farmerEvidence")} file={details.farmerEvidenceFile} owner={t("admin.complaints.farmer")} />
-        </section>
+        <section className="complaint-modal-section"><h3>{t("complaints.paymentInformation")}</h3><p>{t("complaints.agreedTotal")}: Rs. {Number(details.paymentInformation?.expected_total || 0).toFixed(2)} · {t("complaints.advancePayment")}: Rs. {Number(details.paymentInformation?.advance_amount || 0).toFixed(2)} · {t("complaints.finalPayment")}: Rs. {Number(details.paymentInformation?.final_amount || 0).toFixed(2)} · {t("complaints.totalPaid")}: Rs. {Number(details.paymentInformation?.total_paid || 0).toFixed(2)}</p>{details.paymentInformation?.receipt_url && <a href={details.paymentInformation.receipt_url}>{t("complaints.systemPaymentRecord")}</a>}</section>
+        <section className="complaint-modal-section"><h3>{t("complaints.evidenceComparison")}</h3><p>{t("complaints.adminEvidenceGuidance")}</p>{[["crop_full_view","fullCropView"],["crop_issue_closeup","issueCloseup"],["crop_quantity_packaging","quantityPackaging"]].map(([type,label]) => <div className="complaint-evidence-grid" key={type}><EvidenceCard label={`${t(`complaints.${label}`)} — ${t("complaints.buyerEvidence")}`} file={details.structuredEvidence?.buyer?.[type]?.url} owner={t("admin.complaints.buyer")} /><EvidenceCard label={`${t(`complaints.${label}`)} — ${t("complaints.farmerEvidence")}`} file={details.structuredEvidence?.farmer?.[type]?.url} owner={t("admin.complaints.farmer")} /></div>)}</section>
+        <section className="complaint-evidence-grid"><EvidenceCard label={t("complaints.supportingDocument")} file={details.structuredEvidence?.buyer?.supporting_document?.url || details.evidenceFile} owner={t("admin.complaints.buyer")} /><EvidenceCard label={t("complaints.supportingDocument")} file={details.structuredEvidence?.farmer?.supporting_document?.url || details.farmerEvidenceFile} owner={t("admin.complaints.farmer")} /></section>
 
         {details.dbStatus === "awaiting_farmer_response" && <section className={`complaint-response-state ${details.isOverdue ? "overdue" : ""}`}>
           <h3>{t("admin.complaints.actionRequiredFarmer")}</h3>
@@ -124,7 +124,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
           <label className="complaint-notes"><span>{t("admin.complaints.adminNote")}</span><textarea rows="4" value={notes} onChange={(event) => setNotes(event.target.value)} disabled={!isOpen || busy} placeholder={t("admin.complaints.adminNotePlaceholder")} /></label>
         </section>
         {message && <p className="complaint-modal-error">{message}</p>}
-        {isOpen ? <footer><button type="button" className="complaint-dismiss-action" disabled={busy} onClick={() => takeAction("dismiss")}>{t("admin.complaints.dismissComplaint")}</button>{canRequestFarmer && <button type="button" className="complaint-farmer-action" disabled={busy} onClick={() => takeAction("request_farmer_response")}>{t("admin.complaints.requestFarmerResponse")}</button>}</footer> : <p className="complaint-closed-note">{t("admin.complaints.readOnly", { status: statusLabel(item.workflow_status) })}</p>}
+        {isOpen ? <footer><button type="button" className="complaint-dismiss-action" disabled={busy} onClick={() => takeAction("dismiss")}>{t("admin.complaints.dismissComplaint")}</button>{canRequestFarmer && <button type="button" className="complaint-farmer-action" disabled={busy} onClick={() => takeAction("request_farmer_response")}>{t("admin.complaints.requestFarmerResponse")}</button>}{canResolve && <button type="button" className="complaint-farmer-action" disabled={busy} onClick={() => takeAction("resolve")}>{t("admin.complaints.resolveFinal", "Resolve Complaint")}</button>}</footer> : <p className="complaint-closed-note">{t("admin.complaints.readOnly", { status: statusLabel(item.workflow_status) })}</p>}
       </>}
     </section>
   </div>;
@@ -164,6 +164,7 @@ export default function ComplaintManagement() {
     open: complaints.filter((complaint) => OPEN_STATUSES.includes(complaint.workflow_status)).length,
     submitted: complaints.filter((complaint) => complaint.workflow_status === "submitted").length,
     awaiting_farmer_response: complaints.filter((complaint) => complaint.workflow_status === "awaiting_farmer_response").length,
+    under_review: complaints.filter((complaint) => complaint.workflow_status === "under_review").length,
     resolved: complaints.filter((complaint) => complaint.workflow_status === "resolved").length,
     dismissed: complaints.filter((complaint) => complaint.workflow_status === "dismissed").length,
   }), [complaints]);
@@ -193,7 +194,7 @@ export default function ComplaintManagement() {
     </section>
 
     <section className="complaint-management-card">
-      <div className="complaint-toolbar"><div className="complaint-tabs">{[["submitted", counts.submitted], ["awaiting_farmer_response", counts.awaiting_farmer_response], ["resolved", counts.resolved], ["dismissed", counts.dismissed]].map(([key, count]) => <button key={key} className={activeTab === key ? "active" : ""} onClick={() => changeTab(key)}>{statusLabel(key)} ({count})</button>)}</div><div className="complaint-filters"><div className="complaint-search-box"><FiSearch /><input value={search} placeholder={t("admin.complaints.searchPlaceholder")} onChange={(event) => { setSearch(event.target.value); setCurrentPage(1); }} /></div></div></div>
+      <div className="complaint-toolbar"><div className="complaint-tabs">{[["submitted", counts.submitted], ["awaiting_farmer_response", counts.awaiting_farmer_response], ["under_review", counts.under_review], ["resolved", counts.resolved], ["dismissed", counts.dismissed]].map(([key, count]) => <button key={key} className={activeTab === key ? "active" : ""} onClick={() => changeTab(key)}>{statusLabel(key)} ({count})</button>)}</div><div className="complaint-filters"><div className="complaint-search-box"><FiSearch /><input value={search} placeholder={t("admin.complaints.searchPlaceholder")} onChange={(event) => { setSearch(event.target.value); setCurrentPage(1); }} /></div></div></div>
       <div className="complaint-table-scroll"><table className="complaint-table"><colgroup><col /><col /><col /><col /><col /><col /><col /></colgroup><thead><tr><th>{t("admin.complaints.complaintId")}</th><th>{t("admin.complaints.buyer")}</th><th>{t("admin.complaints.relatedCrop")}</th><th>{t("admin.complaints.categoryReason")}</th><th>{t("admin.common.priority")}</th><th>{t("admin.common.status")}</th><th>{t("admin.common.action")}</th></tr></thead><tbody>{currentItems.length ? currentItems.map((complaint) => <tr key={complaint.complaint_id}><td className="complaint-id">#{complaint.complaint_id}</td><td><div className="complaint-buyer"><div className={`complaint-buyer-avatar ${complaint.status}`}>{initials(complaint.buyer_name)}</div><span>{complaint.buyer_name}</span></div></td><td className="complaint-muted">{complaint.crop_name}</td><td><strong>{t(`admin.complaints.categories.${complaint.category}`)}</strong><br /><span className="complaint-muted">{complaint.reason}</span></td><td><span className={`complaint-priority ${complaint.priority}`}>{t(`admin.complaints.priority.${complaint.priority}`)}</span>{complaint.is_overdue && <span className="complaint-overdue-badge">{t("admin.complaints.overdue")}</span>}</td><td><span className={`complaint-status ${complaint.workflow_status}`}><i />{statusLabel(complaint.workflow_status)}</span></td><td className="complaint-action-cell"><button type="button" onClick={() => setSelected(complaint)}>{t("admin.common.view")}</button></td></tr>) : <tr><td colSpan="7" className="complaint-empty">{t("admin.complaints.empty")}</td></tr>}</tbody></table></div>
       <div className="complaint-pagination"><p>{t("admin.complaints.pagination", { from: filtered.length ? startIndex + 1 : 0, to: Math.min(startIndex + itemsPerPage, filtered.length), total: filtered.length })}</p><div className="complaint-pages"><button type="button" aria-label={t("admin.common.previousPage")} disabled={currentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}><FiChevronLeft /></button>{Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => <button type="button" key={page} className={currentPage === page ? "active" : ""} onClick={() => setCurrentPage(page)}>{page}</button>)}<button type="button" aria-label={t("admin.common.nextPage")} disabled={currentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}><FiChevronRight /></button></div></div>
     </section>
