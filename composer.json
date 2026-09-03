@@ -1,0 +1,8 @@
+{
+    "name": "lk-agro-market/application",
+    "description": "LK Agro Market application dependencies",
+    "license": "proprietary",
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}

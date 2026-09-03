@@ -8,6 +8,8 @@ header("Content-Type: application/json");
 // Import database connection and auth check helpers
 require_once 'connection/db.php';
 require_once 'Apis/auth_check.php';
+require_once __DIR__ . '/services/order_resolver.php';
+require_once __DIR__ . '/services/payment_summary.php';
 
 // Verify buyer authentication and role
 require_login();
@@ -133,6 +135,8 @@ try {
     // Map rows to exact output format requested
     $orders = [];
     foreach ($rows as $row) {
+        $resolvedOrder = resolve_order_snapshot($pdo, (int)$row['reservation_id']);
+        $paymentSummary = $resolvedOrder ? resolve_payment_summary($pdo, $resolvedOrder) : ['payment_complete' => false];
         // Map database reservation_status to required: pending | accepted | completed
         $orderStatus = 'pending';
         if ($row['reservation_status'] === 'confirmed') {
@@ -194,6 +198,7 @@ try {
             "farmerName" => $row['farmer_name'],
             "farmerUserId" => intval($row['farmer_user_id']),
             "unreadMessages" => intval($row['unread_messages'])
+            ,"paymentReceiptAvailable" => (bool)$paymentSummary['payment_complete']
         ];
     }
 

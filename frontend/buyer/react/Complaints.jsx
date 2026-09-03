@@ -1,8 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { FiFileText, FiUploadCloud, FiX } from "react-icons/fi";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { readJsonResponse } from "../../utils/readJsonResponse.js";
 import "../csss/Complaints.css";
+
+function EvidenceUploadCard({ id, title, instruction, file, accept, required, document, onChange, onRemove, t }) {
+  const inputRef = useRef(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  useEffect(() => {
+    if (!file || document) { setPreviewUrl(""); return undefined; }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file, document]);
+
+  const size = file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : "";
+  return <section className={`evidence-upload-card ${file ? "selected" : ""}`}>
+    <div className="evidence-card-heading"><h4>{title}{required && <span aria-label={t("complaints.required")}> *</span>}</h4>{!required && <span>{t("complaints.optional")}</span>}</div>
+    <p>{instruction}</p>
+    <input ref={inputRef} id={id} className="evidence-file-input" type="file" accept={accept} onClick={(event) => { event.currentTarget.value = ""; }} onChange={(event) => onChange(event)} />
+    {file ? <div className="evidence-selected-state">
+      {previewUrl ? <img src={previewUrl} alt={file.name} /> : <FiFileText className="evidence-document-icon" />}
+      <strong title={file.name}>{file.name}</strong>
+      {document && <small>{(file.type === "application/pdf" ? "PDF" : file.type.split("/").pop()?.toUpperCase())} · {size}</small>}
+      <div className="evidence-file-actions"><button type="button" onClick={() => inputRef.current?.click()}>{t("complaints.changeFile")}</button><button type="button" onClick={onRemove}><FiX />{t("complaints.removeFile")}</button></div>
+    </div> : <button type="button" className="evidence-upload-placeholder" onClick={() => inputRef.current?.click()}>
+      {document ? <FiFileText /> : <FiUploadCloud />}<strong>{t(document ? "complaints.uploadDocument" : "complaints.uploadPhoto")}</strong><small>{t(document ? "complaints.documentFormats" : "complaints.photoFormats")}<br />{t("complaints.maxFileSize")}</small>
+    </button>}
+  </section>;
+}
 
 function ComplaintPage() {
   const { t, i18n } = useTranslation();
@@ -31,13 +59,13 @@ function ComplaintPage() {
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [reason, setReason] = useState("Crop quality does not match listing");
   const [description, setDescription] = useState("");
-  const [evidenceFile, setEvidenceFile] = useState(null);
-  const [uploadMsg, setUploadMsg] = useState("");
+  const [evidenceFiles, setEvidenceFiles] = useState({});
 
   const [loading, setLoading] = useState(false);
   const [fetchOrdersLoading, setFetchOrdersLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
   const selectedOrder = orders.find((order) => String(order.id) === String(selectedOrderId));
+  const cropEvidenceRequired = ["Crop quality does not match listing", "Wrong Quantity", "Damaged Product", "Misleading Listing or Agreement Information"].includes(reason);
   const harvestDelayUnavailable = selectedOrder?.reservation_source === "cultivation" && selectedOrder?.timing_model === "growing_period" && (!selectedOrder.estimated_harvest_date || new Date().toISOString().slice(0, 10) <= selectedOrder.estimated_harvest_date || ["ready", "completed"].includes(selectedOrder.reservation_status));
   const startDelayUnavailable = !selectedOrder || selectedOrder.reservation_source !== "cultivation" || selectedOrder.timing_model !== "growing_period" || !selectedOrder.planned_start_date || new Date().toISOString().slice(0, 10) <= selectedOrder.planned_start_date || selectedOrder.cultivation_started_at;
 
@@ -125,10 +153,15 @@ function ComplaintPage() {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (type, e) => {
     if (e.target.files && e.target.files[0]) {
-      setEvidenceFile(e.target.files[0]);
-      setUploadMsg(e.target.files[0].name);
+      if (e.target.files[0].size > 5 * 1024 * 1024) {
+        setEvidenceFiles((current) => ({ ...current, [type]: null }));
+        setMsg({ text: t("complaints.evidenceSize", "Evidence must be 5 MB or smaller."), ok: false });
+        e.target.value = "";
+        return;
+      }
+      setEvidenceFiles((current) => ({ ...current, [type]: e.target.files[0] }));
     }
   };
 
@@ -142,6 +175,10 @@ function ComplaintPage() {
       setMsg({ text: t("errors.describeIssueDetail"), ok: false });
       return;
     }
+    if (cropEvidenceRequired && ["crop_full_view", "crop_issue_closeup", "crop_quantity_packaging"].some((type) => !evidenceFiles[type])) {
+      setMsg({ text: t("complaints.allCropPhotosRequired"), ok: false });
+      return;
+    }
 
     setLoading(true);
     setMsg({ text: "", ok: false });
@@ -150,9 +187,7 @@ function ComplaintPage() {
     formData.append("order_id", selectedOrderId);
     formData.append("reason", reason);
     formData.append("description", description);
-    if (evidenceFile) {
-      formData.append("evidence", evidenceFile);
-    }
+    Object.entries(evidenceFiles).forEach(([type, file]) => { if (file) formData.append(type, file); });
 
     try {
       const response = await fetch("/backend/submit_complaint.php", {
@@ -164,9 +199,14 @@ function ComplaintPage() {
       if (data.success) {
         setMsg({ text: data.message, ok: true });
         setDescription("");
-        setEvidenceFile(null);
-        setUploadMsg("");
-        fetchComplaints(); // Refresh complaints in background
+        setEvidenceFiles({});
+        await fetchComplaints();
+        setActiveTab("farmer_response");
+        const newParams = new URLSearchParams();
+        newParams.set("tab", "farmer_response");
+        const complaintId = data.complaint_id || data.complaintId;
+        if (complaintId) newParams.set("id", complaintId);
+        setSearchParams(newParams);
       } else {
         setMsg({ text: data.message || t("errors.submissionFailed"), ok: false });
       }
@@ -215,6 +255,25 @@ function ComplaintPage() {
           <p>{t("complaints.subtitle")}</p>
         </div>
 
+        <div className="tabs">
+          <button
+            type="button"
+            className={`tab ${activeTab === "submit" ? "active" : ""}`}
+            onClick={() => handleTabChange("submit")}
+          >
+            {t("complaints.submitComplaintTab")}
+          </button>
+          <button
+            type="button"
+            className={`tab ${activeTab === "farmer_response" ? "active" : ""}`}
+            onClick={() => handleTabChange("farmer_response")}
+          >
+            {t("complaints.farmerResponseTab")}
+          </button>
+        </div>
+
+        {msg.text && msg.ok && <div className="complaint-feedback success complaint-success-banner">{msg.text}</div>}
+
         {/* TAB 1: SUBMIT COMPLAINT */}
         {activeTab === "submit" && (
           <>
@@ -226,7 +285,7 @@ function ComplaintPage() {
                   <span className="buyer-tag">{t("complaints.buyerView")}</span>
                 </div>
 
-                {msg.text && (
+                {msg.text && !msg.ok && (
                   <div
                     style={{
                       padding: "12px",
@@ -277,12 +336,15 @@ function ComplaintPage() {
                   onChange={(e) => setReason(e.target.value)}
                 >
                   <option value="Crop quality does not match listing">{t("complaints.reasonOption1")}</option>
-                  <option value="Late Delivery">{t("complaints.reasonOption2")}</option>
                   <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
                   <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
+                  <option value="Misleading Listing or Agreement Information">{t("complaints.reasonMisleading")}</option>
+                  <option value="Payment or Order Status Issue">{t("complaints.reasonPaymentOrder")}</option>
                   <option value="Harvest Delay" disabled={harvestDelayUnavailable}>{t("complaints.harvestDelay")}{harvestDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
                   <option value="Cultivation Start Delay" disabled={startDelayUnavailable}>{t("complaints.cultivationStartDelay")}{startDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
+                  <option value="Other Platform Transaction Issue">{t("complaints.reasonOtherPlatform")}</option>
                 </select>
+                <p className="transport-scope-note">{t("complaints.transportScopeNote")}</p>
 
                 <label>{t("forms.description")}</label>
                 <textarea
@@ -294,20 +356,11 @@ function ComplaintPage() {
                   required
                 />
 
-                <label>{t("complaints.evidenceLabel")}</label>
-                <div className="upload-box">
-                  <label htmlFor="photo-upload" className="upload-area" style={{ cursor: "pointer" }}>
-                    {uploadMsg ? t("forms.selectedFile", { filename: uploadMsg }) : t("complaints.evidenceClick")}
-                  </label>
-
-                  <input
-                    id="photo-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                  />
-                </div>
+                <div className="evidence-notice"><strong>{t("complaints.evidenceNoticeTitle")}</strong><p>{t("complaints.evidenceNotice")}</p></div>
+                <div className="evidence-upload-grid">{[
+                  ["crop_full_view", "fullCropView", "fullCropHelp"], ["crop_issue_closeup", "issueCloseup", "issueCloseupHelp"], ["crop_quantity_packaging", "quantityPackaging", "quantityPackagingHelp"],
+                ].map(([type, label, help]) => <EvidenceUploadCard key={type} id={`buyer-${type}`} title={t(`complaints.${label}`)} instruction={t(`complaints.${help}`)} file={evidenceFiles[type]} accept=".jpg,.jpeg,.png,image/jpeg,image/png" required={cropEvidenceRequired} onChange={(event) => handleFileChange(type, event)} onRemove={() => setEvidenceFiles((current) => ({ ...current, [type]: null }))} t={t} />)}
+                <EvidenceUploadCard id="buyer-supporting-document" title={t("complaints.supportingDocument")} instruction={t("complaints.supportingDocumentHelp").replace(/^Optional:\s*/i, "")} file={evidenceFiles.supporting_document} accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" document onChange={(event) => handleFileChange("supporting_document", event)} onRemove={() => setEvidenceFiles((current) => ({ ...current, supporting_document: null }))} t={t} /></div>
 
                 <button type="submit" className="submit-btn" disabled={loading}>
                   {loading ? t("btnSubmitting", "Submitting...") : t("buttons.submitComplaint")}
@@ -416,6 +469,7 @@ function ComplaintPage() {
                           📷 {t("complaints.evidenceBuyer")}
                         </a>
                       )}
+                      {Object.entries(c.structured_evidence?.buyer || {}).map(([type, evidence]) => <a key={type} href={evidence.url} target="_blank" rel="noopener noreferrer" className="evidence-attachment">{t(`complaints.evidenceTypes.${type}`)} </a>)}
                     </div>
 
                     {c.status === "submitted" && (
@@ -425,8 +479,8 @@ function ComplaintPage() {
                       </div>
                     )}
 
-                    {/* Farmer response is shown only after resolution. */}
-                    {c.status === "resolved" && c.farmer_response ? (
+                    {/* A farmer response is evidence for the administrator's final review. */}
+                    {c.farmer_response ? (
                       <div className="dispute-section-box farmer-response-box">
                         <div className="box-header">
                           <span>{t("complaints.farmerResponseHeading")}</span>
@@ -447,6 +501,7 @@ function ComplaintPage() {
                             📷 {t("complaints.evidenceFarmer")}
                           </a>
                         )}
+                        {Object.entries(c.structured_evidence?.farmer || {}).map(([type, evidence]) => <a key={type} href={evidence.url} target="_blank" rel="noopener noreferrer" className="evidence-attachment">{t(`complaints.evidenceTypes.${type}`)}</a>)}
                       </div>
                     ) : c.status === "awaiting_farmer_response" ? (
                       <div className="waiting-response-box">

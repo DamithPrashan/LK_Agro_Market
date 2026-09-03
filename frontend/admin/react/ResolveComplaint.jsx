@@ -64,7 +64,7 @@ function ResolveComplaint() {
     setResolving(true);
     setMsg({ text: "", ok: false });
 
-    const resolutionStatus = action === "dismiss" ? "dismissed" : "awaiting_farmer_response";
+    const resolutionStatus = action === "dismiss" ? "dismissed" : action === "resolve" ? "resolved" : "awaiting_farmer_response";
 
     try {
       const response = await fetch("/backend/resolve_complaint.php", {
@@ -220,6 +220,11 @@ function ResolveComplaint() {
             ) : (
               <span style={{ color: "#7f8c8d", fontStyle: "italic" }}>{t("admin.complaints.awaitingFarmerResponse")}</span>
             )}</p>
+            <h4>{t("complaints.paymentInformation")}</h4>
+            <p>{t("complaints.advancePayment")}: Rs. {Number(complaint.paymentInformation?.advance_amount || 0).toFixed(2)} · {t("complaints.finalPayment")}: Rs. {Number(complaint.paymentInformation?.final_amount || 0).toFixed(2)} · {t("complaints.totalPaid")}: Rs. {Number(complaint.paymentInformation?.total_paid || 0).toFixed(2)}</p>
+            {complaint.paymentInformation?.receipt_url && <p><a href={complaint.paymentInformation.receipt_url}>{t("complaints.systemPaymentRecord")}</a></p>}
+            <h4>{t("complaints.evidenceComparison")}</h4><p>{t("complaints.adminEvidenceGuidance")}</p>
+            {[["crop_full_view","fullCropView"],["crop_issue_closeup","issueCloseup"],["crop_quantity_packaging","quantityPackaging"]].map(([type,label]) => <div key={type} className="complaint-evidence-grid"><p><strong>{t("complaints.buyerEvidence")} — {t(`complaints.${label}`)}:</strong> {complaint.structuredEvidence?.buyer?.[type]?.url ? <a href={complaint.structuredEvidence.buyer[type].url} target="_blank" rel="noreferrer">{t("admin.complaints.viewEvidenceLink")}</a> : t("admin.complaints.noFilesUploaded")}</p><p><strong>{t("complaints.farmerEvidence")} — {t(`complaints.${label}`)}:</strong> {complaint.structuredEvidence?.farmer?.[type]?.url ? <a href={complaint.structuredEvidence.farmer[type].url} target="_blank" rel="noreferrer">{t("admin.complaints.viewEvidenceLink")}</a> : t("admin.complaints.noFilesUploaded")}</p></div>)}
             
             <p style={{ marginBottom: 0 }}><strong>{t("admin.complaints.evidenceFileLabel")}</strong> {complaint.evidenceFile ? (
               <a href={complaint.evidenceFile} target="_blank" rel="noopener noreferrer" style={{ color: "#1a5c2d", fontWeight: "600", textDecoration: "underline" }}>
@@ -264,6 +269,14 @@ function ResolveComplaint() {
                 style={{ flex: 1, padding: "12px", background: "#176b3a", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
                 {t("admin.complaints.requestFarmerResponse")}
+              </button>
+              <button
+                className="delivery-btn"
+                onClick={() => handleResolveAction("resolve")}
+                disabled={resolving || statusLower !== "under_review"}
+                style={{ flex: 1, padding: "12px", background: "#176b3a", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
+              >
+                {t("admin.complaints.resolveFinal", "Resolve Complaint")}
               </button>
             </div>
           )}

@@ -6,8 +6,8 @@ ALTER TABLE complaints
 UPDATE complaints
 SET status = CASE
     WHEN status IN ('rejected', 'dismiss') THEN 'dismissed'
-    WHEN status IN ('pending', 'open', 'under_review', 'admin_notified') THEN 'submitted'
-    WHEN status = 'farmer_responded' THEN 'resolved'
+    WHEN status IN ('pending', 'open', 'admin_notified') THEN 'submitted'
+    WHEN status = 'farmer_responded' THEN 'under_review'
     ELSE status
 END
-WHERE status NOT IN ('submitted', 'awaiting_farmer_response', 'resolved', 'dismissed');
+WHERE status NOT IN ('submitted', 'awaiting_farmer_response', 'under_review', 'resolved', 'dismissed');
