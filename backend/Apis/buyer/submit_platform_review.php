@@ -84,10 +84,10 @@ try {
         echo json_encode(['success' => false, 'message' => 'You are not authorized to review this reservation.']);
         exit;
     }
-    if ($reservation['reservation_status'] !== 'completed' || $reservation['transaction_status'] !== 'paid' || !(bool)$reservation['has_completed_final']) {
+    if (!in_array($reservation['reservation_status'], ['ready', 'completed'], true) || $reservation['transaction_status'] !== 'paid' || !(bool)$reservation['has_completed_final']) {
         $pdo->rollBack();
         http_response_code(409);
-        echo json_encode(['success' => false, 'message' => 'Platform feedback is available only for completed and fully paid reservations.']);
+        echo json_encode(['success' => false, 'message' => 'Platform feedback is available only for fully paid reservations.']);
         exit;
     }
 

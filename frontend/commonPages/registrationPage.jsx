@@ -153,11 +153,11 @@ export default function RegistrationPage() {
         {/* Bottom Marketing Content */}
         <div className="hero-content-bottom">
           <h2 className="hero-headline">
-            Fresh crops.<br />
-            <span className="highlight-text">Direct from Sri Lankan farms.</span>
+            {t("register.heroTitleLine1")}<br />
+            <span className="highlight-text">{t("register.heroTitleLine2")}</span>
           </h2>
           <p className="hero-description">
-            Connect directly with verified farmers. Browse and pre-order fresh crops with confidence. No unnecessary middlemen.
+            {t("register.heroDesc")}
           </p>
 
           <div className="hero-benefits">
@@ -165,21 +165,21 @@ export default function RegistrationPage() {
               <div className="benefit-icon-box">
                 <FiShield />
               </div>
-              <span>Verified farmer system</span>
+              <span>{t("register.heroFeatureVerified")}</span>
             </div>
 
             <div className="benefit-item">
               <div className="benefit-icon-box">
                 <FiLock />
               </div>
-              <span>Secure payment process</span>
+              <span>{t("register.heroFeaturePayment")}</span>
             </div>
 
             <div className="benefit-item">
               <div className="benefit-icon-box">
                 <FiGlobe />
               </div>
-              <span>Sinhala · Tamil · English support</span>
+              <span>{t("register.heroFeatureLanguages")}</span>
             </div>
           </div>
         </div>
@@ -217,12 +217,12 @@ export default function RegistrationPage() {
             <div className="step-progress-bar">
               <div className={`step-pill ${step >= 1 ? "active" : ""}`}>
                 <span className="step-num">1</span>
-                <span className="step-text">Personal Details</span>
+                <span className="step-text">{t("register.stepPersonalDetails")}</span>
               </div>
               <div className="step-line" />
               <div className={`step-pill ${step >= 2 ? "active" : ""}`}>
                 <span className="step-num">2</span>
-                <span className="step-text">Farmer Verification</span>
+                <span className="step-text">{t("register.stepFarmerVerification")}</span>
               </div>
             </div>
           )}
@@ -275,7 +275,7 @@ export default function RegistrationPage() {
                     type="button"
                     onClick={handleNextStep}
                   >
-                    Next: Verification →
+                    {t("register.btnNextVerification")}
                   </button>
                 ) : (
                   <>
@@ -315,7 +315,7 @@ export default function RegistrationPage() {
                     onClick={() => setStep(1)}
                     style={{ flex: 1 }}
                   >
-                    ← Back
+                    {t("register.btnBack")}
                   </button>
                   <button
                     className="btn btn-primary btn-lg"
@@ -357,7 +357,7 @@ export default function RegistrationPage() {
               <div className="modal-icon-badge modal-icon-success">
                 <FiCheck className="modal-icon-svg" />
               </div>
-              <h2 className="modal-success-title">Registration successful.</h2>
+              <h2 className="modal-success-title">{t("register.modalSuccessTitle")}</h2>
             </div>
 
             {/* 2. Information / Verification Section */}
@@ -366,7 +366,7 @@ export default function RegistrationPage() {
                 <span className="modal-info-badge">!</span>
               </div>
               <p className="modal-info-text">
-                Your farmer verification request is now under review. You can log in after admin approval.
+                {t("register.modalInfoText")}
               </p>
             </div>
 
@@ -379,7 +379,7 @@ export default function RegistrationPage() {
                 navigate("/login");
               }}
             >
-              OK
+              {t("buttons.ok", "OK")}
             </button>
           </div>
         </div>

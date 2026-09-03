@@ -45,6 +45,7 @@ if (
 
     echo json_encode([
         "success" => false,
+        "error_key" => "errors.enterEmailPassword",
         "message" =>
             "Please enter your email and password."
     ]);
@@ -114,6 +115,7 @@ try {
 
         echo json_encode([
             "success" => false,
+            "error_key" => "errors.invalidEmailPassword",
             "message" =>
                 "Invalid email or password."
         ]);
@@ -125,6 +127,7 @@ try {
 
         echo json_encode([
             "success" => false,
+            "error_key" => "errors.accountInactive",
             "message" => "Your account is inactive. Please contact the administrator."
         ]);
 
@@ -163,6 +166,8 @@ try {
 
                 "success" => false,
 
+                "error_key" => "errors.farmerVerificationPending",
+
                 "verification_required" => true,
 
                 "verification_status" =>
@@ -192,6 +197,8 @@ try {
             echo json_encode([
 
                 "success" => false,
+
+                "error_key" => "errors.farmerVerificationRejected",
 
                 "verification_required" => true,
 
@@ -230,6 +237,8 @@ try {
             echo json_encode([
 
                 "success" => false,
+
+                "error_key" => "errors.farmerWaitingAdminVerification",
 
                 "verification_required" => true,
 
