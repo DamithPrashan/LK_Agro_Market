@@ -29,7 +29,7 @@ try {
         LEFT JOIN cultivation_request cr ON r.reservation_source='cultivation' AND r.cultivation_request_id=cr.cultivation_request_id
         LEFT JOIN platform_reviews pr ON pr.reservation_id=r.reservation_id AND pr.buyer_id=?
         WHERE CASE WHEN r.reservation_source='crop' THEN rc.buyer_id ELSE cr.buyer_id END = ?
-          AND r.reservation_status='completed'
+          AND r.reservation_status IN ('ready', 'completed')
           AND r.transaction_status='paid'
           AND EXISTS (
               SELECT 1 FROM payment p
@@ -37,7 +37,7 @@ try {
                 AND p.payment_type='final' AND p.payment_status='completed'
           )
           AND pr.id IS NULL
-        ORDER BY r.completion_date DESC, r.reservation_id DESC
+        ORDER BY r.reservation_id DESC
         LIMIT 1
     ");
     $reservationStmt->execute([(int)$buyerId, (int)$buyerId]);
