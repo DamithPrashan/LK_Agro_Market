@@ -32,7 +32,7 @@ export default function Payment() {
       setError("");
       try {
         const res = await fetch(
-          `/backend/get_order_payment_details.php?orderId=${orderId}`,
+          `/backend/Apis/orders/get_order_payment_details.php?orderId=${orderId}`,
           {
             credentials: "include",
           },

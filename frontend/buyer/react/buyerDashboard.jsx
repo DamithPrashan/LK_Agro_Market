@@ -44,7 +44,7 @@ export default function BuyerDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/backend/get_buyer_dashboard.php", {
+      const response = await fetch("/backend/Apis/buyer/dashboard/get_buyer_dashboard.php", {
         credentials: "include",
       });
       const data = await response.json();

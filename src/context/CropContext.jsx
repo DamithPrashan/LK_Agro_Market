@@ -38,7 +38,7 @@ export function CropProvider({ children }) {
       // Append cache buster to prevent browser cache
       queryParams.append("_t", Date.now().toString());
 
-      const response = await fetch(`/backend/get_listings.php?${queryParams.toString()}`);
+      const response = await fetch(`/backend/Apis/listings/get_listings.php?${queryParams.toString()}`);
       const data = await response.json();
 
       if (data.success && data.listings) {

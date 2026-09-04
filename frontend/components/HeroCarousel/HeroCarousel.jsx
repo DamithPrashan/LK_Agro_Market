@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import buyer1 from "../../assests/png/buyer1.jpg";
-import buyer2 from "../../assests/png/buyer2.jpg";
-import buyer3 from "../../assests/png/buyer3.jpg";
+import buyer1 from "../../assets/png/buyer1.jpg";
+import buyer2 from "../../assets/png/buyer2.jpg";
+import buyer3 from "../../assets/png/buyer3.jpg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./HeroCarousel.css";
 

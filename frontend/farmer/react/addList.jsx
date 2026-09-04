@@ -29,7 +29,7 @@ function AddListing() {
         if (step === 2 && formData.cropName) {
             setLoadingSuggestion(true);
             const userDistrict = user?.district || "";
-            fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
+            fetch(`/backend/Apis/analytics/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
                 credentials: "include"
             })
                 .then((res) => res.json())
@@ -95,7 +95,7 @@ function AddListing() {
 
         // NOTE: Since you are uploading files via multipart/form-data, 
         // we must not use JSON headers in fetch or PHP's php://input.
-        const response = await fetch("/backend/addCrop.php", {
+        const response = await fetch("/backend/Apis/farmer/crops/addCrop.php", {
             method: "POST",
             body: data,
             credentials: "include"

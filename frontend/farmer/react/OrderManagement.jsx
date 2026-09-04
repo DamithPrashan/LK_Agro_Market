@@ -96,7 +96,7 @@ function OrderManagement() {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch("/backend/get_farmer_orders.php", {
+            const res = await fetch("/backend/Apis/orders/get_farmer_orders.php", {
                 credentials: "include"
             });
             const data = await readJsonResponse(res, t("errors.failedFetchOrders"));
@@ -123,7 +123,7 @@ function OrderManagement() {
         if (updatingOrderId !== null) return false;
         setUpdatingOrderId(orderId);
         try {
-            const res = await fetch("/backend/update_order_status.php", {
+            const res = await fetch("/backend/Apis/orders/update_order_status.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

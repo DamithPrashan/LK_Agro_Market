@@ -22,7 +22,7 @@ function ResolveComplaint() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`/backend/get_complaint_details.php?complaint_id=${id}`, {
+      const response = await fetch(`/backend/Apis/complaints/get_complaint_details.php?complaint_id=${id}`, {
         credentials: "include"
       });
       const data = await response.json();
@@ -67,7 +67,7 @@ function ResolveComplaint() {
     const resolutionStatus = action === "dismiss" ? "dismissed" : action === "resolve" ? "resolved" : "awaiting_farmer_response";
 
     try {
-      const response = await fetch("/backend/resolve_complaint.php", {
+      const response = await fetch("/backend/Apis/complaints/resolve_complaint.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

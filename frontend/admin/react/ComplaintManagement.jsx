@@ -38,7 +38,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch(`/backend/get_complaint_details.php?complaint_id=${item.complaint_id}`, { credentials: "include" })
+    fetch(`/backend/Apis/complaints/get_complaint_details.php?complaint_id=${item.complaint_id}`, { credentials: "include" })
       .then(async (response) => {
         const body = await response.json();
         if (!response.ok || !body.success) throw new Error(t("admin.complaints.errors.loadDetails", { defaultValue: body.message }));
@@ -56,7 +56,7 @@ function ComplaintReviewModal({ item, onClose, onUpdated }) {
     setBusy(true);
     setMessage("");
     try {
-      const response = await fetch("/backend/resolve_complaint.php", {
+      const response = await fetch("/backend/Apis/complaints/resolve_complaint.php", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -144,7 +144,7 @@ export default function ComplaintManagement() {
 
   const loadComplaints = useCallback(async () => {
     try {
-      const response = await fetch("/backend/get_complaints.php?limit=100", { credentials: "include" });
+      const response = await fetch("/backend/Apis/complaints/get_complaints.php?limit=100", { credentials: "include" });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(t("admin.complaints.errors.load", { defaultValue: body.message || body.error }));
       setComplaints(body.data || []);

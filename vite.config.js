@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     watch: {
-      ignored: ["**/frontend/assests/**"],
+      ignored: ["**/frontend/assets/**"],
     },
     proxy: {
       "/backend": {

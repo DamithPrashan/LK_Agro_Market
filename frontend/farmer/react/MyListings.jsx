@@ -11,7 +11,7 @@ export default function MyListings() {
     const [myCrops, setCrops] = useState([]);
 
     const fetchCrops = () => {
-        fetch("/backend/getCrops.php", {
+        fetch("/backend/Apis/farmer/crops/getCrops.php", {
             credentials: "include",
         })
             .then((response) => response.json())
@@ -33,7 +33,7 @@ export default function MyListings() {
         if (!confirmDelete) return;
 
         try {
-            const response = await fetch("/backend/deleteCrop.php", {
+            const response = await fetch("/backend/Apis/farmer/crops/deleteCrop.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
