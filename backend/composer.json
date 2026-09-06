@@ -1,5 +1,9 @@
 {
+    "name": "lk-agro-market/backend",
+    "description": "LK Agro Market backend PHP dependencies",
+    "license": "proprietary",
     "require": {
-        "phpmailer/phpmailer": "^6.8"
+        "phpmailer/phpmailer": "^6.8",
+        "dompdf/dompdf": "^3.1.6"
     }
 }
