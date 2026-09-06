@@ -8,7 +8,7 @@ import Testimonials from "../../components/HomePage/Testimonials";
 import RegistrationCTA from "../../components/HomePage/RegistrationCTA";
 import HomepageFooter from "../../components/HomepageFooter";
 
-import "../csss/Home.css";
+import "../csss/home.css";
 
 export default function Home() {
   return (

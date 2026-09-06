@@ -239,7 +239,7 @@ export default function Payment() {
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             className="btn btn-primary"
-            onClick={() => navigate("/buyer/BuyerOrderHistory")}
+            onClick={() => navigate("/buyer/buyerorderhistory")}
             style={{ cursor: "pointer", padding: "8px 16px" }}
           >
             {t("payment.btnHistory")}
@@ -336,7 +336,7 @@ export default function Payment() {
             >
               <button
                 className="btn btn-primary btn-sm"
-                onClick={() => navigate("/buyer/BuyerOrderHistory")}
+                onClick={() => navigate("/buyer/buyerorderhistory")}
               >
                 {t("payment.btnViewOrders")}
               </button>

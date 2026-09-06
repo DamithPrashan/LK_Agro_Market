@@ -11,7 +11,7 @@ import {
   FiMessageCircle,
   FiPackage
 } from "react-icons/fi";
-import "../csss/BuyerOrderHistory.css";
+import "../csss/buyerOrderHistory.css";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
 

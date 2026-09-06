@@ -151,7 +151,7 @@ try {
         if ($isCultivation) {
             require_once __DIR__ . '/../../create_notification.php';
             $confirmedDate = $order['timing_model'] === 'growing_period' ? $collection_date : $order['collection_date'];
-            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'collectionDate' => $confirmedDate, 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
+            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'collectionDate' => $confirmedDate, 'source' => 'cultivation', 'link' => '/buyer/buyerorderhistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Ready', 'Your cultivation order is ready.', 'cultivationOrderReady', $notificationData)) {
                 throw new RuntimeException('Unable to notify the buyer that the cultivation order is ready.');
             }
@@ -189,7 +189,7 @@ try {
                     ->execute([$order['cultivation_ad_id']]);
             }
             require_once __DIR__ . '/../../create_notification.php';
-            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/BuyerOrderHistory']);
+            $notificationData = json_encode(['orderId' => $order_id, 'cropName' => $order['crop_name'], 'source' => 'cultivation', 'link' => '/buyer/buyerorderhistory']);
             if (!create_notification((int)$order['buyer_user_id'], 'Cultivation Order Completed', 'Your cultivation order has been completed.', 'cultivationOrderCompleted', $notificationData)) {
                 throw new RuntimeException('Unable to notify the buyer that the cultivation order was completed.');
             }

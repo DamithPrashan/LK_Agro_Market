@@ -305,7 +305,7 @@ try {
                 "amount" => $amount,
                 "orderId" => $reservation_id,
                 "source" => $paymentInfo['reservation_source'],
-                "link" => "/buyer/BuyerOrderHistory"
+                "link" => "/buyer/buyerorderhistory"
             ]);
             $farmer_notif_data = json_encode([
                 "amount" => $amount,

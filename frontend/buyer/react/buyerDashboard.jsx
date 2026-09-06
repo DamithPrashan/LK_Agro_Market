@@ -36,7 +36,7 @@ export default function BuyerDashboard() {
 
   const quickLinks = [
     { label: "Browse Crops", icon: "🥦", key: "browse", path: "/browse" },
-    { label: "My Reservations", icon: "📦", key: "reservations", path: "/buyer/BuyerOrderHistory" },
+    { label: "My Reservations", icon: "📦", key: "reservations", path: "/buyer/buyerorderhistory" },
     { label: "Pre-Order", icon: "📝", key: "preorder", path: "/preorder" },
   ];
 
