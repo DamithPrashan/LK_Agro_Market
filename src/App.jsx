@@ -7,34 +7,32 @@ import Navbar from "./components/Navbar/Navbar";
 import { CropProvider } from "./context/CropContext";
 import { useAuth } from "./context/AuthContext";
 
-import Home from "./pages/Home";
-import Farmer from "./pages/Farmer";
-import Browse from "./pages/Browse";
-import PreOrder from "./pages/PreOrder";
-import Payment from "./pages/Payment";
-
+// ── Pages with real src/ logic (use RequireRole / AuthContext) ────────────────
 import BuyerLayout from "./pages/BuyerLayout.jsx";
-import BuyerDashboard from "../frontend/buyer/react/buyerDashboard.jsx";
-
-import Complaints from "./pages/Complaints";
-import FarmerResponse from "./pages/farmerResponse";
-
-import AdminLayout from "../frontend/admin/react/AdminDashboard/AdminLayout.jsx";
-import AdminDashboard from "../frontend/admin/react/AdminDashboard/AdminDashboard.jsx";
-import FarmerVerification from "../frontend/admin/react/AdminDashboard/FarmerVerification.jsx";
-import ComplaintManagement from "../frontend/admin/react/ComplaintManagement.jsx";
-import ResolveComplaint from "./pages/ResolveComplaint";
-import UserManagement from "../frontend/admin/react/AdminDashboard/UserManagement.jsx";
-
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword.jsx";
-import ResetPassword from "./pages/ResetPassword.jsx";
+import FarmerLayout from "./pages/FarmerLayout.jsx";
 import ProfilePage from "./pages/Profile.jsx";
-import Ratings from "./pages/Ratings.jsx";
 
-import Footer from "../frontend/components/HomepageFooter.jsx";
+// ── Public / common pages ─────────────────────────────────────────────────────
+import Home from "../frontend/commonPages/react/Home.jsx";
+import Login from "../frontend/commonPages/loginPage";
+import Register from "../frontend/commonPages/registrationPage";
+import ForgotPassword from "../frontend/commonPages/forgotPassword.jsx";
+import ResetPassword from "../frontend/commonPages/resetPassword.jsx";
+import Payment from "../frontend/commonPages/payment";
 
+// ── Buyer pages ───────────────────────────────────────────────────────────────
+import Browse from "../frontend/buyer/react/Browse.jsx";
+import PreOrder from "../frontend/buyer/react/PreOrder.jsx";
+import Complaints from "../frontend/buyer/react/Complaints.jsx";
+import FarmerResponse from "../frontend/buyer/react/farmerResponse.jsx";
+import BuyerDashboard from "../frontend/buyer/react/buyerDashboard.jsx";
+import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
+import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
+import CultivationOpportunityDetails from "../frontend/buyer/react/CultivationOpportunityDetails.jsx";
+import CultivationRequests from "../frontend/buyer/react/CultivationRequests.jsx";
+
+// ── Farmer pages ──────────────────────────────────────────────────────────────
+import FarmerDashboard from "../frontend/farmer/react/dashBoard.jsx";
 import AddListing from "../frontend/farmer/react/addList.jsx";
 import EditList from "../frontend/farmer/react/EditList.jsx";
 import OrderManagement from "../frontend/farmer/react/OrderManagement.jsx";
@@ -44,12 +42,17 @@ import AddCultivationAd from "../frontend/farmer/react/AddCultivationAd.jsx";
 import CultivationOpportunities from "../frontend/farmer/react/CultivationOpportunities.jsx";
 import EditCultivationAd from "../frontend/farmer/react/EditCultivationAd.jsx";
 
-import FarmerLayout from "./pages/FarmerLayout.jsx";
+// ── Admin pages ───────────────────────────────────────────────────────────────
+import AdminLayout from "../frontend/admin/react/AdminDashboard/AdminLayout.jsx";
+import AdminDashboard from "../frontend/admin/react/AdminDashboard/AdminDashboard.jsx";
+import FarmerVerification from "../frontend/admin/react/AdminDashboard/FarmerVerification.jsx";
+import ComplaintManagement from "../frontend/admin/react/ComplaintManagement.jsx";
+import ResolveComplaint from "../frontend/admin/react/ResolveComplaint.jsx";
+import UserManagement from "../frontend/admin/react/AdminDashboard/UserManagement.jsx";
 
-import BuyerOrderHistory from "../frontend/buyer/react/buyerOrderHistory.jsx";
-import MapSearch from "../frontend/buyer/react/mapSearch.jsx";
-import CultivationOpportunityDetails from "../frontend/buyer/react/CultivationOpportunityDetails.jsx";
-import CultivationRequests from "../frontend/buyer/react/CultivationRequests.jsx";
+// ── Shared ────────────────────────────────────────────────────────────────────
+import Ratings from "../frontend/ratings/ratingPage";
+import Footer from "../frontend/components/HomepageFooter.jsx";
 
 
 function App() {
@@ -258,12 +261,12 @@ function App() {
 
               <Route
                 index
-                element={<Farmer />}
+                element={<FarmerDashboard />}
               />
 
               <Route
                 path="dashboard"
-                element={<Farmer />}
+                element={<FarmerDashboard />}
               />
 
               <Route
