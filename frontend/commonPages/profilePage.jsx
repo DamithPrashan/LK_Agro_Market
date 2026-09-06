@@ -24,7 +24,7 @@ export default function Profile() {
   useEffect(() => {
     if (!user) return;
     setLoadingRatings(true);
-    fetch(`/backend/Apis/get_ratings.php?user_id=${user.id}`, { credentials: "include" })
+    fetch(`/backend/Apis/ratings/get_ratings.php?user_id=${user.id}`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -40,7 +40,7 @@ export default function Profile() {
     e.preventDefault();
     setSaving(true); setMsg({ text:"", ok:false });
     try {
-      const res  = await fetch("/backend/Apis/update_profile.php", {
+      const res  = await fetch("/backend/Apis/profile/update_profile.php", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({ name, contact, district, language }),
@@ -71,7 +71,7 @@ export default function Profile() {
     setMsg({ text: "", ok: false });
 
     try {
-      const res = await fetch("/backend/Apis/upload_profile_image.php", {
+      const res = await fetch("/backend/Apis/profile/upload_profile_image.php", {
         method: "POST",
         body: formData,
         credentials: "include"
@@ -99,7 +99,7 @@ export default function Profile() {
     setMsg({ text: "", ok: false });
 
     try {
-      const res = await fetch("/backend/Apis/upload_profile_image.php?action=delete", {
+      const res = await fetch("/backend/Apis/profile/upload_profile_image.php?action=delete", {
         method: "POST",
         credentials: "include"
       });

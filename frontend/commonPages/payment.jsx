@@ -77,7 +77,7 @@ export default function Payment() {
     body.append("proof", proof);
 
     try {
-      const res = await fetch("/backend/Apis/submit_payment.php", {
+      const res = await fetch("/backend/Apis/payments/submit_payment.php", {
         method: "POST",
         body,
         credentials: "include",
@@ -119,7 +119,7 @@ export default function Payment() {
 
     try {
       // 1. Get payment hash from backend
-      const hashRes = await fetch("/backend/Apis/get_payhere_hash.php", {
+      const hashRes = await fetch("/backend/Apis/payments/get_payhere_hash.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -147,7 +147,7 @@ export default function Payment() {
         body.append("method", "lanka");
 
         try {
-          const res = await fetch("/backend/Apis/submit_payment.php", {
+          const res = await fetch("/backend/Apis/payments/submit_payment.php", {
             method: "POST",
             body,
             credentials: "include",

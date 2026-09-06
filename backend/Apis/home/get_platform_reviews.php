@@ -4,7 +4,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json");
 
-require_once __DIR__ . '/../connection/db.php';
+require_once __DIR__ . '/../../connection/db.php';
 
 try {
     // Fetch platform reviews with buyer details.

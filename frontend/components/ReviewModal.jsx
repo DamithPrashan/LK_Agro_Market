@@ -15,7 +15,7 @@ export default function ReviewModal({ userId, userName, userRole, userLocation, 
     if (!userId) return;
     setLoading(true);
     setError(null);
-    fetch(`/backend/Apis/get_ratings.php?user_id=${userId}`, { credentials: "include" })
+    fetch(`/backend/Apis/ratings/get_ratings.php?user_id=${userId}`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

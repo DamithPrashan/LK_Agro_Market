@@ -63,7 +63,7 @@ export default function Navbar() {
     const dbLanguage = language === "si" ? "sinhala" : language === "ta" ? "tamil" : "english";
     login({ ...user, language: dbLanguage });
     try {
-      await fetch("/backend/Apis/update_language.php", {
+      await fetch("/backend/Apis/profile/update_language.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

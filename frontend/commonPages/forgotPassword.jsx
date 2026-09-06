@@ -20,7 +20,7 @@ export default function ForgotPassword() {
     setLoading(true);
     setMessage({ text: "", ok: false });
     try {
-      const res = await fetch("/backend/Apis/forgot_password.php", {
+      const res = await fetch("/backend/Apis/auth/forgot_password.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

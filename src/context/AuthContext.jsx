@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
 
   // On every page refresh, check if a PHP session already exists
   useEffect(() => {
-    fetch("/backend/Apis/me.php", { credentials: "include" })
+    fetch("/backend/Apis/auth/me.php", { credentials: "include" })
       .then(async (response) => ({ response, data: await response.json() }))
       .then(({ response, data }) => {
         if (response.ok && data.success && data.user) setUser(data.user);
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     setUser(null);
     clearFrontendAuth();
     try {
-      await fetch("/backend/Apis/logout.php", {
+      await fetch("/backend/Apis/auth/logout.php", {
         method: "POST",
         credentials: "include"
       });

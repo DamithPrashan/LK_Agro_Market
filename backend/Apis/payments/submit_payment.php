@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once __DIR__ . '/../connection/db.php';
-require_once __DIR__ . '/auth_check.php';
+require_once __DIR__ . '/../../connection/db.php';
+require_once __DIR__ . '/../auth_check.php';
 
 // Payments can only be submitted by the buyer who owns the reservation.
 require_login();
@@ -140,7 +140,7 @@ $old_proof_file = null;
 try {
     $proof_file_path = 'online';
     if ($method === 'bank') {
-        $upload_dir = __DIR__ . '/../storage/bank_receipts/';
+        $upload_dir = __DIR__ . '/../../storage/bank_receipts/';
         if (!is_dir($upload_dir)) {
             if (!mkdir($upload_dir, 0750, true) && !is_dir($upload_dir)) {
                 throw new RuntimeException('Unable to prepare secure receipt storage.');
@@ -264,8 +264,8 @@ try {
     $pdo->commit();
 
     if ($old_proof_file) {
-        $oldAbsolute = dirname(__DIR__) . '/../' . ltrim(str_replace('\\', '/', $old_proof_file), '/');
-        $receiptRoot = realpath(__DIR__ . '/../storage/bank_receipts');
+        $oldAbsolute = dirname(__DIR__, 2) . '/' . ltrim(str_replace('\\', '/', $old_proof_file), '/');
+        $receiptRoot = realpath(__DIR__ . '/../../storage/bank_receipts');
         $oldReal = realpath($oldAbsolute);
         if ($receiptRoot && $oldReal && str_starts_with($oldReal, $receiptRoot . DIRECTORY_SEPARATOR)) {
             @unlink($oldReal);
@@ -274,7 +274,7 @@ try {
 
     // Trigger Notification to Buyer and Farmer
     try {
-        require_once __DIR__ . '/../create_notification.php';
+        require_once __DIR__ . '/../../create_notification.php';
         
         $paymentInfoStmt = $pdo->prepare("
             SELECT 

@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once '../connection/db.php';
-require_once 'auth_check.php';
+require_once '../../connection/db.php';
+require_once '../auth_check.php';
 
 // Ensure user is logged in
 require_login();

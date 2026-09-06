@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once '../connection/db.php';
-require_once 'auth_check.php';
+require_once '../../connection/db.php';
+require_once '../auth_check.php';
 
 // Ensure user is logged in
 require_login();
@@ -22,7 +22,7 @@ if ($action === 'delete') {
         $user = $stmt->fetch();
 
         if ($user && !empty($user['profile_image'])) {
-            $existing_file = '../../' . $user['profile_image']; // profile_image starts with 'backend/uploads/'
+            $existing_file = '../../../' . $user['profile_image']; // profile_image starts with 'backend/uploads/'
             if (file_exists($existing_file)) {
                 unlink($existing_file);
             }
@@ -74,7 +74,7 @@ if ($file['size'] > $max_size) {
     exit;
 }
 
-$upload_dir = '../uploads/';
+$upload_dir = '../../uploads/';
 if (!is_dir($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
@@ -91,7 +91,7 @@ if (move_uploaded_file($file['tmp_name'], $target_path)) {
         $user = $stmt->fetch();
 
         if ($user && !empty($user['profile_image'])) {
-            $existing_file = '../../' . $user['profile_image'];
+            $existing_file = '../../../' . $user['profile_image'];
             if (file_exists($existing_file)) {
                 unlink($existing_file);
             }

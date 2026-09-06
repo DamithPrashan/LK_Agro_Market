@@ -4,9 +4,9 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json");
 
-require_once __DIR__ . '/../connection/db.php';
-require_once __DIR__ . '/auth_check.php';
-require_once __DIR__ . '/../controller/MessageController.php';
+require_once __DIR__ . '/../../connection/db.php';
+require_once __DIR__ . '/../auth_check.php';
+require_once __DIR__ . '/../../controller/MessageController.php';
 
 // Protect route
 require_login();

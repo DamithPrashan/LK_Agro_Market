@@ -41,7 +41,7 @@ export default function MessageThread({
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`/backend/Apis/get_messages.php?reservation_id=${reservationId}`, {
+      const response = await fetch(`/backend/Apis/messages/get_messages.php?reservation_id=${reservationId}`, {
         credentials: "include"
       });
       const data = await response.json();
@@ -122,7 +122,7 @@ export default function MessageThread({
         formData.append("image", payload.file);
       }
 
-      const response = await fetch("/backend/Apis/send_message.php", {
+      const response = await fetch("/backend/Apis/messages/send_message.php", {
         method: "POST",
         credentials: "include",
         body: formData

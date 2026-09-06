@@ -8,7 +8,7 @@ export default function Testimonials() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("/backend/Apis/get_platform_reviews.php")
+    fetch("/backend/Apis/home/get_platform_reviews.php")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {

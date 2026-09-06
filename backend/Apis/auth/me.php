@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once 'auth_check.php';
+require_once '../auth_check.php';
 
 if (isset($_SESSION['user'])) {
     require_login();

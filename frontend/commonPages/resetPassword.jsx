@@ -42,7 +42,7 @@ export default function ResetPassword() {
     setMessage({ text: "", ok: false });
 
     try {
-      const res = await fetch("/backend/Apis/reset_password.php", {
+      const res = await fetch("/backend/Apis/auth/reset_password.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

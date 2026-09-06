@@ -7,8 +7,8 @@ header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-require_once '../connection/db.php';
-require_once 'auth_check.php';
+require_once '../../connection/db.php';
+require_once '../auth_check.php';
 
 // Ensure buyer is logged in
 require_login();

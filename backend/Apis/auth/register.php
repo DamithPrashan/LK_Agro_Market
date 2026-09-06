@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once '../connection/db.php';
-require_once 'auth_check.php';
+require_once '../../connection/db.php';
+require_once '../auth_check.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
@@ -168,8 +168,8 @@ try {
     // Send email notification for FARMER registration only (Non-blocking)
     if ($role === 'farmer') {
         try {
-            require_once __DIR__ . '/../config/mailer.php';
-            require_once __DIR__ . '/../config/farmer_email_templates.php';
+            require_once __DIR__ . '/../../config/mailer.php';
+            require_once __DIR__ . '/../../config/farmer_email_templates.php';
             if (function_exists('farmerRegistrationReceived') && function_exists('sendMail')) {
                 $template = farmerRegistrationReceived($name);
                 sendMail($email, $name, $template['subject'], $template['body']);

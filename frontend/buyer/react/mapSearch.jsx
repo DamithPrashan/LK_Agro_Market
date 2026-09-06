@@ -118,7 +118,7 @@ export default function MapSearch() {
       if (harvestBefore) params.append("harvest_before", harvestBefore);
       if (verifiedOnly) params.append("verified_only", "1");
 
-      const response = await fetch(`/backend/Apis/get_map_farmers.php?${params.toString()}`, {
+      const response = await fetch(`/backend/Apis/home/get_map_farmers.php?${params.toString()}`, {
         credentials: "include"
       });
       const data = await response.json();
@@ -135,7 +135,7 @@ export default function MapSearch() {
   // Fetch Seasonal Crop Calendar
   const fetchCalendar = useCallback(async () => {
     try {
-      const response = await fetch("/backend/Apis/get_harvest_calendar.php?days=60", {
+      const response = await fetch("/backend/Apis/home/get_harvest_calendar.php?days=60", {
         credentials: "include"
       });
       const data = await response.json();

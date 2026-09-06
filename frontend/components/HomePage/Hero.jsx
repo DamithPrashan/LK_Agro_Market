@@ -30,7 +30,7 @@ export default function Hero() {
     const fetchHomeStats = async () => {
       try {
         const response = await fetch(
-          "/backend/Apis/get_home_stats.php",
+          "/backend/Apis/home/get_home_stats.php",
         );
 
         const result = await response.json();

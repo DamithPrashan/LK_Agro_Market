@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-require_once __DIR__ . '/../connection/db.php';
-require_once __DIR__ . '/../controller/RatingController.php';
+require_once __DIR__ . '/../../connection/db.php';
+require_once __DIR__ . '/../../controller/RatingController.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
