@@ -1,0 +1,5 @@
+# This directory serves uploaded files.
+# Sensitive subdirectories (NIC/, FarmEvidence/) have their own .htaccess
+# that denies direct access — those must be proxied through serve_file.php.
+#
+# Public files (crop images, profile images, etc.) are served directly by Apache.

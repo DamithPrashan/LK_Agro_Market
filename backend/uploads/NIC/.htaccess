@@ -1,0 +1,4 @@
+# Block ALL direct HTTP access to this directory.
+# Files in here are served only via /backend/Apis/serve_file.php (authenticated PHP proxy).
+Order Deny,Allow
+Deny from all
