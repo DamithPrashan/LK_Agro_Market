@@ -50,7 +50,7 @@ export default function MarketInsights() {
       try {
 
         const response = await fetch(
-          "/backend/Apis/get_market_insights.php"
+          "/backend/Apis/home/get_market_insights.php"
         );
 
         const result = await response.json();

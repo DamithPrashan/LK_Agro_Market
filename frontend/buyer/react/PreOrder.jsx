@@ -8,26 +8,26 @@ import ReviewModal from "../../components/ReviewModal";
 import { getDistrictLabel } from "../../../src/constants/districtUtils";
 
 // local images map for fallback rendering
-import tomatoImg from "../../assests/png/tomato.jpg";
-import carrotImg from "../../assests/png/carrot.jpg";
-import leeksImg from "../../assests/png/leeks.jpg";
-import capsicumImg from "../../assests/png/capsicum.jpg";
-import potatoImg from "../../assests/png/potato.jpg";
-import greenBeansImg from "../../assests/png/beans.jpg";
-import avocadoImg from "../../assests/png/avacado.jpg";
-import beetrootImg from "../../assests/png/beatroot.jpg";
-import grapesImg from "../../assests/png/grapes.jpg";
-import pineappleImg from "../../assests/png/pineapple.jpg";
-import pumpkinImg from "../../assests/png/pumpkin.jpg";
-import bananaImg from "../../assests/png/banana.jpg";
-import cabbageImg from "../../assests/png/cabbage.jpg";
-import ladiesFingerImg from "../../assests/png/ladiesfinger.jpg";
-import lemonImg from "../../assests/png/lemon.jpg";
-import mangoImg from "../../assests/png/mango.jpg";
-import onionImg from "../../assests/png/onion.jpg";
-import watermelonImg from "../../assests/png/watermelon.jpg";
-import brinjalImg from "../../assests/png/brinjal.jpg";
-import cornImg from "../../assests/png/corn.jpg";
+import tomatoImg from "../../assets/png/tomato.jpg";
+import carrotImg from "../../assets/png/carrot.jpg";
+import leeksImg from "../../assets/png/leeks.jpg";
+import capsicumImg from "../../assets/png/capsicum.jpg";
+import potatoImg from "../../assets/png/potato.jpg";
+import greenBeansImg from "../../assets/png/beans.jpg";
+import avocadoImg from "../../assets/png/avacado.jpg";
+import beetrootImg from "../../assets/png/beatroot.jpg";
+import grapesImg from "../../assets/png/grapes.jpg";
+import pineappleImg from "../../assets/png/pineapple.jpg";
+import pumpkinImg from "../../assets/png/pumpkin.jpg";
+import bananaImg from "../../assets/png/banana.jpg";
+import cabbageImg from "../../assets/png/cabbage.jpg";
+import ladiesFingerImg from "../../assets/png/ladiesfinger.jpg";
+import lemonImg from "../../assets/png/lemon.jpg";
+import mangoImg from "../../assets/png/mango.jpg";
+import onionImg from "../../assets/png/onion.jpg";
+import watermelonImg from "../../assets/png/watermelon.jpg";
+import brinjalImg from "../../assets/png/brinjal.jpg";
+import cornImg from "../../assets/png/corn.jpg";
 
 const imageMap = {
   "Tomato": tomatoImg,
@@ -118,7 +118,7 @@ export default function CropDetail() {
     const fetchDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/backend/get_listings.php?id=${cropId}`);
+        const response = await fetch(`/backend/Apis/listings/get_listings.php?id=${cropId}`);
         const data = await response.json();
 
         if (data.success && data.crop) {
@@ -236,7 +236,7 @@ export default function CropDetail() {
     setSubmitMsg("");
 
     try {
-      const response = await fetch("/backend/place_preorder.php", {
+      const response = await fetch("/backend/Apis/orders/place_preorder.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

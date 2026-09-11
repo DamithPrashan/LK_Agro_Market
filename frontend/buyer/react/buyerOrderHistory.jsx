@@ -11,7 +11,7 @@ import {
   FiMessageCircle,
   FiPackage
 } from "react-icons/fi";
-import "../csss/BuyerOrderHistory.css";
+import "../csss/buyerOrderHistory.css";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
 
@@ -68,7 +68,7 @@ export default function BuyerOrderHistory() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`/backend/get_buyer_orders.php?status=${activeTab}`, {
+      const response = await fetch(`/backend/Apis/orders/get_buyer_orders.php?status=${activeTab}`, {
         credentials: "include"
       });
       const data = await response.json();
@@ -128,7 +128,7 @@ export default function BuyerOrderHistory() {
 
   const executeCancellation = async (orderId) => {
     try {
-      const response = await fetch("/backend/cancel_order.php", {
+      const response = await fetch("/backend/Apis/orders/cancel_order.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -299,7 +299,7 @@ export default function BuyerOrderHistory() {
                       
                       {/* Action buttons grouped on the right */}
                       <div className="order-actions">
-                        {order.paymentReceiptAvailable && <a className="view-btn payment-action-btn" href={`/backend/download_payment_receipt.php?reservation_id=${order.reservationId}`}>{t("complaints.downloadPaymentReceipt")}</a>}
+                        {order.paymentReceiptAvailable && <a className="view-btn payment-action-btn" href={`/backend/Apis/payments/download_payment_receipt.php?reservation_id=${order.reservationId}`}>{t("complaints.downloadPaymentReceipt")}</a>}
                         <button
                           className="view-btn message-farmer-btn"
                           onClick={() => {

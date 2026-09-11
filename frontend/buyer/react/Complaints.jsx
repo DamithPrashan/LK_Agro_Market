@@ -79,7 +79,7 @@ function ComplaintPage() {
     const fetchOrders = async () => {
       setFetchOrdersLoading(true);
       try {
-        const response = await fetch("/backend/get_buyer_complaint_orders.php", {
+        const response = await fetch("/backend/Apis/complaints/get_buyer_complaint_orders.php", {
           credentials: "include",
         });
         const data = await response.json();
@@ -103,7 +103,7 @@ function ComplaintPage() {
     setComplaintsLoading(true);
     setComplaintsError("");
     try {
-      const response = await fetch("/backend/get_buyer_complaints.php", {
+      const response = await fetch("/backend/Apis/complaints/get_buyer_complaints.php", {
         credentials: "include",
       });
       const data = await readJsonResponse(response, t("errors.submissionFailed"));
@@ -190,7 +190,7 @@ function ComplaintPage() {
     Object.entries(evidenceFiles).forEach(([type, file]) => { if (file) formData.append(type, file); });
 
     try {
-      const response = await fetch("/backend/submit_complaint.php", {
+      const response = await fetch("/backend/Apis/complaints/submit_complaint.php", {
         method: "POST",
         body: formData,
         credentials: "include",

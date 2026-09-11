@@ -97,7 +97,7 @@ export default function RegistrationPage() {
     if (evidenceFile) body.append("evidence", evidenceFile);
 
     try {
-      const res = await fetch("/backend/Apis/register.php",
+      const res = await fetch("/backend/Apis/auth/register.php",
         { method: "POST", body, credentials: "include" });
       const data = await res.json();
       if (data.success) {

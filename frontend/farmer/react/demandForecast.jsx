@@ -19,7 +19,7 @@ export default function ForecastDashboard() {
     // Fetch the farmer's own crops once, just to default the Location
     // dropdown to a district that actually has one of their listings.
     useEffect(() => {
-        fetch("/backend/getCrops.php", { credentials: "include" })
+        fetch("/backend/Apis/farmer/crops/getCrops.php", { credentials: "include" })
             .then((res) => res.json())
             .then((crops) => {
                 const firstCropLocation = Array.isArray(crops)
@@ -43,7 +43,7 @@ export default function ForecastDashboard() {
         setLoading(true);
         try {
             const res = await fetch(
-                `/backend/get_demand_forecast.php?crop_name=${encodeURIComponent(cropName)}&location=${encodeURIComponent(location)}&days=${days}`,
+                `/backend/Apis/analytics/get_demand_forecast.php?crop_name=${encodeURIComponent(cropName)}&location=${encodeURIComponent(location)}&days=${days}`,
                 { credentials: "include" }
             );
             const data = await res.json();

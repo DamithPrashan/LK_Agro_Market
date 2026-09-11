@@ -32,7 +32,7 @@ export default function Payment() {
       setError("");
       try {
         const res = await fetch(
-          `/backend/get_order_payment_details.php?orderId=${orderId}`,
+          `/backend/Apis/orders/get_order_payment_details.php?orderId=${orderId}`,
           {
             credentials: "include",
           },
@@ -77,7 +77,7 @@ export default function Payment() {
     body.append("proof", proof);
 
     try {
-      const res = await fetch("/backend/Apis/submit_payment.php", {
+      const res = await fetch("/backend/Apis/payments/submit_payment.php", {
         method: "POST",
         body,
         credentials: "include",
@@ -119,7 +119,7 @@ export default function Payment() {
 
     try {
       // 1. Get payment hash from backend
-      const hashRes = await fetch("/backend/Apis/get_payhere_hash.php", {
+      const hashRes = await fetch("/backend/Apis/payments/get_payhere_hash.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -147,7 +147,7 @@ export default function Payment() {
         body.append("method", "lanka");
 
         try {
-          const res = await fetch("/backend/Apis/submit_payment.php", {
+          const res = await fetch("/backend/Apis/payments/submit_payment.php", {
             method: "POST",
             body,
             credentials: "include",
@@ -239,7 +239,7 @@ export default function Payment() {
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             className="btn btn-primary"
-            onClick={() => navigate("/buyer/BuyerOrderHistory")}
+            onClick={() => navigate("/buyer/buyerorderhistory")}
             style={{ cursor: "pointer", padding: "8px 16px" }}
           >
             {t("payment.btnHistory")}
@@ -336,7 +336,7 @@ export default function Payment() {
             >
               <button
                 className="btn btn-primary btn-sm"
-                onClick={() => navigate("/buyer/BuyerOrderHistory")}
+                onClick={() => navigate("/buyer/buyerorderhistory")}
               >
                 {t("payment.btnViewOrders")}
               </button>

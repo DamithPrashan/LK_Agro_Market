@@ -28,7 +28,7 @@ export default function FeaturedCrops() {
   useEffect(() => {
     const loadTrendingCrops = async () => {
       try {
-        const response = await fetch("/backend/Apis/get_weekly_trending_crops.php");
+        const response = await fetch("/backend/Apis/home/get_weekly_trending_crops.php");
         const result = await response.json();
         if (result.success) setCrops((result.data || []).slice(0, 10));
       } catch (error) {

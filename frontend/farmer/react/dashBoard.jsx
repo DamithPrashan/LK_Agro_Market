@@ -14,9 +14,9 @@ import DemandForecast from "./demandForecast";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
-import farmer1 from "../../assests/png/buyer1.jpg";
-import farmer2 from "../../assests/png/buyer2.jpg";
-import farmer3 from "../../assests/png/buyer3.jpg";
+import farmer1 from "../../assets/png/buyer1.jpg";
+import farmer2 from "../../assets/png/buyer2.jpg";
+import farmer3 from "../../assets/png/buyer3.jpg";
 
 function DashBoard() {
     const { user } = useAuth();
@@ -40,7 +40,7 @@ function DashBoard() {
     };
 
     const fetchCrops = () => {
-        fetch("/backend/getCrops.php", {
+        fetch("/backend/Apis/farmer/crops/getCrops.php", {
             credentials: "include",
         })
             .then((response) => response.json())
@@ -51,7 +51,7 @@ function DashBoard() {
     };
 
     const fetchIncomingOrders = () => {
-        fetch("/backend/get_farmer_orders.php", {
+        fetch("/backend/Apis/orders/get_farmer_orders.php", {
             credentials: "include",
         })
             .then((response) => response.json())
@@ -65,7 +65,7 @@ function DashBoard() {
 
     const handleOrderAction = async (orderId, action) => {
         try {
-            const res = await fetch("/backend/update_order_status.php", {
+            const res = await fetch("/backend/Apis/orders/update_order_status.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

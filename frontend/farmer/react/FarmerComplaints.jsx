@@ -48,7 +48,7 @@ export default function FarmerComplaints() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/backend/farmer_respond.php", { credentials: "include" });
+      const response = await fetch("/backend/Apis/farmer/farmer_respond.php", { credentials: "include" });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(body.error || body.message || t("farmerComplaints.loadFailed"));
       setComplaints((body.data || []).filter((complaint) => complaint.status === "awaiting_farmer_response"));
@@ -87,7 +87,7 @@ export default function FarmerComplaints() {
     setMessages((current) => ({ ...current, [complaintId]: null }));
 
     try {
-      const response = await fetch("/backend/farmer_respond.php", { method: "POST", credentials: "include", body: formData });
+      const response = await fetch("/backend/Apis/farmer/farmer_respond.php", { method: "POST", credentials: "include", body: formData });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(body.error || body.message || t("farmerComplaints.submitFailed"));
       setComplaints((current) => current.filter((complaint) => complaint.complaint_id !== complaintId));

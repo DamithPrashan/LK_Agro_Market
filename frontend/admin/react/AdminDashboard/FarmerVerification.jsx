@@ -338,6 +338,16 @@ export default function FarmerVerification() {
       return path;
     }
 
+    // Sensitive files (NIC scans, farm evidence) must go through the
+    // authenticated PHP proxy — direct Apache access is blocked by .htaccess.
+    const normalised = path.startsWith("/") ? path.slice(1) : path;
+    if (
+      normalised.startsWith("backend/uploads/NIC/") ||
+      normalised.startsWith("backend/uploads/FarmEvidence/")
+    ) {
+      return `/backend/Apis/serve_file.php?path=${encodeURIComponent(normalised)}`;
+    }
+
     return path.startsWith("/") ? path : `/${path}`;
   };
 

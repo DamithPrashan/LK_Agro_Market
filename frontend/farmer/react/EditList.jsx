@@ -32,7 +32,7 @@ function EditList() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingSuggestion(true);
       const userDistrict = user?.district || "";
-      fetch(`/backend/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
+      fetch(`/backend/Apis/analytics/get_price_suggestion.php?crop_name=${encodeURIComponent(formData.cropName)}&district=${encodeURIComponent(userDistrict)}`, {
         credentials: "include"
       })
         .then((res) => res.json())
@@ -69,7 +69,7 @@ function EditList() {
 
   const updateListing = async () => {
     try {
-      const response = await fetch("/backend/updateCrop.php", {
+      const response = await fetch("/backend/Apis/farmer/crops/updateCrop.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

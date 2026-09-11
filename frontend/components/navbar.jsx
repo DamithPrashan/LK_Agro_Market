@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../src/context/AuthContext";
-import notificationIcon from "../assests/png/notification.png";
+import notificationIcon from "../assets/png/notification.png";
 import logo from "../../src/assets/logo.png";
 import "./navbar.css";
 
@@ -38,7 +38,7 @@ export default function Navbar() {
 
     const fetchNotifications = async () => {
       try {
-        const response = await fetch("/backend/get_notifications.php", { credentials: "include" });
+        const response = await fetch("/backend/Apis/notifications/get_notifications.php", { credentials: "include" });
         const data = await response.json();
         if (data.success) {
           const nextNotifications = data.notifications || [];
@@ -63,7 +63,7 @@ export default function Navbar() {
     const dbLanguage = language === "si" ? "sinhala" : language === "ta" ? "tamil" : "english";
     login({ ...user, language: dbLanguage });
     try {
-      await fetch("/backend/Apis/update_language.php", {
+      await fetch("/backend/Apis/profile/update_language.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -76,7 +76,7 @@ export default function Navbar() {
 
   const handleMarkAllRead = async () => {
     try {
-      const response = await fetch("/backend/mark_notifications_read.php", { method: "POST", credentials: "include" });
+      const response = await fetch("/backend/Apis/notifications/mark_notifications_read.php", { method: "POST", credentials: "include" });
       const data = await response.json();
       if (data.success) {
         setNotifications((items) => items.map((item) => ({ ...item, unread: false })));
