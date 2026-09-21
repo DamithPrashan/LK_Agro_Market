@@ -59,6 +59,12 @@ function sendMail(string $toEmail, string $toName, string $subject, string $html
         $mail->addAddress($toEmail, $toName);
         $mail->addReplyTo('support@lkagromarket.lk', 'LK Agro Market Support');
 
+        // Embed platform logo for inline email display
+        $logoPath = dirname(__DIR__, 2) . '/src/assets/logo.png';
+        if (file_exists($logoPath)) {
+            $mail->addEmbeddedImage($logoPath, 'platform_logo', 'logo.png', 'base64', 'image/png');
+        }
+
         // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
