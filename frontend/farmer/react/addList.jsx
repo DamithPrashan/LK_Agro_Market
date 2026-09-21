@@ -234,17 +234,17 @@ function AddListing() {
 
                         <div className="btn-group">
                             <button
-                                className="next-btn"
-                                onClick={() => setStep(2)}
-                            >
-                                {t("buttons.next")}
-                            </button>
-
-                            <button
                                 className="back-btn"
                                 onClick={() => navigate("/farmer")}
                             >
                                 {t("buttons.back")}
+                            </button>
+
+                            <button
+                                className="next-btn"
+                                onClick={() => setStep(2)}
+                            >
+                                {t("buttons.next")}
                             </button>
                         </div>
                     </div>
@@ -307,17 +307,17 @@ function AddListing() {
 
                         <div className="btn-group">
                             <button
-                                className="next-btn"
-                                onClick={() => setStep(3)}
-                            >
-                                {t("buttons.next")}
-                            </button>
-
-                            <button
                                 className="back-btn"
                                 onClick={() => setStep(1)}
                             >
                                 {t("buttons.back")}
+                            </button>
+
+                            <button
+                                className="next-btn"
+                                onClick={() => setStep(3)}
+                            >
+                                {t("buttons.next")}
                             </button>
                         </div>
                     </div>
@@ -340,17 +340,17 @@ function AddListing() {
 
                         <div className="btn-group">
                             <button
-                                className="submit-btn"
-                                onClick={handleSubmit}
-                            >
-                                {t("buttons.submitCrop")}
-                            </button>
-
-                            <button
                                 className="back-btn"
                                 onClick={() => setStep(2)}
                             >
                                 {t("buttons.back")}
+                            </button>
+
+                            <button
+                                className="submit-btn"
+                                onClick={handleSubmit}
+                            >
+                                {t("buttons.submitCrop")}
                             </button>
                         </div>
                     </div>

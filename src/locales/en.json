@@ -12,6 +12,8 @@
     "logout": "Logout",
     "signIn": "Sign in",
     "notifications": "Notifications",
+    "markAllRead": "Mark all as read",
+    "viewAllNotifications": "View all notifications",
     "noNotifications": "No notifications"
   },
   "logoutModal": {
