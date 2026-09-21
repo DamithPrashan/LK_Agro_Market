@@ -11,16 +11,36 @@ function AddListing() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [step, setStep] = useState(1);
+
+    const getInitialDistrict = () => {
+        const raw = user?.district || user?.location || "";
+        if (!raw) return "";
+        const found = DISTRICTS.find(
+            (d) => d.value.toLowerCase() === String(raw).trim().toLowerCase()
+        );
+        return found ? found.value : raw;
+    };
+
     const [formData, setFormData] = useState({
         cropName: "",
         category: "",
         quantity: "",
-        location: "",
+        location: getInitialDistrict(),
         growthStage: "",
         harvestDate: "",
         price: "",
         photos: [null, null, null], // Initialize an array with 3 spots
     });
+
+    useEffect(() => {
+        const initial = getInitialDistrict();
+        if (initial && !formData.location) {
+            setFormData((prev) => ({
+                ...prev,
+                location: initial
+            }));
+        }
+    }, [user?.district, user?.location]);
 
     const [suggestion, setSuggestion] = useState(null);
     const [loadingSuggestion, setLoadingSuggestion] = useState(false);
