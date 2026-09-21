@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import bgImage from "../../src/assets/login-bg.jpg";
+import logo from "../../src/assets/logo.png";
 import "./csss/loginPage.css";
 
 export default function LoginPage() {
@@ -14,6 +15,12 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +67,10 @@ export default function LoginPage() {
 
       <div className="login-card">
         <div className="login-header">
-          <div className="login-logo">{t("login.logoTitle")}</div>
+          <div className="login-logo">
+            <img src={logo} alt="LK Agro Market" className="login-logo-img" />
+            <span>{t("login.logoTitle")}</span>
+          </div>
           <h1 className="login-title">{t("login.header")}</h1>
           <p className="login-subtitle">{t("login.subtitle")}</p>
         </div>
