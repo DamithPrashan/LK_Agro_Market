@@ -152,8 +152,8 @@ export default function Navbar() {
                       <div className="application-topbar__notification-item" key={notification.id} onClick={() => handleNotificationClick(notification)}>
                         <span className="application-topbar__status-dot" />
                         <div className="application-topbar__notification-copy">
-                          <h4>{notification.notif_type ? t(`notifications.title.${notification.notif_type}`) : notification.title}</h4>
-                          <p>{notification.notif_type && notification.notif_type !== "warningIssued" ? t(`notifications.${notification.notif_type}`, localizeNotificationData(notification.notif_data)) : notification.desc}</p>
+                          <h4>{["warningIssued", "accountDeactivated"].includes(notification.notif_type) ? t(`notifications.title.${notification.notif_type}`) : notification.notif_type ? t(`notifications.title.${notification.notif_type}`) : notification.title}</h4>
+                          <p>{["warningIssued", "accountDeactivated"].includes(notification.notif_type) ? notification.desc : notification.notif_type ? t(`notifications.${notification.notif_type}`, localizeNotificationData(notification.notif_data)) : notification.desc}</p>
                           <time>{formatTime(notification.created_at)}</time>
                         </div>
                         {notification.unread && <span className="application-topbar__unread-dot" />}

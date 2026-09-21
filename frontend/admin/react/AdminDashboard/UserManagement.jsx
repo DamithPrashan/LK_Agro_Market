@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FiAlertTriangle, FiChevronLeft, FiChevronRight, FiPlus, FiSearch, FiTrash2, FiX } from "react-icons/fi";
 import "../../csss/AdminDashboard/admin.css";
+import { getDistrictLabel } from "../../../../src/constants/districtUtils";
 
 const initials = (name = "") => name.split(/\s+/).map((word) => word[0]).join("").slice(0, 2).toUpperCase();
 const formatDate = (value, locale) => value ? new Date(value).toLocaleDateString(locale) : "—";
@@ -23,6 +24,14 @@ export default function UserManagement() {
   const [warningMessage, setWarningMessage] = useState("");
   const [warningError, setWarningError] = useState("");
   const [sendingWarning, setSendingWarning] = useState(false);
+  const [deactivationUser, setDeactivationUser] = useState(null);
+  const [deactivationMessage, setDeactivationMessage] = useState("");
+  const [deactivationConfirmed, setDeactivationConfirmed] = useState(false);
+  const [deactivationError, setDeactivationError] = useState("");
+  const [removalUser, setRemovalUser] = useState(null);
+  const [removalConfirmed, setRemovalConfirmed] = useState(false);
+  const [removalError, setRemovalError] = useState("");
+  const [removingUserId, setRemovingUserId] = useState(null);
   const [updatingUserId, setUpdatingUserId] = useState(null);
   const itemsPerPage = 10;
 
@@ -76,26 +85,53 @@ export default function UserManagement() {
     }
   };
 
-  const updateStatus = async (user) => {
+  const updateStatus = async (user, message = "") => {
     const nextStatus = user.status === "active" ? "inactive" : "active";
-    const confirmationKey = nextStatus === "inactive" ? "confirmDeactivation" : "confirmReactivation";
-    if (!window.confirm(t(`admin.users.${confirmationKey}`, { name: user.name }))) return;
+    if (nextStatus === "inactive" && !message.trim()) return;
+    if (nextStatus === "active" && !window.confirm(t("admin.users.confirmReactivation", { name: user.name }))) return;
     setUpdatingUserId(user.user_id);
     setError("");
+    setDeactivationError("");
     setNotice("");
     try {
       const response = await fetch("/backend/Apis/admin/userManagement/updateUserStatus.php", {
         method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.user_id, account_status: nextStatus }),
+        body: JSON.stringify({ user_id: user.user_id, account_status: nextStatus, message: message.trim() }),
       });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(body.message || t("admin.users.errors.updateStatus"));
       setUsers((current) => current.map((item) => item.user_id === user.user_id ? { ...item, status: body.account_status } : item));
       setNotice(t(nextStatus === "inactive" ? "admin.users.deactivated" : "admin.users.reactivated", { name: user.name }));
+      setDeactivationUser(null);
+      setDeactivationMessage("");
+      setDeactivationConfirmed(false);
     } catch (requestError) {
       setError(requestError.message);
+      setDeactivationError(requestError.message);
     } finally {
       setUpdatingUserId(null);
+    }
+  };
+
+  const removeUser = async () => {
+    if (!removalUser || !removalConfirmed) return;
+    setRemovingUserId(removalUser.user_id);
+    setRemovalError("");
+    try {
+      const response = await fetch("/backend/Apis/admin/userManagement/deleteUser.php", {
+        method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: removalUser.user_id }),
+      });
+      const body = await response.json();
+      if (!response.ok || !body.success) throw new Error(body.message || t("admin.users.errors.delete"));
+      setUsers((current) => current.filter((item) => item.user_id !== removalUser.user_id));
+      setNotice(t("admin.users.deleted", { name: removalUser.name }));
+      setRemovalUser(null);
+      setRemovalConfirmed(false);
+    } catch (requestError) {
+      setRemovalError(requestError.message);
+    } finally {
+      setRemovingUserId(null);
     }
   };
 
@@ -116,15 +152,17 @@ export default function UserManagement() {
       {loading ? <tr><td colSpan="7" className="user-empty">{t("admin.users.loading")}</td></tr> : currentUsers.length ? currentUsers.map((user) => <tr key={user.user_id}>
         <td><div className="user-info"><div className={`user-management-avatar ${user.role}`}>{user.profile_image ? <img src={user.profile_image} alt={user.name} /> : initials(user.name)}</div><div><strong>{user.name}</strong><span>{user.email}</span></div></div></td>
         <td><span className={`user-role-badge ${user.role}`}>{t(`admin.users.roles.${user.role}`)}</span></td>
-        <td className="user-muted">{user.district}</td><td className="user-muted">{formatDate(user.created_at, locale)}</td>
+        <td className="user-muted">{getDistrictLabel(t, user.district)}</td><td className="user-muted">{formatDate(user.created_at, locale)}</td>
         <td><span className={`user-status-badge ${user.status}`}><span />{t(`admin.users.status.${user.status}`)}</span></td>
         <td><span className={`user-priority-badge ${user.priority}`}>{t(`admin.users.priority.${user.priority}`)}</span>{user.active_complaint_count > 0 && <small className="user-priority-detail">{t("admin.users.complaintSummary", { active: user.active_complaint_count, overdue: user.overdue_complaint_count })}</small>}</td>
-        <td><div className="user-actions"><button type="button" className="user-warning-btn" title={user.priority === "normal" ? t("admin.users.noWarningRequired") : t("admin.users.issueWarning")} disabled={user.priority === "normal"} onClick={() => openWarning(user)}><FiAlertTriangle /></button><button type="button" className={`user-status-action ${user.status}`} disabled={updatingUserId === user.user_id} onClick={() => updateStatus(user)}>{t(`admin.users.${user.status === "active" ? "deactivate" : "reactivate"}`)}</button><button type="button" className="user-delete-btn" title={t("admin.users.removeUnavailable")} disabled><FiTrash2 /></button></div></td>
+        <td><div className="user-actions"><button type="button" className="user-warning-btn" title={user.priority === "normal" ? t("admin.users.noWarningRequired") : t("admin.users.issueWarning")} disabled={user.priority === "normal"} onClick={() => openWarning(user)}><FiAlertTriangle /></button><button type="button" className={`user-status-action ${user.status}`} disabled={updatingUserId === user.user_id} onClick={() => user.status === "active" ? (setDeactivationUser(user), setDeactivationMessage(""), setDeactivationConfirmed(false), setDeactivationError("")) : updateStatus(user)}>{t(`admin.users.${user.status === "active" ? "deactivate" : "reactivate"}`)}</button><button type="button" className="user-delete-btn" title={t("admin.users.delete")} disabled={removingUserId === user.user_id} onClick={() => { setRemovalUser(user); setRemovalConfirmed(false); setRemovalError(""); }}><FiTrash2 /></button></div></td>
       </tr>) : <tr><td colSpan="7" className="user-empty">{t("admin.users.empty")}</td></tr>}
     </tbody></table></div>
       <div className="user-pagination"><p>{t("admin.users.pagination", { from: filteredUsers.length ? startIndex + 1 : 0, to: Math.min(startIndex + itemsPerPage, filteredUsers.length), total: filteredUsers.length })}</p><div className="user-pages"><button type="button" aria-label={t("admin.common.previousPage")} disabled={currentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}><FiChevronLeft /></button>{Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => <button type="button" key={page} className={page === currentPage ? "active" : ""} onClick={() => setCurrentPage(page)}>{page}</button>)}<button type="button" aria-label={t("admin.common.nextPage")} disabled={currentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}><FiChevronRight /></button></div></div>
     </section>
 
     {warningUser && <div className="user-warning-backdrop"><section className="user-warning-modal" role="dialog" aria-modal="true"><header><div><h2>{t("admin.users.issueWarning")}</h2><p>{warningUser.name}</p></div><button type="button" aria-label={t("admin.common.close")} onClick={() => setWarningUser(null)}><FiX /></button></header><div className="user-warning-summary"><span><strong>{t("admin.users.activeComplaints")}</strong>{warningUser.active_complaint_count}</span><span><strong>{t("admin.users.priority.overdue")}</strong>{warningUser.overdue_complaint_count}</span><span><strong>{t("admin.users.nearestDeadline")}</strong>{formatDate(warningUser.nearest_response_deadline, locale)}</span></div><label>{t("admin.users.warningMessage")}<textarea rows="5" value={warningMessage} onChange={(event) => setWarningMessage(event.target.value)} placeholder={t("admin.users.warningPlaceholder")} /></label>{warningError && <p className="user-warning-error">{warningError}</p>}<footer><button type="button" className="cancel" disabled={sendingWarning} onClick={() => setWarningUser(null)}>{t("admin.common.cancel")}</button><button type="button" className="send" disabled={sendingWarning} onClick={sendWarning}>{sendingWarning ? t("admin.users.sending") : t("admin.users.sendWarning")}</button></footer></section></div>}
+    {deactivationUser && <div className="user-warning-backdrop"><section className="user-warning-modal" role="dialog" aria-modal="true"><header><div><h2>{t("admin.users.deactivate")}</h2><p>{deactivationUser.name}</p></div><button type="button" aria-label={t("admin.common.close")} onClick={() => setDeactivationUser(null)}><FiX /></button></header><label>{t("admin.users.deactivationMessage")}<textarea rows="5" value={deactivationMessage} onChange={(event) => setDeactivationMessage(event.target.value)} placeholder={t("admin.users.deactivationPlaceholder")} /></label><label><input type="checkbox" checked={deactivationConfirmed} onChange={(event) => setDeactivationConfirmed(event.target.checked)} /> {t("admin.users.confirmDeactivationCheckbox")}</label>{deactivationError && <p className="user-warning-error">{deactivationError}</p>}<footer><button type="button" className="cancel" onClick={() => setDeactivationUser(null)}>{t("admin.common.cancel")}</button><button type="button" className="send" disabled={!deactivationConfirmed || deactivationMessage.trim().length < 10 || updatingUserId === deactivationUser.user_id} onClick={() => updateStatus(deactivationUser, deactivationMessage)}>{t("admin.users.deactivate")}</button></footer></section></div>}
+    {removalUser && <div className="user-warning-backdrop"><section className="user-warning-modal" role="dialog" aria-modal="true"><header><div><h2>{t("admin.users.delete")}</h2><p>{removalUser.name}</p></div><button type="button" aria-label={t("admin.common.close")} onClick={() => setRemovalUser(null)}><FiX /></button></header><p>{t("admin.users.deleteConfirm", { name: removalUser.name })}</p><label><input type="checkbox" checked={removalConfirmed} onChange={(event) => setRemovalConfirmed(event.target.checked)} /> {t("admin.users.confirmDeleteCheckbox")}</label>{removalError && <p className="user-warning-error">{removalError}</p>}<footer><button type="button" className="cancel" onClick={() => setRemovalUser(null)}>{t("admin.common.cancel")}</button><button type="button" className="send" disabled={!removalConfirmed || removingUserId === removalUser.user_id} onClick={removeUser}>{t("admin.users.delete")}</button></footer></section></div>}
   </div>;
 }

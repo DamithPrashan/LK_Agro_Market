@@ -41,6 +41,15 @@ function require_login() {
     }
 }
 
+function require_notification_access() {
+    if (!isset($_SESSION['user'])) {
+        header("Content-Type: application/json");
+        http_response_code(419);
+        echo json_encode(["success" => false, "message" => "Unauthenticated. Please sign in to continue."]);
+        exit;
+    }
+}
+
 function require_role($role) {
     require_login();
     if ($_SESSION['user']['role'] !== $role) {

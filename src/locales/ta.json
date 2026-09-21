@@ -424,6 +424,7 @@
     "orderDeclined": "{{cropName}} க்கான உங்களது முன்பதிவு விவசாயியால் நிராகரிக்கப்பட்டது.",
     "paymentConfirmed": "ஆர்டர் #{{orderId}} க்கான கட்டணம் ரூ. {{amount}} உறுதிப்படுத்தப்பட்டது.",
     "paymentReceived": "ஆர்டர் #{{orderId}} க்கான கட்டணம் ரூ. {{amount}} பெறப்பட்டது.",
+    "bankPaymentVerificationRequired": "ஆர்டர் ORD{{orderId}}-க்காக வங்கிக் கட்டண ரசீது சமர்ப்பிக்கப்பட்டுள்ளது. சரிபார்ப்பு தேவை.",
     "complaintSubmitted": "ஆர்டர் #{{orderId}} தொடர்பாக தகராறு எழுப்பப்பட்டுள்ளது.",
     "farmerResponded": "ஆர்டர் #{{reservation_id}} ({{cropName}}) தொடர்பான உங்கள் தகராறுக்கு விவசாயி பதிலளித்துள்ளார்.",
     "complaintResolved": "புகார் #{{complaintId}} நிர்வாகியால் தீர்க்கப்பட்டதாகக் குறிக்கப்பட்டுள்ளது.",
@@ -448,6 +449,7 @@
       "orderDeclined": "முன்பதிவு நிராகரிக்கப்பட்டது",
       "paymentConfirmed": "கட்டணம் உறுதிப்படுத்தப்பட்டது",
       "paymentReceived": "கட்டணம் பெறப்பட்டது",
+      "bankPaymentVerificationRequired": "வங்கிக் கட்டணச் சரிபார்ப்பு தேவை",
       "complaintSubmitted": "தகராறு திறக்கப்பட்டது",
       "farmerResponded": "விவசாயி பதிலளித்துள்ளார்",
       "complaintResolved": "தகராறு தீர்க்கப்பட்டது",
@@ -458,6 +460,7 @@
       "farmer_response_reminder": "புகார் பதில் நினைவூட்டல்",
       "farmer_response_overdue": "புகார் பதில் காலக்கெடு கடந்தது",
       "warningIssued": "நிர்வாக எச்சரிக்கை",
+      "accountDeactivated": "கணக்கு செயலிழக்கப்பட்டது",
       "cultivationRequestSubmitted": "புதிய சாகுபடி கோரிக்கை",
       "cultivationRequestAccepted": "சாகுபடி கோரிக்கை ஏற்கப்பட்டது",
       "cultivationRequestRejected": "சாகுபடி கோரிக்கை நிராகரிக்கப்பட்டது",
@@ -1085,6 +1088,11 @@
         "resolved": "தீர்க்கப்பட்டது",
         "dismissed": "நிராகரிக்கப்பட்டது"
       },
+      "transactionStatus": {
+        "unpaid": "செலுத்தப்படவில்லை",
+        "partially_paid": "பகுதியளவு செலுத்தப்பட்டது",
+        "paid": "செலுத்தப்பட்டது"
+      },
       "priority": {
         "critical": "மிக அவசரம்",
         "high": "உயர்",
@@ -1147,6 +1155,10 @@
     "users": {
       "warningSent": "எச்சரிக்கை வெற்றிகரமாக அனுப்பப்பட்டது.",
       "deactivate": "செயலிழக்கச் செய்",
+      "delete": "நீக்கு",
+      "deleted": "{{name}} நீக்கப்பட்டார்.",
+      "deleteConfirm": "{{name}}-ஐ நீக்க விரும்புகிறீர்களா?",
+      "confirmDeleteCheckbox": "இந்தப் பயனரை நீக்க விரும்புகிறேன் என்பதை உறுதிப்படுத்துகிறேன்.",
       "reactivate": "மீண்டும் செயல்படுத்து",
       "confirmDeactivation": "{{name}}-ஐ செயலிழக்கச் செய்யவா? அவரால் உள்நுழைய முடியாது.",
       "confirmReactivation": "{{name}}-ஐ மீண்டும் செயல்படுத்தவா? அவரால் மீண்டும் உள்நுழைய முடியும்.",
@@ -1188,12 +1200,16 @@
       "nearestDeadline": "அருகிலுள்ள காலக்கெடு",
       "warningMessage": "எச்சரிக்கைச் செய்தி",
       "warningPlaceholder": "தேவையான நடவடிக்கையைத் தொழில்முறையாக விளக்கவும்...",
+      "deactivationMessage": "செயலிழக்கச் செய்தி",
+      "deactivationPlaceholder": "இந்தக் கணக்கு ஏன் செயலிழக்கப்படுகிறது என்பதை விளக்கவும்...",
+      "confirmDeactivationCheckbox": "இந்தப் பயனரை செயலிழக்கச் செய்ய விரும்புகிறேன் என்பதை உறுதிப்படுத்துகிறேன்.",
       "sendWarning": "எச்சரிக்கையை அனுப்பவும்",
       "sending": "அனுப்பப்படுகிறது...",
       "loading": "பதிவுசெய்த பயனர்கள் ஏற்றப்படுகின்றனர்...",
       "empty": "பயனர்கள் இல்லை.",
       "pagination": "{{total}} பயனர்களில் {{from}}-{{to}} காட்டப்படுகிறது",
       "errors": {
+        "delete": "பயனரை நீக்க முடியவில்லை.",
         "load": "பயனர்களை ஏற்ற முடியவில்லை.",
         "warningLength": "குறைந்தது 10 எழுத்துகளைக் கொண்ட எச்சரிக்கையை உள்ளிடவும்.",
         "sendWarning": "எச்சரிக்கையை அனுப்ப முடியவில்லை.",
@@ -1212,6 +1228,13 @@
     },
     "calendar": {
       "schedule": "அட்டவணை",
+      "months": {
+        "january": "ஜனவரி", "february": "பிப்ரவரி", "march": "மார்ச்", "april": "ஏப்ரல்", "may": "மே", "june": "ஜூன்",
+        "july": "ஜூலை", "august": "ஆகஸ்ட்", "september": "செப்டம்பர்", "october": "அக்டோபர்", "november": "நவம்பர்", "december": "டிசம்பர்"
+      },
+      "weekdays": {
+        "monday": "திங்", "tuesday": "செவ்", "wednesday": "புத", "thursday": "வியா", "friday": "வெள்", "saturday": "சனி", "sunday": "ஞாயி"
+      },
       "adminActivity": "நிர்வாகி செயல்பாடு",
       "activityCount_one": "செயல்பாடு",
       "activityCount_other": "செயல்பாடுகள்",
@@ -1242,7 +1265,21 @@
         "farmer_response_reminder": "விவசாயி பதில் நினைவூட்டல்",
         "farmer_response_overdue": "விவசாயி பதில் காலக்கெடு கடந்தது",
         "warning_issued": "எச்சரிக்கை வழங்கப்பட்டது",
-        "user_removed": "பயனர் நீக்கப்பட்டார்"
+        "user_removed": "பயனர் நீக்கப்பட்டார்",
+        "user_deactivated": "பயனர் கணக்கு செயலிழக்கப்பட்டது",
+        "user_reactivated": "பயனர் கணக்கு மீண்டும் செயல்படுத்தப்பட்டது"
+      },
+      "activityDescriptions": {
+        "farmer_verified": "{{farmerName}} {{rating}} நட்சத்திர சரிபார்ப்பு மதிப்பீட்டுடன் அங்கீகரிக்கப்பட்டார்.",
+        "farmer_rejected": "{{farmerName}}-இன் விவசாயி சரிபார்ப்பு கோரிக்கை நிராகரிக்கப்பட்டது.",
+        "complaint_resolved": "{{source}} ஆர்டர் #{{orderId}} ({{cropName}}) தொடர்பான புகார் தீர்க்கப்பட்டது.",
+        "complaint_dismissed": "{{source}} ஆர்டர் #{{orderId}} ({{cropName}}) தொடர்பான புகார் நிராகரிக்கப்பட்டது.",
+        "farmer_response_requested": "{{source}} ஆர்டர் #{{orderId}} ({{cropName}}) தொடர்பாக விவசாயியின் 48 மணி நேர பதில் காலக்கெடு அமைக்கப்பட்டது.",
+        "farmer_response_reminder": "{{source}} ஆர்டர் #{{orderId}}-க்கு பதிலளிக்க {{farmerName}}-க்கு 24 மணிநேரத்திற்கும் குறைவான நேரமே உள்ளது.",
+        "farmer_response_overdue": "{{source}} ஆர்டர் #{{orderId}}-க்கு {{farmerName}} 48 மணிநேரத்திற்குள் பதிலளிக்கவில்லை.",
+        "warning_issued": "{{userName}}-க்கு எச்சரிக்கை வழங்கப்பட்டது: {{message}}",
+        "user_deactivated": "{{userName}}-இன் கணக்கு செயலிழக்கப்பட்டது.",
+        "user_reactivated": "{{userName}}-இன் கணக்கு மீண்டும் செயல்படுத்தப்பட்டது."
       },
       "activityCount": "இந்த நாளில் {{count}} செயல்பாடு/செயல்பாடுகள்"
     },

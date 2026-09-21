@@ -123,16 +123,7 @@ try {
         exit;
     }
 
-    if (($user['account_status'] ?? 'inactive') !== 'active') {
-
-        echo json_encode([
-            "success" => false,
-            "error_key" => "errors.accountInactive",
-            "message" => "Your account is inactive. Please contact the administrator."
-        ]);
-
-        exit;
-    }
+    $isInactive = ($user['account_status'] ?? 'inactive') !== 'active';
 
 
     /*
@@ -142,7 +133,7 @@ try {
     */
 
     if (
-        $user['role'] === 'farmer'
+        $user['role'] === 'farmer' && !$isInactive
     ) {
 
 
@@ -288,6 +279,8 @@ try {
 
         "role" =>
             $user['role'],
+
+        "account_status" => $isInactive ? 'inactive' : 'active',
 
         "verified" =>
             isset(

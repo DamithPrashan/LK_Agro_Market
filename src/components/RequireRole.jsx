@@ -9,6 +9,7 @@ export default function RequireRole({ role, children }) {
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (user.account_status === "inactive") return <Navigate to="/" replace />;
 
   const currentRole = user.role?.toLowerCase();
   if (currentRole !== role) {

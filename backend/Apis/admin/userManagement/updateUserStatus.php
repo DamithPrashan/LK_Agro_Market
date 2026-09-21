@@ -6,6 +6,7 @@ header('Access-Control-Allow-Methods: POST');
 
 require_once __DIR__ . '/../../../connection/db.php';
 require_once __DIR__ . '/../../auth_check.php';
+require_once __DIR__ . '/../../../create_notification.php';
 require_once __DIR__ . '/../calendar/logAdminActivity.php';
 
 require_role('admin');
@@ -19,10 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $input = json_decode(file_get_contents('php://input'), true) ?: [];
 $userId = (int)($input['user_id'] ?? 0);
 $accountStatus = strtolower(trim((string)($input['account_status'] ?? '')));
+$message = trim((string)($input['message'] ?? ''));
 
 if ($userId <= 0 || !in_array($accountStatus, ['active', 'inactive'], true)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'A valid user and account status are required.']);
+    exit;
+}
+
+if ($accountStatus === 'inactive' && strlen($message) < 10) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Provide a deactivation message of at least 10 characters.']);
     exit;
 }
 
@@ -70,6 +78,16 @@ try {
     );
     if (!$logged) {
         throw new RuntimeException('Admin activity logging failed.');
+    }
+
+    if (!$activated && !create_notification(
+        $userId,
+        'Account Deactivated',
+        $message,
+        'accountDeactivated',
+        json_encode(['link' => '/', 'user_id' => $userId])
+    )) {
+        throw new RuntimeException('Deactivation notification failed.');
     }
 
     $pdo->commit();

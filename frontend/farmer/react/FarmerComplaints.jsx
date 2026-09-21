@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FiFileText, FiUploadCloud, FiX } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import { localizeComplaintReason } from "../../../src/utils/complaintReasonUtils.js";
 import { useAuth } from "../../../src/context/AuthContext";
 import "../../farmer/csss/dashBoard.css";
 import "../../buyer/csss/Complaints.css";
@@ -113,7 +114,7 @@ export default function FarmerComplaints() {
             <span><strong>{t("complaints.farmerLabel")}</strong>{complaint.farmer_name || user?.name || t("farmerComplaints.notAvailable")}</span>
             <span><strong>{t("farmerComplaints.submitted")}</strong>{formatDate(complaint.created_at, locale, t("farmerComplaints.notAvailable"))}</span>
           </div>
-          <section className="calm-complaint-description"><h3>{complaint.reason === "Harvest Delay" ? t("complaints.harvestDelay") : complaint.reason}</h3><p>{complaint.description}</p>{complaint.evidence_file && <a className="evidence-attachment" href={`/${complaint.evidence_file}`} target="_blank" rel="noreferrer">{t("farmerComplaints.viewBuyerEvidence")}</a>}</section>
+          <section className="calm-complaint-description"><h3>{localizeComplaintReason(complaint.reason, t)}</h3><p>{complaint.description}</p>{complaint.evidence_file && <a className="evidence-attachment" href={`/${complaint.evidence_file}`} target="_blank" rel="noreferrer">{t("farmerComplaints.viewBuyerEvidence")}</a>}</section>
           <section className={`farmer-action-panel ${complaint.is_overdue ? "overdue" : ""}`}><strong>{complaint.is_overdue ? t("farmerComplaints.responseOverdue") : t("farmerComplaints.adminInstruction")}</strong><p>{complaint.admin_notes || t("farmerComplaints.defaultInstruction")}</p><div className="farmer-complaint-deadline"><span><b>{t("farmerComplaints.requested")}</b>{formatDate(complaint.farmer_response_requested_at, locale, t("farmerComplaints.notAvailable"))}</span><span><b>{t("farmerComplaints.deadline")}</b>{formatDate(complaint.farmer_response_deadline, locale, t("farmerComplaints.notAvailable"))}</span><span><b>{t("farmerComplaints.timeRemaining")}</b>{deadlineText(complaint.farmer_response_deadline, complaint.is_overdue, t)}</span></div>{complaint.is_overdue && <span>{t("farmerComplaints.overdueGuidance")}</span>}</section>
           <form className="farmer-response-form" onSubmit={(event) => submitResponse(event, complaint.complaint_id)}>
             {feedback?.text && <div className={`complaint-feedback ${feedback.ok ? "success" : "error"}`}>{feedback.text}</div>}
