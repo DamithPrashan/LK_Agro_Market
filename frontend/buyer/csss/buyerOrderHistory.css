@@ -13,6 +13,9 @@
 .buyer-order-history h1 {
   text-align: center;
   color: #1b5e20;
+  font-size: 28px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 700;
 }
 
 /* Tabs */
