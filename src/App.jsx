@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import Navbar from "./components/Navbar/Navbar";
+import ScrollToTop from "./components/ScrollToTop";
 import { CropProvider } from "./context/CropContext";
 import { useAuth } from "./context/AuthContext";
 
@@ -128,6 +129,7 @@ function App() {
             NAVBAR
         ================================= */}
 
+        <ScrollToTop />
         <Navbar />
 
 

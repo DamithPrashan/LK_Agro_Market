@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -54,16 +54,28 @@ export default function RegistrationPage() {
     validate
   );
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [role]);
+
   const handleRoleSelect = (selectedRole) => {
     setRole(selectedRole);
     setStep(1);
     setApiErr("");
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
 
   const handleNextStep = () => {
     if (validateAll()) {
       setStep(2);
       setApiErr("");
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }
   };
 

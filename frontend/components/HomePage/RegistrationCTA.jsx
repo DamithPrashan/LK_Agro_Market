@@ -11,6 +11,13 @@ export default function RegistrationCTA() {
 
   if (user) return null;
 
+  const handleNavigate = (path) => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    navigate(path);
+  };
+
   const options = [
     { role: "farmer", icon: <FaSeedling />, title: "farmerCtaTitle", description: "farmerCtaDescription", action: "registerFarmer" },
     { role: "buyer", icon: <FaShoppingBasket />, title: "buyerCtaTitle", description: "buyerCtaDescription", action: "registerBuyer" },
@@ -29,13 +36,13 @@ export default function RegistrationCTA() {
               <div className="registration-option-icon" aria-hidden="true">{option.icon}</div>
               <h3>{t(`homepage.${option.title}`)}</h3>
               <p>{t(`homepage.${option.description}`)}</p>
-              <button type="button" onClick={() => navigate(`/register?role=${option.role}`)}>{t(`homepage.${option.action}`)}</button>
+              <button type="button" onClick={() => handleNavigate(`/register?role=${option.role}`)}>{t(`homepage.${option.action}`)}</button>
             </article>
           ))}
         </div>
         <p className="registration-sign-in">
           {t("homepage.alreadyRegistered")} {" "}
-          <button type="button" onClick={() => navigate("/login")}>{t("homepage.signIn")}</button>
+          <button type="button" onClick={() => handleNavigate("/login")}>{t("homepage.signIn")}</button>
         </p>
       </div>
     </section>

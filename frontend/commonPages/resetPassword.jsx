@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import bgImage from "../../src/assets/login-bg.jpg";
+import logo from "../../src/assets/logo.png";
 import "./csss/loginPage.css";
 
 export default function ResetPassword() {
@@ -74,7 +75,10 @@ export default function ResetPassword() {
 
       <div className="login-card">
         <div className="login-header">
-          <div className="login-logo">🌿 LK Agro Market</div>
+          <div className="login-logo">
+            <img src={logo} alt="LK Agro Market" className="login-logo-img" />
+            <span>LK Agro Market</span>
+          </div>
           <h1 className="login-title">Set New Password</h1>
           <p className="login-subtitle">
             Enter a new password for <strong>{email || "your account"}</strong>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET");
@@ -126,17 +126,7 @@ try {
     $currentPaymentStmt->execute([$orderId, $paymentStage]);
     $currentPayment = $currentPaymentStmt->fetch(PDO::FETCH_ASSOC) ?: null;
 
-    // Use emoji based on crop name
-    $cropEmoji = "ðŸ¥¦"; // default
-    $nameLower = strtolower($order['crop_name']);
-    if (strpos($nameLower, 'tomato') !== false) $cropEmoji = "ðŸ…";
-    elseif (strpos($nameLower, 'carrot') !== false) $cropEmoji = "ðŸ¥•";
-    elseif (strpos($nameLower, 'potato') !== false) $cropEmoji = "ðŸ¥”";
-    elseif (strpos($nameLower, 'onion') !== false) $cropEmoji = "ðŸ§…";
-    elseif (strpos($nameLower, 'banana') !== false) $cropEmoji = "ðŸŒ";
-    elseif (strpos($nameLower, 'watermelon') !== false) $cropEmoji = "ðŸ‰";
-    elseif (strpos($nameLower, 'grapes') !== false) $cropEmoji = "ðŸ‡";
-    elseif (strpos($nameLower, 'pineapple') !== false) $cropEmoji = "ðŸ";
+    $cropEmoji = "";
 
     echo json_encode([
         "success" => true,

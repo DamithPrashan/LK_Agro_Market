@@ -52,13 +52,25 @@
 }
 
 .login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-size: 18px;
   font-weight: 800;
   color: var(--g-100, #c8e6c9);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .login-title {

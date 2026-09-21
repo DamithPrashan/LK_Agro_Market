@@ -374,43 +374,47 @@ export default function Payment() {
             style={{
               marginBottom: 14,
               display: "flex",
-              gap: 14,
+              flexDirection: "column",
               alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              gap: 4,
               borderColor: "var(--g-100)",
             }}
           >
-            <div style={{ fontSize: 38, flexShrink: 0 }}>{order.cropEmoji}</div>
-            <div>
-              <div
-                style={{ fontSize: 15, fontWeight: 700, color: "var(--g-800)" }}
-              >
-                {order.cropName} — {fmt(order.pricePerUnit)}/{order.unit}
+            <div
+              style={{ fontSize: 15, fontWeight: 700, color: "var(--g-800)" }}
+            >
+              {order.cropName} — {fmt(order.pricePerUnit)}/{order.unit}
+            </div>
+            {order.source === "cultivation" && (
+              <div style={{ fontSize: 11, color: "var(--g-600)", fontWeight: 600 }}>
+                Cultivation Agreement
               </div>
-              {order.source === "cultivation" && (
-                <div style={{ fontSize: 11, color: "var(--g-600)", fontWeight: 600 }}>
-                  Cultivation Agreement
-                </div>
+            )}
+            <div
+              style={{
+                fontSize: 12,
+                color: "var(--t-3)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                margin: "2px 0",
+              }}
+            >
+              <span>{order.farmerName}</span>
+              {order.farmerVerified && (
+                <span
+                  className="badge badge-green"
+                  style={{ fontSize: 9 }}
+                >
+                  {t("payment.verified")}
+                </span>
               )}
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--t-3)",
-                  margin: "2px 0 4px",
-                }}
-              >
-                {order.farmerName}
-                {order.farmerVerified && (
-                  <span
-                    className="badge badge-green"
-                    style={{ marginLeft: 6, fontSize: 9 }}
-                  >
-                    {t("payment.verified")}
-                  </span>
-                )}
-              </div>
-              <div style={{ fontSize: 11, color: "var(--t-2)" }}>
-                {order.quantity} {order.unit} · {t("buyer.cultivation.collectionDate")}: {order.collectionDate || t("growingPeriod.toBeConfirmed")}
-              </div>
+            </div>
+            <div style={{ fontSize: 11, color: "var(--t-2)" }}>
+              {order.quantity} {order.unit} · {t("buyer.cultivation.collectionDate")}: {order.collectionDate || t("growingPeriod.toBeConfirmed")}
             </div>
           </div>
 
