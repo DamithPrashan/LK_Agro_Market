@@ -17,7 +17,8 @@
 }
 
 .map-header h1 {
-  font-size: 2.2rem;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 28px;
   color: #1a5c2d;
   font-weight: 700;
   margin-bottom: 6px;

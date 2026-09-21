@@ -205,7 +205,15 @@ function App() {
 
             <Route
               path="/cultivation-opportunity/:id"
-              element={<CultivationOpportunityDetails />}
+              element={
+                user?.role?.toLowerCase() === "buyer" ? (
+                  <BuyerLayout>
+                    <CultivationOpportunityDetails />
+                  </BuyerLayout>
+                ) : (
+                  <CultivationOpportunityDetails />
+                )
+              }
             />
 
             <Route

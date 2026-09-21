@@ -7,6 +7,9 @@
 .order-management .page-title {
     margin-bottom: 20px;
     color: #1b5e20;
+    font-size: 28px;
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 700;
 }
 
 /* Tabs */

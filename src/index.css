@@ -64,6 +64,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.page-header h1,
+.page-title {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+}
+
 input,
 textarea,
 select,

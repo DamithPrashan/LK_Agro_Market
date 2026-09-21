@@ -27,7 +27,8 @@ export default function BuyerSidebar() {
   const isPreOrderSubPage =
     currentPath === "/preorder" ||
     currentPath === "/pre-order" ||
-    currentPath.startsWith("/crop/");
+    currentPath.startsWith("/crop/") ||
+    currentPath.startsWith("/cultivation-opportunity");
 
   const isBrowseExact =
     currentPath === "/browse" || currentPath === "/buyer/browse";

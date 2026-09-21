@@ -1,5 +1,5 @@
 .rp-page      { flex:1; max-width:780px; margin:0 auto; padding:28px 18px; width:100%; }
-.rp-heading   { font-size:20px; font-weight:700; color:var(--t-1); margin-bottom:20px; }
+.rp-heading   { font-family: 'Noto Sans', sans-serif; font-size:28px; font-weight:700; color:var(--t-1); margin-bottom:20px; }
 .rp-top-grid  { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .rp-big-score { text-align:center; padding:10px 0 14px; }
 .rp-score-num { font-size:40px; font-weight:700; color:var(--g-800); line-height:1; margin-bottom:6px; }
