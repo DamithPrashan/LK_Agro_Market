@@ -33,9 +33,10 @@ try {
     $pdo->beginTransaction();
     $order=resolve_order_snapshot($pdo,$reservationId,true);
     if(!$order||$order['buyer_user_id']!==(int)$_SESSION['user']['id']) throw new DomainException('Order not found or permission denied.');
-    if(!in_array($order['reservation_status'],['confirmed','ready','completed'],true)
+    if($order['reservation_status']!=='completed'
+        || $order['transaction_status']!=='paid'
         ||($order['reservation_source']==='cultivation'&&$order['source_status']!=='accepted')) {
-        throw new DomainException('This reservation is not eligible for a complaint.');
+        throw new DomainException('Only completed, fully paid orders are eligible for a complaint.');
     }
     $duplicate=$pdo->prepare("SELECT id FROM complaints WHERE reservation_id=? AND buyer_id=? AND status IN ('submitted','awaiting_farmer_response','under_review') LIMIT 1 FOR UPDATE");
     $duplicate->execute([$reservationId,$order['buyer_id']]);

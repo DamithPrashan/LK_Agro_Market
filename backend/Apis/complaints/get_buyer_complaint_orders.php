@@ -17,7 +17,9 @@ try {
         LEFT JOIN reserve_crop rc ON r.reservation_source='crop' AND r.reserve_crop_id=rc.reserve_crop_id
         LEFT JOIN cultivation_request cr ON r.reservation_source='cultivation' AND r.cultivation_request_id=cr.cultivation_request_id
         WHERE (CASE WHEN r.reservation_source='cultivation' THEN cr.buyer_id ELSE rc.buyer_id END)=?
-          AND r.reservation_status IN ('confirmed','ready','completed') ORDER BY r.reservation_id DESC");
+          AND r.reservation_status='completed'
+          AND r.transaction_status='paid'
+        ORDER BY r.reservation_id DESC");
     $ids->execute([$buyerId]);
     $orders=[];
     foreach ($ids->fetchAll(PDO::FETCH_COLUMN) as $reservationId) {
