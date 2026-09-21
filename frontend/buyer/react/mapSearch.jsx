@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
-import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../src/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaMapMarkerAlt, FaFilter, FaCalendarAlt, FaStar, FaRegStar, FaLeaf, FaTimes } from "react-icons/fa";
@@ -88,17 +88,53 @@ const createCustomIcon = (color, emoji) => {
   });
 };
 
+// Helper to resolve district name matching DISTRICTS list
+const resolveDistrict = (param) => {
+  if (!param) return "All Districts";
+  const trimmed = param.trim();
+  const found = DISTRICTS.find(
+    (d) =>
+      d.toLowerCase() === trimmed.toLowerCase() ||
+      (d === "Moneragala" && trimmed.toLowerCase() === "monaragala") ||
+      (d === "Monaragala" && trimmed.toLowerCase() === "moneragala")
+  );
+  return found || trimmed;
+};
+
+// Controller component to pan/zoom Leaflet map when filtered district changes
+function MapViewController({ district }) {
+  const map = useMap();
+  useEffect(() => {
+    if (district && district !== "All Districts" && DISTRICT_COORDS[district]) {
+      map.setView(DISTRICT_COORDS[district], 10);
+    }
+  }, [district, map]);
+  return null;
+}
+
 export default function MapSearch() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const routerLocation = useLocation();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
 
   // Filters State
-  const [district, setDistrict] = useState("All Districts");
+  const [district, setDistrict] = useState(() => {
+    const raw = searchParams.get("district") || routerLocation.state?.district;
+    return raw ? resolveDistrict(raw) : "All Districts";
+  });
   const [cropType, setCropType] = useState("All Crops");
   const [maxPrice, setMaxPrice] = useState(1000);
   const [harvestBefore, setHarvestBefore] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+
+  useEffect(() => {
+    const raw = searchParams.get("district") || routerLocation.state?.district;
+    if (raw) {
+      setDistrict(resolveDistrict(raw));
+    }
+  }, [searchParams, routerLocation.state]);
 
   // Map state
   const [farmers, setFarmers] = useState([]);
@@ -359,11 +395,16 @@ export default function MapSearch() {
 
         <div className="map-container-wrapper">
           <MapContainer
-            center={[7.8731, 80.7718]}
-            zoom={8}
+            center={
+              district !== "All Districts" && DISTRICT_COORDS[district]
+                ? DISTRICT_COORDS[district]
+                : [7.8731, 80.7718]
+            }
+            zoom={district !== "All Districts" && DISTRICT_COORDS[district] ? 10 : 8}
             style={{ height: "100%", width: "100%" }}
             scrollWheelZoom={true}
           >
+            <MapViewController district={district} />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

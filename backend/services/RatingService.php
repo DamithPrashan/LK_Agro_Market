@@ -68,9 +68,11 @@ class RatingService {
         // Fetch the newly created review details
             $newReview = $this->ratingModel->getReviewDetails($reviewId);
 
-        // Recalculate stats for the reviewee user
-            $allReviews = $this->ratingModel->getReviewsByReviewee($revieweeId);
-        $total = count($allReviews);
+        // Recalculate stats for the reviewee user using Option 1 (Cumulative Baseline Model)
+        $allReviews = $this->ratingModel->getReviewsByReviewee($revieweeId);
+        $initialRating = $this->ratingModel->getUserVerificationRating($revieweeId);
+
+        $totalBuyerReviews = count($allReviews);
         $sum = 0;
         $breakdown = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
 
@@ -82,22 +84,28 @@ class RatingService {
             }
         }
 
-        $average = ($total > 0) ? round($sum / $total, 1) : 0.0;
+        $totalEntries = $totalBuyerReviews;
+        if ($initialRating !== null && $initialRating > 0) {
+            $sum += floatval($initialRating);
+            $totalEntries += 1;
+        }
 
-        // Store the average rating in user table
-            $this->ratingModel->updateUserAverageRating($revieweeId, $average);
-            $this->ratingModel->commit();
+        $average = ($totalEntries > 0) ? round($sum / $totalEntries, 1) : 0.0;
 
-            return [
+        // Store the cumulative average rating in user table
+        $this->ratingModel->updateUserAverageRating($revieweeId, $average);
+        $this->ratingModel->commit();
+
+        return [
             "success" => true,
             "message" => "Rating submitted successfully.",
             "new_review" => $newReview,
             "new_summary" => [
                 "average" => $average,
-                "total" => $total,
+                "total" => $totalBuyerReviews,
                 "breakdown" => $breakdown
             ]
-            ];
+        ];
         } catch (PDOException $error) {
             $this->ratingModel->rollBack();
             if ($error->getCode() === '23000') {
@@ -111,12 +119,13 @@ class RatingService {
     }
 
     /**
-     * Handles retrieving rating summary and reviews list.
+     * Handles retrieving rating summary and reviews list using Option 1.
      */
     public function getRatingsForUser($userId) {
         $reviews = $this->ratingModel->getReviewsByReviewee($userId);
+        $initialRating = $this->ratingModel->getUserVerificationRating($userId);
 
-        $total = count($reviews);
+        $totalBuyerReviews = count($reviews);
         $sum = 0;
         $breakdown = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
 
@@ -128,13 +137,20 @@ class RatingService {
             }
         }
 
-        $average = ($total > 0) ? round($sum / $total, 1) : 0.0;
+        $totalEntries = $totalBuyerReviews;
+        if ($initialRating !== null && $initialRating > 0) {
+            $sum += floatval($initialRating);
+            $totalEntries += 1;
+        }
+
+        $average = ($totalEntries > 0) ? round($sum / $totalEntries, 1) : 0.0;
 
         return [
             "success" => true,
             "summary" => [
                 "average" => $average,
-                "total" => $total,
+                "total" => $totalBuyerReviews,
+                "initial_rating" => $initialRating,
                 "breakdown" => $breakdown
             ],
             "reviews" => $reviews

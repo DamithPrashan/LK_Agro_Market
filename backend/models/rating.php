@@ -85,6 +85,39 @@ class RatingModel {
         return $stmt->execute([$averageRating, $userId]);
     }
 
+    /**
+     * Retrieve the initial verification rating approved by admin for a farmer.
+     */
+    public function getUserVerificationRating($userId) {
+        $stmt = $this->pdo->prepare("
+            SELECT fv.verification_rating
+            FROM farmer_verification fv
+            JOIN farmer f ON fv.farmer_id = f.farmer_id
+            WHERE f.user_id = ? AND fv.verification_status = 'approved' AND fv.verification_rating IS NOT NULL
+            LIMIT 1
+        ");
+        $stmt->execute([$userId]);
+        $val = $stmt->fetchColumn();
+        return ($val !== false && $val !== null) ? floatval($val) : null;
+    }
+
+    /**
+     * Retrieve the initial or verification rating for a user.
+     */
+    public function getUserInitialRating($userId) {
+        $stmt = $this->pdo->prepare("
+            SELECT COALESCE(NULLIF(u.average_rating, 0.00), fv.verification_rating) as init_rating
+            FROM user u
+            LEFT JOIN farmer f ON u.user_id = f.user_id
+            LEFT JOIN farmer_verification fv ON f.farmer_id = fv.farmer_id AND fv.verification_status = 'approved'
+            WHERE u.user_id = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$userId]);
+        $val = $stmt->fetchColumn();
+        return ($val !== false && $val !== null) ? floatval($val) : null;
+    }
+
     public function beginTransaction() { return $this->pdo->beginTransaction(); }
     public function commit() { return $this->pdo->commit(); }
     public function rollBack() { return $this->pdo->inTransaction() ? $this->pdo->rollBack() : true; }

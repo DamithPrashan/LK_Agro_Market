@@ -783,7 +783,9 @@ export default function FarmerVerification() {
                             />
                           ))}
 
-                          <span>{rating}/5</span>
+                          <span>
+                            {t("admin.verifications.initialFarmerRating", "Initial Rating:")} {rating}/5
+                          </span>
                         </div>
                       )}
 
@@ -896,7 +898,9 @@ export default function FarmerVerification() {
                         />
                       ))}
 
-                      <span>{selectedFarmer.rating || 0}/5</span>
+                      <span>
+                        {t("admin.verifications.initialFarmerRating", "Initial Rating:")} {selectedFarmer.rating || 0}/5
+                      </span>
                     </div>
                   )}
 
