@@ -14,9 +14,10 @@ import DemandForecast from "./demandForecast";
 import { useAuth } from "../../../src/context/AuthContext";
 import MessageModal from "../../components/MessageModal";
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
-import farmer1 from "../../assets/png/buyer1.jpg";
-import farmer2 from "../../assets/png/buyer2.jpg";
-import farmer3 from "../../assets/png/buyer3.jpg";
+import farmer1 from "../../assets/png/farmer_banner1.jpg";
+import farmer2 from "../../assets/png/farmer_banner2.jpg";
+import farmer3 from "../../assets/png/farmer_banner3.jpg";
+import farmer4 from "../../assets/png/farmer_banner4.jpg";
 
 function DashBoard() {
     const { user } = useAuth();
@@ -98,7 +99,7 @@ function DashBoard() {
             <div className="content">
                 {/* Header */}
                 <section className="hero" style={{ marginBottom: "28px",marginTop: "-115px" }}>
-                    <HeroCarousel images={[farmer1, farmer2, farmer3]}>
+                    <HeroCarousel images={[farmer1, farmer2, farmer3, farmer4]}>
                         <h1>{getWelcomeMsg()}</h1>
                         <p>{t("farmerDashboard.subtitle")}</p>
                     </HeroCarousel>

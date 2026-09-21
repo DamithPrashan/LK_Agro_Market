@@ -145,7 +145,7 @@ export default function Navbar() {
                 <div className="application-topbar__notification-menu">
                   <div className="application-topbar__notification-header">
                     <h3>{t("navbar.notifications")}</h3>
-                    <button className="application-topbar__mark-read" type="button" onClick={handleMarkAllRead}>{t("navbar.markAllRead")}</button>
+                    <button className="application-topbar__mark-read" type="button" onClick={handleMarkAllRead}>{t("navbar.markAllRead", "Mark all as read")}</button>
                   </div>
                   <div className="application-topbar__notification-body">
                     {notifications.length === 0 ? <div className="application-topbar__notification-empty">{t("navbar.noNotifications")}</div> : notifications.map((notification) => (
