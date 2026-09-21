@@ -12,7 +12,7 @@ export default function BuyerDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [location, setLocation] = useState("Colombo");
+  const [location, setLocation] = useState(user?.district || "Colombo");
   const [stats, setStats] = useState({ pending: 0, active: 0, completed: 0, complaints: 0 });
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -273,7 +273,20 @@ export default function BuyerDashboard() {
         <div>
           {t("buyerDashboard.locationBanner", { location: location })}
         </div>
-        <button onClick={() => navigate("/buyer/mapsearch")}>{t("buyerDashboard.exploreNearby")}</button>
+        <button
+          onClick={() => {
+            const targetDistrict = location || user?.district || "";
+            if (targetDistrict) {
+              navigate(`/buyer/mapsearch?district=${encodeURIComponent(targetDistrict)}`, {
+                state: { district: targetDistrict }
+              });
+            } else {
+              navigate("/buyer/mapsearch");
+            }
+          }}
+        >
+          {t("buyerDashboard.exploreNearby")}
+        </button>
       </section>
 
 

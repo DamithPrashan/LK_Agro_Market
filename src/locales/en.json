@@ -1096,6 +1096,7 @@
       "accept": "Accept",
       "reject": "Reject",
       "trustCriteria": "Trust Rating Criteria",
+      "initialFarmerRating": "Initial Farmer Rating:",
       "rejectionReasons": "Rejection Reasons",
       "feedback": "Feedback to Farmer",
       "feedbackPlaceholder": "Enter feedback that will be shown to the farmer...",

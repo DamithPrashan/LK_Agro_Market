@@ -275,6 +275,19 @@ try {
             $farmerId
         ]);
 
+        $userId = (int) $verification["user_id"];
+
+        $stmt = $pdo->prepare("
+            UPDATE user
+            SET average_rating = ?
+            WHERE user_id = ?
+        ");
+
+        $stmt->execute([
+            $rating,
+            $userId
+        ]);
+
 
         /*
         =============================================
@@ -377,6 +390,18 @@ try {
 
     $stmt->execute([
         $farmerId
+    ]);
+
+    $userId = (int) $verification["user_id"];
+
+    $stmt = $pdo->prepare("
+        UPDATE user
+        SET average_rating = NULL
+        WHERE user_id = ?
+    ");
+
+    $stmt->execute([
+        $userId
     ]);
 
 
