@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET");
@@ -38,6 +38,8 @@ try {
                 u.phone as farmer_phone,
                 f.verified_status as is_verified,
                 u.user_id as farmer_user_id,
+                u.average_rating as user_average_rating,
+                fv.verification_rating,
                 fv.farm_location
             FROM crop c
             JOIN farmer f ON c.farmer_id = f.farmer_id
@@ -67,7 +69,7 @@ try {
         $farmer_user = $userQuery->fetch();
         
         $reviews = [];
-        $average_rating = 5.0;
+        $average_rating = 0.0;
         
         if ($farmer_user) {
             $farmer_user_id = $farmer_user['user_id'];
@@ -88,12 +90,23 @@ try {
             $reviewStmt->execute([$farmer_user_id]);
             $reviews = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // Calculate dynamic average rating
-            if (!empty($reviews)) {
-                $totalRatings = count($reviews);
-                $sumRatings = array_sum(array_column($reviews, 'rating'));
-                $average_rating = round($sumRatings / $totalRatings, 1);
+            // Calculate dynamic average rating using Option 1 (Cumulative Baseline Model)
+            $initialRating = null;
+            if (!empty($crop['verification_rating']) && floatval($crop['verification_rating']) > 0) {
+                $initialRating = floatval($crop['verification_rating']);
+            } elseif (!empty($crop['user_average_rating']) && floatval($crop['user_average_rating']) > 0 && empty($reviews)) {
+                $initialRating = floatval($crop['user_average_rating']);
             }
+
+            $sumRatings = array_sum(array_column($reviews, 'rating'));
+            $countRatings = count($reviews);
+
+            if ($initialRating !== null && $initialRating > 0) {
+                $sumRatings += $initialRating;
+                $countRatings += 1;
+            }
+
+            $average_rating = ($countRatings > 0) ? round($sumRatings / $countRatings, 1) : 0.0;
         }
         
         // Fetch crop photos from crop_photos table
@@ -230,14 +243,25 @@ try {
             c.image_url,
             u.name as farmer_name, 
             f.verified_status as is_verified,
-            COALESCE((
-                SELECT AVG(r.rating) 
-                FROM ratings_review r 
-                WHERE r.reviewee_id = u.user_id AND r.is_removed = 0
-            ), 5.0) as rating
+            COALESCE(
+                (
+                    SELECT ROUND(
+                        (COALESCE(SUM(r.rating), 0) + COALESCE(fv.verification_rating, 0)) / 
+                        (COUNT(r.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END),
+                        1
+                    )
+                    FROM ratings_review r 
+                    WHERE r.reviewee_id = u.user_id AND r.is_removed = 0
+                    HAVING (COUNT(r.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END) > 0
+                ),
+                NULLIF(u.average_rating, 0.00),
+                fv.verification_rating,
+                0.0
+            ) as rating
         FROM crop c
         JOIN farmer f ON c.farmer_id = f.farmer_id
         JOIN user u ON f.user_id = u.user_id
+        LEFT JOIN farmer_verification fv ON f.farmer_id = fv.farmer_id AND fv.verification_status = 'approved'
     ";
     
     if (!empty($whereClauses)) {

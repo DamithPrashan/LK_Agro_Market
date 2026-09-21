@@ -14,12 +14,26 @@ try {
                    CASE WHEN ca.timing_model='growing_period' AND ca.cultivation_started_at IS NOT NULL THEN DATE(DATE_ADD(ca.cultivation_started_at, INTERVAL ca.growing_period_days DAY)) END estimated_harvest_date,
                    ca.cultivation_area, ca.area_unit, ca.description, ca.created_at,
                    ca.farmer_id, u.name farmer_name, f.verified_status,
-                   COALESCE((SELECT AVG(rr.rating) FROM ratings_review rr
-                             WHERE rr.reviewee_id=u.user_id AND rr.is_removed=0), 5.0) farmer_rating,
+                   COALESCE(
+                       (
+                           SELECT ROUND(
+                               (COALESCE(SUM(rr.rating), 0) + COALESCE(fv.verification_rating, 0)) / 
+                               (COUNT(rr.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END),
+                               1
+                           )
+                           FROM ratings_review rr
+                           WHERE rr.reviewee_id = u.user_id AND rr.is_removed = 0
+                           HAVING (COUNT(rr.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END) > 0
+                       ),
+                       NULLIF(u.average_rating, 0.00),
+                       fv.verification_rating,
+                       0.0
+                   ) farmer_rating,
                    (SELECT p.photo_path FROM cultivation_ad_photos p
                     WHERE p.cultivation_ad_id=ca.cultivation_ad_id ORDER BY p.id LIMIT 1) preview_image
             FROM cultivation_ad ca JOIN farmer f ON f.farmer_id=ca.farmer_id
-            JOIN user u ON u.user_id=f.user_id WHERE $where
+            JOIN user u ON u.user_id=f.user_id
+            LEFT JOIN farmer_verification fv ON f.farmer_id=fv.farmer_id AND fv.verification_status='approved' WHERE $where
             ORDER BY ca.created_at DESC, ca.cultivation_ad_id DESC LIMIT $limit";
     $stmt = $pdo->prepare($sql); $stmt->execute($params); $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($id > 0 && !$ads) cultivation_request_json(404, ['success'=>false,'message'=>'Cultivation opportunity is unavailable.']);

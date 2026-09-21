@@ -68,11 +68,21 @@ try {
             c.quantity,
             c.price_per_unit,
             c.harvest_date,
-            COALESCE((
-                SELECT AVG(r.rating) 
-                FROM ratings_review r 
-                WHERE r.reviewee_id = u.user_id AND r.is_removed = 0
-            ), 5.0) as rating_average,
+            COALESCE(
+                (
+                    SELECT ROUND(
+                        (COALESCE(SUM(r.rating), 0) + COALESCE(fv.verification_rating, 0)) / 
+                        (COUNT(r.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END),
+                        1
+                    )
+                    FROM ratings_review r 
+                    WHERE r.reviewee_id = u.user_id AND r.is_removed = 0
+                    HAVING (COUNT(r.rating) + CASE WHEN fv.verification_rating IS NOT NULL AND fv.verification_rating > 0 THEN 1 ELSE 0 END) > 0
+                ),
+                NULLIF(u.average_rating, 0.00),
+                fv.verification_rating,
+                0.0
+            ) as rating_average,
             COALESCE((
                 SELECT COUNT(r.rating) 
                 FROM ratings_review r 
