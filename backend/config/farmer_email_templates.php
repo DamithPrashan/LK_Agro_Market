@@ -29,9 +29,18 @@ if (!function_exists('farmerRegistrationReceived')) {
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 560px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                     <!-- Header -->
                     <tr>
-                        <td style="background-color: #1a5c2a; padding: 25px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">🌱 LK Agro Market</h1>
-                            <p style="color: #a3e635; margin: 5px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Farmer Registration Notice</p>
+                        <td style="background-color: #1a5c2a; padding: 22px 30px; text-align: center;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="vertical-align: middle; padding-right: 10px;">
+                                        <img src="cid:platform_logo" alt="LK Agro Market Logo" width="40" height="40" style="display: block; width: 40px; height: 40px; border-radius: 50%; border: 0;" />
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: left;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2;">LK Agro Market</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="color: #a3e635; margin: 6px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Farmer Registration Notice</p>
                         </td>
                     </tr>
                     
@@ -150,9 +159,18 @@ if (!function_exists('farmerAccountApproved')) {
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 560px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                     <!-- Header -->
                     <tr>
-                        <td style="background-color: #1a5c2a; padding: 25px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">✓ LK Agro Market</h1>
-                            <p style="color: #a3e635; margin: 5px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Account Approved</p>
+                        <td style="background-color: #1a5c2a; padding: 22px 30px; text-align: center;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="vertical-align: middle; padding-right: 10px;">
+                                        <img src="cid:platform_logo" alt="LK Agro Market Logo" width="40" height="40" style="display: block; width: 40px; height: 40px; border-radius: 50%; border: 0;" />
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: left;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2;">LK Agro Market</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="color: #a3e635; margin: 6px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Account Approved</p>
                         </td>
                     </tr>
                     
@@ -261,9 +279,18 @@ if (!function_exists('farmerAccountRejected')) {
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 560px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                     <!-- Header -->
                     <tr>
-                        <td style="background-color: #1a5c2a; padding: 25px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">🌱 LK Agro Market</h1>
-                            <p style="color: #fca5a5; margin: 5px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Verification Status Update</p>
+                        <td style="background-color: #1a5c2a; padding: 22px 30px; text-align: center;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="vertical-align: middle; padding-right: 10px;">
+                                        <img src="cid:platform_logo" alt="LK Agro Market Logo" width="40" height="40" style="display: block; width: 40px; height: 40px; border-radius: 50%; border: 0;" />
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: left;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2;">LK Agro Market</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="color: #fca5a5; margin: 6px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Verification Status Update</p>
                         </td>
                     </tr>
                     
@@ -335,9 +362,18 @@ if (!function_exists('passwordResetRequest')) {
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 560px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                     <!-- Header -->
                     <tr>
-                        <td style="background-color: #1a5c2a; padding: 25px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">🔑 LK Agro Market</h1>
-                            <p style="color: #a3e635; margin: 5px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Password Reset Request</p>
+                        <td style="background-color: #1a5c2a; padding: 22px 30px; text-align: center;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="vertical-align: middle; padding-right: 10px;">
+                                        <img src="cid:platform_logo" alt="LK Agro Market Logo" width="40" height="40" style="display: block; width: 40px; height: 40px; border-radius: 50%; border: 0;" />
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: left;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2;">LK Agro Market</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="color: #a3e635; margin: 6px 0 0 0; font-size: 13px; text-transform: uppercase; font-weight: 600;">Password Reset Request</p>
                         </td>
                     </tr>
                     
