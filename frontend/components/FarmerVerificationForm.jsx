@@ -47,7 +47,7 @@ export default function FarmerVerificationForm({
                 }
               }}
             >
-              📍 {t("verification.btnLocate")}
+              {t("verification.btnLocate")}
             </button>
           </div>
         </div>
