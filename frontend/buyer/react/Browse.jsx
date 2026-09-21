@@ -408,7 +408,7 @@ export default function Browse() {
                     <div className="featured-meta crop-card-meta">
                       <div className="featured-location">
                         <FaMapMarkerAlt />
-                        <span>{crop.district || "Sri Lanka"}</span>
+                        <span>{getDistrictLabel(t, crop.district || crop.location) || crop.district || crop.location || "Sri Lanka"}</span>
                       </div>
                       
                       <div className="featured-quantity crop-card-farmer">

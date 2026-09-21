@@ -26,6 +26,7 @@ try {
                 c.crop_id as id, 
                 c.crop_name as name, 
                 c.category, 
+                COALESCE(NULLIF(c.district, ''), NULLIF(c.location, ''), NULLIF(u.location, '')) as district,
                 c.location, 
                 c.quantity as qty, 
                 c.price_per_unit as price, 
@@ -135,16 +136,20 @@ try {
     // Search Query (matches crop name, farmer name, or district/location)
     if (isset($_GET['search_query']) && trim($_GET['search_query']) !== '') {
         $search_query = trim($_GET['search_query']);
-        $whereClauses[] = "(c.crop_name LIKE ? OR u.name LIKE ? OR c.location LIKE ?)";
+        $whereClauses[] = "(c.crop_name LIKE ? OR u.name LIKE ? OR c.location LIKE ? OR c.district LIKE ? OR u.location LIKE ?)";
         $likeParam = "%" . $search_query . "%";
+        $params[] = $likeParam;
+        $params[] = $likeParam;
         $params[] = $likeParam;
         $params[] = $likeParam;
         $params[] = $likeParam;
     }
     
     // District / Location filter
-    if (isset($_GET['district']) && trim($_GET['district']) !== '' && trim($_GET['district']) !== 'All' && trim($_GET['district']) !== 'All Crops') {
-        $whereClauses[] = "c.location = ?";
+    if (isset($_GET['district']) && trim($_GET['district']) !== '' && trim($_GET['district']) !== 'All' && trim($_GET['district']) !== 'All Crops' && trim($_GET['district']) !== 'All Districts') {
+        $whereClauses[] = "(c.location = ? OR c.district = ? OR u.location = ?)";
+        $params[] = trim($_GET['district']);
+        $params[] = trim($_GET['district']);
         $params[] = trim($_GET['district']);
     }
     
@@ -236,6 +241,7 @@ try {
             c.crop_id as id, 
             c.crop_name as name, 
             c.category, 
+            COALESCE(NULLIF(c.district, ''), NULLIF(c.location, ''), NULLIF(u.location, '')) as district,
             c.location, 
             c.quantity as qty, 
             c.price_per_unit as price, 
