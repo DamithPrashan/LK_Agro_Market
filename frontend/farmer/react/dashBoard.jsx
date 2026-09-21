@@ -97,7 +97,7 @@ function DashBoard() {
         <div className="dashboard">
             <div className="content">
                 {/* Header */}
-                <section className="hero" style={{ marginBottom: "28px" }}>
+                <section className="hero" style={{ marginBottom: "28px",marginTop: "-115px" }}>
                     <HeroCarousel images={[farmer1, farmer2, farmer3]}>
                         <h1>{getWelcomeMsg()}</h1>
                         <p>{t("farmerDashboard.subtitle")}</p>

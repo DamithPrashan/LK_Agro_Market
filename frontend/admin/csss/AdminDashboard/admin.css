@@ -737,6 +737,29 @@
   font-weight: 600 !important;
 }
 
+.admin-calendar-wrapper {
+  position: relative;
+}
+
+.admin-calendar-weekdays {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-bottom: 7px;
+  color: #707974;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+}
+
+.react-calendar__month-view {
+  padding-top: 25px;
+}
+
 .react-calendar__navigation button:hover {
   border-radius: 6px;
 
@@ -744,14 +767,8 @@
 }
 
 .react-calendar__month-view__weekdays {
-  margin-bottom: 7px;
-
-  text-align: center;
-
-  font-size: 11px;
-  font-weight: 600;
-
-  color: #707974;
+  /* react-calendar 6 renders this Flex element with inline display: flex. */
+  display: none !important;
 }
 
 .react-calendar__month-view__weekdays abbr {

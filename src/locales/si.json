@@ -424,6 +424,7 @@
     "orderDeclined": "{{cropName}} සඳහා ඔබගේ පූර්ව ඇණවුම් ඉල්ලීම ගොවි මහතා විසින් ප්‍රතික්ෂේප කර ඇත.",
     "paymentConfirmed": "ඇණවුම් අංක #{{orderId}} සඳහා රු. {{amount}} ක ගෙවීම තහවුරු කරන ලදී.",
     "paymentReceived": "ඇණවුම් අංක #{{orderId}} සඳහා රු. {{amount}} ක මුදලක් ලැබී ඇත.",
+    "bankPaymentVerificationRequired": "ඇණවුම් අංක ORD{{orderId}} සඳහා බැංකු ගෙවීම් රිසිට්පතක් ඉදිරිපත් කර ඇත. සත්‍යාපනය අවශ්‍යයි.",
     "complaintSubmitted": "ඇණවුම් අංක #{{orderId}} සම්බන්ධයෙන් ආරවුලක් මතු වී ඇත.",
     "farmerResponded": "ඇණවුම් අංක #{{reservation_id}} ({{cropName}}) සඳහා වූ ආරවුලට ගොවි මහතා ප්‍රතිචාර දක්වා ඇත.",
     "complaintResolved": "පැමිණිලි අංක #{{complaintId}} පරිපාලක විසින් විසඳන ලද ලෙස සලකුණු කර ඇත.",
@@ -448,6 +449,7 @@
       "orderDeclined": "ඇණවුම ප්‍රතික්ෂේප කරන ලදී",
       "paymentConfirmed": "ගෙවීම තහවුරු කරන ලදී",
       "paymentReceived": "ගෙවීම් ලැබුණි",
+      "bankPaymentVerificationRequired": "බැංකු ගෙවීම් සත්‍යාපනය අවශ්‍යයි",
       "complaintSubmitted": "ආරවුලක් විවෘත විය",
       "farmerResponded": "ගොවියා ප්‍රතිචාර දක්වා ඇත",
       "complaintResolved": "ආරවුල විසඳන ලදී",
@@ -458,6 +460,7 @@
       "farmer_response_reminder": "පැමිණිලි ප්‍රතිචාර සිහිගැන්වීම",
       "farmer_response_overdue": "පැමිණිලි ප්‍රතිචාර කාලය ඉක්මවා ඇත",
       "warningIssued": "පරිපාලන අවවාදය",
+      "accountDeactivated": "ගිණුම අක්‍රිය කරන ලදී",
       "cultivationRequestSubmitted": "නව වගා ඉල්ලීම",
       "cultivationRequestAccepted": "වගා ඉල්ලීම පිළිගෙන ඇත",
       "cultivationRequestRejected": "වගා ඉල්ලීම ප්‍රතික්ෂේප කර ඇත",
@@ -1167,6 +1170,11 @@
         "resolved": "විසඳා ඇත",
         "dismissed": "ප්‍රතික්ෂේප කර ඇත"
       },
+      "transactionStatus": {
+        "unpaid": "ගෙවීම් නොකළ",
+        "partially_paid": "අර්ධ වශයෙන් ගෙවා ඇත",
+        "paid": "ගෙවා ඇත"
+      },
       "priority": {
         "critical": "අතිශය හදිසි",
         "high": "ඉහළ",
@@ -1229,6 +1237,10 @@
     "users": {
       "warningSent": "අවවාදය සාර්ථකව යවන ලදී.",
       "deactivate": "අක්‍රීය කරන්න",
+      "delete": "මකන්න",
+      "deleted": "{{name}} මකා දමන ලදී.",
+      "deleteConfirm": "{{name}} මකා දැමීමට ඔබට විශ්වාසද?",
+      "confirmDeleteCheckbox": "මෙම පරිශීලකයා මකා දැමීමට මට විශ්වාසයි.",
       "reactivate": "නැවත සක්‍රීය කරන්න",
       "confirmDeactivation": "{{name}} අක්‍රීය කරන්නද? ඔවුන්ට පුරනය වීමට නොහැකි වනු ඇත.",
       "confirmReactivation": "{{name}} නැවත සක්‍රීය කරන්නද? ඔවුන්ට නැවත පුරනය විය හැක.",
@@ -1270,12 +1282,16 @@
       "nearestDeadline": "ළඟම කාලසීමාව",
       "warningMessage": "අවවාද පණිවිඩය",
       "warningPlaceholder": "අවශ්‍ය ක්‍රියාමාර්ගය වෘත්තීයමය ලෙස පැහැදිලි කරන්න...",
+      "deactivationMessage": "අක්‍රිය කිරීමේ පණිවිඩය",
+      "deactivationPlaceholder": "මෙම ගිණුම අක්‍රිය කරන්නේ මන්දැයි පැහැදිලි කරන්න...",
+      "confirmDeactivationCheckbox": "මෙම පරිශීලකයා අක්‍රිය කිරීමට මට විශ්වාසයි.",
       "sendWarning": "අවවාදය යවන්න",
       "sending": "යවමින්...",
       "loading": "ලියාපදිංචි පරිශීලකයින් පූරණය වෙමින්...",
       "empty": "පරිශීලකයින් හමු නොවීය.",
       "pagination": "පරිශීලකයින් {{total}}න් {{from}}-{{to}} පෙන්වයි",
       "errors": {
+        "delete": "පරිශීලකයා මකා දැමිය නොහැක.",
         "load": "පරිශීලකයින් පූරණය කළ නොහැක.",
         "warningLength": "අවම වශයෙන් අක්ෂර 10ක අවවාදයක් ඇතුළත් කරන්න.",
         "sendWarning": "අවවාදය යැවිය නොහැක.",
@@ -1294,6 +1310,13 @@
     },
     "calendar": {
       "schedule": "කාලසටහන",
+      "months": {
+        "january": "ජනවාරි", "february": "පෙබරවාරි", "march": "මාර්තු", "april": "අප්‍රේල්", "may": "මැයි", "june": "ජූනි",
+        "july": "ජූලි", "august": "අගෝස්තු", "september": "සැප්තැම්බර්", "october": "ඔක්තෝබර්", "november": "නොවැම්බර්", "december": "දෙසැම්බර්"
+      },
+      "weekdays": {
+        "monday": "සඳු", "tuesday": "අඟ", "wednesday": "බදා", "thursday": "බ්‍රහ", "friday": "සිකු", "saturday": "සෙන", "sunday": "ඉරි"
+      },
       "adminActivity": "පරිපාලක ක්‍රියාකාරකම්",
       "activityCount_one": "ක්‍රියාකාරකම",
       "activityCount_other": "ක්‍රියාකාරකම්",
@@ -1324,7 +1347,21 @@
         "farmer_response_reminder": "ගොවි ප්‍රතිචාර සිහිගැන්වීම",
         "farmer_response_overdue": "ගොවි ප්‍රතිචාරය කාලය ඉක්මවා ඇත",
         "warning_issued": "අවවාදයක් නිකුත් කරන ලදී",
-        "user_removed": "පරිශීලකයා ඉවත් කරන ලදී"
+        "user_removed": "පරිශීලකයා ඉවත් කරන ලදී",
+        "user_deactivated": "පරිශීලක ගිණුම අක්‍රිය කරන ලදී",
+        "user_reactivated": "පරිශීලක ගිණුම නැවත සක්‍රිය කරන ලදී"
+      },
+      "activityDescriptions": {
+        "farmer_verified": "{{farmerName}} තරු {{rating}}ක සත්‍යාපන ශ්‍රේණිගත කිරීමක් සමඟ අනුමත කරන ලදී.",
+        "farmer_rejected": "{{farmerName}}ගේ ගොවි සත්‍යාපන ඉල්ලීම ප්‍රතික්ෂේප කරන ලදී.",
+        "complaint_resolved": "{{source}} ඇණවුම් අංක {{orderId}} ({{cropName}}) සඳහා පැමිණිල්ල විසඳන ලදී.",
+        "complaint_dismissed": "{{source}} ඇණවුම් අංක {{orderId}} ({{cropName}}) සඳහා පැමිණිල්ල ප්‍රතික්ෂේප කරන ලදී.",
+        "farmer_response_requested": "{{source}} ඇණවුම් අංක {{orderId}} ({{cropName}}) සඳහා ගොවි ප්‍රතිචාර කාලසීමාව පැය 48ක් ලෙස සකස් කරන ලදී.",
+        "farmer_response_reminder": "{{farmerName}}ට {{source}} ඇණවුම් අංක {{orderId}} සඳහා ප්‍රතිචාර දැක්වීමට පැය 24කට අඩු කාලයක් ඇත.",
+        "farmer_response_overdue": "{{farmerName}} {{source}} ඇණවුම් අංක {{orderId}} සඳහා පැය 48ක් ඇතුළත ප්‍රතිචාර දක්වා නැත.",
+        "warning_issued": "{{userName}}ට අනතුරු ඇඟවීමක් නිකුත් කරන ලදී: {{message}}",
+        "user_deactivated": "{{userName}}ගේ ගිණුම අක්‍රිය කරන ලදී.",
+        "user_reactivated": "{{userName}}ගේ ගිණුම නැවත සක්‍රිය කරන ලදී."
       },
       "activityCount": "මෙදින ක්‍රියාකාරකම් {{count}} ක්"
     },

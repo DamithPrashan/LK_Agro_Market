@@ -32,8 +32,7 @@ export default function AdminDashboard() {
      WELCOME MESSAGE
   ========================================= */
 
-  const [welcomeMsg, setWelcomeMsg] =
-    useState("Welcome Back Admin");
+  const [isReturningAdmin, setIsReturningAdmin] = useState(false);
 
 
   /* =========================================
@@ -113,25 +112,11 @@ export default function AdminDashboard() {
     if (localStorage.getItem(key)) {
 
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setWelcomeMsg(
-        t(
-          "admin.dashboard.welcomeBack",
-          {
-            name: user.name,
-          }
-        )
-      );
+      setIsReturningAdmin(true);
 
     } else {
 
-      setWelcomeMsg(
-        t(
-          "admin.dashboard.welcome",
-          {
-            name: user.name,
-          }
-        )
-      );
+      setIsReturningAdmin(false);
 
 
       localStorage.setItem(
@@ -141,7 +126,7 @@ export default function AdminDashboard() {
 
     }
 
-  }, [user, t]);
+  }, [user]);
 
 
   /* =========================================
@@ -360,7 +345,7 @@ export default function AdminDashboard() {
       <section className="admin-welcome">
 
         <h1>
-          {welcomeMsg}
+          {user && t(isReturningAdmin ? "admin.dashboard.welcomeBack" : "admin.dashboard.welcome", { name: user.name })}
         </h1>
 
         <p>

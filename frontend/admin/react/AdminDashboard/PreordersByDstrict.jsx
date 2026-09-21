@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { getDistrictLabel } from "../../../../src/constants/districtUtils";
 
 export default function PreordersByDistrict({
   districts = [],
@@ -56,7 +57,7 @@ export default function PreordersByDistrict({
                   <div className="admin-district-info">
 
                     <span>
-                      {district.district}
+                      {getDistrictLabel(t, district.district)}
                     </span>
 
                     <span>

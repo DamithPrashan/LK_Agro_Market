@@ -9,6 +9,26 @@ require_once __DIR__ . '/../../auth_check.php';
 
 require_login();
 
+function resolveVerificationUploadPath(?string $path): ?string {
+    if (!$path) {
+        return $path;
+    }
+
+    $normalised = ltrim($path, '/');
+    $projectRoot = dirname(__DIR__, 4);
+
+    if (is_file($projectRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $normalised))) {
+        return $normalised;
+    }
+
+    $legacyPath = 'backend/Apis/uploads/' . basename($normalised);
+    if (is_file($projectRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $legacyPath))) {
+        return $legacyPath;
+    }
+
+    return $normalised;
+}
+
 
 if (
     !isset($_SESSION['user']) ||
@@ -165,10 +185,10 @@ try {
                 $row["farm_location"],
 
             "nicImage" =>
-                $row["nic_image"],
+                resolveVerificationUploadPath($row["nic_image"]),
 
             "evidenceFile" =>
-                $row["evidence_file"],
+                resolveVerificationUploadPath($row["evidence_file"]),
 
             "profileImage" =>
                 $row["profile_image"],

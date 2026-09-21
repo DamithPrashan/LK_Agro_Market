@@ -30,7 +30,8 @@ export default function LoginPage() {
       const data = await res.json();
       if (data.success) {
         login(data.user);
-        if (data.user.role === "farmer") navigate("/farmer");
+        if (data.user.account_status === "inactive") navigate("/");
+        else if (data.user.role === "farmer") navigate("/farmer");
         else if (data.user.role === "buyer") navigate("/buyer");
         else if (data.user.role === "admin") navigate("/admin");
       } else {
@@ -117,4 +118,4 @@ export default function LoginPage() {
   );
 }
 
-
+

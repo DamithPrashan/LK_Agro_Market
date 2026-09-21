@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 require_once __DIR__ . '/../../connection/db.php';
 require_once __DIR__ . '/../auth_check.php';
 
-require_login();
+require_notification_access();
 $user_id = $_SESSION['user']['id'];
 
 try {

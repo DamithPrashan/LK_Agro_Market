@@ -444,6 +444,7 @@
     "orderDeclined": "Your preorder request for {{cropName}} was declined by the seller.",
     "paymentConfirmed": "Payment of LKR {{amount}} confirmed for Order #{{orderId}}.",
     "paymentReceived": "Payment of LKR {{amount}} received for Order #{{orderId}}.",
+    "bankPaymentVerificationRequired": "A bank payment receipt has been submitted for order ORD{{orderId}}. Verification is required.",
     "complaintSubmitted": "A dispute has been raised regarding Order #{{orderId}}.",
     "farmerResponded": "The farmer has responded to your dispute for Order #{{reservation_id}} ({{cropName}}).",
     "complaintResolved": "Complaint #{{complaintId}} has been marked as resolved by the Administrator.",
@@ -468,6 +469,7 @@
       "orderDeclined": "Reservation Declined",
       "paymentConfirmed": "Payment Confirmed",
       "paymentReceived": "Payment Received",
+      "bankPaymentVerificationRequired": "Bank Payment Verification Required",
       "complaintSubmitted": "Dispute Opened",
       "farmerResponded": "Farmer Responded",
       "complaintResolved": "Dispute Resolved",
@@ -478,6 +480,7 @@
       "farmer_response_reminder": "Complaint Response Reminder",
       "farmer_response_overdue": "Complaint Response Overdue",
       "warningIssued": "Administrative Warning",
+      "accountDeactivated": "Account Deactivated",
       "cultivationRequestSubmitted": "New Cultivation Request",
       "cultivationRequestAccepted": "Cultivation Request Accepted",
       "cultivationRequestRejected": "Cultivation Request Rejected",
@@ -1189,6 +1192,11 @@
         "resolved": "Resolved",
         "dismissed": "Dismissed"
       },
+      "transactionStatus": {
+        "unpaid": "Unpaid",
+        "partially_paid": "Partially Paid",
+        "paid": "Paid"
+      },
       "priority": {
         "critical": "Critical",
         "high": "High",
@@ -1251,6 +1259,10 @@
     "users": {
       "warningSent": "Warning sent successfully.",
       "deactivate": "Deactivate",
+      "delete": "Delete",
+      "deleted": "{{name}} was deleted.",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "confirmDeleteCheckbox": "I am sure I want to delete this user.",
       "reactivate": "Reactivate",
       "confirmDeactivation": "Deactivate {{name}}? They will be signed out and unable to log in.",
       "confirmReactivation": "Reactivate {{name}}? They will be able to log in again.",
@@ -1292,12 +1304,16 @@
       "nearestDeadline": "Nearest deadline",
       "warningMessage": "Warning message",
       "warningPlaceholder": "Explain the required action professionally...",
+      "deactivationMessage": "Deactivation message",
+      "deactivationPlaceholder": "Explain why this account is being deactivated...",
+      "confirmDeactivationCheckbox": "I am sure I want to deactivate this user.",
       "sendWarning": "Send Warning",
       "sending": "Sending...",
       "loading": "Loading registered users...",
       "empty": "No users found.",
       "pagination": "Showing {{from}}-{{to}} of {{total}} users",
       "errors": {
+        "delete": "Unable to delete user.",
         "load": "Unable to load users.",
         "warningLength": "Enter a warning of at least 10 characters.",
         "sendWarning": "Unable to send warning.",
@@ -1316,6 +1332,13 @@
     },
     "calendar": {
       "schedule": "Schedule",
+      "months": {
+        "january": "January", "february": "February", "march": "March", "april": "April", "may": "May", "june": "June",
+        "july": "July", "august": "August", "september": "September", "october": "October", "november": "November", "december": "December"
+      },
+      "weekdays": {
+        "monday": "Mon", "tuesday": "Tue", "wednesday": "Wed", "thursday": "Thu", "friday": "Fri", "saturday": "Sat", "sunday": "Sun"
+      },
       "adminActivity": "Admin Activity",
       "activityCount_one": "Activity",
       "activityCount_other": "Activities",
@@ -1346,7 +1369,21 @@
         "farmer_response_reminder": "Farmer Response Reminder",
         "farmer_response_overdue": "Farmer Response Overdue",
         "warning_issued": "Warning Issued",
-        "user_removed": "User Removed"
+        "user_removed": "User Removed",
+        "user_deactivated": "User Deactivated",
+        "user_reactivated": "User Reactivated"
+      },
+      "activityDescriptions": {
+        "farmer_verified": "{{farmerName}} was approved with a {{rating}}-star verification rating.",
+        "farmer_rejected": "{{farmerName}}'s farmer verification request was rejected.",
+        "complaint_resolved": "Complaint resolved for {{source}} order #{{orderId}} ({{cropName}}).",
+        "complaint_dismissed": "Complaint dismissed for {{source}} order #{{orderId}} ({{cropName}}).",
+        "farmer_response_requested": "A 48-hour farmer response deadline was set for {{source}} order #{{orderId}} ({{cropName}}).",
+        "farmer_response_reminder": "{{farmerName}} has less than 24 hours to respond for {{source}} order #{{orderId}}.",
+        "farmer_response_overdue": "{{farmerName}} has not responded within 48 hours for {{source}} order #{{orderId}}.",
+        "warning_issued": "A warning was issued to {{userName}}: {{message}}",
+        "user_deactivated": "{{userName}} was deactivated.",
+        "user_reactivated": "{{userName}} was reactivated."
       },
       "activityCount": "{{count}} activit(y/ies) on this day"
     },

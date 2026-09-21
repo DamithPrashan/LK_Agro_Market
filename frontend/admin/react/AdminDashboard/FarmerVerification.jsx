@@ -15,6 +15,7 @@ import {
 
 import "../../csss/AdminDashboard/admin.css";
 import "../../csss/AdminDashboard/farmerVerification.css";
+import { getDistrictLabel } from "../../../../src/constants/districtUtils";
 
 const positiveCriteria = [
   "identity_valid",
@@ -420,7 +421,7 @@ export default function FarmerVerification() {
 
                 {districts.map((district) => (
                   <option value={district} key={district}>
-                    {district}
+                    {getDistrictLabel(t, district)}
                   </option>
                 ))}
               </select>
@@ -487,7 +488,7 @@ export default function FarmerVerification() {
                       </div>
                     </td>
 
-                    <td>{farmer.district}</td>
+                    <td>{getDistrictLabel(t, farmer.district)}</td>
 
                     <td>{farmer.nic}</td>
 
@@ -640,7 +641,7 @@ export default function FarmerVerification() {
                   <div>
                     <span>{t("admin.common.district")}</span>
 
-                    <strong>{selectedFarmer.district}</strong>
+                    <strong>{getDistrictLabel(t, selectedFarmer.district)}</strong>
                   </div>
 
                   <div>

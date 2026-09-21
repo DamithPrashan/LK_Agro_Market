@@ -57,7 +57,7 @@ import Footer from "../frontend/components/HomepageFooter.jsx";
 
 function App() {
   const { user } = useAuth();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
 
 
@@ -112,6 +112,10 @@ function App() {
     }
 
   }, [user, i18n]);
+
+  if (user?.account_status === "inactive") {
+    return <div className="app-shell"><Navbar /><main className="main-content"><p>{t("errors.accountInactive")}</p></main></div>;
+  }
 
 
   return (

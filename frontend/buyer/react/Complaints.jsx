@@ -3,6 +3,7 @@ import { FiFileText, FiUploadCloud, FiX } from "react-icons/fi";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { readJsonResponse } from "../../utils/readJsonResponse.js";
+import { localizeComplaintReason } from "../../../src/utils/complaintReasonUtils.js";
 import "../csss/Complaints.css";
 
 function EvidenceUploadCard({ id, title, instruction, file, accept, required, document, onChange, onRemove, t }) {
@@ -335,14 +336,14 @@ function ComplaintPage() {
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 >
-                  <option value="Crop quality does not match listing">{t("complaints.reasonOption1")}</option>
-                  <option value="Wrong Quantity">{t("complaints.reasonOption3")}</option>
-                  <option value="Damaged Product">{t("complaints.reasonOption4")}</option>
-                  <option value="Misleading Listing or Agreement Information">{t("complaints.reasonMisleading")}</option>
-                  <option value="Payment or Order Status Issue">{t("complaints.reasonPaymentOrder")}</option>
-                  <option value="Harvest Delay" disabled={harvestDelayUnavailable}>{t("complaints.harvestDelay")}{harvestDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
-                  <option value="Cultivation Start Delay" disabled={startDelayUnavailable}>{t("complaints.cultivationStartDelay")}{startDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
-                  <option value="Other Platform Transaction Issue">{t("complaints.reasonOtherPlatform")}</option>
+                  <option value="Crop quality does not match listing">{localizeComplaintReason("Crop quality does not match listing", t)}</option>
+                  <option value="Wrong Quantity">{localizeComplaintReason("Wrong Quantity", t)}</option>
+                  <option value="Damaged Product">{localizeComplaintReason("Damaged Product", t)}</option>
+                  <option value="Misleading Listing or Agreement Information">{localizeComplaintReason("Misleading Listing or Agreement Information", t)}</option>
+                  <option value="Payment or Order Status Issue">{localizeComplaintReason("Payment or Order Status Issue", t)}</option>
+                  <option value="Harvest Delay" disabled={harvestDelayUnavailable}>{localizeComplaintReason("Harvest Delay", t)}{harvestDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
+                  <option value="Cultivation Start Delay" disabled={startDelayUnavailable}>{localizeComplaintReason("Cultivation Start Delay", t)}{startDelayUnavailable ? ` (${t("complaints.harvestDelayNotEligible")})` : ""}</option>
+                  <option value="Other Platform Transaction Issue">{localizeComplaintReason("Other Platform Transaction Issue", t)}</option>
                 </select>
                 <p className="transport-scope-note">{t("complaints.transportScopeNote")}</p>
 
@@ -457,7 +458,7 @@ function ComplaintPage() {
 
                     {/* Buyer's Issue Description */}
                     <div className="dispute-section-box buyer-issue-box">
-                      <div className="reason-row">{c.reason}</div>
+                      <div className="reason-row">{localizeComplaintReason(c.reason, t)}</div>
                       <div className="desc-row">"{c.description}"</div>
                       {c.evidence_file && (
                         <a

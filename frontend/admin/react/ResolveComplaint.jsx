@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { localizeComplaintReason } from "../../../src/utils/complaintReasonUtils.js";
 import "../../buyer/csss/Complaints.css";
 import { useAuth } from "../../../src/context/AuthContext";
 
@@ -8,7 +9,8 @@ function ResolveComplaint() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === "si" ? "si-LK" : i18n.language === "ta" ? "ta-LK" : "en-US";
 
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -202,12 +204,12 @@ function ResolveComplaint() {
               <p><strong>{t("complaints.agreedQuantity")}</strong> {complaint.quantityRequested} {complaint.unit}</p>
               <p><strong>{t("complaints.agreedUnitPrice")}</strong> Rs. {Number(complaint.unitPrice).toFixed(2)} / {complaint.unit}</p>
               <p><strong>{t("complaints.agreedTotal")}</strong> Rs. {Number(complaint.totalAmount).toFixed(2)}</p>
-              <p><strong>{t("admin.complaints.filingDateLabel")}</strong> {new Date(complaint.createdAt).toLocaleDateString()}</p>
+              <p><strong>{t("admin.complaints.filingDateLabel")}</strong> {new Date(complaint.createdAt).toLocaleDateString(dateLocale)}</p>
             </div>
             <div>
               <p><strong>{t("admin.complaints.buyerNameLabel")}</strong> {complaint.buyerName} ({complaint.buyerEmail})</p>
               <p><strong>{t("admin.complaints.farmerNameLabel")}</strong> {complaint.farmerName} ({complaint.farmerEmail})</p>
-              <p><strong>{t("admin.complaints.disputeReasonLabel")}</strong> <span style={{ color: "#c0392b", fontWeight: "600" }}>{complaint.reason}</span></p>
+              <p><strong>{t("admin.complaints.disputeReasonLabel")}</strong> <span style={{ color: "#c0392b", fontWeight: "600" }}>{localizeComplaintReason(complaint.reason, t)}</span></p>
             </div>
           </div>
 

@@ -24,6 +24,7 @@ export default function CalendarSection({
 }) {
   const { t, i18n } = useTranslation();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [activeStartDate, setActiveStartDate] = useState(() => new Date());
 
   const [today, setToday] = useState(() => new Date());
 
@@ -192,12 +193,85 @@ export default function CalendarSection({
      SELECTED DATE TITLE
   ========================================= */
 
-  const dateLocale = i18n.language === "si" ? "si-LK" : i18n.language === "ta" ? "ta-LK" : "en-US";
+  const activeLanguage = (i18n.resolvedLanguage || i18n.language || "en")
+    .split("-")[0]
+    .toLowerCase();
+  const dateLocale = activeLanguage === "si" ? "si-LK" : activeLanguage === "ta" ? "ta-LK" : "en-US";
+  const calendarMonths = [
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+  ];
+  const calendarWeekdays = [
+    "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+  ];
+  const calendarMonthYear = `${t(`admin.calendar.months.${calendarMonths[activeStartDate.getMonth()]}`)} ${activeStartDate.getFullYear()}`;
   const formattedSelectedDate = selectedDate.toLocaleDateString(dateLocale, {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+
+  const localizeActivityDescription = (activity) => {
+    const description = activity.description ?? "";
+    const templates = {
+      farmer_verified: [
+        /^(.+) was approved with a (.+)-star verification rating\.$/,
+        "admin.calendar.activityDescriptions.farmer_verified",
+        ([, farmerName, rating]) => ({ farmerName, rating }),
+      ],
+      farmer_rejected: [
+        /^(.+)'s farmer verification request was rejected\.$/,
+        "admin.calendar.activityDescriptions.farmer_rejected",
+        ([, farmerName]) => ({ farmerName }),
+      ],
+      complaint_resolved: [
+        /^Complaint resolved for (.+) order #(.+) \((.+)\)\.$/,
+        "admin.calendar.activityDescriptions.complaint_resolved",
+        ([, source, orderId, cropName]) => ({ source, orderId, cropName }),
+      ],
+      complaint_dismissed: [
+        /^Complaint dismissed for (.+) order #(.+) \((.+)\)\.$/,
+        "admin.calendar.activityDescriptions.complaint_dismissed",
+        ([, source, orderId, cropName]) => ({ source, orderId, cropName }),
+      ],
+      farmer_response_requested: [
+        /^A 48-hour farmer response deadline was set for (.+) order #(.+) \((.+)\)\.$/,
+        "admin.calendar.activityDescriptions.farmer_response_requested",
+        ([, source, orderId, cropName]) => ({ source, orderId, cropName }),
+      ],
+      farmer_response_reminder: [
+        /^(.+) has less than 24 hours to respond for (.+) order #(.+)\.$/,
+        "admin.calendar.activityDescriptions.farmer_response_reminder",
+        ([, farmerName, source, orderId]) => ({ farmerName, source, orderId }),
+      ],
+      farmer_response_overdue: [
+        /^(.+) has not responded within 48 hours for (.+) order #(.+)\.$/,
+        "admin.calendar.activityDescriptions.farmer_response_overdue",
+        ([, farmerName, source, orderId]) => ({ farmerName, source, orderId }),
+      ],
+      warning_issued: [
+        /^A warning was issued to (.+): ([\s\S]+)$/,
+        "admin.calendar.activityDescriptions.warning_issued",
+        ([, userName, message]) => ({ userName, message }),
+      ],
+      user_deactivated: [
+        /^(.+) was deactivated\.$/,
+        "admin.calendar.activityDescriptions.user_deactivated",
+        ([, userName]) => ({ userName }),
+      ],
+      user_reactivated: [
+        /^(.+) was reactivated\.$/,
+        "admin.calendar.activityDescriptions.user_reactivated",
+        ([, userName]) => ({ userName }),
+      ],
+    };
+
+    const template = templates[activity.type];
+    if (!template) return description;
+
+    const match = description.match(template[0]);
+    return match ? t(template[1], template[2](match)) : description;
+  };
 
   /* =========================================
      OPEN ADD NOTE
@@ -382,11 +456,21 @@ export default function CalendarSection({
         <h2>{t("admin.calendar.schedule")}</h2>
 
         <div className="admin-calendar-wrapper">
+          <div className="admin-calendar-weekdays" aria-hidden="true">
+            {calendarWeekdays.map((weekday) => (
+              <span key={weekday}>{t(`admin.calendar.weekdays.${weekday}`)}</span>
+            ))}
+          </div>
           <Calendar
             value={selectedDate}
+            activeStartDate={activeStartDate}
             onChange={(date) => {
               setSelectedDate(date);
             }}
+            onActiveStartDateChange={({ activeStartDate: nextActiveStartDate }) => {
+              setActiveStartDate(nextActiveStartDate);
+            }}
+            navigationLabel={() => calendarMonthYear}
             prev2Label={null}
             next2Label={null}
             tileContent={({ date, view }) => {
@@ -475,7 +559,7 @@ export default function CalendarSection({
                 <div className="admin-activity-content">
                   <h3>{activity.type === "manual_note" ? activity.title : t(`admin.calendar.activities.${activity.type}`, { defaultValue: activity.title })}</h3>
 
-                  <p>{activity.description}</p>
+                  <p>{localizeActivityDescription(activity)}</p>
                 </div>
 
                 {/* RIGHT */}

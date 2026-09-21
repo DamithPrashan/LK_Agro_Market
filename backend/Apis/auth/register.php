@@ -127,24 +127,29 @@ try {
         // Handle file uploads if files are provided
         $nic_image_path = null;
         $evidence_path = null;
-        $upload_dir = '../uploads/';
+        $nic_upload_dir = __DIR__ . '/../../uploads/NIC/';
+        $evidence_upload_dir = __DIR__ . '/../../uploads/FarmEvidence/';
 
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
+        if (!is_dir($nic_upload_dir)) {
+            mkdir($nic_upload_dir, 0755, true);
+        }
+
+        if (!is_dir($evidence_upload_dir)) {
+            mkdir($evidence_upload_dir, 0755, true);
         }
 
         if (isset($_FILES['nic_image']) && $_FILES['nic_image']['error'] === UPLOAD_ERR_OK) {
             $nic_ext = pathinfo($_FILES['nic_image']['name'], PATHINFO_EXTENSION);
             $nic_filename = 'nic_' . time() . '_' . uniqid() . '.' . $nic_ext;
-            if (move_uploaded_file($_FILES['nic_image']['tmp_name'], $upload_dir . $nic_filename)) {
-                $nic_image_path = 'backend/uploads/' . $nic_filename;
+            if (move_uploaded_file($_FILES['nic_image']['tmp_name'], $nic_upload_dir . $nic_filename)) {
+                $nic_image_path = 'backend/uploads/NIC/' . $nic_filename;
             }
         }
         if (isset($_FILES['evidence']) && $_FILES['evidence']['error'] === UPLOAD_ERR_OK) {
             $ev_ext = pathinfo($_FILES['evidence']['name'], PATHINFO_EXTENSION);
             $ev_filename = 'ev_' . time() . '_' . uniqid() . '.' . $ev_ext;
-            if (move_uploaded_file($_FILES['evidence']['tmp_name'], $upload_dir . $ev_filename)) {
-                $evidence_path = 'backend/uploads/' . $ev_filename;
+            if (move_uploaded_file($_FILES['evidence']['tmp_name'], $evidence_upload_dir . $ev_filename)) {
+                $evidence_path = 'backend/uploads/FarmEvidence/' . $ev_filename;
             }
         }
 
