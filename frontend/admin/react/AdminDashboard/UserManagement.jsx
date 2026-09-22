@@ -120,7 +120,9 @@ export default function UserManagement() {
     try {
       const response = await fetch("/backend/Apis/admin/userManagement/deleteUser.php", {
         method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: removalUser.user_id }),
+        // The API requires this explicit confirmation before it can remove an
+        // account that is referenced by marketplace records.
+        body: JSON.stringify({ user_id: removalUser.user_id, force_delete: removalConfirmed }),
       });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(body.message || t("admin.users.errors.delete"));
