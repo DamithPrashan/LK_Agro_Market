@@ -263,7 +263,16 @@ try {
                 NULLIF(u.average_rating, 0.00),
                 fv.verification_rating,
                 0.0
-            ) as rating
+            ) as rating,
+            CASE WHEN EXISTS (
+                SELECT 1 FROM reserve_crop rc_tr
+                JOIN reservation r_tr ON r_tr.reserve_crop_id = rc_tr.reserve_crop_id
+                JOIN payment p_tr ON p_tr.reservation_id = r_tr.reservation_id
+                WHERE rc_tr.crop_id = c.crop_id
+                  AND p_tr.payment_type = 'final'
+                  AND p_tr.payment_status = 'completed'
+                  AND p_tr.payment_date >= NOW() - INTERVAL 7 DAY
+            ) THEN 1 ELSE 0 END as is_trending
         FROM crop c
         JOIN farmer f ON c.farmer_id = f.farmer_id
         JOIN user u ON f.user_id = u.user_id
